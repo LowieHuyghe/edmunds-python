@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,8 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace LH\Core\Controllers;
+use Illuminate\Http\Response;
 
 /**
  * Interface for the controllers
