@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace Core\Models\Observers;
+namespace LH\Core\Models\Observers;
 
-use Illuminate\Support\Facades\Validator;
-use Core\Models\BaseModel;
+use LH\Core\Models\BaseModel;
 
 /**
  * A base for the observers to extend from

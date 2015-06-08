@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Tests;
+namespace LH\Core\Tests;
 
 use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Support\Facades\Mail;
@@ -38,16 +38,10 @@ class BaseTest extends TestCase
 
 	/**
 	 * Creates the application.
-	 *
-	 * @return \Symfony\Component\HttpKernel\HttpKernelInterface
 	 */
 	public function createApplication()
 	{
-		$app = require __DIR__ . '/../bootstrap/app.php';
 
-		$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
-
-		return $app;
 	}
 
 	/**

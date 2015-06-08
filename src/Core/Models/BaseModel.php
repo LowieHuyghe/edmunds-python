@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,8 +11,8 @@
  * @since		Version 0.1
  */
 
-namespace Core\Models;
-use Core\Helpers\ValidationHelper;
+namespace LH\Core\Models;
+use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Validation\Validator;
 
 /**
