@@ -1,0 +1,19 @@
+{
+	"name": "lh/core",
+	"description": "The core of any web-project by Lowie Huyghe",
+	"require": {
+		"laravel/framework": "^5.0"
+	},
+	"license": "http://lowiehuyghe.com/license",
+	"authors": [
+		{
+			"name": "Lowie Huyghe",
+			"email": "iam@lowiehuyghe.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Core\\": "src/Core/"
+		}
+	}
+}
