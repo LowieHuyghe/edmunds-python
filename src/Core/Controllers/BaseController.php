@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,16 +11,16 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace LH\Core\Controllers;
 
-use Core\Helpers\ControllerHelper;
-use Core\Helpers\ValidationHelper;
+use Illuminate\Support\Facades\Input;
+use LH\Core\Helpers\ControllerHelper;
+use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Controller base to extend from

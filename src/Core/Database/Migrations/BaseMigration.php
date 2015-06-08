@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Database\Migrations;
+namespace LH\Core\Database\Migrations;
 
 /**
  * Migration base to extend from

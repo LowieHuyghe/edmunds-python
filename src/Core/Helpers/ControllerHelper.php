@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Core
+ * LH Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,8 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace Core\Helpers;
-use Core\BaseController;
+namespace LH\Core\Helpers;
+
+use LH\Core\Controllers\BaseController;
 
 /**
  * The helper to get controllers
