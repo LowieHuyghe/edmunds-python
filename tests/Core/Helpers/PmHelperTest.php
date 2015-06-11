@@ -31,7 +31,7 @@ class PmHelperTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testSend()
 	{
-		PmHelper::pmAdmin('Test-title', 'Test-message');
+		PmHelper::pmAdmin('Test-title');
 		$this->assertTrue(true);
 	}
 
