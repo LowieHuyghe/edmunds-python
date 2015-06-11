@@ -36,7 +36,7 @@ class PmHelper
 	 * @param int $type
 	 * @param string $extra
 	 */
-	public static function pmAdmin($title, $message, $type = self::TYPE_NOTE, $extra = null)
+	public static function pmAdmin($title, $message = null, $type = self::TYPE_NOTE, $extra = null)
 	{
 		switch($type)
 		{
