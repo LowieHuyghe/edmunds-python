@@ -12,6 +12,7 @@
  */
 
 namespace LH\Core\Commands;
+
 use LH\Core\Database\Migrations\BaseMigration;
 
 /**
@@ -40,15 +41,15 @@ class CoreMigrationCommand extends BaseCommand
 	 * All the tables that can be migrated
 	 * @var BaseMigration[]
 	 */
-	private static $classes = array();
+	private static $migrations = array();
 
 	/**
 	 * Add a class for the migrations
 	 * @param BaseMigration $instance
 	 */
-	public static function addClass($instance)
+	public static function addMigration($instance)
 	{
-		self::$classes[] = $instance;
+		self::$migrations[] = $instance;
 	}
 
 	/**
@@ -120,9 +121,12 @@ class CoreMigrationCommand extends BaseCommand
 		}
 
 		//Print outcome
-		if ($updatedSomething) {
+		if ($updatedSomething)
+		{
 			$this->info("Successfully upgraded database to $newVersion");
-		} else {
+		}
+		else
+		{
 			$this->info('Nothing to upgrade.');
 		}
 	}
@@ -141,19 +145,22 @@ class CoreMigrationCommand extends BaseCommand
 		}
 
 		$updatedSomething = false;
-		foreach ($this->classes as $schema)
+		foreach ($this->classes as $migration)
 		{
-			if ($schema->down($newVersion))
+			if ($migration->down($newVersion))
 			{
-				$this->info("Upgraded " . get_class($schema) . " to version $newVersion");
+				$this->info("Upgraded " . get_class($migration) . " to version $newVersion");
 				$updatedSomething = true;
 			}
 		}
 
 		//Print outcome
-		if ($updatedSomething) {
+		if ($updatedSomething)
+		{
 			$this->info("Successfully downgraded database to $newVersion");
-		} else {
+		}
+		else
+		{
 			$this->info('Nothing to downgrade.');
 		}
 	}
@@ -177,16 +184,30 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	private function seed()
 	{
-		if (!$this->confirm('Are you sure you want to seed the database (and thus delete the records in those tables)? [yes|no]', false)) {
+		if (!$this->confirm('Are you sure you want to seed the database (and thus delete the records in those tables)? [yes|no]', false))
+		{
 			return false;
 		}
+		$this->info('Initiating seeding the database');
 
-		$this->info('Started seeding the database');
+		$seededSomething = false;
+		foreach (self::$migrations as $migration)
+		{
+			if ($migration->seed())
+			{
+				$this->info("Seeded " . get_class($migration));
+			}
+		}
 
-		$init = new InitSeeder();
-		$init->run();
-
-		$this->info('Successfully seeded the database');
+		//Print outcome
+		if ($seededSomething)
+		{
+			$this->info('Successfully seeded the database');
+		}
+		else
+		{
+			$this->info('Nothing to seed.');
+		}
 	}
 
 	/**
@@ -196,9 +217,12 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		$versions = $this->getCurrentVersions();
 
-		if ($versions) {
+		if ($versions)
+		{
 			$this->info('The database is currently at version' . (count($versions) ? 's' : '') . ': ' . implode(', ', array_flatten($versions)));
-		} else {
+		}
+		else
+		{
 			$this->info('The database has not yet been initiated.');
 		}
 	}
@@ -232,9 +256,11 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		//Fetch
 		$versions = array();
-		foreach ($this->classes as $schema) {
-			$versions = array_merge($versions, $schema->getAllVersions());
+		foreach ($this->classes as $migration)
+		{
+			$versions = array_merge($versions, $migration->getAllVersions());
 		}
+		array_unique($versions);
 
 		//Sort
 		if (!empty($versions))
