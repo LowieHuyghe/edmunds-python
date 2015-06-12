@@ -48,6 +48,8 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	function __construct()
 	{
+		parent::__construct();
+
 		for ($i = 0; $i < count($this->migrations); +$i)
 		{
 			$this->migrations[$i] = new $this->migrations[$i]();
