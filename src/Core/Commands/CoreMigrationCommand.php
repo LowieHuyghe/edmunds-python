@@ -13,6 +13,7 @@
 
 namespace LH\Core\Commands;
 
+use Illuminate\Support\Facades\DB;
 use LH\Core\Database\Migrations\BaseMigration;
 
 /**
@@ -32,7 +33,7 @@ class CoreMigrationCommand extends BaseCommand
 	protected $signature = 'coremigrate
 			{--init : Init the database for using CoreMigrations.}
 			{--allversions : Print the available database versions.}
-			{--currentversions : Print the current database version.}
+			{--currentversion : Print the current database version.}
 			{--upgrade : Upgrade the database to the specified version (v).}
 			{--downgrade : Downgrade the database to the specified version (v).}
 			{--refresh : Delete the whole database and create it again.}
@@ -49,7 +50,7 @@ class CoreMigrationCommand extends BaseCommand
 	 * All the tables that can be migrated
 	 * @var BaseMigration[]
 	 */
-	protected $migrations = array();
+	public static $migrations = array();
 
 	/**
 	 * Constructor
@@ -60,7 +61,7 @@ class CoreMigrationCommand extends BaseCommand
 
 		for ($i = 0; $i < count($this->migrations); +$i)
 		{
-			$this->migrations[$i] = new $this->migrations[$i]();
+			self::$migrations[$i] = new self::$migrations[$i]();
 		}
 	}
 
@@ -199,7 +200,7 @@ class CoreMigrationCommand extends BaseCommand
 		$this->info('Initiating seeding the database');
 
 		$seededSomething = false;
-		foreach ($this->migrations as $migration)
+		foreach (self::$migrations as $migration)
 		{
 			if ($migration->seed())
 			{
