@@ -41,16 +41,7 @@ class CoreMigrationCommand extends BaseCommand
 	 * All the tables that can be migrated
 	 * @var BaseMigration[]
 	 */
-	private static $migrations = array();
-
-	/**
-	 * Add a class for the migrations
-	 * @param BaseMigration $instance
-	 */
-	public static function addMigration($instance)
-	{
-		self::$migrations[] = $instance;
-	}
+	protected $migrations = array();
 
 	/**
 	 * Execute the console command.
@@ -198,7 +189,7 @@ class CoreMigrationCommand extends BaseCommand
 		$this->info('Initiating seeding the database');
 
 		$seededSomething = false;
-		foreach (self::$migrations as $migration)
+		foreach ($this->migrations as $migration)
 		{
 			if ($migration->seed())
 			{
