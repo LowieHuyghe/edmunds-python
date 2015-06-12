@@ -12,8 +12,9 @@
  */
 
 namespace LH\Core\Database\Migrations;
-use League\Flysystem\Exception;
+
 use LH\Core\Models\CoreMigration;
+use Exception;
 
 /**
  * Migration base to extend from
@@ -36,7 +37,7 @@ class BaseMigration
 
 		if (count($upVersions) != count($downVersions))
 		{
-			throw new Exception("Migration class 'up' and 'down' functions are not equal.");
+			throw new Exception("Migration class 'up' and 'down' count is not equal.");
 		}
 	}
 
@@ -102,7 +103,7 @@ class BaseMigration
 	 * @param string $prefix
 	 * @return array
 	 */
-	protected function getAllVersions($order = 'asc', $prefix = 'up')
+	public function getAllVersions($order = 'asc', $prefix = 'up')
 	{
 		$methods = get_class_methods(get_class($this));
 
@@ -117,7 +118,7 @@ class BaseMigration
 			return implode('.', explode('_', $el));
 		}, $methods);
 
-		usort($result, array(get_class($this), 'compareVersions'));
+		self::sortVersions($result);
 
 		//Reverse if other order needed
 		if (strtolower($order) == 'desc')
@@ -149,12 +150,21 @@ class BaseMigration
 	}
 
 	/**
+	 * Sort the given array with versions
+	 * @param string[] $versions
+	 */
+	public static function sortVersions(&$versions)
+	{
+		usort($versions, array(get_called_class(), 'compareVersions'));
+	}
+
+	/**
 	 * Compare two versions against eachother
 	 * @param $a
 	 * @param $b
 	 * @return int
 	 */
-	protected static function compareVersions($a, $b)
+	public static function compareVersions($a, $b)
 	{
 		$aExpl = explode('.', $a);
 		$bExpl = explode('.', $b);
