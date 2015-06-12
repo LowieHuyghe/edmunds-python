@@ -13,6 +13,7 @@
 
 namespace LH\Core\Database\Migrations;
 
+use LH\Core\Database\Seeders\BaseSeeder;
 use LH\Core\Models\CoreMigration;
 use Exception;
 
@@ -27,11 +28,20 @@ use Exception;
 class BaseMigration
 {
 	/**
+	 * The seeder for this table
+	 * @var BaseSeeder
+	 */
+	private $seeder;
+
+	/**
 	 * Constructor
+	 * @param BaseSeeder $seeder
 	 * @throws Exception
 	 */
-	function __construct()
+	function __construct($seeder)
 	{
+		$this->seeder = $seeder;
+
 		$upVersions = self::getAllVersions('asc', 'up');
 		$downVersions = self::getAllVersions('desc', 'down');
 
@@ -79,6 +89,22 @@ class BaseMigration
 			}
 		}
 
+	}
+
+	/**
+	 * Seed the table
+	 * @return bool Seeded
+	 */
+	public function seed()
+	{
+		$currentVersion = $this->getCurrentVersion();
+
+		if ($currentVersion)
+		{
+			return $this->seeder->fill($currentVersion);
+		}
+
+		return false;
 	}
 
 	/**

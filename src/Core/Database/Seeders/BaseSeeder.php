@@ -34,17 +34,32 @@ class BaseSeeder
 	/**
 	 * Delete the records
 	 */
-	public function delete()
+	private function delete()
 	{
 		DB::table($this->table)->delete();
 	}
 
 	/**
 	 * Fill the table
+	 * @param string $version
+	 * @return bool Seeded
 	 */
-	public function fill()
+	public function fill($version)
 	{
+		$methodName = 'fill_' . str_replace('.', '_', $version);
 
+		if (method_exists($this, $methodName))
+		{
+			//Delete current records
+			$this->delete();
+
+			//Run update
+			$this->$methodName();
+
+			return true;
+		}
+
+		return false;
 	}
 
 }
