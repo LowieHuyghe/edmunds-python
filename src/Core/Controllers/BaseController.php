@@ -13,11 +13,11 @@
 
 namespace LH\Core\Controllers;
 
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Input;
 use LH\Core\Helpers\ControllerHelper;
 use LH\Core\Helpers\ValidationHelper;
-use Illuminate\Foundation\Bus\DispatchesCommands;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
@@ -33,8 +33,7 @@ use Illuminate\Routing\Route;
 class BaseController extends Controller
 {
 
-	use DispatchesCommands,
-		ValidatesRequests;
+	use DispatchesJobs, ValidatesRequests;
 
 	/**
 	 * Facade to access other controllers

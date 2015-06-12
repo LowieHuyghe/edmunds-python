@@ -23,6 +23,7 @@ use Illuminate\Console\Command;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class BaseCommand extends Command {
+class BaseCommand extends Command
+{
 
 }
