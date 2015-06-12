@@ -29,7 +29,15 @@ class CoreMigrationCommand extends BaseCommand
 	 * The command name and signature.
 	 * @var string
 	 */
-	protected $signature = 'coremigrate';
+	protected $signature = 'coremigrate
+			{--init : Init the database for using CoreMigrations.}
+			{--allversions : Print the available database versions.}
+			{--currentversions : Print the current database version.}
+			{--upgrade : Upgrade the database to the specified version (v).}
+			{--downgrade : Downgrade the database to the specified version (v).}
+			{--refresh : Delete the whole database and create it again.}
+			{--seed : Seed the database with init-data.}
+	';
 
 	/**
 	 * The console command description.
@@ -62,43 +70,32 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	public function handle()
 	{
-		$init = $this->option('init');
-
-		$allVersions = $this->option('allversions');
-		$currentVersions = $this->option('currentversions');
-
-		$upgrade = $this->option('upgrade');
-		$downgrade = $this->option('downgrade');
-		$refresh = $this->option('refresh');
-
-		$seed = $this->option('seed');
-
-		if ($init)
+		if ($this->option('init'))
 		{
 			$this->info('Initiating database for usage of CoreMigration.');
 			$this->call('migrate', array('--path' => base_path('vendor/lh/core/src/core/database/migrations')));
 		}
-		if ($allVersions)
+		if ($this->option('allversions'))
 		{
 			$this->printAvailableVersions();
 		}
-		else if ($currentVersions)
+		else if ($this->option('currentversions'))
 		{
 			$this->printCurrentVersion();
 		}
-		else if ($upgrade)
+		else if ($this->option('upgrade'))
 		{
 			$this->upgrade();
 		}
-		else if ($downgrade)
+		else if ($this->option('downgrade'))
 		{
 			$this->downgrade();
 		}
-		else if ($refresh)
+		else if ($this->option('refresh'))
 		{
 			$this->refresh();
 		}
-		else if ($seed)
+		else if ($this->option('seed'))
 		{
 			$this->seed();
 		}
@@ -280,25 +277,5 @@ class CoreMigrationCommand extends BaseCommand
 		}
 
 		return $versions;
-	}
-
-	/**
-	 * Get the console command options.
-	 * @return array
-	 */
-	protected function getOptions()
-	{
-		return array(
-			array('init', 'in', InputOption::VALUE_NONE, 'Init the database for using CoreMigrations.', null),
-
-			array('allversions', 'av', InputOption::VALUE_NONE, 'Print the available database versions.', null),
-			array('currentversions', 'cv', InputOption::VALUE_NONE, 'Print the current database version.', null),
-
-			array('upgrade', 'ug', InputOption::VALUE_NONE, 'Upgrade the database to the specified version (v).', null),
-			array('downgrade', 'dg', InputOption::VALUE_NONE, 'Downgrade the database to the specified version (v).', null),
-			array('refresh', 're', InputOption::VALUE_NONE, 'Delete the whole database and create it again.', null),
-
-			array('seed', 'se', InputOption::VALUE_NONE, 'Seed the database with init-data.', null),
-		);
 	}
 }
