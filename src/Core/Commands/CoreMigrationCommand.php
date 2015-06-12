@@ -29,7 +29,7 @@ class CoreMigrationCommand extends BaseCommand
 	 * The command name and signature.
 	 * @var string
 	 */
-	protected $signature = 'coremigrate:{option}';
+	protected $signature = 'coremigrate';
 
 	/**
 	 * The console command description.
