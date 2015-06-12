@@ -21,6 +21,7 @@ namespace LH\Core\Helpers;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class BaseHelper {
+class BaseHelper
+{
 
 }
