@@ -44,6 +44,17 @@ class CoreMigrationCommand extends BaseCommand
 	protected $migrations = array();
 
 	/**
+	 * Constructor
+	 */
+	function __construct()
+	{
+		for ($i = 0; $i < count($this->migrations); +$i)
+		{
+			$this->migrations[$i] = new $this->migrations[$i]();
+		}
+	}
+
+	/**
 	 * Execute the console command.
 	 * @return mixed
 	 */
