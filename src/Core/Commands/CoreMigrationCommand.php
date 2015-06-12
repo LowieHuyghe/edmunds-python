@@ -59,7 +59,7 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		parent::__construct();
 
-		for ($i = 0; $i < count($this->migrations); +$i)
+		for ($i = 0; $i < count(self::$migrations); +$i)
 		{
 			self::$migrations[$i] = new self::$migrations[$i]();
 		}
