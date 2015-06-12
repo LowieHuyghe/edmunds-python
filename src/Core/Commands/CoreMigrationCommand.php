@@ -58,6 +58,8 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	public function handle()
 	{
+		$init = $this->option('init');
+
 		$allVersions = $this->option('allversions');
 		$currentVersions = $this->option('currentversions');
 
@@ -67,6 +69,11 @@ class CoreMigrationCommand extends BaseCommand
 
 		$seed = $this->option('seed');
 
+		if ($init)
+		{
+			$this->info('Initiating database for usage of CoreMigration.');
+			$this->call('migrate', array('--path' => base_path('vendor/lh/core/src/core/database/migrations')));
+		}
 		if ($allVersions)
 		{
 			$this->printAvailableVersions();
@@ -103,7 +110,7 @@ class CoreMigrationCommand extends BaseCommand
 	private function upgrade()
 	{
 		$this->info('Initiating upgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
-		$newVersion = $this->ask('To what version may I ask? (' . implode(', ', $this->getAvailableVersions()) . ')');
+		$newVersion = $this->choice('To what version may I ask?', $this->getAvailableVersions(), false);
 		if (!in_array($newVersion, $this->getAvailableVersions()))
 		{
 			$this->info('No valid version specified.');
@@ -137,7 +144,7 @@ class CoreMigrationCommand extends BaseCommand
 	private function downgrade()
 	{
 		$this->info('Initiating downgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
-		$newVersion = $this->ask('To what version may I ask? (' . implode(', ', $this->getAvailableVersions()) . ')');
+		$newVersion = $this->choice('To what version may I ask?', $this->getAvailableVersions(), false);
 		if (!in_array($newVersion, $this->getAvailableVersions()))
 		{
 			$this->info('No valid version specified.');
@@ -278,6 +285,8 @@ class CoreMigrationCommand extends BaseCommand
 	protected function getOptions()
 	{
 		return array(
+			array('init', 'in', InputOption::VALUE_NONE, 'Init the database for using CoreMigrations.', null),
+
 			array('allversions', 'av', InputOption::VALUE_NONE, 'Print the available database versions.', null),
 			array('currentversions', 'cv', InputOption::VALUE_NONE, 'Print the current database version.', null),
 
