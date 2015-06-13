@@ -13,7 +13,6 @@
 
 namespace LH\Core\Commands;
 
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use LH\Core\Database\Migrations\BaseMigration;
 
@@ -112,13 +111,13 @@ class CoreMigrateCommand extends BaseCommand
 	 */
 	private function upgrade()
 	{
-		$this->info('Initiating upgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
 		$newVersion = $this->choice('To what version may I ask?', $this->getAvailableVersions(), false);
 		if (!in_array($newVersion, $this->getAvailableVersions()))
 		{
 			$this->info('No valid version specified');
 			return;
 		}
+		$this->info('Initiating upgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
 
 		$updatedSomething = false;
 		foreach ($this->migrations as $migration)
@@ -146,7 +145,6 @@ class CoreMigrateCommand extends BaseCommand
 	 */
 	private function downgrade()
 	{
-		$this->info('Initiating downgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
 		$versions = $this->getAvailableVersions();
 		array_unshift($versions, '0');
 		$newVersion = $this->choice('To what version may I ask?', $versions, false);
@@ -155,6 +153,7 @@ class CoreMigrateCommand extends BaseCommand
 			$this->info('No valid version specified');
 			return;
 		}
+		$this->info('Initiating downgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
 
 		$updatedSomething = false;
 		foreach ($this->migrations as $migration)
@@ -266,7 +265,6 @@ class CoreMigrateCommand extends BaseCommand
 	 */
 	private function printAvailableVersions()
 	{
-
 		$versions = $this->getAvailableVersions();
 		if (!empty($versions))
 		{
@@ -290,7 +288,7 @@ class CoreMigrateCommand extends BaseCommand
 		{
 			$versions = array_merge($versions, $migration->getAllVersions());
 		}
-		array_unique($versions);
+		$versions = array_unique($versions);
 
 		//Sort
 		if (!empty($versions))
