@@ -77,7 +77,7 @@ class CoreMigrateCommand extends BaseCommand
 			$this->info('Initiating the database for usage of CoreMigration, run:');
 			$this->call('migrate', array('--path' => 'vendor/lh/core/src/core/database/migrations'));
 		}
-		if ($this->option('allversions'))
+		elseif ($this->option('allversions'))
 		{
 			$this->printAvailableVersions();
 		}
