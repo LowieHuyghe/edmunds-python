@@ -13,6 +13,7 @@
 
 namespace LH\Core\Commands;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use LH\Core\Database\Migrations\BaseMigration;
 
@@ -24,7 +25,7 @@ use LH\Core\Database\Migrations\BaseMigration;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CoreMigrationCommand extends BaseCommand
+class CoreMigrateCommand extends BaseCommand
 {
 	/**
 	 * The command name and signature.
@@ -50,7 +51,7 @@ class CoreMigrationCommand extends BaseCommand
 	 * All the tables that can be migrated
 	 * @var BaseMigration[]
 	 */
-	public static $migrations = array();
+	protected $migrations = array();
 
 	/**
 	 * Constructor
@@ -59,9 +60,9 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		parent::__construct();
 
-		for ($i = 0; $i < count(self::$migrations); +$i)
+		for ($i = 0; $i < count($this->migrations); ++$i)
 		{
-			self::$migrations[$i] = new self::$migrations[$i]();
+			$this->migrations[$i] = new $this->migrations[$i]();
 		}
 	}
 
@@ -73,30 +74,30 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		if ($this->option('init'))
 		{
-			$this->info('Initiating database for usage of CoreMigration.');
-			$this->call('migrate', array('--path' => base_path('vendor/lh/core/src/core/database/migrations')));
+			$this->info('Initiating the database for usage of CoreMigration, run:');
+			$this->call('migrate', array('--path' => 'vendor/lh/core/src/core/database/migrations'));
 		}
 		if ($this->option('allversions'))
 		{
 			$this->printAvailableVersions();
 		}
-		else if ($this->option('currentversions'))
+		elseif ($this->option('currentversion'))
 		{
 			$this->printCurrentVersion();
 		}
-		else if ($this->option('upgrade'))
+		elseif ($this->option('upgrade'))
 		{
 			$this->upgrade();
 		}
-		else if ($this->option('downgrade'))
+		elseif ($this->option('downgrade'))
 		{
 			$this->downgrade();
 		}
-		else if ($this->option('refresh'))
+		elseif ($this->option('refresh'))
 		{
 			$this->refresh();
 		}
-		else if ($this->option('seed'))
+		elseif ($this->option('seed'))
 		{
 			$this->seed();
 		}
@@ -115,16 +116,16 @@ class CoreMigrationCommand extends BaseCommand
 		$newVersion = $this->choice('To what version may I ask?', $this->getAvailableVersions(), false);
 		if (!in_array($newVersion, $this->getAvailableVersions()))
 		{
-			$this->info('No valid version specified.');
+			$this->info('No valid version specified');
 			return;
 		}
 
 		$updatedSomething = false;
-		foreach ($this->classes as $schema)
+		foreach ($this->migrations as $migration)
 		{
-			if ($schema->up($newVersion))
+			if ($migration->up($newVersion))
 			{
-				$this->info("Upgraded " . get_class($schema) . " to version $newVersion");
+				$this->info("\tUpgraded " . get_class($migration) . " to version $newVersion");
 				$updatedSomething = true;
 			}
 		}
@@ -136,7 +137,7 @@ class CoreMigrationCommand extends BaseCommand
 		}
 		else
 		{
-			$this->info('Nothing to upgrade.');
+			$this->info('Nothing to upgrade');
 		}
 	}
 
@@ -146,19 +147,21 @@ class CoreMigrationCommand extends BaseCommand
 	private function downgrade()
 	{
 		$this->info('Initiating downgrading database from ' . implode(', ', array_flatten($this->getCurrentVersions())));
-		$newVersion = $this->choice('To what version may I ask?', $this->getAvailableVersions(), false);
-		if (!in_array($newVersion, $this->getAvailableVersions()))
+		$versions = $this->getAvailableVersions();
+		array_unshift($versions, '0');
+		$newVersion = $this->choice('To what version may I ask?', $versions, false);
+		if (!in_array($newVersion, $versions))
 		{
-			$this->info('No valid version specified.');
+			$this->info('No valid version specified');
 			return;
 		}
 
 		$updatedSomething = false;
-		foreach ($this->classes as $migration)
+		foreach ($this->migrations as $migration)
 		{
 			if ($migration->down($newVersion))
 			{
-				$this->info("Upgraded " . get_class($migration) . " to version $newVersion");
+				$this->info("\tDowngraded " . get_class($migration) . " to version $newVersion");
 				$updatedSomething = true;
 			}
 		}
@@ -170,7 +173,7 @@ class CoreMigrationCommand extends BaseCommand
 		}
 		else
 		{
-			$this->info('Nothing to downgrade.');
+			$this->info('Nothing to downgrade');
 		}
 	}
 
@@ -193,18 +196,19 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	private function seed()
 	{
-		if (!$this->confirm('Are you sure you want to seed the database (and thus delete the records in those tables)? [yes|no]', false))
+		if (!$this->confirm('Are you sure you want to seed the database (and thus delete the records in those tables)?', false))
 		{
 			return false;
 		}
 		$this->info('Initiating seeding the database');
 
 		$seededSomething = false;
-		foreach (self::$migrations as $migration)
+		foreach ($this->migrations as $migration)
 		{
 			if ($migration->seed())
 			{
-				$this->info("Seeded " . get_class($migration));
+				$this->info("\tSeeded " . get_class($migration));
+				$seededSomething = true;
 			}
 		}
 
@@ -215,7 +219,7 @@ class CoreMigrationCommand extends BaseCommand
 		}
 		else
 		{
-			$this->info('Nothing to seed.');
+			$this->info('Nothing to seed');
 		}
 	}
 
@@ -228,11 +232,11 @@ class CoreMigrationCommand extends BaseCommand
 
 		if ($versions)
 		{
-			$this->info('The database is currently at version' . (count($versions) ? 's' : '') . ': ' . implode(', ', array_flatten($versions)));
+			$this->info('The database is currently at version' . (count($versions) > 1 ? 's' : '') . ': ' . implode(', ', array_flatten($versions)));
 		}
 		else
 		{
-			$this->info('The database has not yet been initiated.');
+			$this->info('The database has not yet been initiated');
 		}
 	}
 
@@ -242,8 +246,19 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	private function getCurrentVersions()
 	{
+		DB::setFetchMode(\PDO::FETCH_COLUMN);
 		$versions = DB::select('SELECT version FROM core_migrations GROUP BY version');
-		return BaseMigration::sortVersions($versions);
+		DB::setFetchMode(\PDO::FETCH_OBJ);
+
+		if ($versions)
+		{
+			BaseMigration::sortVersions($versions);
+			return $versions;
+		}
+		else
+		{
+			return array( 0 );
+		}
 	}
 
 	/**
@@ -251,10 +266,16 @@ class CoreMigrationCommand extends BaseCommand
 	 */
 	private function printAvailableVersions()
 	{
-		$this->info('Available versions: ');
 
 		$versions = $this->getAvailableVersions();
-		$this->info(implode(', ', $versions));
+		if (!empty($versions))
+		{
+			$this->info('Available versions: ' . implode(', ', $versions));
+		}
+		else
+		{
+			$this->info('No versions available');
+		}
 	}
 
 	/**
@@ -265,7 +286,7 @@ class CoreMigrationCommand extends BaseCommand
 	{
 		//Fetch
 		$versions = array();
-		foreach ($this->classes as $migration)
+		foreach ($this->migrations as $migration)
 		{
 			$versions = array_merge($versions, $migration->getAllVersions());
 		}
