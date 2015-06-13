@@ -32,6 +32,15 @@ class BaseSeeder
 	protected $table;
 
 	/**
+	 * Constructor
+	 * @param string $table
+	 */
+	function __construct($table)
+	{
+		$this->table = $table;
+	}
+
+	/**
 	 * Delete the records
 	 */
 	private function delete()
