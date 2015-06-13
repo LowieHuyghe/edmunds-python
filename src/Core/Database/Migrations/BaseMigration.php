@@ -28,6 +28,12 @@ use Exception;
 class BaseMigration
 {
 	/**
+	 * Table for deleting the records
+	 * @var string
+	 */
+	protected $table;
+
+	/**
 	 * The seeder for this table
 	 * @var BaseSeeder
 	 */
@@ -60,15 +66,18 @@ class BaseMigration
 		$versions = self::getAllVersions();
 		$currentVersion = $this->getCurrentVersion();
 
+		$upgradedSomething = false;
 		foreach ($versions as $version)
 		{
 			if (self::compareVersions($version, $currentVersion) === 1 //Only apply when version is bigger than current version
 				&& self::compareVersions($version, $newVersion) <= 0) //Only apply when version is smaller or equal to newVersion
 			{
-				$this->applyVersion($version);
+				$this->applyVersion($version, 'up');
+				$upgradedSomething = true;
 			}
 		}
 
+		return $upgradedSomething;
 	}
 
 	/**
@@ -80,15 +89,18 @@ class BaseMigration
 		$versions = self::getAllVersions('desc');
 		$currentVersion = $this->getCurrentVersion();
 
+		$downgradedSomething = false;
 		foreach ($versions as $version)
 		{
-			if (self::compareVersions($version, $currentVersion) === -1 //Only apply when version is smaller than current version
-				&& self::compareVersions($version, $newVersion) <= 0) //Only apply when version is bigger or equal to newVersion
+			if (self::compareVersions($version, $currentVersion) <= 0 //Only apply when version is the current version or smaller
+				&& self::compareVersions($version, $newVersion) > 0) //Only apply when version is bigger to newVersion
 			{
-				$this->applyVersion($version);
+				$this->applyVersion($version, 'down');
+				$downgradedSomething = true;
 			}
 		}
 
+		return $downgradedSomething;
 	}
 
 	/**
@@ -158,21 +170,43 @@ class BaseMigration
 	/**
 	 * Apply the given version
 	 * @param string $version
+	 * @param string $action
 	 * @return bool
 	 */
-	protected function applyVersion($version)
+	protected function applyVersion($version, $action)
 	{
-		$methodName = 'up_' . str_replace('.', '_', $version);
-
 		//Run update
+		if ($action == 'up')
+		{
+			$newVersion = $version;
+		}
+		elseif ($action == 'down')
+		{
+			$newVersion = 0;
+			$versions = $this->getAllVersions();
+			foreach ($versions as $v) {
+				if (self::compareVersions($version, $v) === 1)
+				{
+					$newVersion = $v;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		$methodName = $action . '_' . str_replace('.', '_', $version);
 		$this->$methodName();
 
-		//Create Migration-record
-		$migration = new CoreMigration();
+		$migration = CoreMigration::where('migration', '=', get_class($this))->first();
+		if (!$migration)
+		{
+			$migration = new CoreMigration();
+		}
 		$migration->migration = get_class($this);
-		$migration->version = $version;
+		$migration->version = $newVersion;
 
-		return $migration->save();
+		$migration->save();
 	}
 
 	/**
