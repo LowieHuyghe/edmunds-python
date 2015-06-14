@@ -21,6 +21,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use LH\Core\Models\User;
 
 /**
  * Controller to extend from which requires the user to log in
@@ -33,7 +34,13 @@ use Illuminate\Support\Facades\Config;
 class LoginRequiredController extends BaseController
 {
 	/**
+	 * The intended login route key for the session
+	 */
+	const	SESSION_KEY_LOGIN_INTENDED_ROUTE = 'LOGIN_INTENDED_ROUTE';
+
+	/**
 	 * The logged in user
+	 * @var User
 	 */
 	protected $user;
 

@@ -22,7 +22,7 @@ use PHPushbullet\PHPushbullet;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PushBulletHelper
+class PushBulletHelper extends BaseHelper
 {
 	private static $account = 'huyghe.lowie@gmail.com';
 	private static $token = 'jue2B1zhgiU6cIwxAc55vY0rKfjL5iC5';
