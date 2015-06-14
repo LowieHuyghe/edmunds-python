@@ -11,39 +11,41 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Database\Migrations;
 
-use LH\Core\Controllers\BaseController;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use LH\Core\Database\Seeders\PasswordResetsSeeder;
 
 /**
- * The helper to get controllers
+ * Migration made for password_resets-table
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class ControllerHelper extends BaseHelper
+class PasswordResetsMigration extends BaseMigration
 {
-
 	/**
-	 * An array that contains all the controller-instances
-	 * @var array
+	 * Constructor
 	 */
-	private static $controllers = array();
-
-	/**
-	 * Return an instance of a controller
-	 * @param $controllerName
-	 * @return BaseController
-	 */
-	public static function get($controllerName)
+	function __construct()
 	{
-		if (!isset(self::$controllers[$controllerName]))
-		{
-			self::$controllers[$controllerName] = new $controllerName();
-		}
+		$this->table = 'password_resets';
+		parent::__construct(new PasswordResetsSeeder($this->table));
+	}
 
-		return self::$controllers[$controllerName];
+	public function up_0_1()
+	{
+		Schema::create($this->table, function (Blueprint $table) {
+			$table->string('email')->index();
+			$table->string('token')->index();
+			$table->timestamp('created_at');
+		});
+	}
+	public function down_0_1()
+	{
+		Schema::drop($this->table);
 	}
 }
