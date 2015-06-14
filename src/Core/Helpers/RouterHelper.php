@@ -13,11 +13,10 @@
 
 namespace LH\Core\Helpers;
 
-use App\Http\Controllers\SomeController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Controllers\BaseController;
 
 /**
  * The helper responsible for the routing
@@ -30,16 +29,35 @@ use LH\Core\Controllers\BaseController;
 class RouterHelper extends Controller
 {
 	/**
-	 * Return an instance of a controller
-	 * @param $controllerName
-	 * @return BaseController
+	 * Do the route logic
+	 * @param string $route
+	 * @return mixed
 	 */
 	public function route($route)
+	{
+		$response = $this->routeHandler($route);
+
+		if (Config::get('app.routing.redirecthalt') && is_a($response, RedirectResponse::class))
+		{
+			$targetUrl = $response->getTargetUrl();
+			return "Redirecting to: <a href='$targetUrl'>$targetUrl</a>";
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Do the route logic
+	 * @param string $route
+	 * @return mixed
+	 */
+	private function routeHandler($route)
 	{
 		$namespace = Config::get('app.routing.namespace');
 		if (!$namespace)
 		{
 			throw new \Exception('app.routing.namespace not found in Config.');
+			return;
 		}
 		$namespace = trim($namespace, "/");
 
@@ -62,9 +80,9 @@ class RouterHelper extends Controller
 
 			//Check if it exists
 			$className = $namespace .  ucfirst($className) . ($ajax ? 'Ajax' : '') . 'Controller';
+
 			if (class_exists($className))
 			{
-				$methodName = '';
 				if ($i == count($parts)-1)
 				{
 					//Index by default
@@ -77,14 +95,12 @@ class RouterHelper extends Controller
 				}
 
 				//Make instance of controller
-				$controller = new $className();
+				$controller = new $className($this->getRouter());
 
 				//Check if method exists
 				if (method_exists($controller, $methodName))
 				{
-					//Set variables of controller
-					$controller->setRouter($this->getRouter());
-
+					//Get the variables
 					$variables = array();
 					for ($j = $i + 2; $j < count($parts); ++$j)
 					{
@@ -96,6 +112,20 @@ class RouterHelper extends Controller
 					{
 						break;
 					}
+
+					//Check if authentication is needed
+					$authCheckMethod = 'authenticationCheck';
+					if (method_exists($controller, $authCheckMethod))
+					{
+						$authResponse = $controller->$authCheckMethod();
+						if ($authResponse !== true)
+						{
+							return $authResponse;
+						}
+					}
+
+					//Initialize
+					$controller->initialize();
 
 					//Call method with variables
 					switch (count($variables))
