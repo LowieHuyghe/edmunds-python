@@ -23,9 +23,6 @@ use Illuminate\Validation\Validator;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property int $id Database table-id
- * @property array[] $errors Attribute with the errors in
- *
  * @method void save() Creates or updates the object in the database
  * @method void delete() Deletes the object in the database
  *

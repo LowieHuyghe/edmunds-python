@@ -15,13 +15,11 @@ namespace LH\Core\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Router;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Illuminate\Support\Facades\Input;
-use LH\Core\Helpers\ControllerHelper;
 use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Routing\Route;
 
 /**
  * Controller base to extend from
@@ -37,22 +35,16 @@ class BaseController extends Controller
 	use DispatchesJobs, ValidatesRequests;
 
 	/**
-	 * Facade to access other controllers
-	 * @var ControllerHelper
-	 */
-	private static $ch;
-
-	/**
-	 * The current route
-	 * @var Route
-	 */
-	protected $route;
-
-	/**
 	 * The current request
 	 * @var Request
 	 */
 	protected $request;
+
+	/**
+	 * The current session
+	 * @var SessionInterface
+	 */
+	protected $session;
 
 	/**
 	 * The validator
@@ -72,8 +64,8 @@ class BaseController extends Controller
 		{
 			self::setRouter($router);
 		}
-		$this->route = self::getRouter()->getCurrentRoute();
 		$this->request = self::getRouter()->getCurrentRequest();
+		$this->session = $this->request->getSession();
 		$this->validator = new ValidationHelper(Input::all());
 	}
 
@@ -83,18 +75,6 @@ class BaseController extends Controller
 	public function initialize()
 	{
 		//
-	}
-
-	/**
-	 * Facade to access other controllers
-	 * @return ControllerHelper
-	 */
-	public function ch()
-	{
-		if (!self::$ch) {
-			self::$ch = new ControllerHelper();
-		}
-		return self::$ch;
 	}
 
 }

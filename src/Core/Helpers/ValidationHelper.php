@@ -12,8 +12,7 @@
  */
 
 namespace LH\Core\Helpers;
-
-use Illuminate\Validation\Validator;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * The helper to get controllers
@@ -478,19 +477,7 @@ class ValidationHelper extends BaseHelper
 	 */
 	public function unique($name, $table, $column = null, $except = null, $where = array())
 	{
-		if (is_null($column))
-		{
-			$column = 'NULL';
-		}
-		if (is_null($except))
-		{
-			$except = 'NULL';
-		}
-		if (empty($where))
-		{
-			$where = 'NULL';
-		}
-		else
+		if (!empty($where))
 		{
 			$string = '';
 			$first = true;
@@ -508,7 +495,25 @@ class ValidationHelper extends BaseHelper
 			}
 
 		}
-		$this->add($name, 'unique', "$table,$column,$except,$where");
+
+		if (is_null($column) && is_null($except) && empty($where))
+		{
+			$rule = $table;
+		}
+		elseif (is_null($except) && empty($where))
+		{
+			$rule = "$table,$column";
+		}
+		elseif (empty($where))
+		{
+			$rule = "$table,$column,$except";
+		}
+		else
+		{
+			$rule = "$table,$column,$except,$where";
+		}
+
+		$this->add($name, 'unique', $rule);
 	}
 	/**
 	 * The field under validation must be formatted as an URL.

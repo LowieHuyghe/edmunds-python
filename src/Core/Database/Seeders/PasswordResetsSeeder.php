@@ -11,39 +11,21 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
-
-use LH\Core\Controllers\BaseController;
+namespace LH\Core\Database\Seeders;
 
 /**
- * The helper to get controllers
+ * Seeder made for password_resets-table
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class ControllerHelper extends BaseHelper
-{
+class PasswordResetsSeeder extends BaseSeeder {
 
-	/**
-	 * An array that contains all the controller-instances
-	 * @var array
-	 */
-	private static $controllers = array();
-
-	/**
-	 * Return an instance of a controller
-	 * @param $controllerName
-	 * @return BaseController
-	 */
-	public static function get($controllerName)
+	public function fill_0_1()
 	{
-		if (!isset(self::$controllers[$controllerName]))
-		{
-			self::$controllers[$controllerName] = new $controllerName();
-		}
 
-		return self::$controllers[$controllerName];
 	}
+
 }

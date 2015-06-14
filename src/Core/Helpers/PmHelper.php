@@ -21,7 +21,7 @@ namespace LH\Core\Helpers;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelper
+class PmHelper extends BaseHelper
 {
 	CONST	TYPE_NOTE = 1,
 			TYPE_LINK = 2,
