@@ -15,6 +15,7 @@ namespace LH\Core\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Input;
 use LH\Core\Helpers\ControllerHelper;
 use LH\Core\Helpers\ValidationHelper;
@@ -42,16 +43,16 @@ class BaseController extends Controller
 	private static $ch;
 
 	/**
-	 * The current request
-	 * @var Request
-	 */
-	protected $request;
-
-	/**
 	 * The current route
 	 * @var Route
 	 */
 	protected $route;
+
+	/**
+	 * The current request
+	 * @var Request
+	 */
+	protected $request;
 
 	/**
 	 * The validator
@@ -62,13 +63,26 @@ class BaseController extends Controller
 	/**
 	 * The constructor for the BaseController
 	 */
-	function __construct()
+	/**
+	 * @param \Illuminate\Routing\Router $router
+	 */
+	function __construct($router = null)
 	{
-		parent::__construct();
-
-		$this->request = self::getRouter()->getCurrentRequest();
+		if ($router)
+		{
+			self::setRouter($router);
+		}
 		$this->route = self::getRouter()->getCurrentRoute();
+		$this->request = self::getRouter()->getCurrentRequest();
 		$this->validator = new ValidationHelper(Input::all());
+	}
+
+	/**
+	 * Function called after construct
+	 */
+	public function initialize()
+	{
+		//
 	}
 
 	/**
