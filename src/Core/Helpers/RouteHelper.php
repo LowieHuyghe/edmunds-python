@@ -75,35 +75,41 @@ class RouteHelper extends Controller
 		//Fetch defaultController
 		$defaultController = Config::get('app.routing.default');
 		$defaultController = $namespace . '\\' . $defaultController;
+		//Fetch homeController
+		$homeController = Config::get('app.routing.home');
+		$homeController = $namespace . '\\' . $homeController;
 
+		//Get the current request
+		$request = $this->getRouter()->getCurrentRequest();
+		//Get the call-method
+		$requestMethod = strtolower($request->method());
 		//Check if ajax-call
-		$ajax = $this->getRouter()->getCurrentRequest()->ajax();
-
+		$requestAjax = $request->ajax();
 		//Get route and its parts
-		$route = trim($route, '/');
-		$parts = explode('/', $route);
+		$segments = $request->segments();
 
 		//Go through all the parts back to front
-		for ($i = count($parts)-1; $i >= 0; --$i)
+		for ($i = count($segments)-1; $i >= 0; --$i)
 		{
 			//Make the className
 			$className = '';
 			for ($j = 0; $j <= $i; ++$j)
 			{
-				$className .= '\\' . ucfirst($parts[$j]);
+				$className .= '\\' . ucfirst($segments[$j]);
 			}
 
 			//Check if default-controller
-			if ($i == 0 && count($parts) == 1 && $className == '\\')
+			if ($i == 0 && count($segments) == 1 && $className == '\\')
 			{
-				$className = $defaultController;
+				$className = $homeController;
 			}
 			else
 			{
-				$className = $namespace .  ucfirst($className) . ($ajax ? 'Ajax' : '') . 'Controller';
+				$className = $namespace .  ucfirst($className) . ($requestAjax ? 'Ajax' : '') . 'Controller';
 
-				//Default controller only approachable when called from '/'
-				if ($className == $defaultController)
+				//Home controller only approachable when called from '/'
+				//Default controller not approachable
+				if (in_array($className, array($homeController, $defaultController)))
 				{
 					return abort(404);
 				}
@@ -112,7 +118,7 @@ class RouteHelper extends Controller
 			//Check if it is valid and exists
 			if (preg_match('/^[\w\\\\]*$/', $className) && class_exists($className))
 			{
-				if ($i == count($parts)-1)
+				if ($i == count($segments)-1)
 				{
 					//Index by default
 					$methodName = 'index';
@@ -120,13 +126,16 @@ class RouteHelper extends Controller
 				else
 				{
 					//Method name
-					$methodName = strtolower($parts[$i + 1]);
+					$methodName = strtolower($segments[$i + 1]);
 					//Index is only approachable from '/'
 					if ($methodName == 'index')
 					{
 						return abort(404);
 					}
 				}
+
+				//Make instance of defaultController
+				$default = new $defaultController($this->getRouter());
 
 				//Make instance of controller
 				$controller = new $className($this->getRouter());
@@ -136,9 +145,9 @@ class RouteHelper extends Controller
 				{
 					//Get the variables
 					$variables = array();
-					for ($j = $i + 2; $j < count($parts); ++$j)
+					for ($j = $i + 2; $j < count($segments); ++$j)
 					{
-						$variables[] = strtolower($parts[$j]);
+						$variables[] = strtolower($segments[$j]);
 					}
 
 					//Check if number of given parameters equal the method
@@ -158,6 +167,9 @@ class RouteHelper extends Controller
 							return $authResponse;
 						}
 					}
+
+					//Initialize of defaultController
+					$default->initialize();
 
 					//Initialize
 					$controller->initialize();
@@ -230,6 +242,11 @@ class RouteHelper extends Controller
 		if (!Config::get('app.routing.default'))
 		{
 			$notFound[] = 'app.routing.default';
+		}
+
+		if (!Config::get('app.routing.home'))
+		{
+			$notFound[] = 'app.routing.home';
 		}
 
 		if (!Config::get('app.routing.loginroute'))
