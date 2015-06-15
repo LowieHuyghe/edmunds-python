@@ -127,7 +127,7 @@ class RouterHelper extends Controller
 				$controller = new $className($this->getRouter());
 
 				//Check if method exists
-				if (method_exists($controller, $methodName))
+				if (in_array($methodName, array_keys($controller->routeMethods)))
 				{
 					//Get the variables
 					$variables = array();
@@ -137,9 +137,9 @@ class RouterHelper extends Controller
 					}
 
 					//Check if number of given parameters equal the method
-					if (count($variables) != (new \ReflectionMethod($className, $methodName))->getNumberOfRequiredParameters())
+					if (count($variables) != $controller->routeMethods[$methodName])
 					{
-						break;
+						return abort(404);
 					}
 
 					//Check if authentication is needed
@@ -196,13 +196,12 @@ class RouterHelper extends Controller
 						default:
 							//Too many arguments, abort
 							return abort(404);
-							break;
 					}
 				}
 				else
 				{
 					//Didn't find method so dismiss
-					break;
+					return abort(404);
 				}
 			}
 		}
