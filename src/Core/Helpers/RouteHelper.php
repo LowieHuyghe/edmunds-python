@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use LH\Core\Controllers\LoginRequiredController;
+use LH\Core\Exceptions\ConfigNotFoundException;
 
 /**
  * The helper responsible for the routing
@@ -261,7 +262,7 @@ class RouteHelper extends Controller
 
 		if (!empty($notFound))
 		{
-			throw new \Exception(implode(', ', $notFound) . ' not found in Config.');
+			throw new ConfigNotFoundException($notFound);
 		}
 	}
 
