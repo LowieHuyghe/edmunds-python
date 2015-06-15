@@ -44,6 +44,8 @@ class RouterHelper extends Controller
 	 */
 	public function route($route)
 	{
+		$this->checkConfig();
+
 		$response = $this->routeHandler($route);
 
 		if (env('APP_DEBUG') && App::environment('local') && Config::get('app.routing.redirecthalt') && is_a($response, RedirectResponse::class))
@@ -61,19 +63,17 @@ class RouterHelper extends Controller
 	 */
 	private function routeHandler($route)
 	{
+		//Only let the accepted routes through
+		if (!preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route))
+		{
+			return abort(404);
+		}
+
 		//Fetch namespace
 		$namespace = Config::get('app.routing.namespace');
-		if (!$namespace)
-		{
-			throw new \Exception('app.routing.namespace not found in Config.');
-		}
 		$namespace = trim($namespace, '\\');
 		//Fetch defaultController
 		$defaultController = Config::get('app.routing.default');
-		if (!$defaultController)
-		{
-			throw new \Exception('app.routing.homecontroller not found in Config.');
-		}
 		$defaultController = $namespace . '\\' . $defaultController;
 
 		//Check if ajax-call
@@ -109,8 +109,8 @@ class RouterHelper extends Controller
 				}
 			}
 
-			//Check if it exists
-			if (class_exists($className))
+			//Check if it is valid and exists
+			if (preg_match('/^[\w\d]*$/', $className) && class_exists($className))
 			{
 				if ($i == count($parts)-1)
 				{
@@ -215,6 +215,40 @@ class RouterHelper extends Controller
 	}
 
 	/**
+	 * Check if all configuration is in place
+	 * @throws \Exception
+	 */
+	private function checkConfig()
+	{
+		$notFound = array();
+
+		if (!Config::get('app.routing.namespace'))
+		{
+			$notFound[] = 'app.routing.namespace';
+		}
+
+		if (!Config::get('app.routing.default'))
+		{
+			$notFound[] = 'app.routing.default';
+		}
+
+		if (!Config::get('app.routing.loginroute'))
+		{
+			$notFound[] = 'app.routing.loginroute';
+		}
+
+		if (!Config::get('app.routing.redirecthalt'))
+		{
+			$notFound[] = 'app.routing.redirecthalt';
+		}
+
+		if (!empty($notFound))
+		{
+			throw new \Exception(implode(', ', $notFound) . ' not found in Config.');
+		}
+	}
+
+	/**
 	 * Show the redirect page
 	 * @param string $route
 	 * @param $response
@@ -223,7 +257,7 @@ class RouterHelper extends Controller
 	private function viewRedirect($route, $response)
 	{
 		$targetUrl = $response->getTargetUrl();
-		$targetUrlString = str_replace('http://core.dev/', '', $targetUrl);
+		$targetUrlString = preg_replace('/http:\/\/.+?\.\w\w\w\/?(.*)/i', '$1', $targetUrl);
 		if (empty($targetUrlString))
 		{
 			$targetUrlString = '/';
