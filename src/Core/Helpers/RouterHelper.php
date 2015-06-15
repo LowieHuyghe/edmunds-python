@@ -110,7 +110,7 @@ class RouterHelper extends Controller
 			}
 
 			//Check if it is valid and exists
-			if (preg_match('/^[\w\d]*$/', $className) && class_exists($className))
+			if (preg_match('/^[\w\\\\]*$/', $className) && class_exists($className))
 			{
 				if ($i == count($parts)-1)
 				{
