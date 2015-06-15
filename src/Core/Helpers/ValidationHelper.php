@@ -31,12 +31,6 @@ class ValidationHelper extends BaseHelper
 	private $rules = array();
 
 	/**
-	 * The validator
-	 * @var Validator
-	 */
-	private $validator;
-
-	/**
 	 * Input to validate
 	 * @var array
 	 */
@@ -69,7 +63,6 @@ class ValidationHelper extends BaseHelper
 		}
 
 		$this->rules[$name][$key] = $value;
-		unset($this->validator);
 	}
 
 	/**
@@ -83,13 +76,16 @@ class ValidationHelper extends BaseHelper
 
 	/**
 	 * Get the validator with the current Input-data and rules
+	 * @param string[] $names To check for only one specific argument
 	 * @return Validator
 	 */
-	private function getValidator()
+	private function getValidator($names = null)
 	{
-		if (!isset($this->validator))
+		$rules = array();
+
+		if (is_null($names))
 		{
-			$rules = array();
+			//Check all rules
 			foreach ($this->rules as $name => $values)
 			{
 				$vs = array();
@@ -100,31 +96,52 @@ class ValidationHelper extends BaseHelper
 
 				$rules[$name] = implode('|', $vs);
 			}
+		}
+		else
+		{
+			//Check specific rules
+			foreach ($names as $name)
+			{
+				if (!isset($this->rules[$name]))
+				{
+					continue;
+				}
 
-			$this->validator = Validator::make([], $rules);
+				$vs = array();
+				foreach ($this->rules[$name] as $key => $value)
+				{
+					$vs[] = $key . (is_null($value) ? '' : ":$value");
+				}
+
+				$rules[$name] = implode('|', $vs);
+			}
 		}
 
-		$this->validator->setData($this->input);
-		return $this->validator;
+		$validator = Validator::make([], $rules);
+
+		$validator->setData($this->input);
+		return $validator;
 	}
 
 	/**
 	 * Check if validation has errors
+	 * @param string[] $names To check for only one specific argument
 	 * @return bool
 	 */
-	public function hasErrors()
+	public function hasErrors($names = null)
 	{
-		$v = $this->getValidator();
+		$v = $this->getValidator($names);
 		return $v->fails();
 	}
 
 	/**
 	 * Return the validator with the errors
+	 * @param string[] $names To check for only one specific argument
 	 * @return Validator
 	 */
-	public function getErrors()
+	public function getErrors($names = null)
 	{
-		return $this->getValidator();
+		return $this->getValidator($names);
 	}
 
 	/**
