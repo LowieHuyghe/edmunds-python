@@ -26,7 +26,7 @@ use LH\Core\Controllers\LoginRequiredController;
  * To use it, just add the following to routes.php:
  *
 	Route::any('{all}', [
-		'uses' => '\LH\Core\Helpers\RouterHelper@route'
+		'uses' => '\LH\Core\Helpers\RouteHelper@route'
 	])->where('all', '.*');
  *
  *
@@ -35,7 +35,7 @@ use LH\Core\Controllers\LoginRequiredController;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class RouterHelper extends Controller
+class RouteHelper extends Controller
 {
 	/**
 	 * Do the route logic
