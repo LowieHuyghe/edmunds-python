@@ -50,13 +50,6 @@ class LoginRequiredController extends BaseController
 	 */
 	function __construct($router = null)
 	{
-		//Get the loginroute for when necessary
-		$loginroute = Config::get('app.routing.loginroute');
-		if (!$loginroute)
-		{
-			throw new \Exception('app.routing.loginroute not found in Config.');
-		}
-
 		parent::__construct($router);
 
 		$this->user = Auth::user();
