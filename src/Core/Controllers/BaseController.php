@@ -15,8 +15,9 @@ namespace LH\Core\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use LH\Core\Helpers\InputHelper;
+use LH\Core\Helpers\ResponseHelper;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Illuminate\Support\Facades\Input;
 use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -49,10 +50,22 @@ class BaseController extends Controller
 	protected $request;
 
 	/**
+	 * The current request
+	 * @var ResponseHelper
+	 */
+	protected $response;
+
+	/**
 	 * The current session
 	 * @var SessionInterface
 	 */
 	protected $session;
+
+	/**
+	 * The input
+	 * @var InputHelper
+	 */
+	protected $input;
 
 	/**
 	 * The validator
@@ -73,8 +86,10 @@ class BaseController extends Controller
 			self::setRouter($router);
 		}
 		$this->request = self::getRouter()->getCurrentRequest();
+		$this->response = ResponseHelper::getInstance();
 		$this->session = $this->request->getSession();
-		$this->validator = new ValidationHelper(Input::all());
+		$this->input = InputHelper::getInstance();
+		$this->validator = new ValidationHelper($this->input->all());
 	}
 
 	/**
