@@ -121,6 +121,11 @@ class RouterHelper extends Controller
 				{
 					//Method name
 					$methodName = strtolower($parts[$i + 1]);
+					//Index is only approachable from '/'
+					if ($methodName == 'index')
+					{
+						return abort(404);
+					}
 				}
 
 				//Make instance of controller
