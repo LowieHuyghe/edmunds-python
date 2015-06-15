@@ -12,6 +12,7 @@
  */
 
 namespace LH\Core\Models;
+use Illuminate\Database\Eloquent\Model;
 use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Validation\Validator;
 
@@ -22,21 +23,9 @@ use Illuminate\Validation\Validator;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
- *
- * @method void save() Creates or updates the object in the database
- * @method void delete() Deletes the object in the database
- *
- * @method hasOne hasOne(string $type) One-to-one relation
- * @method belongsTo belongsTo(string $type) One-to-one/Many-to-one relation
- * @method hasMany hasMany(string $type) One-to-many relation
- * @method belongsToMany belongsToMany(string $type) Many-to-many relation
- * @method hasManyThrough hasManyThrough(string $targetType, string $throughType) Has-many-through relation
- * @method morphTo morphTo() Polymorphic Relations
- * @method morphMany morphMany(string $type, string $method) Polymorphic Relations
  */
-class BaseModel extends \Eloquent
+class BaseModel extends Model
 {
-
 	/**
 	 * The validator
 	 * @var ValidationHelper
