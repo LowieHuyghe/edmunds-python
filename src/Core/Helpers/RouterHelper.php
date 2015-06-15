@@ -23,6 +23,12 @@ use LH\Core\Controllers\LoginRequiredController;
 
 /**
  * The helper responsible for the routing
+ * To use it, just add the following to routes.php:
+ *
+	Route::any('{all}', [
+		'uses' => '\LH\Core\Helpers\RouterHelper@route'
+	])->where('all', '.*');
+ *
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
