@@ -30,6 +30,10 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @property int $id Database table-id
  * @property string $email Email of the user
  * @property string $password Password of the user
+ *
+ * @property Carbon created_at
+ * @property Carbon updated_at
+ * @property Carbon deleted_at
  */
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -52,6 +56,12 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
+
+	/**
+	 * Timestamps in the table
+	 * @var bool|array
+	 */
+	public $timestamps = true;
 
 	/**
 	 * Constructor
