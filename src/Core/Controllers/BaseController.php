@@ -35,6 +35,14 @@ class BaseController extends Controller
 	use DispatchesJobs, ValidatesRequests;
 
 	/**
+	 * List of the accepted methods for routing
+	 * @var array
+	 */
+	public $routeMethods = array(
+		//'index' => 0 //Required Parameters
+	);
+
+	/**
 	 * The current request
 	 * @var Request
 	 */
