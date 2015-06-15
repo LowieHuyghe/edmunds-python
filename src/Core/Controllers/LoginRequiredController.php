@@ -64,7 +64,7 @@ class LoginRequiredController extends BaseController
 		if (!Auth::check())
 		{
 			$loginroute = Config::get('app.routing.loginroute');
-			return redirect($loginroute);
+			return $this->response->returnRedirect($loginroute);
 		}
 
 		return true;
