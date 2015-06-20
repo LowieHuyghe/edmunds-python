@@ -16,6 +16,8 @@ namespace LH\Core\Helpers;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -50,12 +52,6 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
-	 * The status-code for the response
-	 * @var int
-	 */
-	private $statusCode = 200;
-
-	/**
 	 * Assigned data for response
 	 * @var array
 	 */
@@ -63,9 +59,9 @@ class ResponseHelper extends BaseHelper
 
 	/**
 	 * Assigned cookies for response
-	 * @var array
+	 * @var Cookie[]
 	 */
-	private $assignedCookies = array();
+	private $assignedCookies = null;
 
 	/**
 	 * Assigned headers for response
@@ -78,7 +74,7 @@ class ResponseHelper extends BaseHelper
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function assignData($key, $value)
+	public function assign($key, $value)
 	{
 		$this->assignedData[$key] = $value;
 	}
@@ -87,10 +83,18 @@ class ResponseHelper extends BaseHelper
 	 * Assign cookies to response
 	 * @param string $key
 	 * @param mixed $value
+	 * @param int $timeValid
 	 */
-	public function assignCookie($key, $value)
+	public function assignCookie($key, $value, $timeValid = null)
 	{
-		$this->assignedCookies[$key] = $value;
+		if (is_null($timeValid))
+		{
+			$this->assignedCookies[] = Cookie::make($key, $value);
+		}
+		else
+		{
+			$this->assignedCookies[] = Cookie::make($key, $value, $timeValid);
+		}
 	}
 
 	/**
@@ -98,49 +102,36 @@ class ResponseHelper extends BaseHelper
 	 * @param string $key
 	 * @param mixed $value
 	 */
-	public function assignHeaders($key, $value)
+	public function assignHeader($key, $value)
 	{
 		$this->assignedHeaders[$key] = $value;
 	}
 
 	/**
-	 * Set the response as success : 200
-	 */
-	public function setSuccess()
-	{
-		$this->statusCode = 200;
-	}
-
-	/**
-	 * Set the response as failed : 500
-	 */
-	public function setFailed()
-	{
-		$this->statusCode = 500;
-	}
-
-	/**
 	 * Fetch the build response
-	 * @param mixed $content
-	 * @return ResponseFactory
+	 * @param mixed $response
 	 */
-	private function getResponse($content = '')
+	private function attachExtras(&$response)
 	{
-		$response = response($content, $this->statusCode);
-
-		//Assign cookies
-		foreach ($this->assignedCookies as $key => $value)
+		//Assign cookie
+		foreach ($this->assignedCookies as $cookie)
 		{
-			$response->withCookie($key, $value);
+			$response->withCookie($cookie);
 		}
 
 		//Assign headers
+		$generic = is_a($response, '\Illuminate\Http\Response');
 		foreach ($this->assignedHeaders as $key => $value)
 		{
-			$response->header($key, $value);
+			if ($generic)
+			{
+				$response->header($key, $value);
+			}
+			else
+			{
+				$response->withHeader($key, $value);
+			}
 		}
-
-		return $response;
 	}
 
 	/**
@@ -150,7 +141,10 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnContent($content)
 	{
-		return $this->getResponse($content);
+		$response = response($content);
+		$this->attachExtras($response);
+
+		return $response;
 	}
 
 	/**
@@ -160,7 +154,10 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnView($view)
 	{
-		return $this->getResponse()->view($view, $this->assignedData);
+		$view = View::make($view, $this->assignedData);
+		$this->attachExtras($view);
+
+		return $view;
 	}
 
 	/**
@@ -169,7 +166,7 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnJson()
 	{
-		return $this->getResponse()->json($this->assignedData);
+		return response()->json($this->assignedData);
 	}
 
 	/**
@@ -180,18 +177,18 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnDownload($file, $name)
 	{
-		return $this->getResponse()->download($file, $name);
+		return response()->download(FileHelper::getPath($file), $name);
 	}
 
 	/**
 	 * Redirect to the specified url
-	 * @param string $url
+	 * @param string $uri
 	 * @param bool|array $input
 	 * @return RedirectResponse
 	 */
-	public function returnRedirect($url, $input = false)
+	public function returnRedirect($uri, $input = false)
 	{
-		$redirect = redirect($url);
+		$redirect = redirect($uri);
 
 		if ($input === true)
 		{
@@ -203,5 +200,21 @@ class ResponseHelper extends BaseHelper
 		}
 
 		return $redirect;
+	}
+
+	/**
+	 * 404
+	 */
+	public function return404()
+	{
+		return abort(404);
+	}
+
+	/**
+	 * 500
+	 */
+	public function returnFailed()
+	{
+		return abort(500);
 	}
 }

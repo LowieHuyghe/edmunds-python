@@ -100,7 +100,7 @@ class FileHelper extends BaseHelper
 	 * @param $name
 	 * @return bool
 	 */
-	private static function exists($name)
+	public static function exists($name)
 	{
 		return self::getDisk()->exists($name);
 	}
@@ -112,5 +112,15 @@ class FileHelper extends BaseHelper
 	private static function getDisk()
 	{
 		return Storage::disk(Config::get('filesystems.default'));
+	}
+
+	/**
+	 * Get the complete path to the file
+	 * @param string $file
+	 * @return string
+	 */
+	public static function getPath($file)
+	{
+		return Storage::disk(Config::get('filesystems.default'))->getDriver()->getAdapter()->getPathPrefix() . $file;
 	}
 }
