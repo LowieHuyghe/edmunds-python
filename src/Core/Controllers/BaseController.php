@@ -40,7 +40,15 @@ class BaseController extends Controller
 	 * @var array
 	 */
 	public $routeMethods = array(
-		//'index' => 0 //Required Parameters
+		//0 => array( //Place of method in uri
+		//	'get' => 1 //ex: '/user/123'
+		//	'getIndex' => 0 //ex: '/user/'
+		//	'getHome' => 0 //ex: '/user/home'
+		//	'getSomething' => 1 //ex: '/user/something/1'
+		//),
+		//1 => array( //Place of method in uri
+		//	'getContacts' => 2 //Required Parameters, ex: '/user/123/contacts/45'
+		//),
 	);
 
 	/**
