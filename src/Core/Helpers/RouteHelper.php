@@ -13,12 +13,12 @@
 
 namespace LH\Core\Helpers;
 
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use LH\Core\Controllers\BaseController;
 use LH\Core\Controllers\LoginRequiredController;
 use LH\Core\Exceptions\ConfigNotFoundException;
 
@@ -64,12 +64,152 @@ class RouteHelper extends Controller
 	 */
 	private function routeHandler($route)
 	{
-		//Only let the accepted routes through
-		if (!preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route))
+		//Check if it is a valid route
+		if (!$this->isValidRoute($route))
 		{
 			return abort(404);
 		}
 
+		//Get all the constants
+		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestAjax, $segments) = $this->getAllConstants();
+
+		//Go through all the parts back to front
+		for ($i = count($segments)-1; $i >= 0; --$i)
+		{
+			//Make the className
+			$className = null;
+			if ($i == 0)
+			{
+				//HomeController
+				$className = $homeControllerName;
+			}
+			else
+			{
+				//Form class-name
+				for ($j = 1; $j <= $i; ++$j)
+				{
+					$className .= '\\' . ucfirst($segments[$j]);
+				}
+				$className = $namespace . $className . ($requestAjax ? 'Ajax' : '') . 'Controller';
+
+				//Home controller only approachable when called from '/'
+				//Default controller not approachable
+				if (in_array($className, array($homeControllerName, $defaultControllerName)))
+				{
+					return abort(404);
+				}
+			}
+
+			//Check if it is valid and exists
+			if ($this->isValidClass($className))
+			{
+				//Make instance of defaultController
+				$defaultController = new $defaultControllerName($this->getRouter());
+
+				//Make instance of controller
+				$controller = new $className($this->getRouter());
+
+				//Get the remaining segments
+				$remainingSegments = array_slice($segments, $i + 1);
+
+				$methodName = null;
+				//Looping through all the different options for this controller
+				foreach ($controller->routeMethods as $methodUriPosition => $routeMethodsSpecs)
+				{
+					//2 => array( 'getHome' => 1 )
+					foreach ($routeMethodsSpecs as $routeMethodName => $routeMethodVariableCount)
+					{
+						if ($methodUriPosition == 0 && $routeMethodName == 'get')
+						{
+							//Like getIndex but with variables
+							if (count($remainingSegments) == $routeMethodVariableCount)
+							{
+								$methodName = 'get';
+								break;
+							}
+						}
+						elseif ($methodUriPosition == 0 && $routeMethodName == 'getIndex')
+						{
+							//Called the getIndex method only acceptable with 0 variables
+							if (empty($remainingSegments))
+							{
+								$methodName = 'getIndex';
+								break;
+							}
+						}
+						elseif (count($remainingSegments) > $methodUriPosition
+							&& $routeMethodName == $requestMethod . ucfirst($remainingSegments[$methodUriPosition]))
+						{
+							//Calling method
+							if (count($remainingSegments) - 1 == $routeMethodVariableCount)
+							{
+								$methodName = $requestMethod . ucfirst($remainingSegments[$methodUriPosition]);
+								array_splice($remainingSegments, $methodUriPosition, 1);
+								break;
+							}
+						}
+					}
+
+					//If method is found, stop searching
+					if ($methodName)
+					{
+						break;
+					}
+				}
+
+				//No method = no route
+				if (!$methodName)
+				{
+					return abort(404);
+				}
+
+				//Get all the variables
+				$parameters = array_map(function($value) {
+					return strtolower($value);
+				}, $remainingSegments);
+
+				return $this->callMethod($route, $defaultController, $controller, $methodName, $parameters);
+			}
+		}
+
+		return abort(404);
+	}
+
+	/**
+	 * Validate the route
+	 * @param string $route
+	 * @return bool
+	 */
+	private function isValidRoute($route)
+	{
+		//Only let the accepted routes through
+		if (!preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validate the className and check if it exists
+	 * @param string $className
+	 * @return bool
+	 */
+	private function isValidClass($className)
+	{
+		return (
+			preg_match('/^[\w\\\\]*$/', $className)
+			&& class_exists($className)
+		);
+	}
+
+	/**
+	 * Get all the constants to do the routing
+	 * @return array
+	 */
+	private function getAllConstants()
+	{
 		//Fetch namespace
 		$namespace = Config::get('app.routing.namespace');
 		$namespace = trim($namespace, '\\');
@@ -89,139 +229,77 @@ class RouteHelper extends Controller
 		//Get route and its parts
 		$segments = $request->segments();
 
-		//Go through all the parts back to front
-		for ($i = count($segments)-1; $i >= 0; --$i)
+		//Add homepage for the loop
+		array_unshift($segments, null);
+
+		return array($namespace, $defaultController, $homeController, $requestMethod, $requestAjax, $segments);
+	}
+
+	/**
+	 * Call the method of the controller and return the response
+	 * @param string $route
+	 * @param BaseController $defaultController
+	 * @param BaseController $controller
+	 * @param string $methodName
+	 * @param array $parameters
+	 * @return mixed
+	 */
+	private function callMethod($route,  $defaultController, $controller, $methodName, $parameters)
+	{
+		//Check if authentication is needed
+		$authCheckMethod = 'authenticationCheck';
+		if (method_exists($controller, $authCheckMethod))
 		{
-			//Make the className
-			$className = '';
-			for ($j = 0; $j <= $i; ++$j)
+			$authResponse = $controller->$authCheckMethod();
+			if ($authResponse !== true)
 			{
-				$className .= '\\' . ucfirst($segments[$j]);
+				Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $route);
+				return $authResponse;
 			}
+		}
 
-			//Check if default-controller
-			if ($i == 0 && count($segments) == 1 && $className == '\\')
-			{
-				$className = $homeController;
-			}
-			else
-			{
-				$className = $namespace .  ucfirst($className) . ($requestAjax ? 'Ajax' : '') . 'Controller';
+		//Initialize of defaultController
+		$defaultController->initialize();
 
-				//Home controller only approachable when called from '/'
-				//Default controller not approachable
-				if (in_array($className, array($homeController, $defaultController)))
-				{
-					return abort(404);
-				}
-			}
+		//Initialize
+		$controller->initialize();
 
-			//Check if it is valid and exists
-			if (preg_match('/^[\w\\\\]*$/', $className) && class_exists($className))
-			{
-				if ($i == count($segments)-1)
-				{
-					//Index by default
-					$methodName = 'index';
-				}
-				else
-				{
-					//Method name
-					$methodName = strtolower($segments[$i + 1]);
-					//Index is only approachable from '/'
-					if ($methodName == 'index')
-					{
-						return abort(404);
-					}
-				}
-
-				//Make instance of defaultController
-				$default = new $defaultController($this->getRouter());
-
-				//Make instance of controller
-				$controller = new $className($this->getRouter());
-
-				//Check if method exists
-				if (in_array($methodName, array_keys($controller->routeMethods)))
-				{
-					//Get the variables
-					$variables = array();
-					for ($j = $i + 2; $j < count($segments); ++$j)
-					{
-						$variables[] = strtolower($segments[$j]);
-					}
-
-					//Check if number of given parameters equal the method
-					if (count($variables) != $controller->routeMethods[$methodName])
-					{
-						return abort(404);
-					}
-
-					//Check if authentication is needed
-					$authCheckMethod = 'authenticationCheck';
-					if (method_exists($controller, $authCheckMethod))
-					{
-						$authResponse = $controller->$authCheckMethod();
-						if ($authResponse !== true)
-						{
-							Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $route);
-							return $authResponse;
-						}
-					}
-
-					//Initialize of defaultController
-					$default->initialize();
-
-					//Initialize
-					$controller->initialize();
-
-					//Call method with variables
-					switch (count($variables))
-					{
-						case 0:
-							return $controller->$methodName();
-							break;
-						case 1:
-							return $controller->$methodName($variables[0]);
-							break;
-						case 2:
-							return $controller->$methodName($variables[0], $variables[1]);
-							break;
-						case 3:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2]);
-							break;
-						case 4:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3]);
-							break;
-						case 5:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4]);
-							break;
-						case 6:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4], $variables[5]);
-							break;
-						case 7:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4], $variables[5], $variables[6]);
-							break;
-						case 8:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4], $variables[5], $variables[6], $variables[7]);
-							break;
-						case 9:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4], $variables[5], $variables[6], $variables[7], $variables[8]);
-							break;
-						case 10:
-							return $controller->$methodName($variables[0], $variables[1], $variables[2], $variables[3], $variables[4], $variables[5], $variables[6], $variables[7], $variables[8], $variables[9]);
-							break;
-						default:
-							//Too many arguments, abort
-							return abort(404);
-					}
-				}
-				else
-				{
-					//Didn't find method so dismiss
-					return abort(404);
-				}
-			}
+		//Call method with variables
+		switch (count($parameters))
+		{
+			case 0:
+				return $controller->$methodName();
+				break;
+			case 1:
+				return $controller->$methodName($parameters[0]);
+				break;
+			case 2:
+				return $controller->$methodName($parameters[0], $parameters[1]);
+				break;
+			case 3:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
+				break;
+			case 4:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
+				break;
+			case 5:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
+				break;
+			case 6:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
+				break;
+			case 7:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
+				break;
+			case 8:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
+				break;
+			case 9:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
+				break;
+			case 10:
+				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
+				break;
 		}
 
 		return abort(404);
