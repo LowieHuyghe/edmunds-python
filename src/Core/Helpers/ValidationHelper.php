@@ -117,10 +117,7 @@ class ValidationHelper extends BaseHelper
 			}
 		}
 
-		$validator = Validator::make([], $rules);
-
-		$validator->setData($this->input);
-		return $validator;
+		return Validator::make($this->input, $rules);
 	}
 
 	/**
