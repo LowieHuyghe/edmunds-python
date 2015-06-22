@@ -119,12 +119,12 @@ class RouteHelper extends Controller
 					//2 => array( 'getHome' => 1 )
 					foreach ($routeMethodsSpecs as $routeMethodName => $routeMethodVariableCount)
 					{
-						if ($methodUriPosition == 0 && $routeMethodName == 'get')
+						if ($methodUriPosition == 0 && in_array($routeMethodName, array('get', 'post', 'put', 'delete')))
 						{
 							//Like getIndex but with variables
 							if (count($remainingSegments) == $routeMethodVariableCount)
 							{
-								$methodName = 'get';
+								$methodName = $routeMethodName;
 								break;
 							}
 						}
@@ -133,7 +133,7 @@ class RouteHelper extends Controller
 							//Called the getIndex method only acceptable with 0 variables
 							if (empty($remainingSegments))
 							{
-								$methodName = 'getIndex';
+								$methodName = $routeMethodName;
 								break;
 							}
 						}
@@ -143,7 +143,7 @@ class RouteHelper extends Controller
 							//Calling method
 							if (count($remainingSegments) - 1 == $routeMethodVariableCount)
 							{
-								$methodName = $requestMethod . ucfirst($remainingSegments[$methodUriPosition]);
+								$methodName = $routeMethodName;
 								array_splice($remainingSegments, $methodUriPosition, 1);
 								break;
 							}
@@ -224,6 +224,10 @@ class RouteHelper extends Controller
 		$request = $this->getRouter()->getCurrentRequest();
 		//Get the call-method
 		$requestMethod = strtolower($request->method());
+		if ($requestMethod == 'patch')
+		{
+			$requestMethod = 'put';
+		}
 		//Check if ajax-call
 		$requestAjax = $request->ajax();
 		//Get route and its parts
