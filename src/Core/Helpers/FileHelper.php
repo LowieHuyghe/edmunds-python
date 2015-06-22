@@ -13,16 +13,10 @@
 
 namespace LH\Core\Helpers;
 
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 use LH\Core\Models\FileEntry;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -77,13 +71,25 @@ class FileHelper extends BaseHelper
 	}
 
 	/**
+	 * Return the fileEntry from the id
+	 * @param int $fileEntryId
+	 * @return FileEntry
+	 */
+	public static function get($fileEntryId)
+	{
+		$fileEntry = FileEntry::find($fileEntryId);
+
+		return $fileEntry;
+	}
+
+	/**
 	 * Delete file from storage
 	 * @param int $fileEntryId
 	 * @return bool Success
 	 */
 	public static function delete($fileEntryId)
 	{
-		$fileEntry = FileEntry::findOrFail($fileEntryId);
+		$fileEntry = FileEntry::find($fileEntryId);
 		//Check if row exists
 		if (!$fileEntry)
 		{

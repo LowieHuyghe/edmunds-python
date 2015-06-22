@@ -36,6 +36,7 @@ class FileAjaxController extends BaseController
 	public $routeMethods = array(
 		'postPicture' => 0,
 		'postDocument' => 0,
+		'get' => 1,
 		'delete' => 1,
 	);
 
@@ -51,12 +52,15 @@ class FileAjaxController extends BaseController
 
 		if ($this->validator->hasErrors())
 		{
-			$this->response->assign('success', false);
 			$this->response->assign('errors', $this->validator->getErrors());
-			return $this->response->returnFailed();
+			$this->response->setFailed();
+		}
+		else
+		{
+			$this->upload();
 		}
 
-		$fileEntry = $this->uploadAjax();
+		return $this->response->returnJson();
 	}
 
 	/**
@@ -71,30 +75,52 @@ class FileAjaxController extends BaseController
 
 		if ($this->validator->hasErrors())
 		{
-			$this->response->assign('success', false);
 			$this->response->assign('errors', $this->validator->getErrors());
-			return $this->response->returnFailed();
+			$this->response->setFailed();
+		}
+		else
+		{
+			$this->upload();
 		}
 
-		return $this->uploadAjax();
+		return $this->response->returnJson();
 	}
 
 	/**
 	 * Upload the file
 	 */
-	private function uploadAjax()
+	private function upload()
 	{
 		$fileEntry = FileHelper::store($this->input->file('file'));
 
 		if ($fileEntry)
 		{
-			$this->response->assign('success', true);
 			$this->response->assign('attributes', $fileEntry->getAttributes());
-			return $this->response->returnJson();
 		}
 		else
 		{
-			return $this->response->returnFailed();
+			$this->response->setFailed();
+		}
+	}
+
+	/**
+	 * Download the file
+	 * @param int $id
+	 * @return JsonResponse
+	 */
+	public function get($id)
+	{
+		//Get the file
+		$fileEntry = FileHelper::get($id);
+
+		if ($fileEntry)
+		{
+			return $this->response->returnDownload($fileEntry->name);
+		}
+		else
+		{
+			$this->response->setFailed();
+			return $this->response->returnJson();
 		}
 	}
 
@@ -106,15 +132,12 @@ class FileAjaxController extends BaseController
 	public function delete($id)
 	{
 		//Delete the file
-		if (FileHelper::delete($id))
+		if (!FileHelper::delete($id))
 		{
-			$this->response->assign('success', true);
-			return $this->response->returnJson();
+			$this->response->setFailed();
 		}
-		else
-		{
-			return $this->response->returnFailed();
-		}
+
+		return $this->response->returnJson();
 	}
 
 }
