@@ -50,10 +50,14 @@ class FileHelper extends BaseHelper
 		$originalName = $file->getClientOriginalName();
 		$mime = $file->getMimeType();
 		$size = $file->getSize();
+		$md5 = md5_file($file->getPathname());
+		$sha1 = sha1_file($file->getPathname());
 
 		//Make fileEntry
 		$fileEntry = new FileEntry();
 		$fileEntry->name = $name;
+		$fileEntry->md5 = $md5;
+		$fileEntry->sha1 = $sha1;
 		$fileEntry->original_name = $originalName;
 		$fileEntry->mime = $mime;
 		$fileEntry->size = $size;
@@ -80,16 +84,26 @@ class FileHelper extends BaseHelper
 	public static function delete($fileEntryId)
 	{
 		$fileEntry = FileEntry::findOrFail($fileEntryId);
+		//Check if row exists
+		if (!$fileEntry)
+		{
+			return false;
+		}
 
+		//Delete file if exists
+		$deleted = true;
 		if (self::exists($fileEntry->name))
 		{
-			if (self::getDisk()->delete($fileEntry->name))
+			if (!self::getDisk()->delete($fileEntry->name))
 			{
-				if ($fileEntry->delete())
-				{
-					return true;
-				}
+				$deleted = false;
 			}
+		}
+
+		//Delete record when file doesn't exist anymore
+		if ($deleted && $fileEntry->delete())
+		{
+			return true;
 		}
 
 		return false;

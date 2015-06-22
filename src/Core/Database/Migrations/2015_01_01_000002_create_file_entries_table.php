@@ -33,7 +33,8 @@ class CreateFileEntriesTable extends Migration
 		Schema::create('file_entries', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name', 20)->unique();
-			$table->string('hash', 32);
+			$table->string('md5', 32);
+			$table->string('sha1', 40);
 			$table->string('original_name');
 			$table->string('mime', 20);
 			$table->integer('size');
