@@ -112,6 +112,20 @@ class RouteHelper extends Controller
 				//Get the remaining segments
 				$remainingSegments = array_slice($segments, $i + 1);
 
+				//Preparing the routeMethods
+				if (!isset($controller->routeMethods[0]))
+				{
+					$controller->routeMethods[0] = array();
+				}
+				foreach ($controller->routeMethods as $key => $value)
+				{
+					if (!is_numeric($key))
+					{
+						$controller->routeMethods[0][$key] = $value;
+						unset($controller->routeMethods[$key]);
+					}
+				}
+
 				$methodName = null;
 				//Looping through all the different options for this controller
 				foreach ($controller->routeMethods as $methodUriPosition => $routeMethodsSpecs)
