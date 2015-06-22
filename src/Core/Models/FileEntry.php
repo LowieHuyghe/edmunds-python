@@ -23,7 +23,8 @@ namespace LH\Core\Models;
  *
  * @property int $id Database table-id
  * @property string name
- * @property string hash
+ * @property string md5
+ * @property string sha1
  * @property string original_name
  * @property string mime
  * @property int size
@@ -63,8 +64,11 @@ class FileEntry extends BaseModel
 		$this->validator->max('name', 20);
 		$this->validator->unique('name', $this->table);
 
-		$this->validator->required('hash');
-		$this->validator->max('hash', 32);
+		$this->validator->required('md5');
+		$this->validator->max('md5', 32);
+
+		$this->validator->required('sha1');
+		$this->validator->max('sha1', 40);
 
 		$this->validator->required('original_name');
 		$this->validator->max('original_name', 255);
