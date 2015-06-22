@@ -15,9 +15,8 @@ namespace LH\Core\Helpers;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -52,16 +51,28 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
+	 * Statuscode of response
+	 * @var int
+	 */
+	private $statusCode = 200;
+
+	/**
 	 * Assigned data for response
 	 * @var array
 	 */
 	private $assignedData = array();
 
 	/**
+	 * Assigned data for view response
+	 * @var array
+	 */
+	private $assignedViewData = array();
+
+	/**
 	 * Assigned cookies for response
 	 * @var Cookie[]
 	 */
-	private $assignedCookies = null;
+	private $assignedCookies = array();
 
 	/**
 	 * Assigned headers for response
@@ -70,13 +81,37 @@ class ResponseHelper extends BaseHelper
 	private $assignedHeaders = array();
 
 	/**
+	 * Set the response as success (default)
+	 */
+	public function setSuccess()
+	{
+		$this->statusCode = 200;
+	}
+
+	/**
+	 * Set the response as failed
+	 */
+	public function setFailed()
+	{
+		$this->statusCode = 500;
+	}
+
+	/**
 	 * Assign data to response
 	 * @param string $key
 	 * @param mixed $value
+	 * @param bool $general
 	 */
-	public function assign($key, $value)
+	public function assign($key, $value, $general = false)
 	{
-		$this->assignedData[$key] = $value;
+		if (!$general)
+		{
+			$this->assignedData[$key] = $value;
+		}
+		else
+		{
+			$this->assignedViewData[$key] = $value;
+		}
 	}
 
 	/**
@@ -113,6 +148,9 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function attachExtras(&$response)
 	{
+		//Assign statusCode
+		$response->setStatusCode($this->statusCode);
+
 		//Assign cookie
 		foreach ($this->assignedCookies as $cookie)
 		{
@@ -120,17 +158,9 @@ class ResponseHelper extends BaseHelper
 		}
 
 		//Assign headers
-		$generic = is_a($response, '\Illuminate\Http\Response');
 		foreach ($this->assignedHeaders as $key => $value)
 		{
-			if ($generic)
-			{
-				$response->header($key, $value);
-			}
-			else
-			{
-				$response->withHeader($key, $value);
-			}
+			$response->header($key, $value);
 		}
 	}
 
@@ -141,7 +171,7 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnContent($content)
 	{
-		$response = response($content);
+		$response = Response::make($content);
 		$this->attachExtras($response);
 
 		return $response;
@@ -150,12 +180,12 @@ class ResponseHelper extends BaseHelper
 	/**
 	 * Return view
 	 * @param string $view
-	 * @return Response
+	 * @return \Illuminate\Http\Response
 	 */
 	public function returnView($view)
 	{
-		$view = View::make($view, $this->assignedData);
-		$this->attachExtras($view);
+		$view = Response::view($view, array_merge($this->assignedData, $this->assignedViewData));
+		$this->attachExtras($view, true);
 
 		return $view;
 	}
@@ -166,7 +196,10 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function returnJson()
 	{
-		return response()->json($this->assignedData);
+		$json = Response::json($this->assignedData);
+		$this->attachExtras($json);
+
+		return $json;
 	}
 
 	/**
@@ -175,9 +208,12 @@ class ResponseHelper extends BaseHelper
 	 * @param string $name
 	 * @return BinaryFileResponse
 	 */
-	public function returnDownload($file, $name)
+	public function returnDownload($file, $name = null)
 	{
-		return response()->download(FileHelper::getPath($file), $name);
+		$download = Response::download(FileHelper::getPath($file), $name);
+		$this->attachExtras($download);
+
+		return $download;
 	}
 
 	/**
@@ -186,7 +222,7 @@ class ResponseHelper extends BaseHelper
 	 * @param bool|array $input
 	 * @return RedirectResponse
 	 */
-	public function returnRedirect($uri, $input = false)
+	public function returnRedirect($uri, $input = null)
 	{
 		$redirect = redirect($uri);
 
@@ -194,7 +230,7 @@ class ResponseHelper extends BaseHelper
 		{
 			$redirect = $redirect->withInput();
 		}
-		elseif (is_array($input))
+		else
 		{
 			$redirect = $redirect->withInput($input);
 		}
@@ -208,13 +244,5 @@ class ResponseHelper extends BaseHelper
 	public function return404()
 	{
 		return abort(404);
-	}
-
-	/**
-	 * 500
-	 */
-	public function returnFailed()
-	{
-		return abort(500);
 	}
 }
