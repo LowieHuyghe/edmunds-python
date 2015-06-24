@@ -73,120 +73,25 @@ class RouteHelper extends Controller
 		//Get all the constants
 		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestAjax, $segments) = $this->getAllConstants();
 
-		//Go through all the parts back to front
-		for ($i = count($segments)-1; $i >= 0; --$i)
+		//Get the controller and make instance of defaultController
+		list($controller, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestAjax, $segments);
+		if (!$controller)
 		{
-			//Make the className
-			$className = null;
-			if ($i == 0)
-			{
-				//HomeController
-				$className = $homeControllerName;
-			}
-			else
-			{
-				//Form class-name
-				for ($j = 1; $j <= $i; ++$j)
-				{
-					$className .= '\\' . ucfirst($segments[$j]);
-				}
-				$className = $namespace . $className . ($requestAjax ? 'Ajax' : '') . 'Controller';
-
-				//Home controller only approachable when called from '/'
-				//Default controller not approachable
-				if (in_array($className, array($homeControllerName, $defaultControllerName)))
-				{
-					return abort(404);
-				}
-			}
-
-			//Check if it is valid and exists
-			if ($this->isValidClass($className))
-			{
-				//Make instance of defaultController
-				$defaultController = new $defaultControllerName($this->getRouter());
-
-				//Make instance of controller
-				$controller = new $className($this->getRouter());
-
-				//Get the remaining segments
-				$remainingSegments = array_slice($segments, $i + 1);
-
-				//Preparing the routeMethods
-				if (!isset($controller->routeMethods[0]))
-				{
-					$controller->routeMethods[0] = array();
-				}
-				foreach ($controller->routeMethods as $key => $value)
-				{
-					if (!is_numeric($key))
-					{
-						$controller->routeMethods[0][$key] = $value;
-						unset($controller->routeMethods[$key]);
-					}
-				}
-
-				$methodName = null;
-				//Looping through all the different options for this controller
-				foreach ($controller->routeMethods as $methodUriPosition => $routeMethodsSpecs)
-				{
-					//2 => array( 'getHome' => 1 )
-					foreach ($routeMethodsSpecs as $routeMethodName => $routeMethodVariableCount)
-					{
-						if ($methodUriPosition == 0 && in_array($routeMethodName, array('get', 'post', 'put', 'delete')))
-						{
-							//Like getIndex but with variables
-							if (count($remainingSegments) == $routeMethodVariableCount)
-							{
-								$methodName = $routeMethodName;
-								break;
-							}
-						}
-						elseif ($methodUriPosition == 0 && $routeMethodName == 'getIndex')
-						{
-							//Called the getIndex method only acceptable with 0 variables
-							if (empty($remainingSegments))
-							{
-								$methodName = $routeMethodName;
-								break;
-							}
-						}
-						elseif (count($remainingSegments) > $methodUriPosition
-							&& $routeMethodName == $requestMethod . ucfirst($remainingSegments[$methodUriPosition]))
-						{
-							//Calling method
-							if (count($remainingSegments) - 1 == $routeMethodVariableCount)
-							{
-								$methodName = $routeMethodName;
-								array_splice($remainingSegments, $methodUriPosition, 1);
-								break;
-							}
-						}
-					}
-
-					//If method is found, stop searching
-					if ($methodName)
-					{
-						break;
-					}
-				}
-
-				//No method = no route
-				if (!$methodName)
-				{
-					return abort(404);
-				}
-
-				//Get all the variables
-				$parameters = array_map(function($value) {
-					return strtolower($value);
-				}, $remainingSegments);
-
-				return $this->callMethod($route, $defaultController, $controller, $methodName, $parameters);
-			}
+			return abort(404);
 		}
+		$this->prepareController($controller);
+		$defaultController = new $defaultControllerName($this->getRouter());
 
-		return abort(404);
+		//Get the name of the method
+		list($methodName, $parameters) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
+		if (!$methodName)
+		{
+			return abort(404);
+		}
+		$this->prepareParameters($parameters);
+
+		//Call the method
+		return $this->callMethod($route, $defaultController, $controller, $methodName, $parameters);
 	}
 
 	/**
@@ -203,19 +108,6 @@ class RouteHelper extends Controller
 		}
 
 		return true;
-	}
-
-	/**
-	 * Validate the className and check if it exists
-	 * @param string $className
-	 * @return bool
-	 */
-	private function isValidClass($className)
-	{
-		return (
-			preg_match('/^[\w\\\\]*$/', $className)
-			&& class_exists($className)
-		);
 	}
 
 	/**
@@ -247,10 +139,201 @@ class RouteHelper extends Controller
 		//Get route and its parts
 		$segments = $request->segments();
 
-		//Add homepage for the loop
-		array_unshift($segments, null);
-
 		return array($namespace, $defaultController, $homeController, $requestMethod, $requestAjax, $segments);
+	}
+
+	/**
+	 * Get the controller from the input
+	 * @param string $namespace
+	 * @param string $defaultControllerName
+	 * @param string $homeControllerName
+	 * @param bool $requestAjax
+	 * @param array $segments
+	 * @return array
+	 */
+	private function getController($namespace, $defaultControllerName, $homeControllerName, $requestAjax, $segments)
+	{
+		//Go through all the parts back to front
+		$controllerLoopCount = min(3, count($segments));
+		for ($i = 0; $i <= $controllerLoopCount; ++$i)
+		{
+			//Make the className
+			if ($i == $controllerLoopCount)
+			{
+				//HomeController
+				$className = $homeControllerName;
+			}
+			else
+			{
+				//Form class-name
+				$className = '';
+				for ($j = 0; $j <= $i; ++$j)
+				{
+					$className .= '\\' . ucfirst($segments[$j]);
+				}
+				$className = $namespace . $className . ($requestAjax ? 'Ajax' : '') . 'Controller';
+
+				//Home controller only approachable when called from '/'
+				//Default controller not approachable
+				if (in_array($className, array($homeControllerName, $defaultControllerName)))
+				{
+					break;
+				}
+			}
+
+			//Check if it is valid and exists
+			if ($this->isValidClass($className))
+			{
+				//Get the remaining segments
+				return array(new $className($this->getRouter()), array_slice($segments, $i + 1));
+			}
+		}
+
+		return array(null, null);
+	}
+
+	/**
+	 * Prepare the controller
+	 * @param BaseController $controller
+	 */
+	private function prepareController(&$controller)
+	{
+		//Preparing the routeMethods
+		if (!isset($controller->routeMethods[0]))
+		{
+			$controller->routeMethods[0] = array();
+		}
+		foreach ($controller->routeMethods as $key => $value)
+		{
+			if (!is_numeric($key))
+			{
+				$controller->routeMethods[0][$key] = $value;
+				unset($controller->routeMethods[$key]);
+			}
+		}
+	}
+
+	/**
+	 * Validate the className and check if it exists
+	 * @param string $className
+	 * @return bool
+	 */
+	private function isValidClass($className)
+	{
+		return (
+			preg_match('/^[\w\\\\]*$/', $className)
+			&& class_exists($className)
+		);
+	}
+
+	/**
+	 * Get the method name
+	 * @param $controller
+	 * @param $requestMethod
+	 * @param $remainingSegments
+	 * @return array
+	 */
+	private function getMethodName($controller, $requestMethod, $remainingSegments)
+	{
+		//Check if it is index-page and otherwise filter it out
+		if (empty($remainingSegments))
+		{
+			if (isset($controller->routeMethods[0]['index']))
+			{
+				$routeMethodNameOptions = $controller->routeMethods[0]['index'];
+				array_shift($routeMethodNameOptions);
+				if (in_array($requestMethod, $routeMethodNameOptions))
+				{
+					return array($requestMethod .'Index', array());
+				}
+			}
+			return array(null, null);
+		}
+		elseif (isset($controller->routeMethods[0]['index']))
+		{
+			unset($controller->routeMethods[0]['index']);
+		}
+
+		//If root methods are enabled, fetch them but give priority to other methods
+		$rootMethodOptions = null;
+		if (isset($controller->routeMethods[0]['/']))
+		{
+			$rootMethodOptions = $controller->routeMethods[0]['/'];
+			unset($controller->routeMethods[0]['/']);
+		}
+
+		$methodName = null;
+		$parameterCount = null;
+		//Looping through all the different options for this controller
+		for ($uriPosition = 0; $uriPosition < count($remainingSegments); ++$uriPosition)
+		{
+			if (!isset($controller->routeMethods[$uriPosition]))
+			{
+				continue;
+			}
+			$controllerMethodsSpecs = $controller->routeMethods[$uriPosition];
+
+			//2 => array( 'home' => array('get') )
+			$methodNameRaw = null;
+			$methodNameRawOptions = null;
+			foreach ($controllerMethodsSpecs as $controllerMethodName => $routeMethodNameOptions)
+			{
+				if ($controllerMethodName == strtolower($remainingSegments[$uriPosition]))
+				{
+					$methodNameRaw = $controllerMethodName;
+					$methodNameRawOptions = $routeMethodNameOptions;
+					break;
+				}
+			}
+
+			//If method is found, stop searching
+			if ($methodNameRaw)
+			{
+				//Fetch parameter-count from array
+				$parameterCount = array_shift($methodNameRawOptions);
+				//If requestmethod is not available, 404
+				if (!in_array($requestMethod, $methodNameRawOptions))
+				{
+					return array(null, null);
+				}
+				//Remove the methodName from the segments
+				array_splice($remainingSegments, $uriPosition, 1);
+
+				$methodName = $requestMethod . ucfirst($methodNameRaw);
+				break;
+			}
+		}
+
+		//Check rootMethod option
+		if (!$methodName && $rootMethodOptions)
+		{
+			$parameterCount = array_shift($rootMethodOptions);
+			if (in_array($requestMethod, $rootMethodOptions))
+			{
+				$methodName = $requestMethod;
+			}
+		}
+
+		//Check if parameter-count is right
+		if ($parameterCount != count($remainingSegments))
+		{
+			return array(null, null);
+		}
+
+		//Return the right method
+		return array($methodName, $remainingSegments);
+	}
+
+	/**
+	 * Prepare the parameters
+	 * @param array $parameters
+	 */
+	private function prepareParameters(&$parameters)
+	{
+		//Get all the variables
+		$parameters = array_map(function($value) {
+			return strtolower($value);
+		}, $parameters);
 	}
 
 	/**
