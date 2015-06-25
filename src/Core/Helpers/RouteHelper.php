@@ -80,7 +80,7 @@ class RouteHelper extends Controller
 			return abort(404);
 		}
 		$this->prepareController($controller);
-		$defaultController = new $defaultControllerName($this->getRouter());
+		$defaultController = App::make($defaultControllerName);
 
 		//Get the name of the method
 		list($methodName, $parameters) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
@@ -88,7 +88,6 @@ class RouteHelper extends Controller
 		{
 			return abort(404);
 		}
-		$this->prepareParameters($parameters);
 
 		//Call the method
 		return $this->callMethod($route, $defaultController, $controller, $methodName, $parameters);
@@ -185,7 +184,7 @@ class RouteHelper extends Controller
 			if ($this->isValidClass($className))
 			{
 				//Get the remaining segments
-				return array(new $className($this->getRouter()), array_slice($segments, $i + 1));
+				return array(App::make($className), array_slice($segments, $i + 1));
 			}
 		}
 
@@ -322,18 +321,6 @@ class RouteHelper extends Controller
 
 		//Return the right method
 		return array($methodName, $remainingSegments);
-	}
-
-	/**
-	 * Prepare the parameters
-	 * @param array $parameters
-	 */
-	private function prepareParameters(&$parameters)
-	{
-		//Get all the variables
-		$parameters = array_map(function($value) {
-			return strtolower($value);
-		}, $parameters);
 	}
 
 	/**
