@@ -84,15 +84,8 @@ class BaseController extends Controller
 	/**
 	 * The constructor for the BaseController
 	 */
-	/**
-	 * @param \Illuminate\Routing\Router $router
-	 */
-	function __construct($router = null)
+	function __construct()
 	{
-		if ($router)
-		{
-			self::setRouter($router);
-		}
 		$this->request = self::getRouter()->getCurrentRequest();
 		$this->response = ResponseHelper::getInstance();
 		$this->session = $this->request->getSession();

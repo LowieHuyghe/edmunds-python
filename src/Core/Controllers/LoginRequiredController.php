@@ -46,11 +46,10 @@ class LoginRequiredController extends BaseController
 
 	/**
 	 * Constructor
-	 * @param Router $router
 	 */
-	function __construct($router = null)
+	function __construct()
 	{
-		parent::__construct($router);
+		parent::__construct();
 
 		$this->user = Auth::user();
 		$this->response->assign('__login', $this->user);
