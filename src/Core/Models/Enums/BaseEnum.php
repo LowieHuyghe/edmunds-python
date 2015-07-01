@@ -25,11 +25,20 @@ use ReflectionClass;
  */
 abstract class BaseEnum
 {
+	/**
+	 * The fetched constants
+	 * @var array
+	 */
+	private static $constants = array();
 
 	private static function getConstants()
 	{
-		$reflect = new ReflectionClass(get_called_class());
-		return $reflect->getConstants();
+		if (!isset(self::$constants[get_called_class()]))
+		{
+			$reflect = new ReflectionClass(get_called_class());
+			self::$constants[get_called_class()] = $reflect->getConstants();
+		}
+		return self::$constants[get_called_class()];
 	}
 
 	public static function isValidName($name, $strict = false)

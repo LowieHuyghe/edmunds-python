@@ -11,27 +11,38 @@
  * @since       Version 0.1
  */
 
-namespace LH\Core\Database\Seeds;
+namespace LH\Core\Database\Migrations;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Seeder for the password_resets-table
+ * Migration for user-roles-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class PasswordResetsTableSeeder extends Seeder
+trait _0003_CreateUserRolesTable
 {
+	use _0000_CreateEnumsPivotTable;
+
 	/**
-	 * Run the database seeds.
-	 * @return void
+	 * The table used for pivot
+	 * @var string
 	 */
-	public function run()
-	{
-		//
-	}
+	protected $table = 'user_roles';
+
+	/**
+	 * The name for id of model
+	 * @var string
+	 */
+	protected $idModel = 'user_id';
+
+	/**
+	 * The name for id of enum
+	 * @var string
+	 */
+	protected $idEnum = 'role_id';
 }

@@ -11,8 +11,11 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for users-table
@@ -22,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateFileEntriesTable extends Migration
+trait _0001_CreateUsersTable
 {
 	/**
 	 * Run the migrations.
@@ -30,15 +33,14 @@ class CreateFileEntriesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('file_entries', function (Blueprint $table) {
+		Schema::create('users', function (Blueprint $table)
+		{
 			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('size');
+			$table->string('email')->unique();
+			$table->string('password', 60);
+			$table->rememberToken();
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
@@ -48,6 +50,6 @@ class CreateFileEntriesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('file_entries');
+		Schema::drop('users');
 	}
 }

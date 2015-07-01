@@ -11,18 +11,21 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Migration for users-table
+ * Migration for file_entries-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateUsersTable extends Migration
+trait _0004_CreateFileEntriesTable
 {
 	/**
 	 * Run the migrations.
@@ -30,13 +33,16 @@ class CreateUsersTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('users', function (Blueprint $table) {
+		Schema::create('file_entries', function (Blueprint $table)
+		{
 			$table->increments('id');
-			$table->string('email')->unique();
-			$table->string('password', 60);
-			$table->rememberToken();
+			$table->string('name', 20)->unique();
+			$table->string('md5', 32);
+			$table->string('sha1', 40);
+			$table->string('original_name');
+			$table->string('mime', 20);
+			$table->integer('size');
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 
@@ -46,6 +52,6 @@ class CreateUsersTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('users');
+		Schema::drop('file_entries');
 	}
 }

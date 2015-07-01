@@ -83,14 +83,21 @@ class RouteHelper extends Controller
 		$defaultController = App::make($defaultControllerName);
 
 		//Get the name of the method
-		list($methodName, $parameters) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
+		list($methodName, $parameters, $requiredRoles) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
 		if (!$methodName)
 		{
 			return abort(404);
 		}
 
+		//Do authentication checks
+		$authResponse = $this->authenticationChecks($route, $controller, $requiredRoles);
+		if ($authResponse !== true)
+		{
+			return $authResponse;
+		}
+
 		//Call the method
-		return $this->callMethod($route, $defaultController, $controller, $methodName, $parameters);
+		return $this->callMethod($defaultController, $controller, $methodName, $parameters);
 	}
 
 	/**
@@ -184,7 +191,9 @@ class RouteHelper extends Controller
 			if ($this->isValidClass($className))
 			{
 				//Get the remaining segments
-				return array(App::make($className), array_slice($segments, $i + 1));
+				$controller = App::make($className);
+				$remainingSegments = array_slice($segments, ($i == $controllerLoopCount ? 0 : $i + 1));
+				return array($controller, $remainingSegments);
 			}
 		}
 
@@ -208,6 +217,42 @@ class RouteHelper extends Controller
 			{
 				$controller->routeMethods[0][$key] = $value;
 				unset($controller->routeMethods[$key]);
+			}
+		}
+
+		//Preparing each route of the routeMethods
+
+		foreach ($controller->routeMethods as $uriPosition => $v)
+		{
+			$routeMethodUriSpecs = &$controller->routeMethods[$uriPosition];
+			foreach ($routeMethodUriSpecs as $route => $v)
+			{
+				$routeMethodRouteSpecs = &$routeMethodUriSpecs[$route];
+				//Method
+				if (!isset($routeMethodRouteSpecs['m']))
+				{
+					$routeMethodRouteSpecs['m'] = array('get');
+				}
+				elseif (!is_array($routeMethodRouteSpecs['m']))
+				{
+					$routeMethodRouteSpecs['m'] = array($routeMethodRouteSpecs['m']);
+				}
+
+				//Parameters
+				if (!isset($routeMethodRouteSpecs['p']))
+				{
+					$routeMethodRouteSpecs['p'] = 0;
+				}
+
+				//Roles
+				if (!isset($routeMethodRouteSpecs['r']))
+				{
+					$routeMethodRouteSpecs['r'] = array();
+				}
+				elseif (!is_array($routeMethodRouteSpecs['r']))
+				{
+					$routeMethodRouteSpecs['r'] = array($routeMethodRouteSpecs['r']);
+				}
 			}
 		}
 	}
@@ -240,13 +285,12 @@ class RouteHelper extends Controller
 			if (isset($controller->routeMethods[0]['index']))
 			{
 				$routeMethodNameOptions = $controller->routeMethods[0]['index'];
-				array_shift($routeMethodNameOptions);
-				if (in_array($requestMethod, $routeMethodNameOptions))
+				if (in_array($requestMethod, $routeMethodNameOptions['m']))
 				{
-					return array($requestMethod .'Index', array());
+					return array($requestMethod .'Index', array(), $routeMethodNameOptions['r']);
 				}
 			}
-			return array(null, null);
+			return array(null, null, null);
 		}
 		elseif (isset($controller->routeMethods[0]['index']))
 		{
@@ -263,6 +307,7 @@ class RouteHelper extends Controller
 
 		$methodName = null;
 		$parameterCount = null;
+		$requiredRoles = null;
 		//Looping through all the different options for this controller
 		for ($uriPosition = 0; $uriPosition < count($remainingSegments); ++$uriPosition)
 		{
@@ -289,11 +334,13 @@ class RouteHelper extends Controller
 			if ($methodNameRaw)
 			{
 				//Fetch parameter-count from array
-				$parameterCount = array_shift($methodNameRawOptions);
-				//If requestmethod is not available, 404
-				if (!in_array($requestMethod, $methodNameRawOptions))
+				$parameterCount = $methodNameRawOptions['p'];
+				//Fetch roles from array
+				$requiredRoles = $methodNameRawOptions['r'];
+				//If requestMethod is not available, 404
+				if (!in_array($requestMethod, $methodNameRawOptions['m']))
 				{
-					return array(null, null);
+					return array(null, null, null);
 				}
 				//Remove the methodName from the segments
 				array_splice($remainingSegments, $uriPosition, 1);
@@ -306,8 +353,9 @@ class RouteHelper extends Controller
 		//Check rootMethod option
 		if (!$methodName && $rootMethodOptions)
 		{
-			$parameterCount = array_shift($rootMethodOptions);
-			if (in_array($requestMethod, $rootMethodOptions))
+			$parameterCount = $rootMethodOptions['p'];
+			$requiredRoles = $rootMethodOptions['r'];
+			if (in_array($requestMethod, $rootMethodOptions['m']))
 			{
 				$methodName = $requestMethod;
 			}
@@ -316,29 +364,26 @@ class RouteHelper extends Controller
 		//Check if parameter-count is right
 		if ($parameterCount != count($remainingSegments))
 		{
-			return array(null, null);
+			return array(null, null, null);
 		}
 
 		//Return the right method
-		return array($methodName, $remainingSegments);
+		return array($methodName, $remainingSegments, $requiredRoles);
 	}
 
 	/**
-	 * Call the method of the controller and return the response
 	 * @param string $route
-	 * @param BaseController $defaultController
 	 * @param BaseController $controller
-	 * @param string $methodName
-	 * @param array $parameters
+	 * @param array $requiredRoles
 	 * @return mixed
 	 */
-	private function callMethod($route,  $defaultController, $controller, $methodName, $parameters)
+	private function authenticationChecks($route, $controller, $requiredRoles)
 	{
 		//Check if authentication is needed
 		$authCheckMethod = 'authenticationCheck';
 		if (method_exists($controller, $authCheckMethod))
 		{
-			$authResponse = $controller->$authCheckMethod();
+			$authResponse = $controller->$authCheckMethod($requiredRoles);
 			if ($authResponse !== true)
 			{
 				Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $route);
@@ -346,6 +391,19 @@ class RouteHelper extends Controller
 			}
 		}
 
+		return true;
+	}
+
+	/**
+	 * Call the method of the controller and return the response
+	 * @param BaseController $defaultController
+	 * @param BaseController $controller
+	 * @param string $methodName
+	 * @param array $parameters
+	 * @return mixed
+	 */
+	private function callMethod($defaultController, $controller, $methodName, $parameters)
+	{
 		//Initialize of defaultController
 		$defaultController->initialize();
 
