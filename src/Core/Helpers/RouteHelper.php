@@ -83,8 +83,9 @@ class RouteHelper extends Controller
 		$defaultController = App::make($defaultControllerName);
 
 		//Get the name of the method
-		list($methodName, $parameters, $requiredRoles) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
-		if (!$methodName)
+		list($methodName, $parameterSpecs, $parameters, $requiredRoles) = $this->getMethodName($controller, $requestMethod, $remainingSegments);
+		if (!$methodName
+			|| !$this->areParametersValid($parameterSpecs, $parameters))
 		{
 			return abort(404);
 		}
@@ -108,12 +109,7 @@ class RouteHelper extends Controller
 	private function isValidRoute($route)
 	{
 		//Only let the accepted routes through
-		if (!preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route))
-		{
-			return false;
-		}
-
-		return true;
+		return (preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route) === 1);
 	}
 
 	/**
@@ -241,7 +237,7 @@ class RouteHelper extends Controller
 				//Parameters
 				if (!isset($routeMethodRouteSpecs['p']))
 				{
-					$routeMethodRouteSpecs['p'] = 0;
+					$routeMethodRouteSpecs['p'] = array();
 				}
 
 				//Roles
@@ -265,7 +261,7 @@ class RouteHelper extends Controller
 	private function isValidClass($className)
 	{
 		return (
-			preg_match('/^[\w\\\\]*$/', $className)
+			preg_match('/^[\w\\\\]*$/', $className) === 1
 			&& class_exists($className)
 		);
 	}
@@ -306,7 +302,7 @@ class RouteHelper extends Controller
 		}
 
 		$methodName = null;
-		$parameterCount = null;
+		$parameterSpecs = array();
 		$requiredRoles = null;
 		//Looping through all the different options for this controller
 		for ($uriPosition = 0; $uriPosition < count($remainingSegments); ++$uriPosition)
@@ -334,7 +330,7 @@ class RouteHelper extends Controller
 			if ($methodNameRaw)
 			{
 				//Fetch parameter-count from array
-				$parameterCount = $methodNameRawOptions['p'];
+				$parameterSpecs = $methodNameRawOptions['p'];
 				//Fetch roles from array
 				$requiredRoles = $methodNameRawOptions['r'];
 				//If requestMethod is not available, 404
@@ -353,7 +349,7 @@ class RouteHelper extends Controller
 		//Check rootMethod option
 		if (!$methodName && $rootMethodOptions)
 		{
-			$parameterCount = $rootMethodOptions['p'];
+			$parameterSpecs = $rootMethodOptions['p'];
 			$requiredRoles = $rootMethodOptions['r'];
 			if (in_array($requestMethod, $rootMethodOptions['m']))
 			{
@@ -362,13 +358,37 @@ class RouteHelper extends Controller
 		}
 
 		//Check if parameter-count is right
-		if ($parameterCount != count($remainingSegments))
+		if (count($parameterSpecs) != count($remainingSegments))
 		{
 			return array(null, null, null);
 		}
 
 		//Return the right method
-		return array($methodName, $remainingSegments, $requiredRoles);
+		return array($methodName, $parameterSpecs, $remainingSegments, $requiredRoles);
+	}
+
+	/**
+	 * @param array $parameterSpecs
+	 * @param array $parameters
+	 * @return bool
+	 */
+	private function areParametersValid($parameterSpecs, $parameters)
+	{
+		//Validate input
+		if (!is_array($parameterSpecs))
+		{
+			throw new \Exception('ParameterSpecs of the wrong type. Array expected.');
+		}
+
+		for ($i = 0; $i < count($parameters); ++$i)
+		{
+			if (preg_match('/^'.$parameterSpecs[$i].'$/', $parameters[$i]) !== 1)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
