@@ -51,22 +51,47 @@ class LoginRequiredController extends BaseController
 	{
 		parent::__construct();
 
-		$this->user = Auth::user();
-		$this->response->assign('__login', $this->user);
+		$authUser = Auth::user();
+		if ($authUser)
+		{
+			$this->user = User::findOrFail($authUser->id);
+			$this->response->assign('__login', $authUser);
+		}
 	}
 
 	/**
 	 * Check if user is authenticated
+	 * @param array $requiredRoles
 	 * @return true|redirect
 	 */
-	public function authenticationCheck()
+	public function authenticationCheck($requiredRoles)
 	{
-		if (!Auth::check())
+		if (!Auth::check()
+			|| !$this->checkRoles($requiredRoles))
 		{
-			$loginroute = Config::get('app.routing.loginroute');
-			return $this->response->returnRedirect($loginroute);
+			$loginRoute = Config::get('app.routing.loginroute');
+			return $this->response->returnRedirect($loginRoute);
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if user has all the required roles
+	 * @param array $requiredRoles
+	 * @return bool
+	 */
+	public function checkRoles($requiredRoles)
+	{
+		$userRoles = User::find($this->user->id)->roles()->get()->lists('id')->toArray();
+
+		$requiredRoles = array_unique($requiredRoles);
+		$userRoles = array_unique($userRoles);
+
+		if (count(array_intersect($userRoles, $requiredRoles)) == count($requiredRoles))
+		{
+			return true;
+		}
+		return $this->response->returnUnauthorized();
 	}
 }

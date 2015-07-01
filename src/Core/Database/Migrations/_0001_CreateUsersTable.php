@@ -11,8 +11,11 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for users-table
@@ -22,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateUsersTable extends Migration
+trait _0001_CreateUsersTable
 {
 	/**
 	 * Run the migrations.
@@ -30,7 +33,8 @@ class CreateUsersTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('users', function (Blueprint $table) {
+		Schema::create('users', function (Blueprint $table)
+		{
 			$table->increments('id');
 			$table->string('email')->unique();
 			$table->string('password', 60);

@@ -11,33 +11,51 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Migration for users-table
+ * Migration for enums-pivot-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateFileEntriesTable extends Migration
+trait _0000_CreateEnumsPivotTable
 {
+	/**
+	 * The table used for pivot
+	 * @var string
+	 */
+	//protected $table;
+
+	/**
+	 * The name for id of model
+	 * @var string
+	 */
+	//protected $idModel;
+
+	/**
+	 * The name for id of enum
+	 * @var string
+	 */
+	//protected $idEnum;
+
 	/**
 	 * Run the migrations.
 	 * @return void
 	 */
 	public function up()
 	{
-		Schema::create('file_entries', function (Blueprint $table) {
-			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('size');
+		Schema::create($this->table, function (Blueprint $table)
+		{
+			$table->integer($this->idModel)->unsigned();
+			$table->integer($this->idEnum)->unsigned();
+			$table->primary(array($this->idModel, $this->idEnum));
 			$table->timestamps();
 		});
 	}
@@ -48,6 +66,6 @@ class CreateFileEntriesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('file_entries');
+		Schema::drop($this->table);
 	}
 }

@@ -11,8 +11,11 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for password_resets-table
@@ -22,7 +25,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreatePasswordResetsTable extends Migration
+trait _0002_CreatePasswordResetsTable
 {
 	/**
 	 * Run the migrations.
@@ -30,10 +33,11 @@ class CreatePasswordResetsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('password_resets', function (Blueprint $table) {
+		Schema::create('password_resets', function (Blueprint $table)
+		{
 			$table->string('email')->index();
 			$table->string('token')->index();
-			$table->timestamp('created_at');
+			$table->timestamps();
 		});
 	}
 
