@@ -11,29 +11,52 @@
  * @since       Version 0.1
  */
 
+namespace LH\Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 /**
- * Migration for password_resets-table
+ * Migration for enums-pivot-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreatePasswordResetsTable extends Migration
+trait _0000_CreateEnumsPivotTable
 {
+	/**
+	 * The table used for pivot
+	 * @var string
+	 */
+	//protected $table;
+
+	/**
+	 * The name for id of model
+	 * @var string
+	 */
+	//protected $idModel;
+
+	/**
+	 * The name for id of enum
+	 * @var string
+	 */
+	//protected $idEnum;
+
 	/**
 	 * Run the migrations.
 	 * @return void
 	 */
 	public function up()
 	{
-		Schema::create('password_resets', function (Blueprint $table) {
-			$table->string('email')->index();
-			$table->string('token')->index();
-			$table->timestamp('created_at');
+		Schema::create($this->table, function (Blueprint $table)
+		{
+			$table->integer($this->idModel)->unsigned();
+			$table->integer($this->idEnum)->unsigned();
+			$table->primary(array($this->idModel, $this->idEnum));
+			$table->timestamps();
 		});
 	}
 
@@ -43,6 +66,6 @@ class CreatePasswordResetsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('password_resets');
+		Schema::drop($this->table);
 	}
 }

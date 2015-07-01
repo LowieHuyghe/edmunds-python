@@ -13,11 +13,16 @@
 
 namespace LH\Core\Models;
 
+use App\Models\Enums\RolesEnum;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use LH\Core\Database\Relations\BelongsToManyEnums;
+use LH\Core\Database\Relations\HasOneEnum;
 
 /**
  * The model of the user
@@ -30,6 +35,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
  * @property int $id Database table-id
  * @property string $email Email of the user
  * @property string $password Password of the user
+ * @property \stdClass[] $roles Roles for this user
  *
  * @property Carbon created_at
  * @property Carbon updated_at
@@ -38,12 +44,6 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
 	use Authenticatable, CanResetPassword;
-
-	/**
-	 * The database table used by the model.
-	 * @var string
-	 */
-	protected $table = 'users';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -74,16 +74,39 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	}
 
 	/**
+	 * Roles belonging to this user
+	 * @return BelongsToManyEnums
+	 */
+	public function roles()
+	{
+		return $this->belongsToManyEnums(RolesEnum::class, 'user_roles');
+	}
+
+	/**
+	 * Check if user has role
+	 * @param $roleId
+	 * @return bool
+	 */
+	public function hasRole($roleId)
+	{
+		return $this->roles()->contains($roleId);
+	}
+
+	/**
 	 * Add the validation of the model
 	 */
 	public function addValidationRules()
 	{
 		$this->validator->integer('id');
+
 		$this->validator->required('email');
 		$this->validator->max('email', 255);
 		$this->validator->unique('email', 'users');
+
 		$this->validator->max('password', 60);
+
 		$this->validator->max('remember_token', 100);
+
 		$this->validator->date('created_at');
 		$this->validator->date('updated_at');
 	}

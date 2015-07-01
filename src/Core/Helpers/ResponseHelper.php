@@ -245,4 +245,12 @@ class ResponseHelper extends BaseHelper
 	{
 		return abort(404);
 	}
+
+	/**
+	 * Unauthorized
+	 */
+	public function returnUnauthorized()
+	{
+		return abort(403);
+	}
 }
