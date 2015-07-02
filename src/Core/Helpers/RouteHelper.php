@@ -221,9 +221,8 @@ class RouteHelper extends Controller
 		foreach ($controller->routeMethods as $uriPosition => $v)
 		{
 			$routeMethodUriSpecs = &$controller->routeMethods[$uriPosition];
-			foreach ($routeMethodUriSpecs as $route => $v)
+			foreach ($routeMethodUriSpecs as $route => &$routeMethodRouteSpecs)
 			{
-				$routeMethodRouteSpecs = &$routeMethodUriSpecs[$route];
 				//Method
 				if (!isset($routeMethodRouteSpecs['m']))
 				{
@@ -374,12 +373,6 @@ class RouteHelper extends Controller
 	 */
 	private function areParametersValid($parameterSpecs, $parameters)
 	{
-		//Validate input
-		if (!is_array($parameterSpecs))
-		{
-			throw new \Exception('ParameterSpecs of the wrong type. Array expected.');
-		}
-
 		for ($i = 0; $i < count($parameters); ++$i)
 		{
 			if (preg_match('/^'.$parameterSpecs[$i].'$/', $parameters[$i]) !== 1)
