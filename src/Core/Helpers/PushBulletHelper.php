@@ -24,9 +24,6 @@ use PHPushbullet\PHPushbullet;
  */
 class PushBulletHelper extends BaseHelper
 {
-	private static $account = 'huyghe.lowie@gmail.com';
-	private static $token = 'jue2B1zhgiU6cIwxAc55vY0rKfjL5iC5';
-
 	/**
 	 * Instance of PushBullet
 	 * @var \PHPushbullet\PHPushbullet
@@ -41,10 +38,19 @@ class PushBulletHelper extends BaseHelper
 	{
 		if (!isset(self::$pushBullet))
 		{
-			self::$pushBullet = new PHPushbullet(self::$token);
+			self::$pushBullet = new PHPushbullet(ConfigHelper::get('core.pm.pushbullet.token'));
 		}
 
 		return self::$pushBullet;
+	}
+
+	/**
+	 * Fetch the account to send to
+	 * @return string
+	 */
+	private static function getAccount()
+	{
+		return ConfigHelper::get('core.pm.pushbullet.account');
 	}
 
 	/**
@@ -54,7 +60,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	public static function sendNote($title, $message)
 	{
-		self::getPushBullet()->user(self::$account)->note($title, $message);
+		self::getPushBullet()->user(self::getAccount())->note($title, $message);
 	}
 
 	/**
@@ -65,7 +71,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	public static function sendLink($title, $url, $message)
 	{
-		self::getPushBullet()->user(self::$account)->link($title, $url, $message);
+		self::getPushBullet()->user(self::getAccount())->link($title, $url, $message);
 	}
 
 	/**
@@ -75,7 +81,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	public static function sendAddress($title, $address)
 	{
-		self::getPushBullet()->user(self::$account)->address($title, $address);
+		self::getPushBullet()->user(self::getAccount())->address($title, $address);
 	}
 
 	/**
@@ -85,7 +91,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	public static function sendList($title, $list)
 	{
-		self::getPushBullet()->user(self::$account)->list($title, $list);
+		self::getPushBullet()->user(self::getAccount())->list($title, $list);
 	}
 
 	/**
@@ -96,7 +102,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	public static function sendFile($title, $fileUrl, $message)
 	{
-		self::getPushBullet()->user(self::$account)->file($title, $fileUrl, $message);
+		self::getPushBullet()->user(self::getAccount())->file($title, $fileUrl, $message);
 	}
 
 }

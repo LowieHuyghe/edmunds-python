@@ -282,10 +282,10 @@ class RouteHelper extends Controller
 				$routeMethodNameOptions = $controller->routeMethods[0]['index'];
 				if (in_array($requestMethod, $routeMethodNameOptions['m']))
 				{
-					return array($requestMethod .'Index', array(), $routeMethodNameOptions['r']);
+					return array($requestMethod .'Index', array(), array(), $routeMethodNameOptions['r']);
 				}
 			}
-			return array(null, null, null);
+			return array(null, null, null, null);
 		}
 		elseif (isset($controller->routeMethods[0]['index']))
 		{
@@ -335,7 +335,7 @@ class RouteHelper extends Controller
 				//If requestMethod is not available, 404
 				if (!in_array($requestMethod, $methodNameRawOptions['m']))
 				{
-					return array(null, null, null);
+					return array(null, null, null, null);
 				}
 				//Remove the methodName from the segments
 				array_splice($remainingSegments, $uriPosition, 1);
@@ -359,7 +359,7 @@ class RouteHelper extends Controller
 		//Check if parameter-count is right
 		if (count($parameterSpecs) != count($remainingSegments))
 		{
-			return array(null, null, null);
+			return array(null, null, null, null);
 		}
 
 		//Return the right method
@@ -470,33 +470,20 @@ class RouteHelper extends Controller
 	 */
 	private function checkConfig()
 	{
+		//Fetch the configuration
+		$config = ConfigHelper::get('core.config.required');
+
+		//Check if everything is in place
 		$notFound = array();
-
-		if (!Config::get('app.routing.namespace'))
+		foreach ($config as $line)
 		{
-			$notFound[] = 'app.routing.namespace';
+			if (!Config::get($line))
+			{
+				$notFound[] = $line;
+			}
 		}
 
-		if (!Config::get('app.routing.default'))
-		{
-			$notFound[] = 'app.routing.default';
-		}
-
-		if (!Config::get('app.routing.home'))
-		{
-			$notFound[] = 'app.routing.home';
-		}
-
-		if (!Config::get('app.routing.loginroute'))
-		{
-			$notFound[] = 'app.routing.loginroute';
-		}
-
-		if (!Config::get('app.routing.redirecthalt'))
-		{
-			$notFound[] = 'app.routing.redirecthalt';
-		}
-
+		//Throw error if needed
 		if (!empty($notFound))
 		{
 			throw new ConfigNotFoundException($notFound);
