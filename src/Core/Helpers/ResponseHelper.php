@@ -17,6 +17,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -79,6 +80,12 @@ class ResponseHelper extends BaseHelper
 	 * @var array
 	 */
 	private $assignedHeaders = array();
+
+	/**
+	 * The response
+	 * @var array
+	 */
+	private $response = array();
 
 	/**
 	 * Set the response as success (default)
@@ -148,58 +155,67 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function attachExtras(&$response)
 	{
-		//Assign statusCode
-		$response->setStatusCode($this->statusCode);
+		if (!is_a($response, \Illuminate\View\View::class))
+		{
+			//Assign statusCode
+			$response->setStatusCode($this->statusCode);
+
+			//Assign headers
+			foreach ($this->assignedHeaders as $key => $value)
+			{
+				$response->header($key, $value);
+			}
+		}
 
 		//Assign cookie
 		foreach ($this->assignedCookies as $cookie)
 		{
 			$response->withCookie($cookie);
 		}
-
-		//Assign headers
-		foreach ($this->assignedHeaders as $key => $value)
-		{
-			$response->header($key, $value);
-		}
 	}
 
 	/**
 	 * Return content
 	 * @param mixed $content
-	 * @return ResponseFactory
 	 */
-	public function returnContent($content)
+	public function responseContent($content)
 	{
-		$response = Response::make($content);
-		$this->attachExtras($response);
-
-		return $response;
+		if (!isset($this->response['content']))
+		{
+			$this->response['content'] = Response::make($content);
+		}
 	}
 
 	/**
 	 * Return view
 	 * @param string $view
+	 * @param string $key
 	 * @return \Illuminate\Http\Response
 	 */
-	public function returnView($view)
+	public function responseView($key = null, $view)
 	{
-		$view = Response::view($view, array_merge($this->assignedData, $this->assignedViewData));
-		$this->attachExtras($view, true);
+		if (is_null($key))
+		{
+			$key = '_';
+		}
 
-		return $view;
+		if (!isset($this->response['view']))
+		{
+			$this->response['view'] = array($key => $view);
+		}
+		else
+		{
+			$this->response['view'][$key] = $view;
+		}
 	}
 
 	/**
 	 * Return json-data
 	 * @return JsonResponse
 	 */
-	public function returnJson()
+	public function responseJson()
 	{
-		$json = Response::json($this->assignedData);
-		$this->attachExtras($json);
-
-		return $json;
+		$this->response['json'] = true;
 	}
 
 	/**
@@ -208,12 +224,12 @@ class ResponseHelper extends BaseHelper
 	 * @param string $name
 	 * @return BinaryFileResponse
 	 */
-	public function returnDownload($file, $name = null)
+	public function responseDownload($file, $name = null)
 	{
-		$download = Response::download(FileHelper::getPath($file), $name);
-		$this->attachExtras($download);
-
-		return $download;
+		if (!isset($this->response['download']))
+		{
+			$this->response['download'] = Response::download(FileHelper::getPath($file), $name);
+		}
 	}
 
 	/**
@@ -222,35 +238,102 @@ class ResponseHelper extends BaseHelper
 	 * @param bool|array $input
 	 * @return RedirectResponse
 	 */
-	public function returnRedirect($uri, $input = null)
+	public function responseRedirect($uri, $input = null)
 	{
-		$redirect = redirect($uri);
-
-		if ($input === true)
+		if (!isset($this->response['redirect']))
 		{
-			$redirect = $redirect->withInput();
-		}
-		else
-		{
-			$redirect = $redirect->withInput($input);
-		}
+			$redirect = redirect($uri);
 
-		return $redirect;
+			if ($input === true)
+			{
+				$redirect = $redirect->withInput();
+			}
+			else
+			{
+				$redirect = $redirect->withInput($input);
+			}
+
+			$this->response['redirect'] = $redirect;
+		}
 	}
 
 	/**
 	 * 404
 	 */
-	public function return404()
+	public function response404()
 	{
-		return abort(404);
+		if (!isset($this->response['404']))
+		{
+			$this->response['404'] = abort(404);
+		}
 	}
 
 	/**
 	 * Unauthorized
 	 */
-	public function returnUnauthorized()
+	public function responseUnauthorized()
 	{
-		return abort(403);
+		if (!isset($this->response['403']))
+		{
+			$this->response['403'] = abort(403);
+		}
+	}
+
+	/**
+	 * Get the response
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getResponse()
+	{
+		$response = null;
+
+		if (isset($this->response['404']))
+		{
+			$response = $this->response['404'];
+		}
+		elseif (isset($this->response['403']))
+		{
+			$response = $this->response['403'];
+		}
+		elseif (isset($this->response['redirect']))
+		{
+			$response = $this->response['redirect'];
+		}
+		elseif (isset($this->response['download']))
+		{
+			$response = $this->response['download'];
+		}
+		elseif (isset($this->response['json']))
+		{
+			$response = Response::json($this->assignedData);
+		}
+		elseif (isset($this->response['view']))
+		{
+			$data = array_merge($this->assignedData, $this->assignedViewData);
+			ksort($this->response['view']);
+
+			foreach ($this->response['view'] as $key => $view)
+			{
+				if (is_null($response))
+				{
+					$response = View::make($view, $data);
+				}
+				else
+				{
+					$response = $response->nest($key, $view, $data);
+				}
+			}
+		}
+		elseif (isset($this->response['content']))
+		{
+			$response = $this->response['content'];
+		}
+
+		if (!is_null($response))
+		{
+			$this->attachExtras($response);
+		}
+
+		return $response;
 	}
 }
