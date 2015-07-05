@@ -62,7 +62,7 @@ class LoginRequiredController extends BaseController
 	/**
 	 * Check if user is authenticated
 	 * @param array $requiredRoles
-	 * @return true|redirect
+	 * @return true
 	 */
 	public function authenticationCheck($requiredRoles)
 	{
@@ -70,7 +70,8 @@ class LoginRequiredController extends BaseController
 			|| !$this->checkRoles($requiredRoles))
 		{
 			$loginRoute = Config::get('app.routing.loginroute');
-			return $this->response->returnRedirect($loginRoute);
+			$this->response->responseRedirect($loginRoute);
+			return false;
 		}
 
 		return true;
@@ -92,6 +93,6 @@ class LoginRequiredController extends BaseController
 		{
 			return true;
 		}
-		return $this->response->returnUnauthorized();
+		return $this->response->responseUnauthorized();
 	}
 }

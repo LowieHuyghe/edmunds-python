@@ -29,7 +29,6 @@ return array(
 			'app.routing.home',
 			'app.routing.loginroute',
 			'app.routing.redirecthalt',
-			'app.routing.redirecthalt',
 		],
 	],
 

@@ -91,10 +91,10 @@ class RouteHelper extends Controller
 		}
 
 		//Do authentication checks
-		$authResponse = $this->authenticationChecks($route, $controller, $requiredRoles);
-		if ($authResponse !== true)
+		if (!$this->authenticationChecks($route, $controller, $requiredRoles))
 		{
-			return $authResponse;
+			//Return response
+			return ResponseHelper::getInstance()->getResponse();
 		}
 
 		//Call the method
@@ -396,11 +396,10 @@ class RouteHelper extends Controller
 		$authCheckMethod = 'authenticationCheck';
 		if (method_exists($controller, $authCheckMethod))
 		{
-			$authResponse = $controller->$authCheckMethod($requiredRoles);
-			if ($authResponse !== true)
+			if (!$controller->$authCheckMethod($requiredRoles))
 			{
 				Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $route);
-				return $authResponse;
+				return false;
 			}
 		}
 
@@ -423,45 +422,56 @@ class RouteHelper extends Controller
 		//Initialize
 		$controller->initialize();
 
+		//PreRender
+		$controller->preRender();
+
+		$response = null;
 		//Call method with variables
 		switch (count($parameters))
 		{
 			case 0:
-				return $controller->$methodName();
+				$controller->$methodName();
 				break;
 			case 1:
-				return $controller->$methodName($parameters[0]);
+				$controller->$methodName($parameters[0]);
 				break;
 			case 2:
-				return $controller->$methodName($parameters[0], $parameters[1]);
+				$controller->$methodName($parameters[0], $parameters[1]);
 				break;
 			case 3:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
 				break;
 			case 4:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
 				break;
 			case 5:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
 				break;
 			case 6:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
 				break;
 			case 7:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
 				break;
 			case 8:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
 				break;
 			case 9:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
 				break;
 			case 10:
-				return $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
+				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
+				break;
+			default:
+				ResponseHelper::getInstance()->response404();
 				break;
 		}
 
-		return abort(404);
+		//PostRender
+		$controller->postRender();
+
+		//Return response
+		return ResponseHelper::getInstance()->getResponse();
 	}
 
 	/**

@@ -60,7 +60,7 @@ class FileAjaxController extends BaseController
 			$this->upload();
 		}
 
-		return $this->response->returnJson();
+		return $this->response->responseJson();
 	}
 
 	/**
@@ -83,7 +83,7 @@ class FileAjaxController extends BaseController
 			$this->upload();
 		}
 
-		return $this->response->returnJson();
+		return $this->response->responseJson();
 	}
 
 	/**
@@ -115,12 +115,12 @@ class FileAjaxController extends BaseController
 
 		if ($fileEntry)
 		{
-			return $this->response->returnDownload($fileEntry->name);
+			return $this->response->responseDownload($fileEntry->name);
 		}
 		else
 		{
 			$this->response->setFailed();
-			return $this->response->returnJson();
+			return $this->response->responseJson();
 		}
 	}
 
@@ -137,7 +137,7 @@ class FileAjaxController extends BaseController
 			$this->response->setFailed();
 		}
 
-		return $this->response->returnJson();
+		return $this->response->responseJson();
 	}
 
 }
