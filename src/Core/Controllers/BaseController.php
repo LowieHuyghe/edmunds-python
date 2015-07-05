@@ -40,15 +40,11 @@ class BaseController extends Controller
 	 * @var array
 	 */
 	public $routeMethods = array(
-		//0 => array( //Place of method in uri
-		//	'get' => 1 //ex: '/user/123'
-		//	'getIndex' => 0 //ex: '/user/'
-		//	'getHome' => 0 //ex: '/user/home'
-		//	'getSomething' => 1 //ex: '/user/something/1'
-		//),
-		//1 => array( //Place of method in uri
-		//	'getContacts' => 2 //Required Parameters, ex: '/user/123/contacts/45'
-		//),
+//		'index' => array(),
+//		'/' => array('p' => array('\d+')),
+//		1 => array(
+//			'user' => array('p' => array('\d+', '\d+', '\d+')),
+//		),
 	);
 
 	/**
@@ -97,6 +93,22 @@ class BaseController extends Controller
 	 * Function called after construct
 	 */
 	public function initialize()
+	{
+		//
+	}
+
+	/**
+	 * Function called after initialization
+	 */
+	public function preRender()
+	{
+		//
+	}
+
+	/**
+	 * Function called after method
+	 */
+	public function postRender()
 	{
 		//
 	}
