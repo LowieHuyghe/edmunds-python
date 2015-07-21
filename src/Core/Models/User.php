@@ -14,15 +14,13 @@
 namespace LH\Core\Models;
 
 use App\Models\Enums\RolesEnum;
+use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use LH\Core\Database\Relations\BelongsToManyEnums;
-use LH\Core\Database\Relations\HasOneEnum;
+use LH\Core\Helpers\ValidationHelper;
 
 /**
  * The model of the user
@@ -49,7 +47,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * The attributes that are mass assignable.
 	 * @var array
 	 */
-	protected $fillable = ['name', 'email', 'password'];
+	protected $fillable = ['email', 'password'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -62,16 +60,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * @var bool|array
 	 */
 	public $timestamps = true;
-
-	/**
-	 * Constructor
-	 */
-	function __construct()
-	{
-		parent::__construct();
-
-		$this->addValidationRules();
-	}
 
 	/**
 	 * Roles belonging to this user
@@ -94,21 +82,36 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
 	/**
 	 * Add the validation of the model
+	 * @param ValidationHelper $validator
 	 */
-	public function addValidationRules()
+	protected static function addValidationRules(&$validator)
 	{
-		$this->validator->integer('id');
+		$validator->integer('id');
 
-		$this->validator->required('email');
-		$this->validator->max('email', 255);
-		$this->validator->unique('email', 'users');
+		$validator->required('email');
+		$validator->max('email', 255);
+		$validator->unique('email', 'users');
 
-		$this->validator->max('password', 60);
+		$validator->max('password', 60);
 
-		$this->validator->max('remember_token', 100);
+		$validator->max('remember_token', 100);
 
-		$this->validator->date('created_at');
-		$this->validator->date('updated_at');
+		$validator->date('created_at');
+		$validator->date('updated_at');
+	}
+
+	/**
+	 * Define-function for the instance generator
+	 * @param Generator $faker
+	 * @return array
+	 */
+	protected static function factory($faker)
+	{
+		return array(
+			'email' => $faker->email,
+			'password' => str_random(10),
+			'remember_token' => str_random(10),
+		);
 	}
 
 }

@@ -12,6 +12,7 @@
  */
 
 namespace LH\Core\Models;
+use Faker\Generator;
 
 /**
  * The model for files
@@ -44,43 +45,52 @@ class FileEntry extends BaseModel
 	public $timestamps = true;
 
 	/**
-	 * Constructor
+	 * Add the validation of the model
+	 * @param ValidationHelper $validator
 	 */
-	function __construct()
+	protected static function addValidationRules(&$validator)
 	{
-		parent::__construct();
+		$validator->integer('id');
 
-		$this->addValidationRules();
+		$validator->required('name');
+		$validator->max('name', 20);
+		$validator->unique('name', 'file_entries');
+
+		$validator->required('md5');
+		$validator->max('md5', 32);
+
+		$validator->required('sha1');
+		$validator->max('sha1', 40);
+
+		$validator->required('original_name');
+		$validator->max('original_name', 255);
+
+		$validator->required('mime');
+		$validator->max('mime', 20);
+
+		$validator->integer('size');
+		$validator->required('size');
+
+		$validator->date('created_at');
+		$validator->date('updated_at');
 	}
 
 	/**
-	 * Add the validation of the model
+	 * Define-function for the instance generator
+	 * @param Generator $faker
+	 * @return array
 	 */
-	public function addValidationRules()
+	protected static function factorya($faker)
 	{
-		$this->validator->integer('id');
-
-		$this->validator->required('name');
-		$this->validator->max('name', 20);
-		$this->validator->unique('name', $this->table);
-
-		$this->validator->required('md5');
-		$this->validator->max('md5', 32);
-
-		$this->validator->required('sha1');
-		$this->validator->max('sha1', 40);
-
-		$this->validator->required('original_name');
-		$this->validator->max('original_name', 255);
-
-		$this->validator->required('mime');
-		$this->validator->max('mime', 20);
-
-		$this->validator->integer('size');
-		$this->validator->required('size');
-
-		$this->validator->date('created_at');
-		$this->validator->date('updated_at');
+		$extension = $faker->fileExtension;
+		return array(
+			'name' => str_random(10) . ".$extension",
+			'md5' => str_random(32),
+			'sha1' => str_random(40),
+			'original_name' => $faker->realText(100, 5) . ".$extension",
+			'mime' => str_random(10),
+			'size' => $faker->randomNumber(),
+		);
 	}
 
 }
