@@ -12,10 +12,12 @@
  */
 
 namespace LH\Core\Models;
+use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 use LH\Core\Database\Relations\BelongsToManyEnums;
 use LH\Core\Database\Relations\HasOneEnum;
 use LH\Core\Database\Relations\HasOneEnums;
+use LH\Core\Helpers\ModelFactoryHelper;
 use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Validation\Validator;
 
@@ -43,12 +45,14 @@ class BaseModel extends Model
 
 	/**
 	 * Constructor
+	 * @param array $attributes
 	 */
-	public function __construct()
+	public function __construct($attributes = array())
 	{
-		parent::__construct();
+		parent::__construct($attributes);
 
 		$this->validator = new ValidationHelper();
+		static::addValidationRules($this->validator);
 	}
 
 	/**
@@ -76,7 +80,6 @@ class BaseModel extends Model
 	/**
 	 * Define a one-to-one-enum relationship.
 	 *
-	 * @param  string  $related
 	 * @param  string  $enumClass
 	 * @param  string  $foreignKey
 	 * @param  string  $localKey
@@ -96,7 +99,6 @@ class BaseModel extends Model
 	/**
 	 * Define a many-to-many-enum relationship.
 	 *
-	 * @param  string  $related
 	 * @param  string  $enumClass
 	 * @param  string  $table
 	 * @param  string  $foreignKey
@@ -126,6 +128,35 @@ class BaseModel extends Model
 		$query = $instance->newQuery();
 
 		return new BelongsToManyEnums($query, $this, $enumClass, $table, $foreignKey, $otherKey, $relation);
+	}
+
+	/**
+	 * Add the validation of the model
+	 * @param ValidationHelper $validator
+	 */
+	protected static function addValidationRules(&$validator)
+	{
+		//
+	}
+
+	/**
+	 * Create an instance of the model
+	 * @param array $attributes
+	 * @return BaseModel
+	 */
+	public static function dummy($attributes = array())
+	{
+		return ModelFactoryHelper::createModel(get_called_class(), array(get_called_class(), 'factory'), $attributes);
+	}
+
+	/**
+	 * Define-function for the instance generator
+	 * @param Generator $faker
+	 * @return array
+	 */
+	protected static function factory($faker)
+	{
+		throw new \Exception('Factory not defined in ' . get_called_class());
 	}
 
 }
