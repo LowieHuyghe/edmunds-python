@@ -21,6 +21,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 use LH\Core\Models\User;
 
 /**
@@ -51,48 +52,22 @@ class LoginRequiredController extends BaseController
 	{
 		parent::__construct();
 
-		$authUser = Auth::user();
-		if ($authUser)
-		{
-			$this->user = User::findOrFail($authUser->id);
-			$this->response->assign('__login', $authUser);
-		}
+		$this->checkLogin();
+
+		$this->response->assign('__login', $this->visitor->user);
 	}
 
 	/**
-	 * Check if user is authenticated
-	 * @param array $requiredRoles
-	 * @return true
+	 * Check if user is logged in
 	 */
-	public function authenticationCheck($requiredRoles)
+	private function checkLogin()
 	{
-		if (!Auth::check()
-			|| !$this->checkRoles($requiredRoles))
+		//If user is not logged in, redirect to other page
+		if (!$this->visitor->isLoggedIn())
 		{
+			Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $this->request->path());
 			$loginRoute = Config::get('app.routing.loginroute');
 			$this->response->responseRedirect($loginRoute);
-			return false;
 		}
-
-		return true;
-	}
-
-	/**
-	 * Check if user has all the required roles
-	 * @param array $requiredRoles
-	 * @return bool
-	 */
-	public function checkRoles($requiredRoles)
-	{
-		$userRoles = User::find($this->user->id)->roles()->get()->lists('id')->toArray();
-
-		$requiredRoles = array_unique($requiredRoles);
-		$userRoles = array_unique($userRoles);
-
-		if (count(array_intersect($userRoles, $requiredRoles)) == count($requiredRoles))
-		{
-			return true;
-		}
-		return $this->response->responseUnauthorized();
 	}
 }
