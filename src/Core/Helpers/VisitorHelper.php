@@ -75,6 +75,11 @@ class VisitorHelper extends BaseHelper
 	public $browser;
 
 	/**
+	 * @var LocationHelper
+	 */
+	public $location;
+
+	/**
 	 * Constructor
 	 * @param Request $request
 	 */
@@ -83,6 +88,7 @@ class VisitorHelper extends BaseHelper
 		$this->request = $request;
 		$this->ip = $request->ip();
 		$this->browser = new BrowserHelper($request->server('HTTP_USER_AGENT'));
+		$this->location = new LocationHelper($this->ip);
 
 		$authUser = Auth::user();
 		if ($authUser)
