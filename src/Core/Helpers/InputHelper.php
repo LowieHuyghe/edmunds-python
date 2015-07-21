@@ -13,8 +13,6 @@
 
 namespace LH\Core\Helpers;
 
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Input;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -46,6 +44,14 @@ class InputHelper extends BaseHelper
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Constructor
+	 */
+	private function __construct()
+	{
+		//
 	}
 
 	/**
