@@ -36,6 +36,10 @@ use Illuminate\Support\Facades\App;
  */
 class LocationHelper extends BaseHelper
 {
+	const	GEOIP_DIR	= 'geoip',
+			GEOIP_CITY	= 'GeoLite2-Cityy.mmdb',
+			GEOIP_COUNTRY	= 'GeoLite2-Country.mmdb';
+
 	/**
 	 * @var string
 	 */
@@ -75,7 +79,7 @@ class LocationHelper extends BaseHelper
 	{
 		if (!isset($this->geoIP['country']))
 		{
-			$this->geoIP['country'] = new Reader(__DIR__ . '/../_resources/geoip/GeoLite2-Country.mmdb');
+			$this->geoIP['country'] = new Reader(storage_path(self::GEOIP_DIR . '/' . self::GEOIP_COUNTRY));
 		}
 		return $this->geoIP['country'];
 	}
@@ -97,6 +101,11 @@ class LocationHelper extends BaseHelper
 			{
 				$this->details['country'] = false;
 			}
+			catch(\InvalidArgumentException $e)
+			{
+				PmHelper::pmAdmin('GeoIP Error!', 'There is no country-geo-db.');
+				$this->details['country'] = false;
+			}
 		}
 		return $this->details['country'];
 	}
@@ -109,7 +118,7 @@ class LocationHelper extends BaseHelper
 	{
 		if (!isset($this->geoIP['city']))
 		{
-			$this->geoIP['city'] = new Reader(__DIR__ . '/../_resources/geoip/GeoLite2-City.mmdb');
+			$this->geoIP['city'] = new Reader(storage_path(self::GEOIP_DIR . '/' . self::GEOIP_CITY));
 		}
 		return $this->geoIP['city'];
 	}
@@ -129,6 +138,11 @@ class LocationHelper extends BaseHelper
 			}
 			catch(AddressNotFoundException $e)
 			{
+				$this->details['city'] = false;
+			}
+			catch(\InvalidArgumentException $e)
+			{
+				PmHelper::pmAdmin('GeoIP Error!', 'There is no city-geo-db.');
 				$this->details['city'] = false;
 			}
 		}
