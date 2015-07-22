@@ -12,6 +12,8 @@
  */
 
 namespace LH\Core\Helpers;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 
 /**
  * The helper for pm'ing someone directly and fast
@@ -23,11 +25,14 @@ namespace LH\Core\Helpers;
  */
 class PmHelper extends BaseHelper
 {
-	CONST	TYPE_NOTE = 1,
+	const	TYPE_NOTE = 1,
 			TYPE_LINK = 2,
 			TYPE_ADDRESS = 3,
 			TYPE_LIST = 4,
 			TYPE_FILE = 5;
+
+	const	CACHE_KEY = 'PmHelper_',
+			CACHE_EXPIRE = 10;
 
 	/**
 	 * Pm the admin
@@ -38,25 +43,50 @@ class PmHelper extends BaseHelper
 	 */
 	public static function pmAdmin($title, $message = null, $type = self::TYPE_NOTE, $extra = null)
 	{
-		switch($type)
+		$title = Config::get('app.specs.sitename') . ': ' . $title;
+
+		if (self::hasBeenLongEnoughForThisMessage($title, $message))
 		{
-			case self::TYPE_LINK:
-				PushBulletHelper::sendLink($title, $extra, $message);
-				break;
-			case self::TYPE_ADDRESS:
-				PushBulletHelper::sendAddress($title, $extra);
-				break;
-			case self::TYPE_LIST:
-				PushBulletHelper::sendList($title, $extra);
-				break;
-			case self::TYPE_FILE:
-				PushBulletHelper::sendFile($title, $extra, $message);
-				break;
-			case self::TYPE_NOTE:
-			default:
-				PushBulletHelper::sendNote($title, $message);
-				break;
+			switch($type)
+			{
+				case self::TYPE_LINK:
+					PushBulletHelper::sendLink($title, $extra, $message);
+					break;
+				case self::TYPE_ADDRESS:
+					PushBulletHelper::sendAddress($title, $extra);
+					break;
+				case self::TYPE_LIST:
+					PushBulletHelper::sendList($title, $extra);
+					break;
+				case self::TYPE_FILE:
+					PushBulletHelper::sendFile($title, $extra, $message);
+					break;
+				case self::TYPE_NOTE:
+				default:
+					PushBulletHelper::sendNote($title, $message);
+					break;
+			}
 		}
+	}
+
+	/**
+	 * Check if this specific message has been sent already
+	 * @param string $title
+	 * @param string $message
+	 * @return bool
+	 */
+	private static function hasBeenLongEnoughForThisMessage($title, $message)
+	{
+		$key = self::CACHE_KEY . substr(md5($title . $message), 0, 7);
+
+		if (Cache::has($key))
+		{
+			return false;
+		}
+
+		Cache::put($key, true, self::CACHE_EXPIRE);
+
+		return true;
 	}
 
 }

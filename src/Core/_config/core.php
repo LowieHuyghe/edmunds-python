@@ -24,6 +24,8 @@ return array(
 
 	'config' => [
 		'required' => [
+			'app.specs.sitename',
+
 			'app.routing.namespace',
 			'app.routing.default',
 			'app.routing.home',
