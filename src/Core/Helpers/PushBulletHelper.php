@@ -25,30 +25,44 @@ use PHPushbullet\PHPushbullet;
 class PushBulletHelper extends BaseHelper
 {
 	/**
+	 * Instance of the pushbullet-helper
+	 * @var PushBulletHelper
+	 */
+	private static $instance;
+
+	/**
+	 * Fetch instance of the pushbullet-helper
+	 * @return PushBulletHelper
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new PushBulletHelper();
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * Instance of PushBullet
 	 * @var \PHPushbullet\PHPushbullet
 	 */
-	private static $pushBullet;
+	private $pushBullet;
 
 	/**
-	 * Get an instance of PushBullet
-	 * @return \PHPushbullet\PHPushbullet
+	 * Constructor
 	 */
-	private static function getPushBullet()
+	private function __construct()
 	{
-		if (!isset(self::$pushBullet))
-		{
-			self::$pushBullet = new PHPushbullet(ConfigHelper::get('core.pm.pushbullet.token'));
-		}
-
-		return self::$pushBullet;
+		$this->pushBullet = new PHPushbullet(ConfigHelper::get('core.pm.pushbullet.token'));
 	}
 
 	/**
 	 * Fetch the account to send to
 	 * @return string
 	 */
-	private static function getAccount()
+	private function getAccount()
 	{
 		return ConfigHelper::get('core.pm.pushbullet.account');
 	}
@@ -58,9 +72,9 @@ class PushBulletHelper extends BaseHelper
 	 * @param string $title
 	 * @param string $message
 	 */
-	public static function sendNote($title, $message)
+	public function sendNote($title, $message)
 	{
-		self::getPushBullet()->user(self::getAccount())->note($title, $message);
+		$this->pushBullet->user($this->getAccount())->note($title, $message);
 	}
 
 	/**
@@ -69,9 +83,9 @@ class PushBulletHelper extends BaseHelper
 	 * @param string $url
 	 * @param string $message
 	 */
-	public static function sendLink($title, $url, $message)
+	public function sendLink($title, $url, $message)
 	{
-		self::getPushBullet()->user(self::getAccount())->link($title, $url, $message);
+		$this->pushBullet->user($this->getAccount())->link($title, $url, $message);
 	}
 
 	/**
@@ -79,9 +93,9 @@ class PushBulletHelper extends BaseHelper
 	 * @param string $title
 	 * @param string $address
 	 */
-	public static function sendAddress($title, $address)
+	public function sendAddress($title, $address)
 	{
-		self::getPushBullet()->user(self::getAccount())->address($title, $address);
+		$this->pushBullet->user($this->getAccount())->address($title, $address);
 	}
 
 	/**
@@ -89,9 +103,9 @@ class PushBulletHelper extends BaseHelper
 	 * @param string $title
 	 * @param array $list
 	 */
-	public static function sendList($title, $list)
+	public function sendList($title, $list)
 	{
-		self::getPushBullet()->user(self::getAccount())->list($title, $list);
+		$this->pushBullet->user($this->getAccount())->list($title, $list);
 	}
 
 	/**
@@ -100,9 +114,9 @@ class PushBulletHelper extends BaseHelper
 	 * @param string $fileUrl
 	 * @param string $message
 	 */
-	public static function sendFile($title, $fileUrl, $message)
+	public function sendFile($title, $fileUrl, $message)
 	{
-		self::getPushBullet()->user(self::getAccount())->file($title, $fileUrl, $message);
+		$this->pushBullet->user($this->getAccount())->file($title, $fileUrl, $message);
 	}
 
 }

@@ -40,7 +40,7 @@ class ValidationHelper extends BaseHelper
 	 * The constructor
 	 * @param array $input
 	 */
-	function __construct($input = null)
+	public function __construct($input = null)
 	{
 		if ($input)
 		{
