@@ -50,20 +50,20 @@ class PmHelper extends BaseHelper
 			switch($type)
 			{
 				case self::TYPE_LINK:
-					PushBulletHelper::sendLink($title, $extra, $message);
+					PushBulletHelper::getInstance()->sendLink($title, $extra, $message);
 					break;
 				case self::TYPE_ADDRESS:
-					PushBulletHelper::sendAddress($title, $extra);
+					PushBulletHelper::getInstance()->sendAddress($title, $extra);
 					break;
 				case self::TYPE_LIST:
-					PushBulletHelper::sendList($title, $extra);
+					PushBulletHelper::getInstance()->sendList($title, $extra);
 					break;
 				case self::TYPE_FILE:
-					PushBulletHelper::sendFile($title, $extra, $message);
+					PushBulletHelper::getInstance()->sendFile($title, $extra, $message);
 					break;
 				case self::TYPE_NOTE:
 				default:
-					PushBulletHelper::sendNote($title, $message);
+					PushBulletHelper::getInstance()->sendNote($title, $message);
 					break;
 			}
 		}
