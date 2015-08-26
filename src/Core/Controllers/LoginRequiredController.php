@@ -65,7 +65,8 @@ class LoginRequiredController extends BaseController
 		//If user is not logged in, redirect to other page
 		if (!$this->visitor->isLoggedIn())
 		{
-			Session::set(LoginRequiredController::SESSION_KEY_LOGIN_INTENDED_ROUTE, $this->request->path());
+			$this->visitor->setIntendedRoute();
+
 			$loginRoute = Config::get('app.routing.loginroute');
 			$this->response->responseRedirect($loginRoute);
 		}
