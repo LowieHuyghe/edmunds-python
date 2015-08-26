@@ -339,6 +339,21 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
+	 * Render a view and get the output
+	 * @param $view
+	 * @param array $input
+	 * @return string
+	 */
+	public function getRenderedView($view, $input = array())
+	{
+		$data = array_merge($this->assignedGeneralData, $this->assignedData, $input);
+
+		$response = View::make($view, $data);
+		$render = $response->render();
+		return $render;
+	}
+
+	/**
 	 * Show the redirect page
 	 * @param $response
 	 * @return string
