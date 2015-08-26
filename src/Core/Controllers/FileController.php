@@ -24,7 +24,7 @@ use LH\Core\Helpers\FileHelper;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class FileAjaxController extends BaseController
+class FileController extends BaseController
 {
 	const	SIZE_MAX_PICTURE = 3 * 1024,
 			SIZE_MAX_DOCUMENT = 3 * 1024 * 1024;
