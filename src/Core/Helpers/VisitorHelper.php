@@ -16,6 +16,7 @@ namespace LH\Core\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use LH\Core\Models\User;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * The helper for the visitor
@@ -27,6 +28,8 @@ use LH\Core\Models\User;
  */
 class VisitorHelper extends BaseHelper
 {
+	const	INTENDED_ROUTE_DEFAULT		= 'visitor_intended_route_default';
+
 	/**
 	 * Instance of the visitor-helper
 	 * @var VisitorHelper
@@ -70,6 +73,11 @@ class VisitorHelper extends BaseHelper
 	public $ip;
 
 	/**
+	 * @var SessionInterface
+	 */
+	public $session;
+
+	/**
 	 * @var BrowserHelper
 	 */
 	public $browser;
@@ -87,6 +95,7 @@ class VisitorHelper extends BaseHelper
 	{
 		$this->request = $request;
 		$this->ip = $request->ip();
+		$this->session = $request->getSession();
 		$this->browser = new BrowserHelper($request->server('HTTP_USER_AGENT'));
 		$this->location = new LocationHelper($this->ip);
 
@@ -105,5 +114,30 @@ class VisitorHelper extends BaseHelper
 	public function isLoggedIn()
 	{
 		return (isset($this->user) && $this->user);
+	}
+
+	/**
+	 * Set the intended route of the visitor
+	 * @param string $route
+	 * @param string $key
+	 */
+	public function setIntendedRoute($route = null, $key = self::INTENDED_ROUTE_DEFAULT)
+	{
+		if (!$route)
+		{
+			$route = $this->request->path();
+		}
+
+		$this->session->set($key, $route);
+	}
+
+	/**
+	 * Get the visitor his intended route
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function getIntendedRoute($key = self::INTENDED_ROUTE_DEFAULT)
+	{
+		return $this->session->get($key);
 	}
 }
