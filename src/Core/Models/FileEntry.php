@@ -13,6 +13,9 @@
 
 namespace LH\Core\Models;
 use Faker\Generator;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * The model for files
@@ -43,6 +46,122 @@ class FileEntry extends BaseModel
 	 * @var bool|array
 	 */
 	public $timestamps = true;
+
+	/**
+	 * The resource from the file
+	 * @var resource
+	 */
+	private $resource;
+
+	/**
+	 * The path of the uplaoded file
+	 * @var string
+	 */
+	private $uploadPath;
+
+	/**
+	 * The name of the last changed resource of the file (to save)
+	 * @var string
+	 */
+	private $lastChanged;
+
+	public function save()
+	{
+
+	}
+
+	public function saveAs()
+	{
+
+	}
+
+	public function delete()
+	{
+
+	}
+
+	/**
+	 * Get the complete path to the file
+	 * @return string
+	 */
+	public function getFullPath()
+	{
+		return self::getDisk()->getDriver()->getAdapter()->getPathPrefix() . $this->name;
+	}
+
+	/**
+	 * Check if saved file exists
+	 * @return bool
+	 */
+	public function getFileExist()
+	{
+		return self::getDisk()->exists($this->name);
+	}
+
+	/**
+	 * Check if file is image
+	 * @return bool
+	 */
+	public function isImage()
+	{
+		return in_array($this->mime, array(
+			'image/gif',
+			'image/jpeg',
+			'image/pjpeg',
+			'image/png',
+		));
+	}
+
+	/**
+	 * Check if file is document
+	 * @return bool
+	 */
+	public function isDocument()
+	{
+		return in_array($this->mime, array(
+			'application/pdf',
+			'application/msword',
+		));
+	}
+
+	/**
+	 * Get the resource based on the file
+	 * @return resource
+	 */
+	public function getResource()
+	{
+		if (!isset($this->resource))
+		{
+			if ($this->getFileExist())
+			{
+				$this->resource = File::get($this->getFullPath());
+			}
+			else
+			{
+				$this->resource = null;
+			}
+		}
+		return $this->resource;
+	}
+
+	/**
+	 * Set the changed resource
+	 * @param resource $resource
+	 */
+	public function setResource($resource)
+	{
+		$this->resource = $resource;
+		$this->lastChanged = 'resource';
+	}
+
+	/**
+	 * Get the disk to handle files
+	 * @return mixed
+	 */
+	private static function getDisk()
+	{
+		return Storage::disk(Config::get('filesystems.default'));
+	}
 
 	/**
 	 * Add the validation of the model
@@ -80,7 +199,7 @@ class FileEntry extends BaseModel
 	 * @param Generator $faker
 	 * @return array
 	 */
-	protected static function factorya($faker)
+	protected static function factory($faker)
 	{
 		$extension = $faker->fileExtension;
 		return array(
