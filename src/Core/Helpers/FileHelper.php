@@ -114,33 +114,4 @@ class FileHelper extends BaseHelper
 
 		return false;
 	}
-
-	/**
-	 * Check if file exists
-	 * @param $name
-	 * @return bool
-	 */
-	public static function exists($name)
-	{
-		return self::getDisk()->exists($name);
-	}
-
-	/**
-	 * Get the disk to handle files
-	 * @return mixed
-	 */
-	private static function getDisk()
-	{
-		return Storage::disk(Config::get('filesystems.default'));
-	}
-
-	/**
-	 * Get the complete path to the file
-	 * @param string $file
-	 * @return string
-	 */
-	public static function getPath($file)
-	{
-		return Storage::disk(Config::get('filesystems.default'))->getDriver()->getAdapter()->getPathPrefix() . $file;
-	}
 }
