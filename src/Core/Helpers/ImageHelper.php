@@ -12,6 +12,7 @@
  */
 
 namespace LH\Core\Helpers;
+
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
