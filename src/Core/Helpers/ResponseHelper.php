@@ -228,15 +228,15 @@ class ResponseHelper extends BaseHelper
 
 	/**
 	 * Return a download
-	 * @param string $file
+	 * @param string $filePath
 	 * @param string $name
 	 * @return BinaryFileResponse
 	 */
-	public function responseDownload($file, $name = null)
+	public function responseDownload($filePath, $name = null)
 	{
 		if (!isset($this->response['download']))
 		{
-			$this->response['download'] = Response::download(FileHelper::getPath($file), $name);
+			$this->response['download'] = Response::download($filePath, $name);
 		}
 	}
 
