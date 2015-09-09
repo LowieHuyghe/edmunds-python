@@ -15,6 +15,7 @@ namespace LH\Core\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use LH\Core\Helpers\FileHelper;
+use LH\Core\Models\FileEntry;
 
 /**
  * Controller that handles file upload
@@ -91,7 +92,7 @@ class FileController extends BaseController
 	 */
 	private function upload()
 	{
-		$fileEntry = FileHelper::store($this->input->file('file'));
+		$fileEntry = FileEntry::generateFromInput('file');
 
 		if ($fileEntry)
 		{
@@ -111,11 +112,11 @@ class FileController extends BaseController
 	public function get($id)
 	{
 		//Get the file
-		$fileEntry = FileHelper::get($id);
+		$fileEntry = FileEntry::find($id);
 
 		if ($fileEntry)
 		{
-			return $this->response->responseDownload($fileEntry->name);
+			return $this->response->responseDownload($fileEntry->getPath(), $fileEntry->original_name);
 		}
 		else
 		{
@@ -131,8 +132,10 @@ class FileController extends BaseController
 	 */
 	public function delete($id)
 	{
+		$fileEntry = FileEntry::find($id);
+
 		//Delete the file
-		if (!FileHelper::delete($id))
+		if (!$fileEntry->delete())
 		{
 			$this->response->setFailed();
 		}

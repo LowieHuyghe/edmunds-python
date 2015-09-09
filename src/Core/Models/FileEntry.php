@@ -16,6 +16,8 @@ use Faker\Generator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use LH\Core\Helpers\InputHelper;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * The model for files
@@ -54,48 +56,123 @@ class FileEntry extends BaseModel
 	private $resource;
 
 	/**
-	 * The path of the uplaoded file
-	 * @var string
+	 * The path of the uploaded file
+	 * @var UploadedFile
 	 */
-	private $uploadPath;
+	private $uploadedFile;
 
 	/**
 	 * The name of the last changed resource of the file (to save)
 	 * @var string
 	 */
-	private $lastChanged;
+	private $lastTouched;
 
+	/**
+	 * Save the file-entry and upload the file
+	 * @return bool
+	 */
 	public function save()
 	{
+		//Set the name for the file when saving
+		if (!$this->name)
+		{
+			$this->name = self::getNewName($this->getExtension());
+		}
 
+		//First save the file to the storage
+		switch($this->lastTouched)
+		{
+			case 'resource':
+				$uploadSuccess = self::getDisk()->put($this->name, $this->resource);
+				break;
+			case 'uploadedFile':
+				$uploadSuccess = self::getDisk()->put($this->name, File::get($this->uploadedFile));
+				break;
+			default:
+				$uploadSuccess = true;
+				break;
+		}
+
+		//If success save the entry in the database
+		if ($uploadSuccess)
+		{
+			return parent::save();
+		}
+
+		return false;
 	}
 
+	/**
+	 * Save the fil-entry as a new entry
+	 * @return bool
+	 */
 	public function saveAs()
 	{
+		$this->id = null;
+		$this->name = null;
 
+		return $this->save();
 	}
 
+	/**
+	 * Delete the file completely
+	 * @return bool
+	 */
 	public function delete()
 	{
+		//Delete the file on the storage
+		$deleted = true;
+		if ($this->name && $this->getFileExist())
+		{
+			if (!self::getDisk()->delete($this->name))
+			{
+				$deleted = false;
+			}
+		}
 
+		//Delete record when file doesn't exist anymore
+		if ($deleted && parent::delete())
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Get the complete path to the file
 	 * @return string
 	 */
-	public function getFullPath()
+	public function getPath()
 	{
-		return self::getDisk()->getDriver()->getAdapter()->getPathPrefix() . $this->name;
+		//Get the full path of the uploaded temporary file
+		if ($this->lastTouched == 'uploadedFile')
+		{
+			return $this->uploadedFile->getPath();
+		}
+
+		//Get the full path of the file on the storage server
+		if ($this->name)
+		{
+			return self::getDisk()->getDriver()->getAdapter()->getPathPrefix() . $this->name;
+		}
+
+		return null;
 	}
 
 	/**
-	 * Check if saved file exists
+	 * Check if saved file exists on server
 	 * @return bool
 	 */
 	public function getFileExist()
 	{
-		return self::getDisk()->exists($this->name);
+		//Check if file on server
+		if ($this->name)
+		{
+			return self::getDisk()->exists($this->name);
+		}
+
+		return false;
 	}
 
 	/**
@@ -125,22 +202,44 @@ class FileEntry extends BaseModel
 	}
 
 	/**
-	 * Get the resource based on the file
+	 * Get the extension of the file
+	 * @return string
+	 */
+	public function getExtension()
+	{
+		return pathinfo($this->original_name, PATHINFO_EXTENSION);
+	}
+
+	/**
+	 * Get the resource based on the file (only for images)
 	 * @return resource
 	 */
 	public function getResource()
 	{
-		if (!isset($this->resource))
+		//Check if resource doesn't already exist
+		if (isset($this->resource))
 		{
-			if ($this->getFileExist())
-			{
-				$this->resource = File::get($this->getFullPath());
-			}
-			else
-			{
-				$this->resource = null;
-			}
+			return $this->resource;
 		}
+
+		//Fill in the resource
+		switch($this->mime)
+		{
+			case 'image/png':
+				$this->resource = imagecreatefrompng($this->getPath());
+				break;
+			case 'image/pjpeg':
+			case 'image/jpeg':
+				$this->resource = imagecreatefromjpeg($this->getPath());
+				break;
+			case 'image/gif':
+				$this->resource = imagecreatefromgif($this->getPath());
+				break;
+			default:
+				return null;
+		}
+
+		//Return the resource
 		return $this->resource;
 	}
 
@@ -151,7 +250,7 @@ class FileEntry extends BaseModel
 	public function setResource($resource)
 	{
 		$this->resource = $resource;
-		$this->lastChanged = 'resource';
+		$this->lastTouched = 'resource';
 	}
 
 	/**
@@ -161,6 +260,56 @@ class FileEntry extends BaseModel
 	private static function getDisk()
 	{
 		return Storage::disk(Config::get('filesystems.default'));
+	}
+
+	/**
+	 * Get a new name that doesn't exist
+	 * @param string $extension
+	 * @return string
+	 */
+	private static function getNewName($extension)
+	{
+		do {
+			$name = str_random(7) . '.' . $extension;
+		} while (self::getDisk()->exists($name));
+
+		return $name;
+	}
+
+	/**
+	 * Generate a fileEntry from an uploaded file
+	 * @param string $name
+	 * @return FileEntry
+	 */
+	public static function generateFromInput($name)
+	{
+		//Fetch the uploaded file
+		$uploadedFile = InputHelper::getInstance()->file($name);
+		if (!$uploadedFile)
+		{
+			return null;
+		}
+
+		//Fetch data
+		$originalName = $uploadedFile->getClientOriginalName();
+		$mime = $uploadedFile->getMimeType();
+		$size = $uploadedFile->getSize();
+		$md5 = md5_file($uploadedFile->getPathname());
+		$sha1 = sha1_file($uploadedFile->getPathname());
+
+		//Make fileEntry
+		$fileEntry = new FileEntry();
+		$fileEntry->md5 = $md5;
+		$fileEntry->sha1 = $sha1;
+		$fileEntry->original_name = $originalName;
+		$fileEntry->mime = $mime;
+		$fileEntry->size = $size;
+
+		//Set file
+		$fileEntry->uploadedFile = $uploadedFile;
+		$fileEntry->lastTouched = 'uploadedFile';
+
+		return $fileEntry;
 	}
 
 	/**
