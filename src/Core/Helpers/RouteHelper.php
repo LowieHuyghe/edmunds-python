@@ -62,10 +62,10 @@ class RouteHelper extends Controller
 		}
 
 		//Get all the constants
-		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestAjax, $segments) = $this->getAllConstants();
+		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestType, $segments) = $this->getAllConstants();
 
 		//Get the controller and make instance of defaultController
-		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestAjax, $segments);
+		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments);
 		if (!$controllerName)
 		{
 			return abort(404);
@@ -119,12 +119,24 @@ class RouteHelper extends Controller
 		{
 			$requestMethod = 'put';
 		}
+		$requestType = null;
 		//Check if ajax-call
-		$requestAjax = $request->ajax();
+		if ($request->ajax())
+		{
+			$requestType = 'ajax';
+		}
+		elseif ($request->wantsJson() || (InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'json'))
+		{
+			$requestType = 'json';
+		}
+		elseif ($request->accepts(array('application/xml', 'text/xml')) || InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'xml')
+		{
+			$requestType = 'xml';
+		}
 		//Get route and its parts
 		$segments = $request->segments();
 
-		return array($namespace, $defaultController, $homeController, $requestMethod, $requestAjax, $segments);
+		return array($namespace, $defaultController, $homeController, $requestMethod, $requestType, $segments);
 	}
 
 	/**
@@ -132,11 +144,11 @@ class RouteHelper extends Controller
 	 * @param string $namespace
 	 * @param string $defaultControllerName
 	 * @param string $homeControllerName
-	 * @param bool $requestAjax
+	 * @param string $requestType
 	 * @param array $segments
 	 * @return array
 	 */
-	private function getController($namespace, $defaultControllerName, $homeControllerName, $requestAjax, $segments)
+	private function getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments)
 	{
 		//Go through all the parts back to front
 		$controllerLoopCount = min(3, count($segments));
@@ -156,7 +168,7 @@ class RouteHelper extends Controller
 				{
 					$className .= '\\' . ucfirst($segments[$j]);
 				}
-				$className = $namespace . $className . ($requestAjax ? 'Ajax' : '') . 'Controller';
+				$className = $namespace . $className . ($requestType ? ucfirst($requestType) : '') . 'Controller';
 
 				//Home controller only approachable when called from '/'
 				//Default controller not approachable
