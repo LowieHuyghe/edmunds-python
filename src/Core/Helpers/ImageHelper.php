@@ -27,112 +27,125 @@ class ImageHelper extends BaseHelper
 {
 
 	/**
-	 * Get the resource from a fileEntryId or input
-	 * @param UploadedFile|int $file
-	 * @return resource|null
-	 */
-	public static function getResource($file)
-	{
-		if (is_a($file, UploadedFile::class))
-		{
-
-		}
-		elseif (is_numeric($file))
-		{
-
-		}
-	}
-
-	/**
 	 * Crop an image
 	 * @param resource $resource
 	 * @param int $width
 	 * @param int $height
 	 * @param int $x
 	 * @param int $y
-	 * @return null|resource.
+	 * @return bool
 	 */
-	public static function crop($resource, $width, $height, $x = 0, $y = 0)
+	public static function crop(&$resource, $width, $height, $x = 0, $y = 0)
 	{
 		$result = imagecrop($resource, array('width' => $width, 'height' => $height, 'x' => $x, 'y' => $y));
-		return ($result !== false) ? $result : null;
+		if ($result !== false)
+		{
+			$resource = $result;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
 	 * Resize an image
 	 * @param resource $resource
 	 * @param int $width
-	 * @param int $heigth
-	 * @return null|resource
+	 * @param int $height
+	 * @return bool
 	 */
-	public static function resize($resource, $width, $heigth = -1)
+	public static function resize(&$resource, $width, $height = -1)
 	{
-		$result = imagescale($resource, $width, $heigth);
-		return ($result !== false) ? $result : null;
+		$result = imagescale($resource, $width, $height);
+		if ($result !== false)
+		{
+			$resource = $result;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
 	 * Flip the image horizontal
-	 * @param $resource
-	 * @return bool|null
+	 * @param resource $resource
+	 * @return bool
 	 */
-	public static function flipHorizontal($resource)
+	public static function flipHorizontal(&$resource)
 	{
-		$result = imageflip($resource, IMG_FLIP_HORIZONTAL);
-		return ($result !== false) ? $result : null;
+		return imageflip($resource, IMG_FLIP_HORIZONTAL);
 	}
 
 	/**
 	 * Flip the image vertical
-	 * @param $resource
-	 * @return bool|null
+	 * @param resource $resource
+	 * @return bool
 	 */
-	public static function flipVertical($resource)
+	public static function flipVertical(&$resource)
 	{
-		$result = imageflip($resource, IMG_FLIP_VERTICAL);
-		return ($result !== false) ? $result : null;
+		return imageflip($resource, IMG_FLIP_VERTICAL);
 	}
 
 	/**
 	 * Flip the image horizontal and vertical
-	 * @param $resource
-	 * @return bool|null
+	 * @param resource $resource
+	 * @return bool
 	 */
-	public static function flipBoth($resource)
+	public static function flipBoth(&$resource)
 	{
-		$result = imageflip($resource, IMG_FLIP_BOTH);
-		return ($result !== false) ? $result : null;
+		return imageflip($resource, IMG_FLIP_BOTH);
 	}
 
 	/**
 	 * Apply a filter
-	 * @param $resource
-	 * @param $filter
-	 * @param array $arguments
-	 * @return resource|null
+	 * @param resource $resource
+	 * @param int $filter
+	 * @param mixed $arg1
+	 * @param mixed $arg2
+	 * @param mixed $arg3
+	 * @param mixed $arg4
+	 * @return bool
 	 */
-	private static function filter($resource, $filter, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
+	private static function filter(&$resource, $filter, $arg1 = null, $arg2 = null, $arg3 = null, $arg4 = null)
 	{
-		$result = imagefilter($resource, $filter, $arg1, $arg2, $arg3, $arg4);
-		return ($result !== false) ? $result : null;
+		$count = (is_null($arg1) ? 0 : 1) + (is_null($arg2) ? 0 : 1) + (is_null($arg3) ? 0 : 1) + (is_null($arg4) ? 0 : 1);
+
+		switch ($count)
+		{
+			case 0:
+				return imagefilter($resource, $filter);
+			case 1:
+				return imagefilter($resource, $filter, $arg1);
+			case 2:
+				return imagefilter($resource, $filter, $arg1, $arg2);
+			case 3:
+				return imagefilter($resource, $filter, $arg1, $arg2, $arg3);
+			case 4:
+			default:
+				return imagefilter($resource, $filter, $arg1, $arg2, $arg3, $arg4);
+		}
 	}
 
 	/**
 	 * Apply grayscale filter
-	 * @param $resource
-	 * @return null|resource
+	 * @param resource $resource
+	 * @return bool
 	 */
-	public static function filterGrayscale($resource)
+	public static function filterGrayscale(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_GRAYSCALE);
 	}
 
 	/**
 	 * Apply negative filter
-	 * @param $resource
-	 * @return null|resource
+	 * @param resource $resource
+	 * @return bool
 	 */
-	public static function filterNegative($resource)
+	public static function filterNegative(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_NEGATE);
 	}
@@ -141,9 +154,9 @@ class ImageHelper extends BaseHelper
 	 * Apply brightness filter
 	 * @param resource $resource
 	 * @param double $brightness -1 to 1
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterBrightness($resource, $brightness)
+	public static function filterBrightness(&$resource, $brightness)
 	{
 		return self::filter($resource, IMG_FILTER_BRIGHTNESS, $brightness * 255);
 	}
@@ -152,9 +165,9 @@ class ImageHelper extends BaseHelper
 	 * Apply contrast filter
 	 * @param resource $resource
 	 * @param double $contrast -1 to 1
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterContrast($resource, $contrast)
+	public static function filterContrast(&$resource, $contrast)
 	{
 		return self::filter($resource, IMG_FILTER_CONTRAST, $contrast * 100);
 	}
@@ -166,19 +179,19 @@ class ImageHelper extends BaseHelper
 	 * @param int $g 0 to 255
 	 * @param int $b 0 to 255
 	 * @param double $a 0 to 1
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterColorize($resource, $r, $g, $b, $a = 1)
+	public static function filterColorize(&$resource, $r, $g, $b, $a = 1.0)
 	{
-		return self::filter($resource, IMG_FILTER_CONTRAST, $r, $g, $b, $a * 100);
+		return self::filter($resource, IMG_FILTER_CONTRAST, $r, $g, $b, $a * 127);
 	}
 
 	/**
 	 * Apply edge detect filter
 	 * @param resource $resource
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterEdgedetect($resource)
+	public static function filterEdgedetect(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_EDGEDETECT);
 	}
@@ -186,9 +199,9 @@ class ImageHelper extends BaseHelper
 	/**
 	 * Apply emboss filter
 	 * @param resource $resource
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterEmboss($resource)
+	public static function filterEmboss(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_EMBOSS);
 	}
@@ -196,9 +209,9 @@ class ImageHelper extends BaseHelper
 	/**
 	 * Apply gaussian blur filter
 	 * @param resource $resource
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterGaussianBlur($resource)
+	public static function filterGaussianBlur(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_GAUSSIAN_BLUR);
 	}
@@ -206,9 +219,9 @@ class ImageHelper extends BaseHelper
 	/**
 	 * Apply selective blur filter
 	 * @param resource $resource
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterSelectiveBlur($resource)
+	public static function filterSelectiveBlur(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_SELECTIVE_BLUR);
 	}
@@ -216,9 +229,9 @@ class ImageHelper extends BaseHelper
 	/**
 	 * Apply mean removal filter
 	 * @param resource $resource
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterSketchy($resource)
+	public static function filterSketchy(&$resource)
 	{
 		return self::filter($resource, IMG_FILTER_MEAN_REMOVAL);
 	}
@@ -227,9 +240,9 @@ class ImageHelper extends BaseHelper
 	 * Apply smooth filter
 	 * @param resource $resource
 	 * @param int $smooth -1 to 1
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterSmooth($resource, $smooth)
+	public static function filterSmooth(&$resource, $smooth)
 	{
 		return self::filter($resource, IMG_FILTER_SMOOTH, $smooth * 8);
 	}
@@ -239,9 +252,9 @@ class ImageHelper extends BaseHelper
 	 * @param resource $resource
 	 * @param int $blockSize
 	 * @param bool $advanced
-	 * @return null|resource
+	 * @return bool
 	 */
-	public static function filterPixelate($resource, $blockSize, $advanced = false)
+	public static function filterPixelate(&$resource, $blockSize, $advanced = false)
 	{
 		return self::filter($resource, IMG_FILTER_PIXELATE, $blockSize, $advanced);
 	}
