@@ -51,17 +51,18 @@ class FileController extends BaseController
 		$this->validator->mimes('file', array('gif', 'jpeg', 'jpg', 'png'));
 		$this->validator->max('file', self::SIZE_MAX_PICTURE);
 
+		//Set response type to json
+		$this->response->responseJson();
+
 		if ($this->validator->hasErrors())
 		{
 			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
-			$this->response->setFailed();
+			return false;
 		}
 		else
 		{
-			$this->upload();
+			return $this->upload();
 		}
-
-		return $this->response->responseJson();
 	}
 
 	/**
@@ -74,17 +75,18 @@ class FileController extends BaseController
 		$this->validator->mimes('file', array('pdf', 'doc', 'docx'));
 		$this->validator->max('file', self::SIZE_MAX_DOCUMENT);
 
+		//Set response type to json
+		$this->response->responseJson();
+
 		if ($this->validator->hasErrors())
 		{
 			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
-			$this->response->setFailed();
+			return false;
 		}
 		else
 		{
-			$this->upload();
+			return $this->upload();
 		}
-
-		return $this->response->responseJson();
 	}
 
 	/**
@@ -97,11 +99,11 @@ class FileController extends BaseController
 		if ($fileEntry && $fileEntry->save())
 		{
 			$this->response->assign('attributes', array_merge(array('id' => $fileEntry->id), $fileEntry->getAttributes()));
-			$this->response->setSuccess();
+			return true;
 		}
 		else
 		{
-			$this->response->setFailed();
+			return false;
 		}
 	}
 
@@ -117,12 +119,15 @@ class FileController extends BaseController
 
 		if ($fileEntry)
 		{
-			return $this->response->responseDownload($fileEntry->getPath(), $fileEntry->original_name);
+			//Set response type to download
+			$this->response->assignDownload($fileEntry->getPath(), $fileEntry->original_name);
+			return true;
 		}
 		else
 		{
-			$this->response->setFailed();
-			return $this->response->responseJson();
+			//Set response type to json
+			$this->response->responseJson();
+			return false;
 		}
 	}
 
@@ -135,17 +140,11 @@ class FileController extends BaseController
 	{
 		$fileEntry = FileEntry::find($id);
 
-		//Delete the file
-		if ($fileEntry && $fileEntry->delete())
-		{
-			$this->response->setSuccess();
-		}
-		else
-		{
-			$this->response->setFailed();
-		}
+		//Set response type to json
+		$this->response->responseJson();
 
-		return $this->response->responseJson();
+		//Delete the file
+		return ($fileEntry && $fileEntry->delete());
 	}
 
 }

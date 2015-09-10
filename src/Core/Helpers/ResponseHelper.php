@@ -97,20 +97,10 @@ class ResponseHelper extends BaseHelper
 	private $response = array();
 
 	/**
-	 * Set the response as success (default)
+	 * The response type
+	 * @var string
 	 */
-	public function setSuccess()
-	{
-		$this->statusCode = 200;
-	}
-
-	/**
-	 * Set the response as failed
-	 */
-	public function setFailed()
-	{
-		$this->statusCode = 500;
-	}
+	private $responseType = 'view';
 
 	/**
 	 * Assign data to response
@@ -127,6 +117,49 @@ class ResponseHelper extends BaseHelper
 		{
 			$this->assignedData[$key] = $value;
 		}
+	}
+
+	/**
+	 * Return view
+	 * @param string $view
+	 * @param string $key
+	 */
+	public function assignView($key = null, $view)
+	{
+		if (is_null($key))
+		{
+			$key = '_';
+		}
+
+		if (!isset($this->response['view']))
+		{
+			$this->response['view'] = array($key => $view);
+		}
+		else
+		{
+			$this->response['view'][$key] = $view;
+		}
+	}
+
+	/**
+	 * Return a download
+	 * @param string $filePath
+	 * @param string $name
+	 */
+	public function assignDownload($filePath, $name = null)
+	{
+		$this->response['download'] = array('filePath' => $filePath, 'name' => $name);
+		$this->responseDownload();
+	}
+
+	/**
+	 * Return content
+	 * @param mixed $content
+	 */
+	public function assignContent($content)
+	{
+		$this->response['content'] = $content;
+		$this->responseContent();
 	}
 
 	/**
@@ -183,68 +216,49 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
-	 * Return content
-	 * @param mixed $content
+	 * Force response type content
 	 */
-	public function responseContent($content)
+	public function responseContent()
 	{
-		if (!isset($this->response['content']))
-		{
-			$this->response['content'] = Response::make($content);
-		}
+		$this->responseType = 'content';
 	}
 
 	/**
-	 * Return view
-	 * @param string $view
-	 * @param string $key
-	 * @return \Illuminate\Http\Response
+	 * Force response type view
 	 */
-	public function responseView($key = null, $view)
+	public function responseView()
 	{
-		if (is_null($key))
-		{
-			$key = '_';
-		}
-
-		if (!isset($this->response['view']))
-		{
-			$this->response['view'] = array($key => $view);
-		}
-		else
-		{
-			$this->response['view'][$key] = $view;
-		}
+		$this->responseType = 'view';
 	}
 
 	/**
-	 * Return json-data
-	 * @return JsonResponse
+	 * Force response type json
 	 */
 	public function responseJson()
 	{
-		$this->response['json'] = true;
+		$this->responseType = 'json';
 	}
 
 	/**
-	 * Return a download
-	 * @param string $filePath
-	 * @param string $name
-	 * @return BinaryFileResponse
+	 * Force response type xml
 	 */
-	public function responseDownload($filePath, $name = null)
+	public function responseXml()
 	{
-		if (!isset($this->response['download']))
-		{
-			$this->response['download'] = Response::download($filePath, $name);
-		}
+		$this->responseType = 'xml';
+	}
+
+	/**
+	 * Force response type download
+	 */
+	public function responseDownload()
+	{
+		$this->responseType = 'download';
 	}
 
 	/**
 	 * Redirect to the specified url
 	 * @param string $uri
 	 * @param bool|array $input
-	 * @return RedirectResponse
 	 */
 	public function responseRedirect($uri, $input = null)
 	{
@@ -300,15 +314,20 @@ class ResponseHelper extends BaseHelper
 	{
 		$response = null;
 
-		if (isset($this->response['download']))
+		if ($this->responseType == 'download')
 		{
-			$response = $this->response['download'];
+			$response = Response::download($this->response['download']['filePath'], $this->response['download']['name']);
 		}
-		elseif (isset($this->response['json']))
+		elseif ($this->responseType == 'json')
 		{
+			$this->assignHeader('Content-Type', 'application/json');
 			$response = Response::json($this->assignedData);
 		}
-		elseif (isset($this->response['view']))
+		elseif ($this->responseType == 'content')
+		{
+			$response = Response::make($this->response['content']);
+		}
+		elseif ($this->responseType == 'view' || $this->responseType == 'xml')
 		{
 			$data = array_merge($this->assignedGeneralData, $this->assignedData);
 			ksort($this->response['view']);
@@ -324,10 +343,12 @@ class ResponseHelper extends BaseHelper
 					$response = $response->nest($key, $view, $data);
 				}
 			}
-		}
-		elseif (isset($this->response['content']))
-		{
-			$response = $this->response['content'];
+
+			if ($this->responseType == 'xml')
+			{
+				$this->assignHeader('Content-Type', 'application/xml');
+				$response = Response::make($response);
+			}
 		}
 
 		if (!is_null($response))
