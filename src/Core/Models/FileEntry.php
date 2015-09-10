@@ -69,9 +69,10 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Save the file-entry and upload the file
+	 * @param array $options
 	 * @return bool
 	 */
-	public function save()
+	public function save(array $options = Array())
 	{
 		//Set the name for the file when saving
 		if (!$this->name)
@@ -83,7 +84,26 @@ class FileEntry extends BaseModel
 		switch($this->lastTouched)
 		{
 			case 'resource':
-				$uploadSuccess = self::getDisk()->put($this->name, $this->resource);
+				ob_start();
+				switch($this->mime)
+				{
+					case 'image/png':
+						imagepng($this->resource);
+						break;
+					case 'image/pjpeg':
+					case 'image/jpeg':
+						imagejpeg($this->resource);
+						break;
+					case 'image/gif':
+						imagegif($this->resource);
+						break;
+					default:
+						ob_end_clean();
+						return false;
+				}
+				$contents =  ob_get_contents();
+				ob_end_clean();
+				$uploadSuccess = self::getDisk()->put($this->name, $contents);
 				break;
 			case 'uploadedFile':
 				$uploadSuccess = self::getDisk()->put($this->name, File::get($this->uploadedFile));
@@ -96,7 +116,7 @@ class FileEntry extends BaseModel
 		//If success save the entry in the database
 		if ($uploadSuccess)
 		{
-			return parent::save();
+			return parent::save($options);
 		}
 
 		return false;
@@ -104,14 +124,15 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Save the fil-entry as a new entry
+	 * @param array $options
 	 * @return bool
 	 */
-	public function saveAs()
+	public function saveAs(array $options = Array())
 	{
 		$this->id = null;
 		$this->name = null;
 
-		return $this->save();
+		return $this->save($options);
 	}
 
 	/**
@@ -148,7 +169,7 @@ class FileEntry extends BaseModel
 		//Get the full path of the uploaded temporary file
 		if ($this->lastTouched == 'uploadedFile')
 		{
-			return $this->uploadedFile->getPath();
+			return $this->uploadedFile->getRealPath();
 		}
 
 		//Get the full path of the file on the storage server
@@ -198,6 +219,7 @@ class FileEntry extends BaseModel
 		return in_array($this->mime, array(
 			'application/pdf',
 			'application/msword',
+			'application\/vnd.openxmlformats-officedocument.wordprocessingml.document',
 		));
 	}
 
@@ -249,8 +271,11 @@ class FileEntry extends BaseModel
 	 */
 	public function setResource($resource)
 	{
-		$this->resource = $resource;
-		$this->lastTouched = 'resource';
+		if ($resource)
+		{
+			$this->resource = $resource;
+			$this->lastTouched = 'resource';
+		}
 	}
 
 	/**

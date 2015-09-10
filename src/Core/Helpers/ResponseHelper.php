@@ -119,7 +119,7 @@ class ResponseHelper extends BaseHelper
 	 */
 	public function assign($key, $value)
 	{
-		if (starts_with($value, '_'))
+		if (is_string($value) && starts_with($value, '_'))
 		{
 			$this->assignedGeneralData[$key] = $value;
 		}

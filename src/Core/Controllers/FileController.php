@@ -34,11 +34,11 @@ class FileController extends BaseController
 	 * List of the accepted methods for routing
 	 * @var array
 	 */
-	public $routeMethods = array(
-		'postPicture' => 0,
-		'postDocument' => 0,
-		'get' => 1,
-		'delete' => 1,
+	public static $routeMethods = array(
+		'/' => array('p' => array('\d+')),
+		'picture' => array('m' => array('post')),
+		'document' => array('m' => array('post')),
+		'delete' => array('m' => array('post'), 'p' => array('\d+')),
 	);
 
 	/**
@@ -48,12 +48,12 @@ class FileController extends BaseController
 	public function postPicture()
 	{
 		$this->validator->required('file');
-		$this->validator->image('file');
+		$this->validator->mimes('file', array('gif', 'jpeg', 'jpg', 'png'));
 		$this->validator->max('file', self::SIZE_MAX_PICTURE);
 
 		if ($this->validator->hasErrors())
 		{
-			$this->response->assign('errors', $this->validator->getErrors());
+			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
 			$this->response->setFailed();
 		}
 		else
@@ -71,12 +71,12 @@ class FileController extends BaseController
 	public function postDocument()
 	{
 		$this->validator->required('file');
-		$this->validator->mimes('file', array('application/pdf', 'application/msword'));
-		$this->validator->size('file', self::SIZE_MAX_DOCUMENT);
+		$this->validator->mimes('file', array('pdf', 'doc', 'docx'));
+		$this->validator->max('file', self::SIZE_MAX_DOCUMENT);
 
 		if ($this->validator->hasErrors())
 		{
-			$this->response->assign('errors', $this->validator->getErrors());
+			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
 			$this->response->setFailed();
 		}
 		else
@@ -94,9 +94,10 @@ class FileController extends BaseController
 	{
 		$fileEntry = FileEntry::generateFromInput('file');
 
-		if ($fileEntry)
+		if ($fileEntry && $fileEntry->save())
 		{
-			$this->response->assign('attributes', $fileEntry->getAttributes());
+			$this->response->assign('attributes', array_merge(array('id' => $fileEntry->id), $fileEntry->getAttributes()));
+			$this->response->setSuccess();
 		}
 		else
 		{
@@ -130,12 +131,16 @@ class FileController extends BaseController
 	 * @param int $id
 	 * @return JsonResponse
 	 */
-	public function delete($id)
+	public function postDelete($id)
 	{
 		$fileEntry = FileEntry::find($id);
 
 		//Delete the file
-		if (!$fileEntry->delete())
+		if ($fileEntry && $fileEntry->delete())
+		{
+			$this->response->setSuccess();
+		}
+		else
 		{
 			$this->response->setFailed();
 		}
