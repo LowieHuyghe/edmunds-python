@@ -41,13 +41,13 @@ class BaseController extends Controller
 	 * List of the accepted methods for routing
 	 * @var array
 	 */
-	public static $routeMethods = array(
+//	public static $routeMethods = array(
 //		'index' => array(),
 //		'/' => array('p' => array('\d+')),
 //		1 => array(
 //			'user' => array('p' => array('\d+', '\d+', '\d+')),
 //		),
-	);
+//	);
 
 	/**
 	 * Get the accepted methods for routing
