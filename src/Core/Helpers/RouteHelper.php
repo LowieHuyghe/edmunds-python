@@ -124,14 +124,20 @@ class RouteHelper extends Controller
 		if ($request->ajax())
 		{
 			$requestType = 'ajax';
+			//Set default response to ajax
+			ResponseHelper::getInstance()->responseJson();
 		}
 		elseif ($request->wantsJson() || (InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
+			//Set default response to json
+			ResponseHelper::getInstance()->responseJson();
 		}
-		elseif ($request->accepts(array('application/xml', 'text/xml')) || InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'xml')
+		elseif (InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
+			//Set default response to xml
+			ResponseHelper::getInstance()->responseXml();
 		}
 		//Get route and its parts
 		$segments = $request->segments();
@@ -219,16 +225,6 @@ class RouteHelper extends Controller
 			$routeMethodUriSpecs = &$routeMethods[$uriPosition];
 			foreach ($routeMethodUriSpecs as $route => &$routeMethodRouteSpecs)
 			{
-				//Method
-				if (!isset($routeMethodRouteSpecs['m']))
-				{
-					$routeMethodRouteSpecs['m'] = array('get');
-				}
-				elseif (!is_array($routeMethodRouteSpecs['m']))
-				{
-					$routeMethodRouteSpecs['m'] = array($routeMethodRouteSpecs['m']);
-				}
-
 				//Parameters
 				if (!isset($routeMethodRouteSpecs['p']))
 				{
@@ -401,42 +397,45 @@ class RouteHelper extends Controller
 		switch (count($parameters))
 		{
 			case 0:
-				$controller->$methodName();
+				$response = $controller->$methodName();
 				break;
 			case 1:
-				$controller->$methodName($parameters[0]);
+				$response = $controller->$methodName($parameters[0]);
 				break;
 			case 2:
-				$controller->$methodName($parameters[0], $parameters[1]);
+				$response = $controller->$methodName($parameters[0], $parameters[1]);
 				break;
 			case 3:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
 				break;
 			case 4:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
 				break;
 			case 5:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
 				break;
 			case 6:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
 				break;
 			case 7:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
 				break;
 			case 8:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
 				break;
 			case 9:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
 				break;
 			case 10:
-				$controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
+				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
 				break;
 			default:
-				ResponseHelper::getInstance()->response404();
+				$response = ResponseHelper::getInstance()->response404();
 				break;
 		}
+
+		//set the status of the response
+		ResponseHelper::getInstance()->assign('success', ($response !== false));
 
 		//PostRender
 		$controller->postRender();
