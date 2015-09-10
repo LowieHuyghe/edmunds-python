@@ -35,10 +35,10 @@ class FileController extends BaseController
 	 * @var array
 	 */
 	public static $routeMethods = array(
-		'/' => array('p' => array('\d+')),
-		'picture' => array('m' => array('post')),
-		'document' => array('m' => array('post')),
-		'delete' => array('m' => array('post'), 'p' => array('\d+')),
+		'get' => array('p' => array('\d+')),
+		'postPicture' => array(),
+		'postDocument' => array(),
+		'postDelete' => array('p' => array('\d+')),
 	);
 
 	/**

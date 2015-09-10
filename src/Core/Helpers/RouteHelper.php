@@ -265,27 +265,31 @@ class RouteHelper extends Controller
 		//Check if it is index-page and otherwise filter it out
 		if (empty($remainingSegments))
 		{
-			if (isset($routeMethods[0]['index']))
+			if ($requestMethod == 'get' && isset($routeMethods[0]['getIndex']))
 			{
-				$routeMethodNameOptions = $routeMethods[0]['index'];
-				if (in_array($requestMethod, $routeMethodNameOptions['m']))
-				{
-					return array($requestMethod .'Index', array(), array(), $routeMethodNameOptions['r']);
-				}
+				return array($requestMethod .'Index', array(), array(), $routeMethods[0]['getIndex']['r']);
 			}
 			return array(null, null, null, null);
 		}
-		elseif (isset($routeMethods[0]['index']))
+		elseif (isset($routeMethods[0]['getIndex']))
 		{
-			unset($routeMethods[0]['index']);
+			unset($routeMethods[0]['getIndex']);
 		}
 
 		//If root methods are enabled, fetch them but give priority to other methods
+		$rootMethodName = null;
 		$rootMethodOptions = null;
-		if (isset($routeMethods[0]['/']))
+		foreach (array('get', 'post', 'put', 'delete') as $name)
 		{
-			$rootMethodOptions = $routeMethods[0]['/'];
-			unset($routeMethods[0]['/']);
+			if (isset($routeMethods[0][$name]))
+			{
+				if ($requestMethod == $name)
+				{
+					$rootMethodName = $name;
+					$rootMethodOptions = $routeMethods[0][$name];
+				}
+				unset($routeMethods[0][$name]);
+			}
 		}
 
 		$methodName = null;
@@ -301,47 +305,28 @@ class RouteHelper extends Controller
 			$controllerMethodsSpecs = $routeMethods[$uriPosition];
 
 			//2 => array( 'home' => array('get') )
-			$methodNameRaw = null;
-			$methodNameRawOptions = null;
 			foreach ($controllerMethodsSpecs as $controllerMethodName => $routeMethodNameOptions)
 			{
-				if ($controllerMethodName == strtolower($remainingSegments[$uriPosition]))
+				if (strtolower($controllerMethodName) == strtolower($requestMethod . $remainingSegments[$uriPosition]))
 				{
-					$methodNameRaw = $controllerMethodName;
-					$methodNameRawOptions = $routeMethodNameOptions;
+					$methodName = $controllerMethodName;
+					//Fetch parameter-count from array
+					$parameterSpecs = $routeMethodNameOptions['p'];
+					//Fetch roles from array
+					$requiredRoles = $routeMethodNameOptions['r'];
+					//Remove the methodName from the segments
+					array_splice($remainingSegments, $uriPosition, 1);
 					break;
 				}
-			}
-
-			//If method is found, stop searching
-			if ($methodNameRaw)
-			{
-				//Fetch parameter-count from array
-				$parameterSpecs = $methodNameRawOptions['p'];
-				//Fetch roles from array
-				$requiredRoles = $methodNameRawOptions['r'];
-				//If requestMethod is not available, 404
-				if (!in_array($requestMethod, $methodNameRawOptions['m']))
-				{
-					return array(null, null, null, null);
-				}
-				//Remove the methodName from the segments
-				array_splice($remainingSegments, $uriPosition, 1);
-
-				$methodName = $requestMethod . ucfirst($methodNameRaw);
-				break;
 			}
 		}
 
 		//Check rootMethod option
-		if (!$methodName && $rootMethodOptions)
+		if (!$methodName && $rootMethodName)
 		{
+			$methodName = $rootMethodName;
 			$parameterSpecs = $rootMethodOptions['p'];
 			$requiredRoles = $rootMethodOptions['r'];
-			if (in_array($requestMethod, $rootMethodOptions['m']))
-			{
-				$methodName = $requestMethod;
-			}
 		}
 
 		//Check if parameter-count is right
