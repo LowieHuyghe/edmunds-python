@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Schema;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0001_CreateTranslationsTable
+trait _0005_CreateTranslationsTable
 {
 	/**
 	 * Run the migrations.
@@ -36,7 +36,7 @@ trait _0001_CreateTranslationsTable
 		Schema::create('translations', function (Blueprint $table)
 		{
 			$table->primary('hash');
-			$table->string('hash');
+			$table->string('hash', 32);
 
 			$table->text('original');
 

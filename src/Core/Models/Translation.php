@@ -224,7 +224,7 @@ class Translation extends BaseModel
 	protected static function addValidationRules(&$validator)
 	{
 		$validator->required('hash');
-		$validator->max('hash', 60);
+		$validator->max('hash', 32);
 
 		$validator->required('original');
 		$validator->max('original', 21800);

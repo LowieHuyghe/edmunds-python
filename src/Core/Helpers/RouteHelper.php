@@ -450,6 +450,12 @@ class RouteHelper extends Controller
 	 */
 	private function checkConfig()
 	{
+		//Check if helper is included
+		if (!function_exists('lhCoreHelpersIncludedCheck'))
+		{
+			throw new \Exception('The helper-functions are not included in the project. Please require __DIR__."/../vendor/lh/core/src/core/helpers.php" before the autoloader.');
+		}
+
 		//Fetch the configuration
 		$config = ConfigHelper::get('core.config.required');
 
