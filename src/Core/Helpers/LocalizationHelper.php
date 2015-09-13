@@ -12,6 +12,11 @@
  */
 
 namespace LH\Core\Helpers;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
+use LH\Core\Models\Translation;
+use Symfony\Component\Translation\MessageSelector;
 
 /**
  * The helper responsible for localization
@@ -43,32 +48,145 @@ class LocalizationHelper extends BaseHelper
 		return self::$instance;
 	}
 
-    /**
-     * Make the place-holder replacements on a line.
-     *
-     * @param  string  $line
-     * @param  array   $replace
-     * @return string
-     */
-    protected function makeReplacements($line, array $replace)
-    {
-        $replace = $this->sortReplacements($replace);
-        foreach ($replace as $key => $value) {
-            $line = str_replace(':'.$key, $value, $line);
-        }
-        return $line;
-    }
-    /**
-     * Sort the replacements array.
-     *
-     * @param  array  $replace
-     * @return array
-     */
-    protected function sortReplacements(array $replace)
-    {
-        return (new Collection($replace))->sortBy(function ($value, $key) {
-            return mb_strlen($key) * -1;
-        });
-    }
+	/**
+	 * The default locale
+	 * @var string
+	 */
+	public $locale;
+
+	/**
+	 * The fallback locale
+	 * @var string
+	 */
+	public $fallback;
+
+	/**
+	 * The selector of the messages
+	 * @var MessageSelector
+	 */
+	private $selector;
+
+	/**
+	 * Constructor
+	 * @param string $locale
+	 * @param string $fallback
+	 */
+	public function __construct($locale = null, $fallback = null)
+	{
+		$this->locale = (!is_null($locale) ? $locale : Config::get('app.locale'));
+		$this->fallback = (!is_null($fallback) ? $fallback : Config::get('app.fallback_locale'));
+	}
+
+	/**
+	 * Get the translation for a given key.
+	 *
+	 * @param  string  $id
+	 * @param  array   $parameters
+	 * @param  string  $locale
+	 * @return string
+	 */
+	public function trans($id, array $parameters = [], $locale = null)
+	{
+		return $this->get($id, $parameters, $locale);
+	}
+	/**
+	 * Get a translation according to an integer value.
+	 *
+	 * @param  string  $id
+	 * @param  int     $number
+	 * @param  array   $parameters
+	 * @param  string  $locale
+	 * @return string
+	 */
+	public function transChoice($id, $number, array $parameters = [], $locale = null)
+	{
+		$line = $this->get($id, $parameters, $locale);
+		$parameters['count'] = $number;
+		$locale = $locale ?: $this->locale ?: $this->fallback;
+		return $this->makeReplacements($this->getSelector()->choose($line, $number, $locale), $parameters);
+	}
+
+	/**
+	 * Get the translation for the given key.
+	 *
+	 * @param  string  $key
+	 * @param  array   $replace
+	 * @param  string  $locale
+	 * @return string
+	 */
+	public function get($key, array $replace = [], $locale)
+	{
+		//Fetch the translation
+		$hash = Hash::make($key);
+		$translation = Translation::find($hash);
+
+		//Create a new one if not exist
+		if (!$translation)
+		{
+			$translation = new Translation();
+			$translation->hash = $hash;
+			$translation->original = $key;
+
+			$translation->save();
+		}
+
+		//Get the line
+		if ($locale && $translation->$locale)
+		{
+			return $translation->$locale;
+		}
+		$locale = $this->locale;
+		if ($locale && $translation->$locale)
+		{
+			return $translation->$locale;
+		}
+		$locale = $this->fallback;
+		if ($locale && $translation->$locale)
+		{
+			return $translation->$locale;
+		}
+
+		return $translation->original;
+	}
+
+	/**
+	 * Make the place-holder replacements on a line.
+	 *
+	 * @param  string  $line
+	 * @param  array   $replace
+	 * @return string
+	 */
+	protected function makeReplacements($line, array $replace)
+	{
+		$replace = $this->sortReplacements($replace);
+		foreach ($replace as $key => $value) {
+			$line = str_replace(':'.$key, $value, $line);
+		}
+		return $line;
+	}
+	/**
+	 * Sort the replacements array.
+	 *
+	 * @param  array  $replace
+	 * @return array
+	 */
+	protected function sortReplacements(array $replace)
+	{
+		return (new Collection($replace))->sortBy(function ($value, $key) {
+			return mb_strlen($key) * -1;
+		});
+	}
+
+	/**
+	 * Get the message selector instance.
+	 * @return MessageSelector
+	 */
+	public function getSelector()
+	{
+		if (!isset($this->selector)) {
+			$this->selector = new MessageSelector;
+		}
+		return $this->selector;
+	}
 
 }
