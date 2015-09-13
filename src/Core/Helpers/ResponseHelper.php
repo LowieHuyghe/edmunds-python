@@ -327,7 +327,7 @@ class ResponseHelper extends BaseHelper
 		{
 			$response = Response::make($this->response['content']);
 		}
-		elseif ($this->responseType == 'view' || $this->responseType == 'xml')
+		elseif (($this->responseType == 'view' || $this->responseType == 'xml') && !empty($this->response['view']))
 		{
 			$data = array_merge($this->assignedGeneralData, $this->assignedData);
 			ksort($this->response['view']);
