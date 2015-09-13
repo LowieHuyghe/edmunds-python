@@ -13,8 +13,8 @@
 
 namespace LH\Core\Helpers;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
 use LH\Core\Models\Translation;
 use Symfony\Component\Translation\MessageSelector;
 
@@ -64,7 +64,7 @@ class LocalizationHelper extends BaseHelper
 	 * The selector of the messages
 	 * @var MessageSelector
 	 */
-	private $selector;
+	protected $selector;
 
 	/**
 	 * Constructor
@@ -114,11 +114,17 @@ class LocalizationHelper extends BaseHelper
 	 * @param  string  $locale
 	 * @return string
 	 */
-	public function get($key, array $replace = [], $locale)
+	protected function get($key, array $replace = [], $locale)
 	{
+		//If in develop-mode, no translations required
+		if (env('APP_DEBUG') && App::environment('local'))
+		{
+			return $key;
+		}
+
 		//Fetch the translation
-		$hash = Hash::make($key);
-		$translation = Translation::find($hash);
+		$hash = md5($key);
+		$translation = Translation::where('hash', '=', $hash)->first();
 
 		//Create a new one if not exist
 		if (!$translation)
