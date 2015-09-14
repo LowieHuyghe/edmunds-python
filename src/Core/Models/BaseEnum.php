@@ -11,9 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models\Enums;
+namespace LH\Core\Models;
 
 use ReflectionClass;
+namespace LH\Core\Models\BaseModel;
 
 /**
  * Enum base to extend from
@@ -23,23 +24,9 @@ use ReflectionClass;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-abstract class BaseEnum
+class BaseEnum extends BaseModel
 {
-	/**
-	 * The fetched constants
-	 * @var array
-	 */
-	private static $constants = array();
 
-	private static function getConstants()
-	{
-		if (!isset(self::$constants[get_called_class()]))
-		{
-			$reflect = new ReflectionClass(get_called_class());
-			self::$constants[get_called_class()] = $reflect->getConstants();
-		}
-		return self::$constants[get_called_class()];
-	}
 
 	public static function isValidName($name, $strict = false)
 	{
