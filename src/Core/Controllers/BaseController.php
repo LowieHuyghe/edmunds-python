@@ -115,31 +115,35 @@ class BaseController extends Controller
 		$this->validator = new ValidationHelper($this->input->all());
 		$this->visitor = VisitorHelper::getInstance($this->request);
 
-		$this->checkRoles();
+		$this->checkRights();
 	}
 
 	/**
-	 * Check if user has all the required roles
+	 * Check if user has all the required rights
 	 */
-	private function checkRoles()
+	private function checkRights()
 	{
 		//If no roles required, return
-		if (count(VisitorHelper::$requiredRoles) === 0)
+		if (count(VisitorHelper::$requiredRights) === 0)
 		{
 			return;
 		}
 
 		if ($this->visitor->isLoggedIn())
 		{
-			//There are roles, and user is logged in
+			//There are rights, and user is logged in
 
-			$userRoles = User::find($this->visitor->user->id)->roles()->get()->lists('id')->toArray();
+			$hasRights = true;
+			foreach (VisitorHelper::$requiredRights as $rightId)
+			{
+				if (!$this->visitor->user->hasRight($rightId))
+				{
+					$hasRights = false;
+					break;
+				}
+			}
 
-			$requiredRoles = array_unique(VisitorHelper::$requiredRoles);
-			$userRoles = array_unique($userRoles);
-
-			//If count matches, return
-			if (count(array_intersect($userRoles, $requiredRoles)) == count($requiredRoles))
+			if ($hasRights)
 			{
 				return;
 			}
