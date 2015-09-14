@@ -89,7 +89,7 @@ class BaseModel extends Model
 	{
 		$foreignKey = $foreignKey ?: $this->getForeignKey();
 
-		$instance = new BaseModel();
+		$instance = new $enumClass();
 
 		$localKey = $localKey ?: $this->getKeyName();
 
@@ -120,14 +120,9 @@ class BaseModel extends Model
 		// instances as well as the relationship instances we need for this.
 		$foreignKey = $foreignKey ?: $this->getForeignKey();
 
-		$instance = new BaseModel();
+		$instance = new $enumClass();
 
-		// Now we're ready to create a new query builder for the related model and
-		// the relationship instances for the relation. The relations will set
-		// appropriate query constraint and entirely manages the hydrations.
-		$query = $instance->newQuery();
-
-		return new BelongsToManyEnums($query, $this, $enumClass, $table, $foreignKey, $otherKey, $relation);
+		return new BelongsToManyEnums($instance->newQuery(), $this, $enumClass, $table, $foreignKey, $otherKey, $relation);
 	}
 
 	/**

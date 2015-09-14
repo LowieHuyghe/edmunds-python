@@ -39,6 +39,7 @@ trait _0005_CreateTranslationsTable
 			$table->string('hash', 32);
 
 			$table->text('original');
+			$table->index('original');
 
 			$table->text('aa')->nullable();
 			$table->text('ab')->nullable();

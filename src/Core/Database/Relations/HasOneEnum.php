@@ -48,7 +48,7 @@ class HasOneEnum extends HasOne
 
 		if (is_null($foreignKey))
 		{
-			$foreignKey = snake_case(str_singular(str_replace('enum', '', str_replace('Enum', '', last(explode('\\', $enumClass))))));
+			$foreignKey = snake_case(str_singular(last(explode('\\', $enumClass))));
 		}
 
 		parent::__construct($query, $parent, $foreignKey, $localKey);
@@ -60,11 +60,7 @@ class HasOneEnum extends HasOne
 		if ($id)
 		{
 			$enumClass = $this->enumClass;
-
-			$el = new \stdClass();
-			$el->id = $id;
-			$el->name = strtolower($enumClass::getName($el->id));
-			return $el;
+			return $enumClass::find($id);
 		}
 
 		return null;

@@ -52,13 +52,13 @@ class BelongsToManyEnums extends BelongsToMany
 		// models using underscores in alphabetical order. The two model names
 		// are transformed to snake case from their default CamelCase also.
 		if (is_null($table)) {
-			$enumClassSplit = str_plural(str_replace('enum', '', str_replace('Enum', '', last(explode('\\', $enumClass)))));
+			$enumClassSplit = str_plural(last(explode('\\', $enumClass)));
 			$table = $this->joiningTable($enumClassSplit);
 		}
 
 		if (is_null($otherKey))
 		{
-			$otherKey = snake_case(str_singular(str_replace('enum', '', str_replace('Enum', '', last(explode('\\', $enumClass)))))) . '_id';
+			$otherKey = snake_case(str_singular(last(explode('\\', $enumClass)))) . '_id';
 		}
 
 		$this->enumClass = $enumClass;
@@ -86,7 +86,7 @@ class BelongsToManyEnums extends BelongsToMany
 	 */
 	protected function getSelectColumns(array $columns = ['*'])
 	{
-		$defaults = [$this->foreignKey];
+		$defaults = [$this->otherKey];
 
 		// We need to alias all of the pivot columns with the "pivot_" prefix so we
 		// can easily extract them out of the models and put them into the pivot
@@ -114,10 +114,7 @@ class BelongsToManyEnums extends BelongsToMany
 
 		$collection = collect($collection)->map(function($item) use($enumClass)
 		{
-			$el = new \stdClass();
-			$el->id = $item->id;
-			$el->name = strtolower($enumClass::getName($item->id));
-			return $el;
+			return $enumClass::find($item->id);
 		});
 
 		return $collection;
