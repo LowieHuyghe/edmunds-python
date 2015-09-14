@@ -425,7 +425,6 @@ class Translation extends BaseModel
 	 */
 	protected static function factory($faker)
 	{
-		$extension = $faker->fileExtension;
 		return array(
 			'hash' => str_random(60),
 			'original' => $faker->realText(100, 5),

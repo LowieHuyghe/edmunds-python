@@ -13,7 +13,6 @@
 
 namespace LH\Core\Models;
 
-use App\Models\Enums\RolesEnum;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -62,12 +61,28 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	public $timestamps = true;
 
 	/**
+	 * The class responsible for the roles
+	 * @var string
+	 */
+	protected $roleClass;
+
+	/**
+	 * All the rights the user has
+	 * @var Right[]
+	 */
+	private $rights;
+
+	/**
 	 * Roles belonging to this user
 	 * @return BelongsToManyEnums
 	 */
 	public function roles()
 	{
-		return $this->belongsToManyEnums(RolesEnum::class, 'user_roles');
+		if (!isset($this->roleClass))
+		{
+			throw new Exception('The class representing the Roles not set');
+		}
+		return $this->belongsToManyEnums($this->roleClass, 'user_roles');
 	}
 
 	/**
@@ -87,7 +102,23 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	public function hasRight($rightId)
 	{
-		return $this->roles()->rights()->contains($rightId);
+		//Fetch all the rights
+		if (!isset($this->rights))
+		{
+			$rights = array();
+			$roles = $this->roles;
+			$roles->each(function($role) use (&$rights)
+			{
+				$roleRights = $role->rights;
+				$roleRights->each(function($right) use (&$rights)
+				{
+					$rights[] = $right->id;
+				});
+			});
+			$this->rights = array_unique($rights);
+		}
+
+		return in_array($rightId, $this->rights);
 	}
 
 	/**

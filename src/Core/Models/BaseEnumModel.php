@@ -40,56 +40,49 @@ class BaseEnumModel extends BaseModel
 	private static $constants = array();
 
 	/**
-	 * Constructor
-	 */
-	function __construct()
-	{
-		parent::__construct();
-
-		$this->addValidationRules();
-	}
-
-	/**
-	 * Add the validation of the model
-	 */
-	public function addValidationRules()
-	{
-		$this->validator->integer('id');
-
-		$this->validator->required('name');
-		$this->validator->max('name', 32);
-	}
-
-	/**
 	 * Fetch all the defined constants
-	 * @return array;
+	 * @return array
 	 */
 	private static function getConstants()
 	{
-		if (!isset(self::$constants[get_called_class()]))
+		$calledClass = get_called_class();
+
+		//Check if already fetched
+		if (!isset(self::$constants[$calledClass]))
 		{
-			$reflect = new ReflectionClass(get_called_class());
-			self::$constants[get_called_class()] = $reflect->getConstants();
+			//Get all the constants
+			$reflect = new \ReflectionClass($calledClass);
+			$constants = array_change_key_case($reflect->getConstants());
+			//Filter some out
+			foreach ($constants as $name => $value)
+			{
+				if (ends_with($name, array('_at')))
+				{
+					unset($constants[$name]);
+				}
+			}
+			self::$constants[$calledClass] = $constants;
 		}
-		return self::$constants[get_called_class()];
+		return self::$constants[$calledClass];
 	}
 
 	/**
-     * Get all of the models
-     * @param  array  $columns
-     * @return Collection
-     */
+	 * Get all of the models
+	 * @param  array  $columns
+	 * @return Collection
+	 */
 	public static function all($columns = [])
 	{
 		//Fetch required columns
-        $columns = is_array($columns) ? $columns : func_get_args();
+		$columns = is_array($columns) ? $columns : func_get_args();
 
 		//Process all constants
 		$all = array();
 		$constants = self::getConstants();
+		$calledClass = get_called_class();
 		foreach ($constants as $name => $value)
 		{
-			$object = new self();
+			$object = new $calledClass();
 			if (empty($columns) || in_array('id', $columns))
 			{
 				$object->id = $value;
@@ -106,24 +99,61 @@ class BaseEnumModel extends BaseModel
 	}
 
 	/**
-     * Find a model by its primary key or return new static.
-     * @param  mixed  $id
-     * @param  array  $columns
-     * @return BaseEnumModel
-     */
-    public static function find($id, $columns = [])
-    {
-    	//Fetch all and search for right id
-    	$all = self::all($columns);
-    	foreach ($all->all() as $enum)
-    	{
-    		if ($enum->id == $id)
-    		{
-    			return collect(array($enum));
-    		}
-    	}
+	 * Find a model by its primary key or return new static.
+	 * @param  mixed  $id
+	 * @param  array  $columns
+	 * @return BaseEnumModel
+	 */
+	public static function find($id, $columns = [])
+	{
+		//Fetch all and search for right id
+		$all = self::all($columns);
+		foreach ($all->all() as $enum)
+		{
+			if ($enum->id == $id)
+			{
+				return $enum;
+			}
+		}
 
 		return null;
-    }
+	}
+
+	/**
+	 * Get object with where
+	 * @param $name
+	 * @param $value
+	 * @return static
+	 */
+	public static function where($name, $value)
+	{
+		$all = self::all();
+		return $all->where($name, $value);
+	}
+
+	/**
+	 * Add the validation of the model
+	 * @param ValidationHelper $validator
+	 */
+	protected static function addValidationRules(&$validator)
+	{
+		$validator->integer('id');
+
+		$validator->required('name');
+		$validator->max('name', 32);
+	}
+
+	/**
+	 * Define-function for the instance generator
+	 * @param Generator $faker
+	 * @return array
+	 */
+	protected static function factory($faker)
+	{
+		return array(
+			'id' => rand(1,99),
+			'name' => str_random(10),
+		);
+	}
 
 }
