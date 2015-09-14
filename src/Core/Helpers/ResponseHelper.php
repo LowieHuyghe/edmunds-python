@@ -61,12 +61,6 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
-	 * Statuscode of response
-	 * @var int
-	 */
-	private $statusCode = 200;
-
-	/**
 	 * Assigned general data for response
 	 * @var array
 	 */
@@ -196,16 +190,10 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function attachExtras(&$response)
 	{
-		if (!is_a($response, \Illuminate\View\View::class))
+		//Assign headers
+		foreach ($this->assignedHeaders as $key => $value)
 		{
-			//Assign statusCode
-			$response->setStatusCode($this->statusCode);
-
-			//Assign headers
-			foreach ($this->assignedHeaders as $key => $value)
-			{
-				$response->header($key, $value);
-			}
+			$response->header($key, $value);
 		}
 
 		//Assign cookie
@@ -343,11 +331,11 @@ class ResponseHelper extends BaseHelper
 					$response = $response->nest($key, $view, $data);
 				}
 			}
+			$response = Response::make($response);
 
 			if ($this->responseType == 'xml')
 			{
 				$this->assignHeader('Content-Type', 'application/xml');
-				$response = Response::make($response);
 			}
 		}
 
