@@ -116,12 +116,6 @@ class LocalizationHelper extends BaseHelper
 	 */
 	protected function get($key, array $replace = [], $locale)
 	{
-		//If in develop-mode, no translations required
-		if (env('APP_DEBUG') && App::environment('local'))
-		{
-			return $key;
-		}
-
 		//Fetch the translation
 		$hash = md5($key);
 		$translation = Translation::where('hash', '=', $hash)->first();
@@ -133,26 +127,35 @@ class LocalizationHelper extends BaseHelper
 			$translation->hash = $hash;
 			$translation->original = $key;
 
-			$translation->save();
+			//Save if not in local-mode
+			if (!(env('APP_DEBUG') && App::environment('local')))
+			{
+				$translation->save();
+			}
 		}
 
 		//Get the line
-		if ($locale && $translation->$locale)
+		$line = null;
+		if ($locale && isset($translation->$locale))
 		{
-			return $translation->$locale;
+			$line = $translation->$locale;
 		}
 		$locale = $this->locale;
-		if ($locale && $translation->$locale)
+		if (!$line && $locale && $translation->$locale)
 		{
-			return $translation->$locale;
+			$line = $translation->$locale;
 		}
 		$locale = $this->fallback;
-		if ($locale && $translation->$locale)
+		if (!$line && $locale && $translation->$locale)
 		{
-			return $translation->$locale;
+			$line = $translation->$locale;
+		}
+		elseif (!$line)
+		{
+			$line = $translation->original;
 		}
 
-		return $translation->original;
+		return $this->makeReplacements($line, $replace);
 	}
 
 	/**
