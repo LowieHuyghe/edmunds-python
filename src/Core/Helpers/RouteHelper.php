@@ -73,7 +73,7 @@ class RouteHelper extends Controller
 		$this->prepareController($controllerName);
 
 		//Get the name of the method
-		list($methodName, $parameterSpecs, $parameters, $requiredRoles) = $this->getMethodName($controllerName, $requestMethod, $remainingSegments);
+		list($methodName, $parameterSpecs, $parameters, $requiredRights) = $this->getMethodName($controllerName, $requestMethod, $remainingSegments);
 		if (!$methodName
 			|| !$this->areParametersValid($parameterSpecs, $parameters))
 		{
@@ -81,7 +81,7 @@ class RouteHelper extends Controller
 		}
 
 		//Call the method
-		return $this->callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRoles);
+		return $this->callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights);
 	}
 
 	/**
@@ -302,7 +302,7 @@ class RouteHelper extends Controller
 
 		$methodName = null;
 		$parameterSpecs = array();
-		$requiredRoles = null;
+		$requiredRights = null;
 		//Looping through all the different options for this controller
 		for ($uriPosition = 0; $uriPosition < count($remainingSegments); ++$uriPosition)
 		{
@@ -320,8 +320,8 @@ class RouteHelper extends Controller
 					$methodName = $controllerMethodName;
 					//Fetch parameter-count from array
 					$parameterSpecs = $routeMethodNameOptions['p'];
-					//Fetch roles from array
-					$requiredRoles = $routeMethodNameOptions['r'];
+					//Fetch rights from array
+					$requiredRights = $routeMethodNameOptions['r'];
 					//Remove the methodName from the segments
 					array_splice($remainingSegments, $uriPosition, 1);
 					break;
@@ -334,7 +334,7 @@ class RouteHelper extends Controller
 		{
 			$methodName = $rootMethodName;
 			$parameterSpecs = $rootMethodOptions['p'];
-			$requiredRoles = $rootMethodOptions['r'];
+			$requiredRights = $rootMethodOptions['r'];
 		}
 
 		//Check if parameter-count is right
@@ -344,7 +344,7 @@ class RouteHelper extends Controller
 		}
 
 		//Return the right method
-		return array($methodName, $parameterSpecs, $remainingSegments, $requiredRoles);
+		return array($methodName, $parameterSpecs, $remainingSegments, $requiredRights);
 	}
 
 	/**
@@ -371,13 +371,13 @@ class RouteHelper extends Controller
 	 * @param string $controllerName
 	 * @param string $methodName
 	 * @param array $parameters
-	 * @param array $requiredRoles
+	 * @param array $requiredRights
 	 * @return mixed
 	 */
-	private function callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRoles)
+	private function callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights)
 	{
-		//Set the roles required
-		VisitorHelper::$requiredRoles = $requiredRoles;
+		//Set the rights required
+		VisitorHelper::$requiredRights = array_unique($requiredRights);
 
 		//Initialize the controllers
 		$controller = App::make($controllerName);
