@@ -37,10 +37,10 @@ class VisitorHelper extends BaseHelper
 	private static $instance;
 
 	/**
-	 * The roles the user is required to have
+	 * The rights the user is required to have
 	 * @var array
 	 */
-	public static $requiredRoles;
+	public static $requiredRights;
 
 	/**
 	 * Fetch instance of the visitor-helper

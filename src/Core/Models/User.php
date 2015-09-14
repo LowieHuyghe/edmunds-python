@@ -81,6 +81,16 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	}
 
 	/**
+	 * Check if user has right
+	 * @param $rightId
+	 * @return bool
+	 */
+	public function hasRight($rightId)
+	{
+		return $this->roles()->rights()->contains($rightId);
+	}
+
+	/**
 	 * Add the validation of the model
 	 * @param ValidationHelper $validator
 	 */
