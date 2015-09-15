@@ -400,11 +400,10 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function viewRedirect($response)
 	{
-		$targetUrl = $response->getTargetUrl();
-		$targetUrlString = preg_replace('/http:\/\/.+?\.\w\w\w\/?(.*)/i', '$1', $targetUrl);
-		if (empty($targetUrlString))
+		$targetUrl = parse_url($response->getTargetUrl(), PHP_URL_PATH);
+		if (empty($targetUrl))
 		{
-			$targetUrlString = '/';
+			$targetUrl = '/';
 		}
 		return "<html>
 					<head>
@@ -453,7 +452,7 @@ class ResponseHelper extends BaseHelper
 							Hello good sir! <br/>
 							<br/>
 							I will be obliged to excuse me. <br/>
-							As it is my duty, I am required to redirect you to: <a href='$targetUrl'>$targetUrlString</a>. <br/>
+							As it is my duty, I am required to redirect you to: <a href='$targetUrl'>$targetUrl</a>. <br/>
 							My utmost apologies for the inconvenience.  <br/>
 							<br/>
 							Signed, <br/>
