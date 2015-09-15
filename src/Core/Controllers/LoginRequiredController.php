@@ -13,15 +13,7 @@
 
 namespace LH\Core\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Router;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 use LH\Core\Models\User;
 
 /**
@@ -34,11 +26,6 @@ use LH\Core\Models\User;
  */
 class LoginRequiredController extends BaseController
 {
-	/**
-	 * The intended login route key for the session
-	 */
-	const	SESSION_KEY_LOGIN_INTENDED_ROUTE = 'LOGIN_INTENDED_ROUTE';
-
 	/**
 	 * The logged in user
 	 * @var User
@@ -65,10 +52,8 @@ class LoginRequiredController extends BaseController
 		//If user is not logged in, redirect to other page
 		if (!$this->visitor->isLoggedIn())
 		{
-			$this->visitor->setIntendedRoute();
-
 			$loginRoute = Config::get('app.routing.loginroute');
-			$this->response->responseRedirect($loginRoute);
+			$this->response->responseRedirect($loginRoute, null, true);
 		}
 	}
 }

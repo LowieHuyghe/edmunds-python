@@ -17,9 +17,8 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use LH\Core\Helpers\InputHelper;
 use LH\Core\Helpers\ResponseHelper;
+use LH\Core\Helpers\SessionHelper;
 use LH\Core\Helpers\VisitorHelper;
-use LH\Core\Models\User;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use LH\Core\Helpers\ValidationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -81,7 +80,7 @@ class BaseController extends Controller
 
 	/**
 	 * The current session
-	 * @var SessionInterface
+	 * @var SessionHelper
 	 */
 	protected $session;
 
@@ -109,8 +108,10 @@ class BaseController extends Controller
 	function __construct()
 	{
 		$this->request = self::getRouter()->getCurrentRequest();
+		$this->request->setSession(SessionHelper::getInstance($this->request->getSession()));
 		$this->response = ResponseHelper::getInstance();
-		$this->session = $this->request->getSession();
+		$this->response->setRequest($this->request);
+		$this->session = $this->request->session();
 		$this->input = InputHelper::getInstance();
 		$this->validator = new ValidationHelper($this->input->all());
 		$this->visitor = VisitorHelper::getInstance($this->request);

@@ -13,14 +13,12 @@
 
 namespace LH\Core\Helpers;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The helper responsible for the response
@@ -61,6 +59,12 @@ class ResponseHelper extends BaseHelper
 	}
 
 	/**
+	 * The request
+	 * @var Request
+	 */
+	private $request;
+
+	/**
 	 * Assigned general data for response
 	 * @var array
 	 */
@@ -95,6 +99,15 @@ class ResponseHelper extends BaseHelper
 	 * @var string
 	 */
 	private $responseType = 'view';
+
+	/**
+	 * Set the request
+	 * @param Request $request
+	 */
+	public function setRequest($request)
+	{
+		$this->request = $request;
+	}
 
 	/**
 	 * Assign data to response
@@ -247,9 +260,27 @@ class ResponseHelper extends BaseHelper
 	 * Redirect to the specified url
 	 * @param string $uri
 	 * @param bool|array $input
+	 * @param bool $saveIntendedRoute
+	 * @param bool $gotoIntendedRoute
 	 */
-	public function responseRedirect($uri, $input = null)
+	public function responseRedirect($uri, $input = null, $saveIntendedRoute = false, $gotoIntendedRoute = false)
 	{
+		//Go to the intended route that was saved
+		if ($gotoIntendedRoute)
+		{
+			if ($this->request->getSession()->has('intended_route'))
+			{
+				$uri = $this->request->getSession()->get('intended_route');
+				$this->request->getSession()->remove('intended_route');
+			}
+		}
+		//Save the route the user intended to go
+		if ($saveIntendedRoute)
+		{
+			$this->request->getSession()->set('intended_route', $this->request->path());
+		}
+
+		//Make the redirect-response
 		$redirect = redirect($uri);
 
 		if ($input === true)
