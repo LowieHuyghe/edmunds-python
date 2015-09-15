@@ -265,4 +265,13 @@ class SessionHelper extends BaseHelper implements SessionInterface
 	{
 		return $this->session->getMetadataBag();
 	}
+
+	/**
+	 * Gets the session token.
+	 * @return string
+	 */
+	public function token()
+	{
+		return $this->session->token();
+	}
 }
