@@ -101,6 +101,27 @@ class ImageHelper extends BaseHelper
 	}
 
 	/**
+	 * Rotate the image
+	 * @param resource $resource
+	 * @param float $degrees
+	 * @param int $bgcolor
+	 * @return bool
+	 */
+	public static function rotate(&$resource, $degrees, $bgcolor = 0)
+	{
+		$result = imagerotate($resource, $degrees, $bgcolor);
+		if ($result !== false)
+		{
+			$resource = $result;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Apply a filter
 	 * @param resource $resource
 	 * @param int $filter
