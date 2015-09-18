@@ -26,9 +26,22 @@ use LH\Core\Models\Notification;
  */
 class NotificationHelper extends BaseHelper
 {
-
+	/**
+	 * All the notifications
+	 * @var Notification[]
+	 */
 	private static $notifications = array();
 
+	/**
+	 * Add a notification
+	 * @param string $title
+	 * @param string $body
+	 * @param string $url
+	 * @param array $options
+	 * @param string $type
+	 * @param string $subtype
+	 * @return Notification
+	 */
 	public static function add($title, $body = null, $url = null, $options = array(), $type = null, $subtype = null)
 	{
 		$notification = new Notification();
@@ -40,16 +53,68 @@ class NotificationHelper extends BaseHelper
 		$notification->subtype = $subtype;
 
 		self::$notifications[] = $notification;
+
+		return $notification;
 	}
 
-	public static function clear()
-	{
-		self::$notifications = array();
-	}
-
+	/**
+	 * Return all the notifications and filter if wanted
+	 * @param string $type
+	 * @param string $subtype
+	 * @return Notification[]
+	 */
 	public static function get($type = null, $subtype = null)
 	{
+		//If nothing specified, just return all
+		if (!$type && !$subtype)
+		{
+			return self::$notifications;
+		}
 
+		//Filter
+		$notifications = array();
+		foreach (self::$notifications as $notification)
+		{
+			if ($type && $notification->type != $type)
+			{
+				continue;
+			}
+			if ($subtype && $notification->subtype != $subtype)
+			{
+				continue;
+			}
+			$notifications[] = $notification;
+		}
+
+		return $notifications;
+	}
+
+	/**
+	 * Clear all the notifications and of certain type if wanted
+	 * @param string $type
+	 * @param string $subtype
+	 */
+	public static function clear($type = null, $subtype = null)
+	{
+		//If nothing specified, just return all
+		if (!$type && !$subtype)
+		{
+			self::$notifications = array();
+		}
+
+		//Filter
+		foreach (self::$notifications as $key => $notification)
+		{
+			if ($type && $notification->type != $type)
+			{
+				continue;
+			}
+			if ($subtype && $notification->subtype != $subtype)
+			{
+				continue;
+			}
+			unset(self::$notifications[$key]);
+		}
 	}
 
 }
