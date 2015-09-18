@@ -42,12 +42,14 @@ class NotificationHelper extends BaseHelper
 		self::$notifications[] = $notification;
 	}
 
-	public static function clear($type = null, $subtype = null)
+	public static function clear()
 	{
-		foreach (self::$notifications as $notification)
-		{
-			if ($notification)
-		}
+		self::$notifications = array();
+	}
+
+	public static function get($type = null, $subtype = null)
+	{
+
 	}
 
 }
