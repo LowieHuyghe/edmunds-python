@@ -13,7 +13,7 @@
 
 namespace LH\Core\Helpers;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Illuminate\Database\Eloquent\Collection;
 use LH\Core\Models\Notification;
 
 /**
@@ -61,14 +61,14 @@ class NotificationHelper extends BaseHelper
 	 * Return all the notifications and filter if wanted
 	 * @param string $type
 	 * @param string $subtype
-	 * @return Notification[]
+	 * @return Collection
 	 */
 	public static function get($type = null, $subtype = null)
 	{
 		//If nothing specified, just return all
 		if (!$type && !$subtype)
 		{
-			return self::$notifications;
+			return collect(self::$notifications);
 		}
 
 		//Filter
@@ -86,7 +86,7 @@ class NotificationHelper extends BaseHelper
 			$notifications[] = $notification;
 		}
 
-		return $notifications;
+		return collect($notifications);
 	}
 
 	/**
