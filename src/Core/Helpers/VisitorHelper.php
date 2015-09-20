@@ -89,9 +89,9 @@ class VisitorHelper extends BaseHelper
 		$this->browser = new BrowserHelper($request->getUserAgent());
 		$this->location = new LocationHelper($request->getIp());
 
-		$authUser = Auth::user();
-		if ($authUser)
+		if (Auth::check())
 		{
+			$authUser = Auth::user();
 			$this->user = User::findOrFail($authUser->id);
 			$this->response->assign('__login', $authUser);
 		}
