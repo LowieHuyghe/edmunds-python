@@ -14,6 +14,7 @@
 namespace LH\CoreTest\Helpers;
 
 use LH\Core\Helpers\PmHelper;
+use LH\Core\Tests\BaseTest;
 
 /**
  * Testing PmHelper-class
@@ -23,7 +24,7 @@ use LH\Core\Helpers\PmHelper;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelperTest extends \PHPUnit_Framework_TestCase
+class PmHelperTest extends BaseTest
 {
 
 	/**

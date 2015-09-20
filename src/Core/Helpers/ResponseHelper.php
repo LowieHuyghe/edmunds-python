@@ -18,7 +18,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The helper responsible for the response
@@ -46,7 +45,6 @@ class ResponseHelper extends BaseHelper
 		{
 			self::$instance = new ResponseHelper();
 		}
-
 		return self::$instance;
 	}
 
@@ -55,12 +53,12 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function __construct()
 	{
-		//
+		$this->request = RequestHelper::getInstance();
 	}
 
 	/**
 	 * The request
-	 * @var Request
+	 * @var RequestHelper
 	 */
 	private $request;
 
@@ -99,15 +97,6 @@ class ResponseHelper extends BaseHelper
 	 * @var string
 	 */
 	private $responseType = 'view';
-
-	/**
-	 * Set the request
-	 * @param Request $request
-	 */
-	public function setRequest($request)
-	{
-		$this->request = $request;
-	}
 
 	/**
 	 * Assign data to response
@@ -277,7 +266,7 @@ class ResponseHelper extends BaseHelper
 		//Save the route the user intended to go
 		if ($saveIntendedRoute)
 		{
-			$this->request->getSession()->set('intended_route', $this->request->path());
+			$this->request->getSession()->set('intended_route', $this->request->getPath());
 		}
 
 		//Make the redirect-response
