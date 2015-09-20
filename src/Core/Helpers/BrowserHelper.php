@@ -56,6 +56,15 @@ class BrowserHelper extends BaseHelper
 	}
 
 	/**
+	 * Get the useragent
+	 * @return string
+	 */
+	public function getUserAgent()
+	{
+		return $this->getUserAgent();
+	}
+
+	/**
 	 * Check if it is browser
 	 * @param string|array $browsers
 	 * @return bool
@@ -262,5 +271,14 @@ class BrowserHelper extends BaseHelper
 	public function isRobot()
 	{
 		return $this->getDetails()->isRobot();
+	}
+
+	/**
+	 * Get the browser language
+	 * @return string
+	 */
+	public function getLanguage()
+	{
+		return strtolower(substr(RequestHelper::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'), 0, 2));
 	}
 }

@@ -34,17 +34,23 @@ class SessionHelper extends BaseHelper implements SessionInterface
 	private static $instance;
 
 	/**
-	 * Fetch instance of the visitor-helper
+	 * Initialize the request-helper
 	 * @param SessionInterface $session
-	 * @return SessionHelper
 	 */
-	public static function getInstance($session)
+	public static function initialize($session)
 	{
 		if (!isset(self::$instance))
 		{
 			self::$instance = new SessionHelper($session);
 		}
+	}
 
+	/**
+	 * Fetch instance of the visitor-helper
+	 * @return SessionHelper
+	 */
+	public static function getInstance()
+	{
 		return self::$instance;
 	}
 

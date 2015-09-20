@@ -41,33 +41,22 @@ class VisitorHelper extends BaseHelper
 
 	/**
 	 * Fetch instance of the visitor-helper
-	 * @param Request $request
 	 * @return VisitorHelper
 	 */
-	public static function getInstance($request)
+	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new VisitorHelper($request);
+			self::$instance = new VisitorHelper();
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * @var Request
-	 */
-	public $request;
-
-	/**
 	 * @var User
 	 */
 	public $user;
-
-	/**
-	 * @var string
-	 */
-	public $ip;
 
 	/**
 	 * @var SessionHelper
@@ -85,16 +74,20 @@ class VisitorHelper extends BaseHelper
 	public $location;
 
 	/**
-	 * Constructor
-	 * @param Request $request
+	 * @var LocalizationHelper
 	 */
-	private function __construct(&$request)
+	public $localization;
+
+	/**
+	 * Constructor
+	 */
+	private function __construct()
 	{
-		$this->request = $request;
-		$this->ip = $request->ip();
+		$request = RequestHelper::getInstance();
+
 		$this->session = $request->getSession();
-		$this->browser = new BrowserHelper($request->server('HTTP_USER_AGENT'));
-		$this->location = new LocationHelper($this->ip);
+		$this->browser = new BrowserHelper($request->getUserAgent());
+		$this->location = new LocationHelper($request->getIp());
 
 		$authUser = Auth::user();
 		if ($authUser)
@@ -102,6 +95,8 @@ class VisitorHelper extends BaseHelper
 			$this->user = User::findOrFail($authUser->id);
 			$this->response->assign('__login', $authUser);
 		}
+
+		$this->localization = new LocalizationHelper($this->browser, $this->location, $this->user);
 	}
 
 	/**

@@ -379,6 +379,12 @@ class RouteHelper extends Controller
 		//Set the rights required
 		VisitorHelper::$requiredRights = array_unique($requiredRights);
 
+		//Initiate some helpers
+		$request = self::getRouter()->getCurrentRequest();
+		SessionHelper::initialize($request->getSession());
+		$request->setSession(SessionHelper::getInstance());
+		RequestHelper::initialize($request);
+
 		//Initialize the controllers
 		$controller = App::make($controllerName);
 		$defaultController = App::make($defaultControllerName);

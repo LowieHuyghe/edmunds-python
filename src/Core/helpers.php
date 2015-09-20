@@ -13,7 +13,7 @@
 	 */
 	function trans($message, $parameters = array(), $locale = null)
 	{
-		return \LH\Core\Helpers\LocalizationHelper::getInstance()->trans($message, $parameters, $locale);
+		return \LH\Core\Helpers\TranslationHelper::getInstance()->trans($message, $parameters, $locale);
 	}
 
 	/**
@@ -25,5 +25,5 @@
 	 */
 	function trans_choice($message, $count, $parameters = array(), $locale = null)
 	{
-		return \LH\Core\Helpers\LocalizationHelper::getInstance()->transChoice($message, $count, $parameters, $locale);
+		return \LH\Core\Helpers\TranslationHelper::getInstance()->transChoice($message, $count, $parameters, $locale);
 	}

@@ -18,6 +18,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Collection;
 use LH\Core\Database\Relations\BelongsToManyEnums;
 use LH\Core\Helpers\ValidationHelper;
 
@@ -32,7 +33,8 @@ use LH\Core\Helpers\ValidationHelper;
  * @property int $id Database table-id
  * @property string $email Email of the user
  * @property string $password Password of the user
- * @property \stdClass[] $roles Roles for this user
+ * @property Collection $roles Roles for this user
+ * @property string $locale Locale for this user
  *
  * @property Carbon created_at
  * @property Carbon updated_at
