@@ -16,6 +16,7 @@ namespace LH\Core\Controllers;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use LH\Core\Helpers\InputHelper;
+use LH\Core\Helpers\RequestHelper;
 use LH\Core\Helpers\ResponseHelper;
 use LH\Core\Helpers\SessionHelper;
 use LH\Core\Helpers\VisitorHelper;
@@ -79,12 +80,6 @@ class BaseController extends Controller
 	protected $response;
 
 	/**
-	 * The current session
-	 * @var SessionHelper
-	 */
-	protected $session;
-
-	/**
 	 * The input
 	 * @var InputHelper
 	 */
@@ -107,14 +102,11 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
-		$this->request = self::getRouter()->getCurrentRequest();
-		$this->request->setSession(SessionHelper::getInstance($this->request->getSession()));
+		$this->request = RequestHelper::getInstance();
 		$this->response = ResponseHelper::getInstance();
-		$this->response->setRequest($this->request);
-		$this->session = $this->request->session();
 		$this->input = InputHelper::getInstance();
 		$this->validator = new ValidationHelper($this->input->all());
-		$this->visitor = VisitorHelper::getInstance($this->request);
+		$this->visitor = VisitorHelper::getInstance();
 
 		$this->checkRights();
 	}

@@ -14,6 +14,8 @@
 namespace LH\Core\Helpers;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
+use GeoIp2\Model\City;
+use GeoIp2\Model\Country;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -37,7 +39,7 @@ use Illuminate\Support\Facades\App;
 class LocationHelper extends BaseHelper
 {
 	const	GEOIP_DIR	= 'geoip',
-			GEOIP_CITY	= 'GeoLite2-Cityy.mmdb',
+			GEOIP_CITY	= 'GeoLite2-City.mmdb',
 			GEOIP_COUNTRY	= 'GeoLite2-Country.mmdb';
 
 	/**
@@ -86,7 +88,7 @@ class LocationHelper extends BaseHelper
 
 	/**
 	 * Return the details of country db
-	 * @return \stdClass
+	 * @return Country
 	 */
 	private function getDetailsCountry()
 	{
@@ -125,7 +127,7 @@ class LocationHelper extends BaseHelper
 
 	/**
 	 * Return the details of city db
-	 * @return \stdClass
+	 * @return City
 	 */
 	private function getDetailsCity()
 	{
