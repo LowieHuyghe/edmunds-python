@@ -31,7 +31,6 @@ class UpdateGeoIP extends BaseCommand
 	 * @var array
 	 */
 	private $files = array(
-		LocationHelper::GEOIP_COUNTRY => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz',
 		LocationHelper::GEOIP_CITY => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
 	);
 

@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\App;
  * @property string continentName
  * @property string countryIso
  * @property string countryName
+ * @property string regionIso
+ * @property string regionName
  * @property string cityName
  * @property string postalCode
  * @property float latitude
@@ -39,8 +41,7 @@ use Illuminate\Support\Facades\App;
 class LocationHelper extends BaseHelper
 {
 	const	GEOIP_DIR	= 'geoip',
-			GEOIP_CITY	= 'GeoLite2-City.mmdb',
-			GEOIP_COUNTRY	= 'GeoLite2-Country.mmdb';
+			GEOIP_CITY	= 'GeoLite2-City.mmdb';
 
 	/**
 	 * @var string
@@ -71,45 +72,6 @@ class LocationHelper extends BaseHelper
 		{
 			$this->ip = $ip;
 		}
-	}
-
-	/**
-	 * Return the GeoIP of browser
-	 * @return Reader
-	 */
-	private function getGeoIPCountry()
-	{
-		if (!isset($this->geoIP['country']))
-		{
-			$this->geoIP['country'] = new Reader(storage_path(self::GEOIP_DIR . '/' . self::GEOIP_COUNTRY));
-		}
-		return $this->geoIP['country'];
-	}
-
-	/**
-	 * Return the details of country db
-	 * @return Country
-	 */
-	private function getDetailsCountry()
-	{
-		if (!isset($this->details['country']))
-		{
-			try
-			{
-				$reader = $this->getGeoIPCountry();
-				$this->details['country'] = $reader->country($this->ip);
-			}
-			catch(AddressNotFoundException $e)
-			{
-				$this->details['country'] = false;
-			}
-			catch(\InvalidArgumentException $e)
-			{
-				PmHelper::pmAdmin('GeoIP Error!', 'There is no country-geo-db.');
-				$this->details['country'] = false;
-			}
-		}
-		return $this->details['country'];
 	}
 
 	/**
@@ -241,6 +203,56 @@ class LocationHelper extends BaseHelper
 
 			if ($fallback) {
 				return $this->getCountryName();
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the regionIso for the ip
+	 * @return string
+	 */
+	public function getRegionIso()
+	{
+		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
+		{
+			return $division->isoCode;
+		}
+		return null;
+	}
+
+	/**
+	 * Get the regionName for the ip
+	 * @return string
+	 */
+	public function getRegionName()
+	{
+		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
+		{
+			return $division->name;
+		}
+		return null;
+	}
+
+	/**
+	 * Get the regionName for the ip by locale
+	 * @param string locale
+	 * @param bool $fallback
+	 * @return string
+	 */
+	public function getRegionNameByLocale($locale, $fallback = true)
+	{
+		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
+		{
+			//Try to fetch the name of the region in the right language
+			$names = $division->names;
+			if (isset($names[$locale])) {
+				return $names[$locale];
+			}
+
+			if ($fallback) {
+				return $this->getRegionName();
 			}
 		}
 
