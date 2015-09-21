@@ -65,11 +65,11 @@ class LocalizationHelper extends BaseHelper
 		{
 			if (!$locale)
 			{
-				$locale = $browser->getLanguage();
+				$locale = $browser->getLanguage(true);
 			}
 			elseif (!$fallback)
 			{
-				$browserLocale = $browser->getLanguage();
+				$browserLocale = $browser->getLanguage(true);
 				if ($browserLocale != $locale)
 				{
 					$fallback = $browserLocale;
