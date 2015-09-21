@@ -12,8 +12,11 @@
  */
 
 namespace LH\Core\Helpers;
+use Carbon\Carbon;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use LH\Core\Jobs\LogQueue;
 
 /**
  * The helper responsible for logging
@@ -25,6 +28,13 @@ use Illuminate\Support\Facades\Config;
  */
 class LogHelper extends BaseHelper
 {
+	use DispatchesJobs;
+
+	/**
+	 * Start time of request
+	 * @var integer
+	 */
+	public static $startMicroTime;
 	/**
 	 * Instance of the response-helper
 	 * @var LogHelper
@@ -52,18 +62,10 @@ class LogHelper extends BaseHelper
 	private $piwikTracker;
 
 	/**
-	 * Instance of the visitor
-	 * @var VisitorHelper
+	 * Constructor
 	 */
-	private $visitor;
-
-	/**
-	 * @param Request $request
-	 */
-	private function __construct($request)
+	private function __construct()
 	{
-		$this->visitor = VisitorHelper::getInstance();
-
 		$this->init();
 	}
 
@@ -72,8 +74,12 @@ class LogHelper extends BaseHelper
 	 */
 	private function init()
 	{
+		//Get stuff needed for initialization
+		$request = RequestHelper::getInstance();
+		$visitor = VisitorHelper::getInstance();
+
 		//Set to debugging when not in production
-		if (!RequestHelper::getInstance()->isProductionEnvironment())
+		if (!$request->isProductionEnvironment())
 		{
 			$GLOBALS['PIWIK_TRACKER_DEBUG'] = true;
 		}
@@ -81,33 +87,55 @@ class LogHelper extends BaseHelper
 		//Init piwik-tracker
 		\PiwikTracker::$URL = Config::get('app.logging.url');
 		$piwikTracker = new \PiwikTracker(Config::get('app.logging.siteid'));
-		$piwikTracker->setTokenAuth(Config::get('app.logging.url'));
+		$piwikTracker->setTokenAuth(Config::get('app.logging.token'));
 
 		//Check if logged in and set userId
-		if ($this->visitor->isLoggedIn())
+		if ($visitor->isLoggedIn())
 		{
-			$piwikTracker->setUserId($this->visitor->user->id);
+			$piwikTracker->setUserId($visitor->user->id);
 		}
 		//Set the browser info
-		$piwikTracker->setUserAgent($this->visitor->browser->getUserAgent());
-		$piwikTracker->setBrowserLanguage($this->visitor->browser->getLanguage());
-		$piwikTracker->setIp($this->visitor->request->getIp());
-		$piwikTracker->setUrl($this->visitor->request->getFullUrl());
-		$piwikTracker->setUrlReferrer($this->visitor->request->refer);
-		//Set the location
-		$piwikTracker->setCountry($this->visitor->location->countryName);
-		$piwikTracker->setRegion($this->visitor->location->regionName);
-		$piwikTracker->setCity($this->visitor->location->cityName);
-		$piwikTracker->setLongitude($this->visitor->location->longitude);
-		$piwikTracker->setLatitude($this->visitor->location->latitude);
-
+		$piwikTracker->setUserAgent($visitor->browser->getUserAgent());
+		$piwikTracker->setBrowserLanguage($visitor->browser->getLanguage());
+		$piwikTracker->setIp($request->getIp());
+		$piwikTracker->setUrl($request->getFullUrl());
+		$piwikTracker->setUrlReferrer($request->getReferer());
+		$piwikTracker->setPageCharset('utf-8');
 
 		//Set the tracker
 		$this->piwikTracker = $piwikTracker;
+
 	}
 
-	public function error()
+	/**
+	 * Return the piwiktracker
+	 * @return \PiwikTracker
+	 */
+	public function getTracker()
 	{
-		//
+		return $this->piwikTracker;
+	}
+
+	/**
+	 * Log the view of the user
+	 */
+	public function logView()
+	{
+		$requestEndTime = microtime(true);
+		$requestGenerationTime = ($requestEndTime - self::$startMicroTime) / 1000.0;
+
+		$this->piwikTracker->setGenerationTime($requestGenerationTime);
+		$url = $this->piwikTracker->getUrlTrackPageView(RequestHelper::getInstance()->getPath());
+
+		$this->queueLog($url);
+	}
+
+	/**
+	 * Queue the logging
+	 * @param string $url
+	 */
+	private function queueLog($url)
+	{
+		$this->dispatch((new LogQueue($url))->onQueue(Config::get('app.logging.queue')));
 	}
 }

@@ -287,6 +287,9 @@ class ResponseHelper extends BaseHelper
 			$redirect = Response::make($this->viewRedirect($redirect));
 		}
 
+		//Log the view of the user before sending the response
+		LogHelper::getInstance()->logView();
+
 		//Direct redirect
 		$redirect->send();
 

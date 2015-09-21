@@ -16,6 +16,7 @@ use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
 use GeoIp2\Model\Country;
+use GeoIp2\Record\Location;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -28,15 +29,15 @@ use Illuminate\Support\Facades\App;
  *
  * @property string continentCode
  * @property string continentName
- * @property string countryIso
+ * @property string countryCode
  * @property string countryName
- * @property string regionIso
+ * @property string regionCode
  * @property string regionName
  * @property string cityName
  * @property string postalCode
  * @property float latitude
  * @property float longitude
- * @property \stdClass location
+ * @property Location location
  */
 class LocationHelper extends BaseHelper
 {
@@ -171,7 +172,7 @@ class LocationHelper extends BaseHelper
 	 * Get the countryIso for the ip
 	 * @return string
 	 */
-	private function getCountryIso()
+	private function getCountryCode()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->country->isoCode : null;
 	}
@@ -213,26 +214,18 @@ class LocationHelper extends BaseHelper
 	 * Get the regionIso for the ip
 	 * @return string
 	 */
-	public function getRegionIso()
+	private function getRegionCode()
 	{
-		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
-		{
-			return $division->isoCode;
-		}
-		return null;
+		return $this->getDetailsCity() ? $this->getDetailsCity()->mostSpecificSubdivision->isoCode : null;
 	}
 
 	/**
 	 * Get the regionName for the ip
 	 * @return string
 	 */
-	public function getRegionName()
+	private function getRegionName()
 	{
-		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
-		{
-			return $division->name;
-		}
-		return null;
+		return $this->getDetailsCity() ? $this->getDetailsCity()->mostSpecificSubdivision->name : null;
 	}
 
 	/**
@@ -243,10 +236,10 @@ class LocationHelper extends BaseHelper
 	 */
 	public function getRegionNameByLocale($locale, $fallback = true)
 	{
-		if ($this->getDetailsCity() && $division = $this->getDetailsCity()->getMostSpecificSubdivision())
+		if ($this->getDetailsCity())
 		{
 			//Try to fetch the name of the region in the right language
-			$names = $division->names;
+			$names = $this->getDetailsCity()->mostSpecificSubdivision->names;
 			if (isset($names[$locale])) {
 				return $names[$locale];
 			}
@@ -297,17 +290,11 @@ class LocationHelper extends BaseHelper
 
 	/**
 	 * Get the location for the ip
-	 * @return \stdClass
+	 * @return Location
 	 */
 	private function getLocation()
 	{
-		list($latitude, $longitude) = array($this->getLatitude(), $this->getLongitude());
-
-		$location = new \stdClass();
-		$location->latitude = $latitude;
-		$location->longitude = $longitude;
-
-		return $location;
+		return $this->getDetailsCity() ? $this->getDetailsCity()->location : null;
 	}
 
 	/**
