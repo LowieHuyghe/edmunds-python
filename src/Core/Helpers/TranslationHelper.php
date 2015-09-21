@@ -118,7 +118,7 @@ class TranslationHelper extends BaseHelper
 			$translation->original = $key;
 
 			//Save if not in local-mode
-			if (!(env('APP_DEBUG') && App::environment('local')))
+			if (RequestHelper::getInstance()->isProductionEnvironment())
 			{
 				$translation->save();
 			}
