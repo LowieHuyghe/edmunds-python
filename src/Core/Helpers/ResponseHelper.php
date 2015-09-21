@@ -282,7 +282,7 @@ class ResponseHelper extends BaseHelper
 		}
 
 		//For debugging purposes show the redirect-page
-		if (env('APP_DEBUG') && App::environment('local') && Config::get('app.routing.redirecthalt'))
+		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
 		{
 			$redirect = Response::make($this->viewRedirect($redirect));
 		}

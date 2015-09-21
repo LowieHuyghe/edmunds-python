@@ -63,7 +63,7 @@ class LocationHelper extends BaseHelper
 	 */
 	public function __construct($ip)
 	{
-		if ($ip == '127.0.0.1' && env('APP_DEBUG') && App::environment('local'))
+		if (RequestHelper::getInstance()->isLocalEnvironment())
 		{
 			$this->ip = '213.118.118.244';
 		}
