@@ -275,10 +275,20 @@ class BrowserHelper extends BaseHelper
 
 	/**
 	 * Get the browser language
+	 * @param bool $short
 	 * @return string
 	 */
-	public function getLanguage()
+	public function getLanguage($short = false)
 	{
-		return strtolower(substr(RequestHelper::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'), 0, 2));
+		if ($browserLanguage = RequestHelper::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
+		{
+			$browserLanguage = strtolower($browserLanguage);
+			if ($short)
+			{
+				$browserLanguage = substr($browserLanguage, 0, 2);
+			}
+			return $browserLanguage;
+		}
+		return null;
 	}
 }
