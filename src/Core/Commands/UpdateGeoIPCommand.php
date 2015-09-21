@@ -24,7 +24,7 @@ use LH\Core\Helpers\PmHelper;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class UpdateGeoIP extends BaseCommand
+class UpdateGeoIPCommand extends BaseCommand
 {
 	/**
 	 * The files to download

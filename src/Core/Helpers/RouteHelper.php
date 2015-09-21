@@ -13,6 +13,7 @@
 
 namespace LH\Core\Helpers;
 
+use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -41,9 +42,12 @@ class RouteHelper extends Controller
 	 */
 	public function route($route)
 	{
-		$this->checkConfig();
+		LogHelper::$startMicroTime = microtime(true);
 
+		$this->checkConfig();
 		$response = $this->routeHandler($route);
+
+		LogHelper::getInstance()->logView();
 
 		return $response;
 	}
@@ -51,7 +55,7 @@ class RouteHelper extends Controller
 	/**
 	 * Do the route logic
 	 * @param string $route
-	 * @return mixed
+	 * @return \Illuminate\Http\Response
 	 */
 	private function routeHandler($route)
 	{
@@ -372,7 +376,7 @@ class RouteHelper extends Controller
 	 * @param string $methodName
 	 * @param array $parameters
 	 * @param array $requiredRights
-	 * @return mixed
+	 * @return \Illuminate\Http\Response
 	 */
 	private function callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights)
 	{

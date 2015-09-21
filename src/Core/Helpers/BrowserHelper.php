@@ -61,7 +61,7 @@ class BrowserHelper extends BaseHelper
 	 */
 	public function getUserAgent()
 	{
-		return $this->getUserAgent();
+		return $this->userAgent;
 	}
 
 	/**
