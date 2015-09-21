@@ -79,9 +79,8 @@ class LogHelper extends BaseHelper
 		}
 
 		//Init piwik-tracker
-		$piwikTracker = new \PiwikTracker();
-		$piwikTracker->setIdSite(Config::get('app.logging.siteid'));
-		$piwikTracker->setUrl(Config::get('app.logging.url'));
+		\PiwikTracker::$URL = Config::get('app.logging.url');
+		$piwikTracker = new \PiwikTracker(Config::get('app.logging.siteid'));
 
 		//Check if logged in and set userId
 		if ($this->visitor->isLoggedIn())
@@ -90,6 +89,7 @@ class LogHelper extends BaseHelper
 		}
 		//Set the browser info
 		$piwikTracker->setUserAgent($this->visitor->browser->getUserAgent());
+		$piwikTracker->setBrowserLanguage($this->visitor->browser->getLanguage());
 		$piwikTracker->setIp($this->visitor->request->getIp());
 		$piwikTracker->setUrl($this->visitor->request->getFullUrl());
 		$piwikTracker->setUrlReferrer($this->visitor->request->refer);
