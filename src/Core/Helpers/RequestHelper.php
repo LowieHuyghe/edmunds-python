@@ -154,7 +154,7 @@ class RequestHelper extends BaseHelper
 	 * Check if call was ajax
 	 * @return bool
 	 */
-	public function getAjax()
+	public function isAjax()
 	{
 		return $this->request->ajax();
 	}
@@ -163,7 +163,7 @@ class RequestHelper extends BaseHelper
 	 * Check if call was over https
 	 * @return bool
 	 */
-	public function getSecure()
+	public function isSecure()
 	{
 		return $this->request->secure();
 	}
@@ -172,9 +172,36 @@ class RequestHelper extends BaseHelper
 	 * Check if call wants json
 	 * @return bool
 	 */
-	public function getJson()
+	public function isJson()
 	{
 		return $this->request->wantsJson();
+	}
+
+	/**
+	 * Check if local environment
+	 * @return bool
+	 */
+	public function isLocalEnvironment()
+	{
+		return App::environment('local');
+	}
+
+	/**
+	 * Check if production environment
+	 * @return bool
+	 */
+	public function isProductionEnvironment()
+	{
+		return App::environment('production');
+	}
+
+	/**
+	 * Check if testing environment
+	 * @return bool
+	 */
+	public function isTestingEnvironment()
+	{
+		return App::environment('testing');
 	}
 
 }
