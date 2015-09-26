@@ -42,12 +42,8 @@ class RouteHelper extends Controller
 	 */
 	public function route($route)
 	{
-		LogHelper::$startMicroTime = microtime(true);
-
 		$this->checkConfig();
 		$response = $this->routeHandler($route);
-
-		LogHelper::getInstance()->logView();
 
 		return $response;
 	}

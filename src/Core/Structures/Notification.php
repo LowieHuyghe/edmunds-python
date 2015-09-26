@@ -11,10 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace LH\Core\Structures;
+use Illuminate\Support\Collection;
+use LH\Core\Helpers\ValidationHelper;
 
 /**
- * The model for notifications
+ * The structure for notifications
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
@@ -28,8 +30,61 @@ namespace LH\Core\Models;
  * @property string $type
  * @property string $subtype
  */
-class Notification extends BaseModel
+class Notification extends BaseStructure
 {
+	/**
+	 * All the notifications
+	 * @var Notification[]
+	 */
+	private static $all = array();
+
+	/**
+	 * Return all the notifications and filter if wanted
+	 * @param string $type
+	 * @param string $subtype
+	 * @return Collection
+	 */
+	public static function all($type = null, $subtype = null)
+	{
+		//If nothing specified, just return all
+		if (!$type && !$subtype)
+		{
+			return collect(self::$all);
+		}
+
+		//Filter
+		$notifications = array();
+		foreach (self::$all as $notification)
+		{
+			if ($type && $notification->type != $type)
+			{
+				continue;
+			}
+			if ($subtype && $notification->subtype != $subtype)
+			{
+				continue;
+			}
+			$notifications[] = $notification;
+		}
+
+		return collect($notifications);
+	}
+
+	/**
+	 * Clear all the notifications
+	 */
+	public static function clear()
+	{
+		self::$notifications = array();
+	}
+
+	/**
+	 * Save the instance of the notification
+	 */
+	public function save()
+	{
+		self::$all[] = $this;
+	}
 
 	/**
 	 * Add the validation of the model
