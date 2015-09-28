@@ -132,6 +132,17 @@ class RequestHelper extends BaseHelper
 	}
 
 	/**
+	 * Return the value of a cookie
+	 * @param string $key
+	 * @param string $default
+	 * @return array|string
+	 */
+	public function getCookie($key = null, $default = null)
+	{
+		return $this->request->cookie($key, $default);
+	}
+
+	/**
 	 * Return the path of the request
 	 * @return string
 	 */

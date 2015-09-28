@@ -54,6 +54,7 @@ class ValidationHelper extends BaseHelper
 	 * @param string $name
 	 * @param string $key
 	 * @param string $value
+	 * @param callable $sometimes
 	 */
 	private function add($name, $key, $value = null)
 	{
@@ -82,6 +83,7 @@ class ValidationHelper extends BaseHelper
 	private function getValidator($names = null)
 	{
 		$rules = array();
+		$sometimes = array();
 
 		if (is_null($names))
 		{
@@ -89,12 +91,27 @@ class ValidationHelper extends BaseHelper
 			foreach ($this->rules as $name => $values)
 			{
 				$vs = array();
+				$sometimesSet = false;
 				foreach ($values as $key => $value)
 				{
-					$vs[] = $key . (is_null($value) ? '' : ":$value");
+					if ($key != 'sometimes')
+					{
+						$vs[] = $key . (is_null($value) ? '' : ":$value");
+					}
+					else
+					{
+						$sometimes[$name] = array('function' => $value);
+						$sometimesSet = true;
+					}
 				}
-
-				$rules[$name] = implode('|', $vs);
+				if (!$sometimesSet)
+				{
+					$rules[$name] = implode('|', $vs);
+				}
+				else
+				{
+					$sometimes[$name]['rules'] = implode('|', $vs);
+				}
 			}
 		}
 		else
@@ -108,16 +125,36 @@ class ValidationHelper extends BaseHelper
 				}
 
 				$vs = array();
+				$sometimesSet = false;
 				foreach ($this->rules[$name] as $key => $value)
 				{
-					$vs[] = $key . (is_null($value) ? '' : ":$value");
+					if ($key != 'sometimes')
+					{
+						$vs[] = $key . (is_null($value) ? '' : ":$value");
+					}
+					else
+					{
+						$sometimes[$name] = array('function' => $value);
+						$sometimesSet = true;
+					}
 				}
-
-				$rules[$name] = implode('|', $vs);
+				if (!$sometimesSet)
+				{
+					$rules[$name] = implode('|', $vs);
+				}
+				else
+				{
+					$sometimes[$name]['rules'] = implode('|', $vs);
+				}
 			}
 		}
 
-		return Validator::make($this->input, $rules);
+		$validator = Validator::make($this->input, $rules);
+		foreach ($sometimes as $name => $values)
+		{
+			$validator->sometimes($name, $values['rules'], $values['function']);
+		}
+		return $validator;
 	}
 
 	/**
@@ -537,6 +574,15 @@ class ValidationHelper extends BaseHelper
 	public function url($name)
 	{
 		$this->add($name, 'url');
+	}
+	/**
+	 * The field will only be checked when the function returns true
+	 * @param string $name
+	 * @param callable $function
+	 */
+	public function sometimes($name, $function)
+	{
+		$this->add($name, 'sometimes', $function);
 	}
 
 }
