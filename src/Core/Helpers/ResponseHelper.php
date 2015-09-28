@@ -13,11 +13,10 @@
 
 namespace LH\Core\Helpers;
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  * The helper responsible for the response
@@ -162,17 +161,17 @@ class ResponseHelper extends BaseHelper
 	 * Assign cookies to response
 	 * @param string $key
 	 * @param mixed $value
-	 * @param int $timeValid
+	 * @param int $minutes
 	 */
-	public function assignCookie($key, $value, $timeValid = null)
+	public function assignCookie($key, $value, $minutes = 0)
 	{
-		if (is_null($timeValid))
+		if ($minutes)
 		{
-			$this->assignedCookies[] = Cookie::make($key, $value);
+			$this->assignedCookies[] = cookie($key, $value,$minutes);
 		}
 		else
 		{
-			$this->assignedCookies[] = Cookie::make($key, $value, $timeValid);
+			$this->assignedCookies[] = cookie()->forever($key, $value);
 		}
 	}
 
@@ -272,6 +271,7 @@ class ResponseHelper extends BaseHelper
 		//Make the redirect-response
 		$redirect = redirect($uri);
 
+		//Assign input
 		if ($input === true)
 		{
 			$redirect = $redirect->withInput();
@@ -281,14 +281,14 @@ class ResponseHelper extends BaseHelper
 			$redirect = $redirect->withInput($input);
 		}
 
+		//Assign cookies, headers
+		$this->attachExtras($redirect);
+
 		//For debugging purposes show the redirect-page
 		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
 		{
 			$redirect = Response::make($this->viewRedirect($redirect));
 		}
-
-		//Log the view of the user before sending the response
-		LogHelper::getInstance()->logView();
 
 		//Direct redirect
 		$redirect->send();
@@ -360,6 +360,10 @@ class ResponseHelper extends BaseHelper
 			{
 				$this->assignHeader('Content-Type', 'application/xml');
 			}
+		}
+		else
+		{
+			$response = Response::make();
 		}
 
 		if (!is_null($response))
