@@ -20,7 +20,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
 use LH\Core\Database\Relations\BelongsToManyEnums;
-use LH\Core\Helpers\ValidationHelper;
+use LH\Core\Structures\Validation;
 
 /**
  * The model of the user
@@ -125,7 +125,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

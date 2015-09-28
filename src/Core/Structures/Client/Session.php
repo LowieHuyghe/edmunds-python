@@ -11,8 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
 
+use LH\Core\Helpers\BaseHelper;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
@@ -25,11 +26,11 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class SessionHelper extends BaseHelper implements SessionInterface
+class Session extends BaseHelper implements SessionInterface
 {
 	/**
 	 * Instance of the visitor-helper
-	 * @var SessionHelper
+	 * @var Session
 	 */
 	private static $instance;
 
@@ -41,13 +42,13 @@ class SessionHelper extends BaseHelper implements SessionInterface
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new SessionHelper($session);
+			self::$instance = new Session($session);
 		}
 	}
 
 	/**
 	 * Fetch instance of the visitor-helper
-	 * @return SessionHelper
+	 * @return Session
 	 */
 	public static function getInstance()
 	{

@@ -11,8 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures;
 use Illuminate\Support\Facades\Validator;
+use LH\Core\Helpers\BaseHelper;
 
 /**
  * The helper to get controllers
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class ValidationHelper extends BaseHelper
+class Validation extends BaseHelper
 {
 	/**
 	 * Rules to validate
@@ -53,8 +54,7 @@ class ValidationHelper extends BaseHelper
 	 * Add a field to the validator's rules
 	 * @param string $name
 	 * @param string $key
-	 * @param string $value
-	 * @param callable $sometimes
+	 * @param string|callable $value
 	 */
 	private function add($name, $key, $value = null)
 	{
