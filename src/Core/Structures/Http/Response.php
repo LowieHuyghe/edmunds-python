@@ -11,11 +11,11 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Http;
 
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\View;
+use LH\Core\Helpers\BaseHelper;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -26,23 +26,23 @@ use Symfony\Component\HttpFoundation\Cookie;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class ResponseHelper extends BaseHelper
+class Response extends BaseHelper
 {
 	/**
 	 * Instance of the response-helper
-	 * @var ResponseHelper
+	 * @var Response
 	 */
 	private static $instance;
 
 	/**
 	 * Fetch instance of the response-helper
-	 * @return ResponseHelper
+	 * @return Response
 	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new ResponseHelper();
+			self::$instance = new Response();
 		}
 		return self::$instance;
 	}
@@ -52,12 +52,12 @@ class ResponseHelper extends BaseHelper
 	 */
 	private function __construct()
 	{
-		$this->request = RequestHelper::getInstance();
+		$this->request = Request::getInstance();
 	}
 
 	/**
 	 * The request
-	 * @var RequestHelper
+	 * @var Request
 	 */
 	private $request;
 
@@ -287,7 +287,7 @@ class ResponseHelper extends BaseHelper
 		//For debugging purposes show the redirect-page
 		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
 		{
-			$redirect = Response::make($this->viewRedirect($redirect));
+			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect));
 		}
 
 		//Direct redirect
@@ -327,16 +327,16 @@ class ResponseHelper extends BaseHelper
 
 		if ($this->responseType == 'download')
 		{
-			$response = Response::download($this->response['download']['filePath'], $this->response['download']['name']);
+			$response = \Illuminate\Support\Facades\Response::download($this->response['download']['filePath'], $this->response['download']['name']);
 		}
 		elseif ($this->responseType == 'json')
 		{
 			$this->assignHeader('Content-Type', 'application/json');
-			$response = Response::json($this->assignedData);
+			$response = \Illuminate\Support\Facades\Response::json($this->assignedData);
 		}
 		elseif ($this->responseType == 'content')
 		{
-			$response = Response::make($this->response['content']);
+			$response = \Illuminate\Support\Facades\Response::make($this->response['content']);
 		}
 		elseif (($this->responseType == 'view' || $this->responseType == 'xml') && !empty($this->response['view']))
 		{
@@ -354,7 +354,7 @@ class ResponseHelper extends BaseHelper
 					$response = $response->nest($key, $view, $data);
 				}
 			}
-			$response = Response::make($response);
+			$response = \Illuminate\Support\Facades\Response::make($response);
 
 			if ($this->responseType == 'xml')
 			{
@@ -363,7 +363,7 @@ class ResponseHelper extends BaseHelper
 		}
 		else
 		{
-			$response = Response::make();
+			$response = \Illuminate\Support\Facades\Response::make();
 		}
 
 		if (!is_null($response))

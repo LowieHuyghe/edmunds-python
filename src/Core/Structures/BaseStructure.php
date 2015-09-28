@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use LH\Core\Helpers\ValidationHelper;
+use LH\Core\Structures\Validation;
 
 /**
  * A base for the structures to extend from
@@ -184,7 +184,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * The validator
-	 * @var ValidationHelper
+	 * @var Validation
 	 */
 	protected $validator;
 
@@ -200,7 +200,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 		$this->fill($attributes);
 
-		$this->validator = new ValidationHelper();
+		$this->validator = new Validation();
 		static::addValidationRules($this->validator);
 	}
 
@@ -1611,7 +1611,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

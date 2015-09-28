@@ -16,7 +16,7 @@ use Faker\Generator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use LH\Core\Helpers\InputHelper;
+use LH\Core\Structures\Client\Input;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -309,7 +309,7 @@ class FileEntry extends BaseModel
 	public static function generateFromInput($name)
 	{
 		//Fetch the uploaded file
-		$uploadedFile = InputHelper::getInstance()->file($name);
+		$uploadedFile = Input::getInstance()->file($name);
 		if (!$uploadedFile)
 		{
 			return null;

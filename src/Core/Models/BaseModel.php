@@ -18,7 +18,7 @@ use LH\Core\Database\Relations\BelongsToManyEnums;
 use LH\Core\Database\Relations\HasOneEnum;
 use LH\Core\Database\Relations\HasOneEnums;
 use LH\Core\Helpers\ModelFactoryHelper;
-use LH\Core\Helpers\ValidationHelper;
+use LH\Core\Structures\Validation;
 use Illuminate\Validation\Validator;
 
 /**
@@ -33,7 +33,7 @@ class BaseModel extends Model
 {
 	/**
 	 * The validator
-	 * @var ValidationHelper
+	 * @var Validation
 	 */
 	protected $validator;
 
@@ -51,7 +51,7 @@ class BaseModel extends Model
 	{
 		parent::__construct($attributes);
 
-		$this->validator = new ValidationHelper();
+		$this->validator = new Validation();
 		static::addValidationRules($this->validator);
 	}
 
@@ -127,7 +127,7 @@ class BaseModel extends Model
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

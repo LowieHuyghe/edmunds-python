@@ -11,9 +11,11 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
 use Illuminate\Support\Facades\Config;
+use LH\Core\Helpers\BaseHelper;
 use LH\Core\Models\User;
+use LH\Core\Structures\Client\Location;
 
 /**
  * The helper responsible for localization
@@ -23,7 +25,7 @@ use LH\Core\Models\User;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class LocalizationHelper extends BaseHelper
+class Localization extends BaseHelper
 {
 	/**
 	 * The default locale
@@ -40,7 +42,7 @@ class LocalizationHelper extends BaseHelper
 	/**
 	 * Constructor
 	 * @param BrowserHelper $browser
-	 * @param LocationHelper $location
+	 * @param Location $location
 	 * @param User $user
 	 */
 	public function __construct($browser, $location, $user)
