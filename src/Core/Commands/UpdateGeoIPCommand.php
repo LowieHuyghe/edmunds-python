@@ -13,8 +13,8 @@
 
 namespace LH\Core\Commands;
 
-use LH\Core\Helpers\LocationHelper;
-use LH\Core\Helpers\PmHelper;
+use LH\Core\Structures\Client\Location;
+use LH\Core\Structures\Admin\Pm;
 
 /**
  * The command for updating the geoip-databases. Please shedule for every week.
@@ -31,7 +31,7 @@ class UpdateGeoIPCommand extends BaseCommand
 	 * @var array
 	 */
 	private $files = array(
-		LocationHelper::GEOIP_CITY => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
+		Location::GEOIP_CITY => 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
 	);
 
 	/**
@@ -62,7 +62,7 @@ class UpdateGeoIPCommand extends BaseCommand
 			$contents = file_get_contents($url);
 			$tmpFileNameGz = tempnam(sys_get_temp_dir(), $name);
 			$tmpFileNameMmdb = tempnam(sys_get_temp_dir(), $name);
-			$directoryName = storage_path(LocationHelper::GEOIP_DIR);
+			$directoryName = storage_path(Location::GEOIP_DIR);
 			$fileName = "$directoryName/$name";
 			$save = file_put_contents($tmpFileNameGz, $contents);
 
@@ -180,6 +180,9 @@ class UpdateGeoIPCommand extends BaseCommand
 	 */
 	private function informAdminError($message)
 	{
-		PmHelper::pmAdmin('GeoIP Error!', $message);
+		$pm = new Pm();
+		$pm->title = 'GeoIP Error!';
+		$pm->message = $message;
+		$pm->send();
 	}
 }

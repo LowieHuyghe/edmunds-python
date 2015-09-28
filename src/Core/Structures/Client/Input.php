@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
 
-use Illuminate\Support\Facades\Input;
+use LH\Core\Helpers\BaseHelper;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -24,23 +24,23 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class InputHelper extends BaseHelper
+class Input extends BaseHelper
 {
 	/**
 	 * Instance of the response-helper
-	 * @var InputHelper
+	 * @var Input
 	 */
 	private static $instance;
 
 	/**
 	 * Fetch instance of the response-helper
-	 * @return InputHelper
+	 * @return Input
 	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new InputHelper();
+			self::$instance = new Input();
 		}
 
 		return self::$instance;
@@ -64,11 +64,11 @@ class InputHelper extends BaseHelper
 	{
 		if (is_null($default))
 		{
-			return Input::get($key);
+			return \Illuminate\Support\Facades\Input::get($key);
 		}
 		else
 		{
-			return Input::get($key, $default);
+			return \Illuminate\Support\Facades\Input::get($key, $default);
 		}
 	}
 
@@ -79,7 +79,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function has($key)
 	{
-		return Input::has($key);
+		return \Illuminate\Support\Facades\Input::has($key);
 	}
 
 	/**
@@ -88,7 +88,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function all()
 	{
-		return Input::all();
+		return \Illuminate\Support\Facades\Input::all();
 	}
 
 	/**
@@ -98,7 +98,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function only($keys)
 	{
-		return Input::only($keys);
+		return \Illuminate\Support\Facades\Input::only($keys);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function except($keys)
 	{
-		return Input::except($keys);
+		return \Illuminate\Support\Facades\Input::except($keys);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function file($name)
 	{
-		return Input::file($name);
+		return \Illuminate\Support\Facades\Input::file($name);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function hasFile($name)
 	{
-		return Input::hasFile($name);
+		return \Illuminate\Support\Facades\Input::hasFile($name);
 	}
 
 	/**
@@ -138,7 +138,7 @@ class InputHelper extends BaseHelper
 	 */
 	public function fileIsValid($name)
 	{
-		return Input::file($name)->isValid();
+		return \Illuminate\Support\Facades\Input::file($name)->isValid();
 	}
 
 	/**

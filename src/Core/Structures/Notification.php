@@ -13,7 +13,7 @@
 
 namespace LH\Core\Structures;
 use Illuminate\Support\Collection;
-use LH\Core\Helpers\ValidationHelper;
+use LH\Core\Structures\Validation;
 
 /**
  * The structure for notifications
@@ -88,7 +88,7 @@ class Notification extends BaseStructure
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

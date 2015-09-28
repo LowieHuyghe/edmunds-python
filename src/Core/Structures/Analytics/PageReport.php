@@ -13,8 +13,7 @@
 
 namespace LH\Core\Structures\Analytics;
 
-use LH\Core\Helpers\RequestHelper;
-use LH\Core\Helpers\ValidationHelper;
+use LH\Core\Structures\Http\Request;
 
 /**
  * The structure for page reports
@@ -34,8 +33,8 @@ class PageReport extends BaseReport
 		parent::__construct();
 
 		$this->type = 'pageview';
-		$this->documentHostName = RequestHelper::getInstance()->getRoot();
-		$path = substr(RequestHelper::getInstance()->getFullUrl(), strlen($this->documentHostName));
+		$this->documentHostName = Request::getInstance()->getRoot();
+		$path = substr(Request::getInstance()->getFullUrl(), strlen($this->documentHostName));
 		if (!$path || $path[0] != '/')
 		{
 			$path = '/' . $path;

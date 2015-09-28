@@ -15,13 +15,11 @@ namespace LH\Core\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use LH\Core\Helpers\InputHelper;
-use LH\Core\Helpers\RequestHelper;
-use LH\Core\Helpers\ResponseHelper;
-use LH\Core\Helpers\SessionHelper;
-use LH\Core\Helpers\VisitorHelper;
-use LH\Core\Helpers\ValidationHelper;
-use Illuminate\Http\Request;
+use LH\Core\Structures\Client\Input;
+use LH\Core\Structures\Http\Request;
+use LH\Core\Structures\Http\Response;
+use LH\Core\Structures\Client\Visitor;
+use LH\Core\Structures\Validation;
 use Illuminate\Routing\Controller;
 
 /**
@@ -75,25 +73,25 @@ class BaseController extends Controller
 
 	/**
 	 * The current request
-	 * @var ResponseHelper
+	 * @var Response
 	 */
 	protected $response;
 
 	/**
 	 * The input
-	 * @var InputHelper
+	 * @var Input
 	 */
 	protected $input;
 
 	/**
 	 * The validator
-	 * @var ValidationHelper
+	 * @var Validation
 	 */
 	protected $validator;
 
 	/**
 	 * The visitor
-	 * @var VisitorHelper
+	 * @var Visitor
 	 */
 	protected $visitor;
 
@@ -102,11 +100,11 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
-		$this->request = RequestHelper::getInstance();
-		$this->response = ResponseHelper::getInstance();
-		$this->input = InputHelper::getInstance();
-		$this->validator = new ValidationHelper($this->input->all());
-		$this->visitor = VisitorHelper::getInstance();
+		$this->request = Request::getInstance();
+		$this->response = Response::getInstance();
+		$this->input = Input::getInstance();
+		$this->validator = new Validation($this->input->all());
+		$this->visitor = Visitor::getInstance();
 
 		$this->checkRights();
 	}
@@ -117,7 +115,7 @@ class BaseController extends Controller
 	private function checkRights()
 	{
 		//If no roles required, return
-		if (count(VisitorHelper::$requiredRights) === 0)
+		if (count(Visitor::$requiredRights) === 0)
 		{
 			return;
 		}
@@ -127,7 +125,7 @@ class BaseController extends Controller
 			//There are rights, and user is logged in
 
 			$hasRights = true;
-			foreach (VisitorHelper::$requiredRights as $rightId)
+			foreach (Visitor::$requiredRights as $rightId)
 			{
 				if (!$this->visitor->user->hasRight($rightId))
 				{

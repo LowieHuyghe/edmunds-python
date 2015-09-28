@@ -11,11 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use LH\Core\Helpers\BaseHelper;
 use LH\Core\Models\User;
+use LH\Core\Structures\Http\Request;
 
 /**
  * The helper for the visitor
@@ -25,11 +26,11 @@ use LH\Core\Models\User;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class VisitorHelper extends BaseHelper
+class Visitor extends BaseHelper
 {
 	/**
 	 * Instance of the visitor-helper
-	 * @var VisitorHelper
+	 * @var Visitor
 	 */
 	private static $instance;
 
@@ -41,13 +42,13 @@ class VisitorHelper extends BaseHelper
 
 	/**
 	 * Fetch instance of the visitor-helper
-	 * @return VisitorHelper
+	 * @return Visitor
 	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new VisitorHelper();
+			self::$instance = new Visitor();
 		}
 
 		return self::$instance;
@@ -59,22 +60,22 @@ class VisitorHelper extends BaseHelper
 	public $user;
 
 	/**
-	 * @var SessionHelper
+	 * @var Session
 	 */
 	public $session;
 
 	/**
-	 * @var BrowserHelper
+	 * @var Browser
 	 */
 	public $browser;
 
 	/**
-	 * @var LocationHelper
+	 * @var Location
 	 */
 	public $location;
 
 	/**
-	 * @var LocalizationHelper
+	 * @var Localization
 	 */
 	public $localization;
 
@@ -83,11 +84,11 @@ class VisitorHelper extends BaseHelper
 	 */
 	private function __construct()
 	{
-		$request = RequestHelper::getInstance();
+		$request = Request::getInstance();
 
 		$this->session = $request->getSession();
-		$this->browser = new BrowserHelper($request->getUserAgent());
-		$this->location = new LocationHelper($request->getIp());
+		$this->browser = new Browser($request->getUserAgent());
+		$this->location = new Location($request->getIp());
 
 		if (Auth::check())
 		{
@@ -96,7 +97,7 @@ class VisitorHelper extends BaseHelper
 			$this->response->assign('__login', $authUser);
 		}
 
-		$this->localization = new LocalizationHelper($this->browser, $this->location, $this->user);
+		$this->localization = new Localization($this->browser, $this->location, $this->user);
 	}
 
 	/**

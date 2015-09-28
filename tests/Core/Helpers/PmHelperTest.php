@@ -13,11 +13,11 @@
 
 namespace LH\CoreTest\Helpers;
 
-use LH\Core\Helpers\PmHelper;
+use LH\Core\Structures\Admin\Pm;
 use LH\Core\Tests\BaseTest;
 
 /**
- * Testing PmHelper-class
+ * Testing Pm-class
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
@@ -32,8 +32,10 @@ class PmHelperTest extends BaseTest
 	 */
 	public function testSend()
 	{
-		PmHelper::pmAdmin('Test-title');
-		$this->assertTrue(true);
+		$pm = new Pm();
+		$pm->title = 'Test-title';
+
+		$this->assertTrue($pm->send());
 	}
 
 }

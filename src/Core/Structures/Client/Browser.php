@@ -11,7 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
+use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\Http\Request;
 
 /**
  * The helper for the browser
@@ -21,7 +23,7 @@ namespace LH\Core\Helpers;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class BrowserHelper extends BaseHelper
+class Browser extends BaseHelper
 {
 	/**
 	 * @var string
@@ -280,7 +282,7 @@ class BrowserHelper extends BaseHelper
 	 */
 	public function getLanguage($short = false)
 	{
-		if ($browserLanguage = RequestHelper::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
+		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
 		{
 			$browserLanguage = strtolower($browserLanguage);
 			if ($short)

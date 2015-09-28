@@ -11,13 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace LH\Core\Structures\Client;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
-use GeoIp2\Model\Country;
-use GeoIp2\Record\Location;
-use Illuminate\Support\Facades\App;
+use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\Http\Request;
 
 /**
  * The helper for the browser
@@ -37,9 +36,9 @@ use Illuminate\Support\Facades\App;
  * @property string postalCode
  * @property float latitude
  * @property float longitude
- * @property Location location
+ * @property \GeoIp2\Record\Location location
  */
-class LocationHelper extends BaseHelper
+class Location extends BaseHelper
 {
 	const	GEOIP_DIR	= 'geoip',
 			GEOIP_CITY	= 'GeoLite2-City.mmdb';
@@ -65,7 +64,7 @@ class LocationHelper extends BaseHelper
 	 */
 	public function __construct($ip)
 	{
-		if (RequestHelper::getInstance()->isLocalEnvironment())
+		if (Request::getInstance()->isLocalEnvironment())
 		{
 			$this->ip = '213.118.118.244';
 		}
@@ -290,7 +289,7 @@ class LocationHelper extends BaseHelper
 
 	/**
 	 * Get the location for the ip
-	 * @return Location
+	 * @return \GeoIp2\Record\Location
 	 */
 	private function getLocation()
 	{

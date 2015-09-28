@@ -11,11 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
-use GeoIp2\Database\Reader;
-use GeoIp2\Exception\AddressNotFoundException;
-use Illuminate\Http\Request;
+namespace LH\Core\Structures\Http;
 use Illuminate\Support\Facades\App;
+use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\Client\Session;
 
 /**
  * The helper for the request
@@ -25,29 +24,29 @@ use Illuminate\Support\Facades\App;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class RequestHelper extends BaseHelper
+class Request extends BaseHelper
 {
 	/**
 	 * Instance of the response-helper
-	 * @var RequestHelper
+	 * @var Request
 	 */
 	private static $instance;
 
 	/**
 	 * Initialize the request-helper
-	 * @param Request $request
+	 * @param \Illuminate\Http\Request $request
 	 */
 	public static function initialize($request)
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new RequestHelper($request);
+			self::$instance = new Request($request);
 		}
 	}
 
 	/**
 	 * Fetch instance of the response-helper
-	 * @return RequestHelper
+	 * @return Request
 	 */
 	public static function getInstance()
 	{
@@ -56,12 +55,12 @@ class RequestHelper extends BaseHelper
 
 	/**
 	 * The request
-	 * @var Request
+	 * @var \Illuminate\Http\Request
 	 */
 	private $request;
 
 	/**
-	 * @param Request $request
+	 * @param \Illuminate\Http\Request $request
 	 */
 	private function __construct($request)
 	{
@@ -124,7 +123,7 @@ class RequestHelper extends BaseHelper
 
 	/**
 	 * Return the session
-	 * @return \Illuminate\Session\Store
+	 * @return Session
 	 */
 	public function getSession()
 	{

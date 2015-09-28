@@ -18,6 +18,11 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use LH\Core\Exceptions\ConfigNotFoundException;
+use LH\Core\Structures\Client\Input;
+use LH\Core\Structures\Client\Visitor;
+use LH\Core\Structures\Http\Request;
+use LH\Core\Structures\Http\Response;
+use LH\Core\Structures\Client\Session;
 
 /**
  * The helper responsible for the routing
@@ -125,19 +130,19 @@ class RouteHelper extends Controller
 		{
 			$requestType = 'ajax';
 			//Set default response to ajax
-			ResponseHelper::getInstance()->responseJson();
+			Response::getInstance()->responseJson();
 		}
-		elseif ($request->wantsJson() || (InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'json'))
+		elseif ($request->wantsJson() || (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
 			//Set default response to json
-			ResponseHelper::getInstance()->responseJson();
+			Response::getInstance()->responseJson();
 		}
-		elseif (InputHelper::getInstance()->has('output') && strtolower(InputHelper::getInstance()->get('output')) == 'xml')
+		elseif (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
 			//Set default response to xml
-			ResponseHelper::getInstance()->responseXml();
+			Response::getInstance()->responseXml();
 		}
 		//Get route and its parts
 		$segments = $request->segments();
@@ -377,13 +382,13 @@ class RouteHelper extends Controller
 	private function callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights)
 	{
 		//Set the rights required
-		VisitorHelper::$requiredRights = array_unique($requiredRights);
+		Visitor::$requiredRights = array_unique($requiredRights);
 
 		//Initiate some helpers
 		$request = self::getRouter()->getCurrentRequest();
-		SessionHelper::initialize($request->getSession());
-		$request->setSession(SessionHelper::getInstance());
-		RequestHelper::initialize($request);
+		Session::initialize($request->getSession());
+		$request->setSession(Session::getInstance());
+		Request::initialize($request);
 
 		//Initialize the controllers
 		$controller = App::make($controllerName);
@@ -436,18 +441,18 @@ class RouteHelper extends Controller
 				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
 				break;
 			default:
-				$response = ResponseHelper::getInstance()->response404();
+				$response = Response::getInstance()->response404();
 				break;
 		}
 
 		//set the status of the response
-		ResponseHelper::getInstance()->assign('success', ($response !== false));
+		Response::getInstance()->assign('success', ($response !== false));
 
 		//PostRender
 		$controller->postRender();
 
 		//Return response
-		return ResponseHelper::getInstance()->getResponse();
+		return Response::getInstance()->getResponse();
 	}
 
 	/**

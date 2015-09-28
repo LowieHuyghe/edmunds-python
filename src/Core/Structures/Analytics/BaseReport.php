@@ -13,10 +13,10 @@
 
 namespace LH\Core\Structures\Analytics;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Helpers\RequestHelper;
-use LH\Core\Helpers\ResponseHelper;
-use LH\Core\Helpers\ValidationHelper;
-use LH\Core\Helpers\VisitorHelper;
+use LH\Core\Structures\Http\Request;
+use LH\Core\Structures\Http\Response;
+use LH\Core\Structures\Validation;
+use LH\Core\Structures\Client\Visitor;
 use LH\Core\Structures\BaseStructure;
 
 /**
@@ -305,9 +305,9 @@ class BaseReport extends BaseStructure
 		$this->version = $info['version'];
 		$this->trackingId = $info['trackingid'];
 
-		$request = RequestHelper::getInstance();
-		$response = ResponseHelper::getInstance();
-		$visitor = VisitorHelper::getInstance();
+		$request = Request::getInstance();
+		$response = Response::getInstance();
+		$visitor = Visitor::getInstance();
 
 		//Assign default values
 		$this->userAgent = $visitor->browser->getUserAgent();
@@ -336,7 +336,7 @@ class BaseReport extends BaseStructure
 		}
 		$this->clientId = $clientId;
 
-		$this->validator = new ValidationHelper();
+		$this->validator = new Validation();
 		static::addValidationRules($this->validator);
 	}
 
@@ -423,7 +423,7 @@ class BaseReport extends BaseStructure
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

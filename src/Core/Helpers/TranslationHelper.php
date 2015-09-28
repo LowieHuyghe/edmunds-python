@@ -15,6 +15,8 @@ namespace LH\Core\Helpers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
 use LH\Core\Models\Translation;
+use LH\Core\Structures\Client\Visitor;
+use LH\Core\Structures\Http\Request;
 use Symfony\Component\Translation\MessageSelector;
 
 /**
@@ -49,7 +51,7 @@ class TranslationHelper extends BaseHelper
 
 	/**
 	 * The visitor
-	 * @var VisitorHelper
+	 * @var Visitor
 	 */
 	protected $visitor;
 
@@ -64,7 +66,7 @@ class TranslationHelper extends BaseHelper
 	 */
 	public function __construct()
 	{
-		$this->visitor = VisitorHelper::getInstance();
+		$this->visitor = Visitor::getInstance();
 	}
 
 	/**
@@ -118,7 +120,7 @@ class TranslationHelper extends BaseHelper
 			$translation->original = $key;
 
 			//Save if not in local-mode
-			if (RequestHelper::getInstance()->isProductionEnvironment())
+			if (Request::getInstance()->isProductionEnvironment())
 			{
 				$translation->save();
 			}
