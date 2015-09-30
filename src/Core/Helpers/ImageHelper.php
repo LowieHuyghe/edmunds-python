@@ -25,7 +25,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImageHelper extends BaseHelper
 {
-
 	/**
 	 * Crop an image
 	 * @param resource $resource
