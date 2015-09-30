@@ -310,14 +310,14 @@ class BaseReport extends BaseStructure
 		$visitor = Visitor::getInstance();
 
 		//Assign default values
-		$this->userAgent = $visitor->browser->getUserAgent();
-		$this->ip = $request->getIp();
+		$this->userAgent = $visitor->browser->userAgent;
+		$this->ip = $request->ip;
 		if ($visitor->isLoggedIn()) $this->userId = $visitor->user->id;
 		$this->userLanguage = $visitor->localization->locale;
 
 		//Fetch the clientId of the user
 		//First check session
-		$clientId = $request->getSession()->get(self::KEY_CLIENTID);
+		$clientId = $request->session->get(self::KEY_CLIENTID);
 		if (!$clientId)
 		{
 			//Then check cookie
@@ -326,12 +326,12 @@ class BaseReport extends BaseStructure
 			{
 				//Otherwise generate and save
 				$clientId = generate_uuid();
-				$request->getSession()->set(self::KEY_CLIENTID, $clientId);
+				$request->session->set(self::KEY_CLIENTID, $clientId);
 				$response->assignCookie(self::KEY_CLIENTID, $clientId);
 			}
 			else
 			{
-				$request->getSession()->set(self::KEY_CLIENTID, $clientId);
+				$request->session->set(self::KEY_CLIENTID, $clientId);
 			}
 		}
 		$this->clientId = $clientId;
@@ -411,7 +411,6 @@ class BaseReport extends BaseStructure
 				'content' => http_build_query($data),
 			),
 		);
-		var_dump($options);
 		$context  = stream_context_create($options);
 
 		//Send request

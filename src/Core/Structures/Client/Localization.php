@@ -13,9 +13,8 @@
 
 namespace LH\Core\Structures\Client;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Helpers\BaseHelper;
 use LH\Core\Models\User;
-use LH\Core\Structures\Client\Location;
+use LH\Core\Structures\BaseStructure;
 
 /**
  * The helper responsible for localization
@@ -24,24 +23,15 @@ use LH\Core\Structures\Client\Location;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property string $locale The default locale
+ * @property string $fallback The fallback locale
  */
-class Localization extends BaseHelper
+class Localization extends BaseStructure
 {
 	/**
-	 * The default locale
-	 * @var string
-	 */
-	public $locale;
-
-	/**
-	 * The fallback locale
-	 * @var string
-	 */
-	public $fallback;
-
-	/**
 	 * Constructor
-	 * @param BrowserHelper $browser
+	 * @param Browser $browser
 	 * @param Location $location
 	 * @param User $user
 	 */
@@ -67,11 +57,11 @@ class Localization extends BaseHelper
 		{
 			if (!$locale)
 			{
-				$locale = $browser->getLanguage(true);
+				$locale = $browser->locale;
 			}
 			elseif (!$fallback)
 			{
-				$browserLocale = $browser->getLanguage(true);
+				$browserLocale = $browser->locale;
 				if ($browserLocale != $locale)
 				{
 					$fallback = $browserLocale;

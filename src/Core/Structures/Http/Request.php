@@ -13,7 +13,7 @@
 
 namespace LH\Core\Structures\Http;
 use Illuminate\Support\Facades\App;
-use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use LH\Core\Structures\Client\Session;
 
 /**
@@ -23,8 +23,20 @@ use LH\Core\Structures\Client\Session;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property string $ip Return the ip of the visitor
+ * @property string $referer Return the referer
+ * @property string $url Return the url
+ * @property string $fullUrl Return the full url
+ * @property string $root Return the root of the application
+ * @property string $userAgent Return the user agent
+ * @property Session $session Return the session
+ * @property string $path Return the path of the request
+ * @property bool $ajax Check if call was ajax
+ * @property bool $secure Check if call was over https
+ * @property bool $json Check if call wants json
  */
-class Request extends BaseHelper
+class Request extends BaseStructure
 {
 	/**
 	 * Instance of the response-helper
@@ -62,7 +74,7 @@ class Request extends BaseHelper
 	/**
 	 * @param \Illuminate\Http\Request $request
 	 */
-	private function __construct($request)
+	public function __construct($request)
 	{
 		$this->request = $request;
 	}
@@ -71,7 +83,7 @@ class Request extends BaseHelper
 	 * Return the ip of the visitor
 	 * @return string
 	 */
-	public function getIp()
+	protected function getIpAttribute()
 	{
 		return $this->request->ip();
 	}
@@ -80,7 +92,7 @@ class Request extends BaseHelper
 	 * Return the referer
 	 * @return string
 	 */
-	public function getReferer()
+	protected function getRefererAttribute()
 	{
 		return $this->getServer('HTTP_REFERER');
 	}
@@ -89,7 +101,7 @@ class Request extends BaseHelper
 	 * Return the url
 	 * @return string
 	 */
-	public function getUrl()
+	protected function getUrlAttribute()
 	{
 		return $this->request->url();
 	}
@@ -98,7 +110,7 @@ class Request extends BaseHelper
 	 * Return the full url
 	 * @return string
 	 */
-	public function getFullUrl()
+	protected function getFullUrlAttribute()
 	{
 		return $this->request->fullUrl();
 	}
@@ -107,7 +119,7 @@ class Request extends BaseHelper
 	 * Return the root of the application
 	 * @return string
 	 */
-	public function getRoot()
+	protected function getRootAttribute()
 	{
 		return $this->request->root();
 	}
@@ -116,7 +128,7 @@ class Request extends BaseHelper
 	 * Return the user agent
 	 * @return string
 	 */
-	public function getUserAgent()
+	protected function getUserAgentAttribute()
 	{
 		return $this->getServer('HTTP_USER_AGENT');
 	}
@@ -125,7 +137,7 @@ class Request extends BaseHelper
 	 * Return the session
 	 * @return Session
 	 */
-	public function getSession()
+	protected function getSessionAttribute()
 	{
 		return $this->request->session();
 	}
@@ -145,7 +157,7 @@ class Request extends BaseHelper
 	 * Return the path of the request
 	 * @return string
 	 */
-	public function getPath()
+	protected function getPathAttribute()
 	{
 		return $this->request->path();
 	}
@@ -164,7 +176,7 @@ class Request extends BaseHelper
 	 * Check if call was ajax
 	 * @return bool
 	 */
-	public function isAjax()
+	protected function getAjaxAttribute()
 	{
 		return $this->request->ajax();
 	}
@@ -173,7 +185,7 @@ class Request extends BaseHelper
 	 * Check if call was over https
 	 * @return bool
 	 */
-	public function isSecure()
+	protected function getSecureAttribute()
 	{
 		return $this->request->secure();
 	}
@@ -182,7 +194,7 @@ class Request extends BaseHelper
 	 * Check if call wants json
 	 * @return bool
 	 */
-	public function isJson()
+	protected function getJsonAttribute()
 	{
 		return $this->request->wantsJson();
 	}

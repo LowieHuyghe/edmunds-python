@@ -33,8 +33,8 @@ class PageReport extends BaseReport
 		parent::__construct();
 
 		$this->type = 'pageview';
-		$this->documentHostName = Request::getInstance()->getRoot();
-		$path = substr(Request::getInstance()->getFullUrl(), strlen($this->documentHostName));
+		$this->documentHostName = Request::getInstance()->root;
+		$path = substr(Request::getInstance()->fullUrl, strlen($this->documentHostName));
 		if (!$path || $path[0] != '/')
 		{
 			$path = '/' . $path;
