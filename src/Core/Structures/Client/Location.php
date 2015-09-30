@@ -15,7 +15,7 @@ namespace LH\Core\Structures\Client;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
-use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use LH\Core\Structures\Http\Request;
 
 /**
@@ -26,19 +26,19 @@ use LH\Core\Structures\Http\Request;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property string continentCode
- * @property string continentName
- * @property string countryCode
- * @property string countryName
- * @property string regionCode
- * @property string regionName
- * @property string cityName
- * @property string postalCode
- * @property float latitude
- * @property float longitude
- * @property \GeoIp2\Record\Location location
+ * @property string $continentCode
+ * @property string $continentName
+ * @property string $countryCode
+ * @property string $countryName
+ * @property string $regionCode
+ * @property string $regionName
+ * @property string $cityName
+ * @property string $postalCode
+ * @property float $latitude
+ * @property float $longitude
+ * @property \GeoIp2\Record\Location $location
  */
-class Location extends BaseHelper
+class Location extends BaseStructure
 {
 	const	GEOIP_DIR	= 'geoip',
 			GEOIP_CITY	= 'GeoLite2-City.mmdb';
@@ -114,20 +114,10 @@ class Location extends BaseHelper
 	}
 
 	/**
-	 * @param $name
-	 * @return mixed
-	 */
-	function __get($name)
-	{
-		$name = 'get' . ucfirst($name);
-		return $this->$name();
-	}
-
-	/**
 	 * Get the continentCode for the ip
 	 * @return string
 	 */
-	private function getContinentCode()
+	protected function getContinentCodeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->continent->code : null;
 	}
@@ -136,7 +126,7 @@ class Location extends BaseHelper
 	 * Get the continentName for the ip
 	 * @return string
 	 */
-	private function getContinentName()
+	protected function getContinentNameAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->continent->name : null;
 	}
@@ -171,7 +161,7 @@ class Location extends BaseHelper
 	 * Get the countryIso for the ip
 	 * @return string
 	 */
-	private function getCountryCode()
+	protected function getCountryCodeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->country->isoCode : null;
 	}
@@ -180,7 +170,7 @@ class Location extends BaseHelper
 	 * Get the countryName for the ip
 	 * @return string
 	 */
-	private function getCountryName()
+	protected function getCountryNameAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->country->name : null;
 	}
@@ -213,7 +203,7 @@ class Location extends BaseHelper
 	 * Get the regionIso for the ip
 	 * @return string
 	 */
-	private function getRegionCode()
+	protected function getRegionCodeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->mostSpecificSubdivision->isoCode : null;
 	}
@@ -222,7 +212,7 @@ class Location extends BaseHelper
 	 * Get the regionName for the ip
 	 * @return string
 	 */
-	private function getRegionName()
+	protected function getRegionNameAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->mostSpecificSubdivision->name : null;
 	}
@@ -255,7 +245,7 @@ class Location extends BaseHelper
 	 * Get the cityName for the ip
 	 * @return string
 	 */
-	private function getCityName()
+	protected function getCityNameAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->city->name : null;
 	}
@@ -264,7 +254,7 @@ class Location extends BaseHelper
 	 * Get the postalCode for the ip
 	 * @return string
 	 */
-	private function getPostalCode()
+	protected function getPostalCodeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->postal->code : null;
 	}
@@ -273,7 +263,7 @@ class Location extends BaseHelper
 	 * Get the latitude for the ip
 	 * @return float
 	 */
-	private function getLatitude()
+	protected function getLatitudeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->location->latitude : null;
 	}
@@ -282,7 +272,7 @@ class Location extends BaseHelper
 	 * Get the longitude for the ip
 	 * @return float
 	 */
-	private function getLongitude()
+	protected function getLongitudeAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->location->longitude : null;
 	}
@@ -291,7 +281,7 @@ class Location extends BaseHelper
 	 * Get the location for the ip
 	 * @return \GeoIp2\Record\Location
 	 */
-	private function getLocation()
+	protected function getLocationAttribute()
 	{
 		return $this->getDetailsCity() ? $this->getDetailsCity()->location : null;
 	}

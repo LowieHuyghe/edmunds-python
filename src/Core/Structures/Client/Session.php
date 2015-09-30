@@ -13,7 +13,7 @@
 
 namespace LH\Core\Structures\Client;
 
-use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Session extends BaseHelper implements SessionInterface
+class Session extends BaseStructure implements SessionInterface
 {
 	/**
 	 * Instance of the visitor-helper
@@ -64,7 +64,7 @@ class Session extends BaseHelper implements SessionInterface
 	 * Constructor
 	 * @param SessionInterface $session
 	 */
-	private function __construct(&$session)
+	public function __construct(&$session)
 	{
 		$this->session = $session;
 	}

@@ -14,6 +14,7 @@
 namespace LH\Core\Structures\Client;
 
 use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -24,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Input extends BaseHelper
+class Input extends BaseStructure
 {
 	/**
 	 * Instance of the response-helper
@@ -44,14 +45,6 @@ class Input extends BaseHelper
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Constructor
-	 */
-	private function __construct()
-	{
-		//
 	}
 
 	/**
