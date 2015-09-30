@@ -12,7 +12,7 @@
  */
 
 namespace LH\Core\Structures\Client;
-use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use LH\Core\Structures\Http\Request;
 
 /**
@@ -22,14 +22,29 @@ use LH\Core\Structures\Http\Request;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property string $userAgent
+ * @property bool $chrome
+ * @property bool $firefox
+ * @property bool $safari
+ * @property bool $IE
+ * @property bool $opera
+ * @property bool $windows
+ * @property bool $apple
+ * @property bool $mac
+ * @property bool $linux
+ * @property bool $android
+ * @property bool $iOS
+ * @property bool $nokia
+ * @property bool $blackberry
+ * @property bool $mobile
+ * @property bool $tablet
+ * @property bool $robot
+ * @property string $language
+ * @property string $locale
  */
-class Browser extends BaseHelper
+class Browser extends BaseStructure
 {
-	/**
-	 * @var string
-	 */
-	private $userAgent;
-
 	/**
 	 * @var \Browser
 	 */
@@ -55,15 +70,6 @@ class Browser extends BaseHelper
 			$this->details = new \Browser($this->userAgent);
 		}
 		return $this->details;
-	}
-
-	/**
-	 * Get the useragent
-	 * @return string
-	 */
-	public function getUserAgent()
-	{
-		return $this->userAgent;
 	}
 
 	/**
@@ -128,7 +134,7 @@ class Browser extends BaseHelper
 	 * Check if Chrome
 	 * @return bool
 	 */
-	public function isChrome()
+	protected function getChromeAttribute()
 	{
 		return $this->isBrowser(\Browser::BROWSER_CHROME);
 	}
@@ -137,7 +143,7 @@ class Browser extends BaseHelper
 	 * Check if Firefox
 	 * @return bool
 	 */
-	public function isFirefox()
+	protected function getFirefoxAttribute()
 	{
 		return $this->isBrowser(\Browser::BROWSER_FIREFOX);
 	}
@@ -146,7 +152,7 @@ class Browser extends BaseHelper
 	 * Check if Safari
 	 * @return bool
 	 */
-	public function isSafari()
+	protected function getSafariAttribute()
 	{
 		return $this->isBrowser(\Browser::BROWSER_SAFARI);
 	}
@@ -155,7 +161,7 @@ class Browser extends BaseHelper
 	 * Check if IE
 	 * @return bool
 	 */
-	public function isIE()
+	protected function getIEAttribute()
 	{
 		return $this->isBrowser(\Browser::BROWSER_IE);
 	}
@@ -164,7 +170,7 @@ class Browser extends BaseHelper
 	 * Check if Opera
 	 * @return bool
 	 */
-	public function isOpera()
+	protected function getOperaAttribute()
 	{
 		return $this->isBrowser(array(\Browser::BROWSER_OPERA, \Browser::BROWSER_OPERA_MINI));
 	}
@@ -173,7 +179,7 @@ class Browser extends BaseHelper
 	 * Check if Windows
 	 * @return bool
 	 */
-	public function isWindows()
+	protected function getWindowsAttribute()
 	{
 		return $this->isPlatform(array(\Browser::PLATFORM_WINDOWS, \Browser::PLATFORM_WINDOWS_CE));
 	}
@@ -182,7 +188,7 @@ class Browser extends BaseHelper
 	 * Check if Apple
 	 * @return bool
 	 */
-	public function isApple()
+	protected function getAppleAttribute()
 	{
 		return $this->isPlatform(\Browser::PLATFORM_APPLE);
 	}
@@ -191,7 +197,7 @@ class Browser extends BaseHelper
 	 * Check if Mac
 	 * @return bool
 	 */
-	public function isMac()
+	protected function getMacAttribute()
 	{
 		return $this->isApple()
 			&& !$this->isMobile()
@@ -203,7 +209,7 @@ class Browser extends BaseHelper
 	 * Check if Linux
 	 * @return bool
 	 */
-	public function isLinux()
+	protected function getLinuxAttribute()
 	{
 		return $this->isPlatform(\Browser::PLATFORM_LINUX);
 	}
@@ -212,7 +218,7 @@ class Browser extends BaseHelper
 	 * Check if Android
 	 * @return bool
 	 */
-	public function isAndroid()
+	protected function getAndroidAttribute()
 	{
 		return $this->isPlatform(\Browser::PLATFORM_ANDROID)
 			|| $this->isBrowser(\Browser::BROWSER_ANDROID);
@@ -222,7 +228,7 @@ class Browser extends BaseHelper
 	 * Check if iOS
 	 * @return bool
 	 */
-	public function isIOS()
+	protected function getIOSAttribute()
 	{
 		return $this->isPlatform(array(\Browser::PLATFORM_IPHONE, \Browser::PLATFORM_IPAD, \Browser::PLATFORM_IPOD))
 		|| $this->isBrowser(array(\Browser::BROWSER_IPHONE, \Browser::BROWSER_IPAD, \Browser::BROWSER_IPOD));
@@ -232,7 +238,7 @@ class Browser extends BaseHelper
 	 * Check if Nokia
 	 * @return bool
 	 */
-	public function isNokia()
+	protected function getNokiaAttribute()
 	{
 		return $this->isPlatform(\Browser::PLATFORM_NOKIA)
 		|| $this->isBrowser(array(\Browser::BROWSER_NOKIA, \Browser::BROWSER_NOKIA_S60));
@@ -242,7 +248,7 @@ class Browser extends BaseHelper
 	 * Check if BlackBerry
 	 * @return bool
 	 */
-	public function isBlackBerry()
+	protected function getBlackBerryAttribute()
 	{
 		return $this->isPlatform(\Browser::PLATFORM_BLACKBERRY)
 		|| $this->isBrowser(\Browser::BROWSER_BLACKBERRY);
@@ -252,7 +258,7 @@ class Browser extends BaseHelper
 	 * Check if mobile
 	 * @return bool
 	 */
-	public function isMobile()
+	protected function getMobileAttribute()
 	{
 		return $this->getDetails()->isMobile();
 	}
@@ -261,7 +267,7 @@ class Browser extends BaseHelper
 	 * Check if mobile
 	 * @return bool
 	 */
-	public function isTablet()
+	protected function getTabletAttribute()
 	{
 		return $this->getDetails()->isTablet();
 	}
@@ -270,26 +276,35 @@ class Browser extends BaseHelper
 	 * Check if robot
 	 * @return bool
 	 */
-	public function isRobot()
+	protected function getRobotAttributeAttribute()
 	{
 		return $this->getDetails()->isRobot();
 	}
 
 	/**
 	 * Get the browser language
-	 * @param bool $short
 	 * @return string
 	 */
-	public function getLanguage($short = false)
+	protected function getLanguageAttributeAttribute()
 	{
 		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
 		{
-			$browserLanguage = strtolower($browserLanguage);
-			if ($short)
-			{
-				$browserLanguage = substr($browserLanguage, 0, 2);
-			}
-			return $browserLanguage;
+			$parts = explode(',',$browserLanguage);
+			return $parts[0];
+		}
+		return null;
+	}
+
+	/**
+	 * Get the browser locale
+	 * @return string
+	 */
+	protected function getLocaleAttribute()
+	{
+		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
+		{
+			$parts = explode(',',$browserLanguage);
+			return $parts[1];
 		}
 		return null;
 	}

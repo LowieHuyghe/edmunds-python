@@ -15,7 +15,7 @@ namespace LH\Core\Structures\Http;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
-use LH\Core\Helpers\BaseHelper;
+use LH\Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Cookie;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Response extends BaseHelper
+class Response extends BaseStructure
 {
 	/**
 	 * Instance of the response-helper
@@ -50,7 +50,7 @@ class Response extends BaseHelper
 	/**
 	 * Constructor
 	 */
-	private function __construct()
+	public function __construct()
 	{
 		$this->request = Request::getInstance();
 	}
@@ -256,16 +256,16 @@ class Response extends BaseHelper
 		//Go to the intended route that was saved
 		if ($gotoIntendedRoute)
 		{
-			if ($this->request->getSession()->has('intended_route'))
+			if ($this->request->session->has('intended_route'))
 			{
-				$uri = $this->request->getSession()->get('intended_route');
-				$this->request->getSession()->remove('intended_route');
+				$uri = $this->request->session->get('intended_route');
+				$this->request->session->remove('intended_route');
 			}
 		}
 		//Save the route the user intended to go
 		if ($saveIntendedRoute)
 		{
-			$this->request->getSession()->set('intended_route', $this->request->getPath());
+			$this->request->session->set('intended_route', $this->request->path);
 		}
 
 		//Make the redirect-response

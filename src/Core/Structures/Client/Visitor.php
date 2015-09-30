@@ -14,8 +14,8 @@
 namespace LH\Core\Structures\Client;
 
 use Illuminate\Support\Facades\Auth;
-use LH\Core\Helpers\BaseHelper;
 use LH\Core\Models\User;
+use LH\Core\Structures\BaseStructure;
 use LH\Core\Structures\Http\Request;
 
 /**
@@ -25,8 +25,14 @@ use LH\Core\Structures\Http\Request;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property User $user
+ * @property Session $session
+ * @property Browser $browser
+ * @property Location $location
+ * @property Localization $localization
  */
-class Visitor extends BaseHelper
+class Visitor extends BaseStructure
 {
 	/**
 	 * Instance of the visitor-helper
@@ -55,46 +61,25 @@ class Visitor extends BaseHelper
 	}
 
 	/**
-	 * @var User
-	 */
-	public $user;
-
-	/**
-	 * @var Session
-	 */
-	public $session;
-
-	/**
-	 * @var Browser
-	 */
-	public $browser;
-
-	/**
-	 * @var Location
-	 */
-	public $location;
-
-	/**
-	 * @var Localization
-	 */
-	public $localization;
-
-	/**
 	 * Constructor
 	 */
-	private function __construct()
+	public function __construct()
 	{
 		$request = Request::getInstance();
 
-		$this->session = $request->getSession();
-		$this->browser = new Browser($request->getUserAgent());
-		$this->location = new Location($request->getIp());
+		$this->session = $request->session;
+		$this->browser = new Browser($request->userAgent);
+		$this->location = new Location($request->ip);
 
 		if (Auth::check())
 		{
 			$authUser = Auth::user();
 			$this->user = User::findOrFail($authUser->id);
 			$this->response->assign('__login', $authUser);
+		}
+		else
+		{
+			$this->user = null;
 		}
 
 		$this->localization = new Localization($this->browser, $this->location, $this->user);
