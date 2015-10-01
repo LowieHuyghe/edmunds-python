@@ -287,10 +287,9 @@ class Browser extends BaseStructure
 	 */
 	protected function getLanguageAttributeAttribute()
 	{
-		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
+		if ($browserLanguage = $this->getMostAcceptedLanguage())
 		{
-			$parts = explode(',',$browserLanguage);
-			return $parts[0];
+			return substr($browserLanguage, 0, 2);
 		}
 		return null;
 	}
@@ -301,11 +300,37 @@ class Browser extends BaseStructure
 	 */
 	protected function getLocaleAttribute()
 	{
+		return $this->getMostAcceptedLanguage();
+	}
+
+	/**
+	 * Get the most accepted language of the browser
+	 * @return string
+	 */
+	private function getMostAcceptedLanguage()
+	{
 		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
 		{
-			$parts = explode(',',$browserLanguage);
-			return $parts[1];
+			// break up string into pieces (languages and q factors)
+		    preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $browserLanguage, $lang_parse);
+
+		    if (count($lang_parse[1]))
+		    {
+		        // create a list like "en" => 0.8
+		        $langs = array_combine($lang_parse[1], $lang_parse[4]);
+
+		        // set default to 1 for any without q factor
+		        foreach ($langs as $lang => $val) {
+		            if ($val === '') $langs[$lang] = 1;
+		        }
+
+		        // sort list based on value
+		        arsort($langs, SORT_NUMERIC);
+
+		        return strtolower(array_keys($langs)[0]);
+		    }
 		}
+
 		return null;
 	}
 }
