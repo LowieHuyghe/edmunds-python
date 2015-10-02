@@ -41,7 +41,9 @@ use LH\Core\Structures\Http\Request;
  * @property bool $tablet
  * @property bool $robot
  * @property string $language
+ * @property string $languageFallback
  * @property string $locale
+ * @property string $localeFallback
  */
 class Browser extends BaseStructure
 {
@@ -276,7 +278,7 @@ class Browser extends BaseStructure
 	 * Check if robot
 	 * @return bool
 	 */
-	protected function getRobotAttributeAttribute()
+	protected function getRobotAttribute()
 	{
 		return $this->getDetails()->isRobot();
 	}
@@ -285,11 +287,24 @@ class Browser extends BaseStructure
 	 * Get the browser language
 	 * @return string
 	 */
-	protected function getLanguageAttributeAttribute()
+	protected function getLanguageAttribute()
 	{
-		if ($browserLanguage = $this->getMostAcceptedLanguage())
+		if ($locale = $this->locale)
 		{
-			return substr($browserLanguage, 0, 2);
+			return substr($locale, 0, 2);
+		}
+		return null;
+	}
+
+	/**
+	 * Get the browser language fallback
+	 * @return string
+	 */
+	protected function getLanguageFallbackAttribute()
+	{
+		if ($locale = $this->localeFallback)
+		{
+			return substr($locale, 0, 2);
 		}
 		return null;
 	}
@@ -304,10 +319,20 @@ class Browser extends BaseStructure
 	}
 
 	/**
-	 * Get the most accepted language of the browser
+	 * Get the browser locale fallback
 	 * @return string
 	 */
-	private function getMostAcceptedLanguage()
+	protected function getLocaleFallbackAttribute()
+	{
+		return $this->getMostAcceptedLanguage(1);
+	}
+
+	/**
+	 * Get the most accepted language of the browser
+	 * @param int $index
+	 * @return string
+	 */
+	private function getMostAcceptedLanguage($index = 0)
 	{
 		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
 		{
@@ -327,7 +352,10 @@ class Browser extends BaseStructure
 		        // sort list based on value
 		        arsort($langs, SORT_NUMERIC);
 
-		        return strtolower(array_keys($langs)[0]);
+				if (count($langs) > $index)
+				{
+			        return strtolower(array_keys($langs)[$index]);
+				}
 		    }
 		}
 
