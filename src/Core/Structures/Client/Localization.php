@@ -38,59 +38,34 @@ class Localization extends BaseStructure
 	public function __construct($browser, $location, $user)
 	{
 		$locale = null;
-		$fallback = null;
 
 		//Use user for locale
-		if ($user)
+		if ($user && !$locale)
 		{
 			$locale = $user->locale;
 		}
 
 		//Use location for locale
-		if ($location)
+		if ($location && !$locale)
 		{
 			//
 		}
 
 		//Use browser for locale
-		if ($browser)
+		if ($browser && !$locale)
 		{
-			if (!$locale)
-			{
-				$locale = $browser->locale;
-			}
-			elseif (!$fallback)
-			{
-				$browserLocale = $browser->locale;
-				if ($browserLocale != $locale)
-				{
-					$fallback = $browserLocale;
-				}
-			}
+			$locale = $browser->locale;
 		}
 
 		//Use app-settings
 		if (!$locale)
 		{
 			$locale = Config::get('app.locale');
-			$fallback = Config::get('app.fallback_locale');
-		}
-		else if (!$fallback)
-		{
-			$appLocale = Config::get('app.locale');
-			if ($appLocale != $locale)
-			{
-				$fallback = $appLocale;
-			}
-			else
-			{
-				$fallback = Config::get('app.fallback_locale');
-			}
 		}
 
 		//Set
 		$this->locale = $locale;
-		$this->fallback = $fallback;
+		$this->fallback = Config::get('app.fallback_locale');
 	}
 
 }
