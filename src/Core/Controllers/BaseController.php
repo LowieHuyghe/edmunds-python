@@ -19,7 +19,7 @@ use Core\Structures\Client\Input;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Visitor;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 use Illuminate\Routing\Controller;
 
 /**

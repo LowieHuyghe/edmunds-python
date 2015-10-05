@@ -22,7 +22,7 @@ use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 
 /**
  * A base for the structures to extend from

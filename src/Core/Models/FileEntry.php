@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Core\Database\Relations\HasOneEnum;
 use Core\Structures\Client\Input;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
