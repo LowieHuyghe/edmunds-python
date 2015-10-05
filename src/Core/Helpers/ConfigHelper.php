@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,12 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace Core\Helpers;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use LH\Core\Models\FileEntry;
+use Core\Models\FileEntry;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

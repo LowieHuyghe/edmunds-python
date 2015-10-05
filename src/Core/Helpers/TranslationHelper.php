@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,12 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace Core\Helpers;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
-use LH\Core\Models\Translation;
-use LH\Core\Structures\Client\Visitor;
-use LH\Core\Structures\Http\Request;
+use Core\Models\Translation;
+use Core\Structures\Client\Visitor;
+use Core\Structures\Http\Request;
 use Symfony\Component\Translation\MessageSelector;
 
 /**

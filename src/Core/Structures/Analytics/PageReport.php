@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Analytics;
+namespace Core\Structures\Analytics;
 
-use LH\Core\Structures\Http\Request;
+use Core\Structures\Http\Request;
 
 /**
  * The structure for page reports

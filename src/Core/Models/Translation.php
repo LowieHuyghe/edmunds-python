@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,8 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 use Faker\Generator;
+use Core\Structures\Validation;
 
 /**
  * The model for translations
@@ -219,7 +220,7 @@ class Translation extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

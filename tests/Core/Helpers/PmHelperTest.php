@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\CoreTest\Helpers;
+namespace CoreTest\Helpers;
 
-use LH\Core\Structures\Admin\Pm;
-use LH\Core\Tests\BaseTest;
+use Core\Structures\Admin\Pm;
+use Core\Tests\BaseTest;
 
 /**
  * Testing Pm-class

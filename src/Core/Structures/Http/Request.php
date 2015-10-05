@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Http;
+namespace Core\Structures\Http;
 use Illuminate\Support\Facades\App;
-use LH\Core\Structures\BaseStructure;
-use LH\Core\Structures\Client\Session;
+use Core\Structures\BaseStructure;
+use Core\Structures\Client\Session;
 
 /**
  * The helper for the request

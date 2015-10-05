@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,25 +11,25 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Helpers;
+namespace Core\Helpers;
 
 use Carbon\Carbon;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Exceptions\ConfigNotFoundException;
-use LH\Core\Structures\Client\Input;
-use LH\Core\Structures\Client\Visitor;
-use LH\Core\Structures\Http\Request;
-use LH\Core\Structures\Http\Response;
-use LH\Core\Structures\Client\Session;
+use Core\Exceptions\ConfigNotFoundException;
+use Core\Structures\Client\Input;
+use Core\Structures\Client\Visitor;
+use Core\Structures\Http\Request;
+use Core\Structures\Http\Response;
+use Core\Structures\Client\Session;
 
 /**
  * The helper responsible for the routing
  * To use it, just add the following to routes.php:
  *
 	Route::any('{all}', [
-		'uses' => '\LH\Core\Helpers\RouteHelper@route'
+		'uses' => '\Core\Helpers\RouteHelper@route'
 	])->where('all', '.*');
  *
  *

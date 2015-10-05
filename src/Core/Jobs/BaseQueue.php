@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,13 +11,13 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Jobs;
+namespace Core\Jobs;
 
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use LH\Core\Jobs\BaseJob;
+use Core\Jobs\BaseJob;
 
 /**
  * Queue base to extend from
