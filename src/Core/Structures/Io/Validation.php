@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
+namespace Core\Structures\Io;
+use Core\Structures\BaseStructure;
 use Illuminate\Support\Facades\Validator;
-use Core\Helpers\BaseHelper;
 
 /**
  * The validator for input
@@ -23,7 +23,7 @@ use Core\Helpers\BaseHelper;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Validation extends BaseHelper
+class Validation extends BaseStructure
 {
 	/**
 	 * Values to validate

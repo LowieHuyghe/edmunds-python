@@ -13,7 +13,7 @@
 
 namespace Core\Structures;
 use Illuminate\Support\Collection;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 
 /**
  * The structure for notifications

@@ -11,8 +11,8 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
-use Core\Helpers\BaseHelper;
+namespace Core\Structures\Io;
+use Core\Structures\BaseStructure;
 
 /**
  * A rule for validation
@@ -22,7 +22,7 @@ use Core\Helpers\BaseHelper;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class ValidationRule extends BaseHelper
+class ValidationRule extends BaseStructure
 {
 	/**
 	 * Rules to validate

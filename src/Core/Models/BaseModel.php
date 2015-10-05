@@ -18,7 +18,7 @@ use Core\Database\Relations\BelongsToManyEnums;
 use Core\Database\Relations\HasOneEnum;
 use Core\Database\Relations\HasOneEnums;
 use Core\Helpers\ModelFactoryHelper;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 use Illuminate\Validation\Validator;
 
 /**

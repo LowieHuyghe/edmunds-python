@@ -13,13 +13,8 @@
 
 namespace Core\Models;
 
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 
 /**
  * The model of the enum-models

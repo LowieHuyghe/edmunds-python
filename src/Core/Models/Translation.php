@@ -13,7 +13,7 @@
 
 namespace Core\Models;
 use Faker\Generator;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 
 /**
  * The model for translations
