@@ -92,7 +92,7 @@ class Notification extends BaseStructure
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->rule('title')->required();
+		$validator->value('title')->required();
 	}
 
 	/**

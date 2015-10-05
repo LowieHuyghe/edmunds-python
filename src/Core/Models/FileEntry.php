@@ -340,17 +340,17 @@ class FileEntry extends BaseModel
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->rule('id')->integer();
-		$validator->rule('name')->required()->max(20)->unique('file_entries');
-		$validator->rule('md5')->required()->max(32);
-		$validator->rule('sha1')->required()->max(40);
-		$validator->rule('original_name')->required()->max(255);
-		$validator->rule('mime')->required()->max(20);
-		$validator->rule('type')->required();
-		$validator->rule('size')->required()->integer();
+		$validator->value('id')->integer();
+		$validator->value('name')->required()->max(20)->unique('file_entries');
+		$validator->value('md5')->required()->max(32);
+		$validator->value('sha1')->required()->max(40);
+		$validator->value('original_name')->required()->max(255);
+		$validator->value('mime')->required()->max(20);
+		$validator->value('type')->required();
+		$validator->value('size')->required()->integer();
 
-		$validator->rule('created_at')->date();
-		$validator->rule('updated_at')->date();
+		$validator->value('created_at')->date();
+		$validator->value('updated_at')->date();
 	}
 
 	/**
