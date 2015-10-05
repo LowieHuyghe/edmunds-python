@@ -340,31 +340,17 @@ class FileEntry extends BaseModel
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->integer('id');
+		$validator->rule('id')->integer();
+		$validator->rule('name')->required()->max(20)->unique('file_entries');
+		$validator->rule('md5')->required()->max(32);
+		$validator->rule('sha1')->required()->max(40);
+		$validator->rule('original_name')->required()->max(255);
+		$validator->rule('mime')->required()->max(20);
+		$validator->rule('type')->required();
+		$validator->rule('size')->required()->integer();
 
-		$validator->required('name');
-		$validator->max('name', 20);
-		$validator->unique('name', 'file_entries');
-
-		$validator->required('md5');
-		$validator->max('md5', 32);
-
-		$validator->required('sha1');
-		$validator->max('sha1', 40);
-
-		$validator->required('original_name');
-		$validator->max('original_name', 255);
-
-		$validator->required('mime');
-		$validator->max('mime', 20);
-
-		$validator->required('type');
-
-		$validator->integer('size');
-		$validator->required('size');
-
-		$validator->date('created_at');
-		$validator->date('updated_at');
+		$validator->rule('created_at')->date();
+		$validator->rule('updated_at')->date();
 	}
 
 	/**
