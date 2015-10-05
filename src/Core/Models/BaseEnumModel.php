@@ -138,8 +138,8 @@ class BaseEnumModel extends BaseModel
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->rule('id')->integer();
-		$validator->rule('name')->required()->max(32);
+		$validator->value('id')->integer();
+		$validator->value('name')->required()->max(32);
 	}
 
 	/**
