@@ -16,7 +16,9 @@ use Faker\Generator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use LH\Core\Database\Relations\HasOneEnum;
 use LH\Core\Structures\Client\Input;
+use LH\Core\Structures\Validation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -28,12 +30,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @since		Version 0.1
  *
  * @property int $id Database table-id
- * @property string name
- * @property string md5
- * @property string sha1
- * @property string original_name
- * @property string mime
- * @property int size
+ * @property string $name
+ * @property string $md5
+ * @property string $sha1
+ * @property string $original_name
+ * @property string $mime
+ * @property FileType $type
+ * @property int $size
  */
 class FileEntry extends BaseModel
 {
@@ -66,6 +69,25 @@ class FileEntry extends BaseModel
 	 * @var string
 	 */
 	private $lastTouched;
+
+	/**
+	 * The class responsible for the type
+	 * @var string
+	 */
+	protected $typeClass = FileType::class;
+
+	/**
+	 * Type belonging to this FileEntry
+	 * @return HasOneEnum
+	 */
+	public function type()
+	{
+		if (!isset($this->typeClass))
+		{
+			throw new Exception('The class representing the Types not set');
+		}
+		return $this->hasOneEnum($this->typeClass);
+	}
 
 	/**
 	 * Save the file-entry and upload the file
@@ -197,33 +219,6 @@ class FileEntry extends BaseModel
 	}
 
 	/**
-	 * Check if file is image
-	 * @return bool
-	 */
-	public function isImage()
-	{
-		return in_array($this->mime, array(
-			'image/gif',
-			'image/jpeg',
-			'image/pjpeg',
-			'image/png',
-		));
-	}
-
-	/**
-	 * Check if file is document
-	 * @return bool
-	 */
-	public function isDocument()
-	{
-		return in_array($this->mime, array(
-			'application/pdf',
-			'application/msword',
-			'application\/vnd.openxmlformats-officedocument.wordprocessingml.document',
-		));
-	}
-
-	/**
 	 * Get the extension of the file
 	 * @return string
 	 */
@@ -321,6 +316,7 @@ class FileEntry extends BaseModel
 		$size = $uploadedFile->getSize();
 		$md5 = md5_file($uploadedFile->getPathname());
 		$sha1 = sha1_file($uploadedFile->getPathname());
+		$type = FileType::getType($mime, $uploadedFile->getClientOriginalExtension());
 
 		//Make fileEntry
 		$fileEntry = new FileEntry();
@@ -328,6 +324,7 @@ class FileEntry extends BaseModel
 		$fileEntry->sha1 = $sha1;
 		$fileEntry->original_name = $originalName;
 		$fileEntry->mime = $mime;
+		$fileEntry->type = $type;
 		$fileEntry->size = $size;
 
 		//Set file
@@ -339,7 +336,7 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{
@@ -360,6 +357,8 @@ class FileEntry extends BaseModel
 
 		$validator->required('mime');
 		$validator->max('mime', 20);
+
+		$validator->required('type');
 
 		$validator->integer('size');
 		$validator->required('size');
@@ -382,6 +381,7 @@ class FileEntry extends BaseModel
 			'sha1' => str_random(40),
 			'original_name' => $faker->realText(100, 5) . ".$extension",
 			'mime' => str_random(10),
+			'type' => $faker->randomNumber(),
 			'size' => $faker->randomNumber(),
 		);
 	}

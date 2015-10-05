@@ -41,6 +41,7 @@ trait _0004_CreateFileEntriesTable
 			$table->string('sha1', 40);
 			$table->string('original_name');
 			$table->string('mime', 20);
+			$table->integer('type');
 			$table->integer('size');
 			$table->timestamps();
 		});
