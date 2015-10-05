@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Client;
+namespace Core\Structures\Client;
 
-use LH\Core\Helpers\BaseHelper;
-use LH\Core\Structures\BaseStructure;
+use Core\Helpers\BaseHelper;
+use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

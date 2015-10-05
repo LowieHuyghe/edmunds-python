@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,15 +11,15 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Controllers;
+namespace Core\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use LH\Core\Structures\Client\Input;
-use LH\Core\Structures\Http\Request;
-use LH\Core\Structures\Http\Response;
-use LH\Core\Structures\Client\Visitor;
-use LH\Core\Structures\Validation;
+use Core\Structures\Client\Input;
+use Core\Structures\Http\Request;
+use Core\Structures\Http\Response;
+use Core\Structures\Client\Visitor;
+use Core\Structures\Validation;
 use Illuminate\Routing\Controller;
 
 /**

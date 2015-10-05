@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,11 +11,11 @@
  * @since       Version 0.1
  */
 
-namespace LH\Core\Database\Seeds;
+namespace Core\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use LH\Core\Models\User;
+use Core\Models\User;
 
 /**
  * Seeder for the users-table

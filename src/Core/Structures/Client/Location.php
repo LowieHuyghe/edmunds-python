@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,12 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Client;
+namespace Core\Structures\Client;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
-use LH\Core\Structures\BaseStructure;
-use LH\Core\Structures\Http\Request;
+use Core\Structures\BaseStructure;
+use Core\Structures\Http\Request;
 
 /**
  * The helper for the browser

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace LH\Core\Database\Migrations;
+namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

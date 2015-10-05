@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,11 +11,11 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Http;
+namespace Core\Structures\Http;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
-use LH\Core\Structures\BaseStructure;
+use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
