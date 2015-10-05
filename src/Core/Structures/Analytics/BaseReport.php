@@ -15,7 +15,7 @@ namespace Core\Structures\Analytics;
 use Illuminate\Support\Facades\Config;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
-use Core\Structures\Validation;
+use Core\Structures\Io\Validation;
 use Core\Structures\Client\Visitor;
 use Core\Structures\BaseStructure;
 
