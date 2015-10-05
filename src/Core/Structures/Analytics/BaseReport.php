@@ -427,68 +427,68 @@ class BaseReport extends BaseStructure
 	protected static function addValidationRules(&$validator)
 	{
 		//General
-		$validator->rule('version')->required();
-		$validator->rule('trackingId')->required();
-		$validator->rule('anonymizeIp')->boolean();
-		$validator->rule('queueTime')->integer();
+		$validator->value('version')->required();
+		$validator->value('trackingId')->required();
+		$validator->value('anonymizeIp')->boolean();
+		$validator->value('queueTime')->integer();
 		//User
-		$validator->rule('clientId')->required();
+		$validator->value('clientId')->required();
 		//Session
-		$validator->rule('ip')->ip();
+		$validator->value('ip')->ip();
 		//System Info
-		$validator->rule('javaEnabled')->boolean();
+		$validator->value('javaEnabled')->boolean();
 		//Hit
-		$validator->rule('type')->required();
-		$validator->rule('nonInteractionHit')->boolean();
+		$validator->value('type')->required();
+		$validator->value('nonInteractionHit')->boolean();
 		//Content Information
-		$validator->rule('screenName')->requiredIf('type', array('screenview'))->sometimes(function($input) {
+		$validator->value('screenName')->requiredIf('type', array('screenview'))->sometimes(function($input) {
 			return (isset($input->dataSource) && in_array($input->dataSource, array('app')));
 		});
 		//App Tracking
-		$validator->rule('applicationName')->requiredIf('dataSource', array('app'));
+		$validator->value('applicationName')->requiredIf('dataSource', array('app'));
 		//Event Tracking
-		$validator->rule('eventCategory')->requiredIf('type', array('event'));
-		$validator->rule('eventAction')->requiredIf('type', array('event'));
-		$validator->rule('eventValue')->integer();
+		$validator->value('eventCategory')->requiredIf('type', array('event'));
+		$validator->value('eventAction')->requiredIf('type', array('event'));
+		$validator->value('eventValue')->integer();
 		//E-Commerce
-		$validator->rule('transactionId')->requiredIf('type', array('transaction', 'item'));
-		$validator->rule('transactionRevenue')->numeric();
-		$validator->rule('transactionShipping')->numeric();
-		$validator->rule('transactionTax')->numeric();
-		$validator->rule('itemName')->requiredIf('type', array('item'));
-		$validator->rule('itemPrice')->numeric();
-		$validator->rule('itemQuantity')->integer();
+		$validator->value('transactionId')->requiredIf('type', array('transaction', 'item'));
+		$validator->value('transactionRevenue')->numeric();
+		$validator->value('transactionShipping')->numeric();
+		$validator->value('transactionTax')->numeric();
+		$validator->value('itemName')->requiredIf('type', array('item'));
+		$validator->value('itemPrice')->numeric();
+		$validator->value('itemQuantity')->integer();
 		//Enhanced E-Commerce
-		$validator->rule('productPrice')->numeric();
-		$validator->rule('productQuantity')->integer();
-		$validator->rule('productPosition')->integer();
-		$validator->rule('productCustomMetric')->integer();
-		$validator->rule('revenue')->numeric();
-		$validator->rule('tax')->numeric();
-		$validator->rule('shipping')->numeric();
-		$validator->rule('checkoutStep')->integer();
-		$validator->rule('productImpressionPosition')->integer();
-		$validator->rule('productImpressionPrice')->numeric();
-		$validator->rule('productImpressionCustomMetric')->integer();
+		$validator->value('productPrice')->numeric();
+		$validator->value('productQuantity')->integer();
+		$validator->value('productPosition')->integer();
+		$validator->value('productCustomMetric')->integer();
+		$validator->value('revenue')->numeric();
+		$validator->value('tax')->numeric();
+		$validator->value('shipping')->numeric();
+		$validator->value('checkoutStep')->integer();
+		$validator->value('productImpressionPosition')->integer();
+		$validator->value('productImpressionPrice')->numeric();
+		$validator->value('productImpressionCustomMetric')->integer();
 		//Social Interactions
-		$validator->rule('socialNetwork')->requiredIf('type', array('social'));
-		$validator->rule('socialAction')->requiredIf('type', array('social'));
-		$validator->rule('socialActionTarget')->requiredIf('type', array('social'));
+		$validator->value('socialNetwork')->requiredIf('type', array('social'));
+		$validator->value('socialAction')->requiredIf('type', array('social'));
+		$validator->value('socialActionTarget')->requiredIf('type', array('social'));
 		//Timing
-		$validator->rule('userTimingCategory')->requiredIf('type', array('timing'));
-		$validator->rule('userTimingVariableName')->requiredIf('type', array('timing'));
-		$validator->rule('userTimingTime')->requiredIf('type', array('timing'))->integer();
-		$validator->rule('pageLoadTime')->integer();
-		$validator->rule('dnsTime')->integer();
-		$validator->rule('pageDownloadTime')->integer();
-		$validator->rule('redirectResponseTime')->integer();
-		$validator->rule('tcpConnectTime')->integer();
-		$validator->rule('serverResponseTime')->integer();
-		$validator->rule('domInteractiveTime')->integer();
-		$validator->rule('contentLoadTime')->integer();
+		$validator->value('userTimingCategory')->requiredIf('type', array('timing'));
+		$validator->value('userTimingVariableName')->requiredIf('type', array('timing'));
+		$validator->value('userTimingTime')->requiredIf('type', array('timing'))->integer();
+		$validator->value('pageLoadTime')->integer();
+		$validator->value('dnsTime')->integer();
+		$validator->value('pageDownloadTime')->integer();
+		$validator->value('redirectResponseTime')->integer();
+		$validator->value('tcpConnectTime')->integer();
+		$validator->value('serverResponseTime')->integer();
+		$validator->value('domInteractiveTime')->integer();
+		$validator->value('contentLoadTime')->integer();
 		//Exceptions
-		$validator->rule('exceptionFatal')->boolean();
+		$validator->value('exceptionFatal')->boolean();
 		//Custom Dimensions/Metrics
-		$validator->rule('customMetric')->integer();
+		$validator->value('customMetric')->integer();
 	}
 }

@@ -26,10 +26,10 @@ use Core\Helpers\BaseHelper;
 class Validation extends BaseHelper
 {
 	/**
-	 * Rules to validate
+	 * Values to validate
 	 * @var ValidationRule[]
 	 */
-	private $rules = array();
+	private $values = array();
 
 	/**
 	 * Input to validate
@@ -71,7 +71,7 @@ class Validation extends BaseHelper
 		if (is_null($names))
 		{
 			//Check all rules
-			foreach ($this->rules as $name => $rule)
+			foreach ($this->values as $name => $rule)
 			{
 				$values = $rule->rules;
 				$vs = array();
@@ -103,12 +103,12 @@ class Validation extends BaseHelper
 			//Check specific rules
 			foreach ($names as $name)
 			{
-				if (!isset($this->rules[$name]))
+				if (!isset($this->values[$name]))
 				{
 					continue;
 				}
 
-				$values = $this->rules[$name]->rules;
+				$values = $this->values[$name]->rules;
 				$vs = array();
 				$sometimesSet = false;
 				foreach ($values as $key => $value)
@@ -164,17 +164,17 @@ class Validation extends BaseHelper
 	}
 
 	/**
-	 * Get the rule for a certain name
+	 * Get the value for a certain name
 	 * @param string $name
 	 * @return ValidationRule
 	 */
-	public function rule($name)
+	public function value($name)
 	{
-		if (!isset($this->rules[$name]))
+		if (!isset($this->values[$name]))
 		{
-			$this->rules[$name] = new ValidationRule();
+			$this->values[$name] = new ValidationRule();
 		}
-		return $this->rules[$name];
+		return $this->values[$name];
 	}
 
 }
