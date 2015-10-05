@@ -28,7 +28,7 @@ use Core\Structures\Http\Request;
  *
  * @property User $user
  * @property Session $session
- * @property Browser $browser
+ * @property Environment $environment
  * @property Location $location
  * @property Localization $localization
  */
@@ -68,7 +68,7 @@ class Visitor extends BaseStructure
 		$request = Request::getInstance();
 
 		$this->session = $request->session;
-		$this->browser = new Browser($request->userAgent);
+		$this->environment = new Environment($request->userAgent);
 		$this->location = new Location($request->ip);
 
 		if (Auth::check())
@@ -82,7 +82,7 @@ class Visitor extends BaseStructure
 			$this->user = null;
 		}
 
-		$this->localization = new Localization($this->browser, $this->location, $this->user);
+		$this->localization = new Localization($this->environment, $this->location, $this->user);
 	}
 
 	/**
