@@ -23,6 +23,7 @@ use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Session;
+use Core\Exceptions\AbortException;
 
 /**
  * The helper responsible for the routing
@@ -48,7 +49,20 @@ class RouteHelper extends Controller
 	public function route($route)
 	{
 		$this->checkConfig();
-		$response = $this->routeHandler($route);
+
+		$response = null;
+
+		try
+		{
+			$response = $this->routeHandler($route);
+		}
+		catch (AbortException $ex)
+		{
+			if ($ex->status)
+			{
+				abort($ex->status, $ex->getMessage());
+			}
+		}
 
 		return $response;
 	}
@@ -63,7 +77,7 @@ class RouteHelper extends Controller
 		//Check if it is a valid route
 		if (!$this->isValidRoute($route))
 		{
-			return abort(404);
+			throw new AbortException(404);
 		}
 
 		//Get all the constants
@@ -73,7 +87,7 @@ class RouteHelper extends Controller
 		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments);
 		if (!$controllerName)
 		{
-			return abort(404);
+			throw new AbortException(404);
 		}
 		$this->prepareController($controllerName);
 
@@ -82,7 +96,7 @@ class RouteHelper extends Controller
 		if (!$methodName
 			|| !$this->areParametersValid($parameterSpecs, $parameters))
 		{
-			return abort(404);
+			throw new AbortException(404);
 		}
 
 		//Call the method

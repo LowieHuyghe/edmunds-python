@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
+use Core\Exceptions\AbortException;
 
 /**
  * The helper responsible for the response
@@ -287,6 +288,7 @@ class Response extends BaseStructure
 		//For debugging purposes show the redirect-page
 		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
 		{
+			var_dump(debug_backtrace());
 			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect));
 		}
 
@@ -294,7 +296,7 @@ class Response extends BaseStructure
 		$redirect->send();
 
 		//With a view-response, 'send' doesn't stop the code
-		die;
+		throw new AbortException();
 	}
 
 	/**
@@ -302,9 +304,7 @@ class Response extends BaseStructure
 	 */
 	public function response404()
 	{
-		abort(404);
-
-		die;
+		throw new AbortException(404);
 	}
 
 	/**
@@ -312,9 +312,7 @@ class Response extends BaseStructure
 	 */
 	public function responseUnauthorized()
 	{
-		abort(403);
-
-		die;
+		throw new AbortException(403);
 	}
 
 	/**
