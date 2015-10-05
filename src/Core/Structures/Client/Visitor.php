@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,12 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Client;
+namespace Core\Structures\Client;
 
 use Illuminate\Support\Facades\Auth;
-use LH\Core\Models\User;
-use LH\Core\Structures\BaseStructure;
-use LH\Core\Structures\Http\Request;
+use Core\Models\User;
+use Core\Structures\BaseStructure;
+use Core\Structures\Http\Request;
 
 /**
  * The helper for the visitor

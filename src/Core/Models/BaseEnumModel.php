@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +19,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
+use Core\Structures\Validation;
 
 /**
  * The model of the enum-models
@@ -133,7 +134,7 @@ class BaseEnumModel extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param ValidationHelper $validator
+	 * @param Validation $validator
 	 */
 	protected static function addValidationRules(&$validator)
 	{

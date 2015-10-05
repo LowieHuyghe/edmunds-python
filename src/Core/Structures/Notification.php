@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures;
+namespace Core\Structures;
 use Illuminate\Support\Collection;
-use LH\Core\Structures\Validation;
+use Core\Structures\Validation;
 
 /**
  * The structure for notifications

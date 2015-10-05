@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models\Observers;
+namespace Core\Models\Observers;
 
-use LH\Core\Models\BaseModel;
+use Core\Models\BaseModel;
 
 /**
  * A base for the observers to extend from

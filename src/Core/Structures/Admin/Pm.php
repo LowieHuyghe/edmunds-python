@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,11 +11,11 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Admin;
+namespace Core\Structures\Admin;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Helpers\PushBulletHelper;
-use LH\Core\Structures\BaseStructure;
+use Core\Helpers\PushBulletHelper;
+use Core\Structures\BaseStructure;
 
 /**
  * The helper for pm'ing someone directly and fast

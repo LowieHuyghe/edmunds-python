@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 
 use ReflectionClass;
-namespace LH\Core\Models\BaseModel;
+namespace Core\Models\BaseModel;
 
 /**
  * Enum base to extend from

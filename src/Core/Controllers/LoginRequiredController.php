@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Controllers;
+namespace Core\Controllers;
 
 use Illuminate\Support\Facades\Config;
-use LH\Core\Models\User;
+use Core\Models\User;
 
 /**
  * Controller to extend from which requires the user to log in

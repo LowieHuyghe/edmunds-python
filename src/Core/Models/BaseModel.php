@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,14 +11,14 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
-use LH\Core\Database\Relations\BelongsToManyEnums;
-use LH\Core\Database\Relations\HasOneEnum;
-use LH\Core\Database\Relations\HasOneEnums;
-use LH\Core\Helpers\ModelFactoryHelper;
-use LH\Core\Structures\Validation;
+use Core\Database\Relations\BelongsToManyEnums;
+use Core\Database\Relations\HasOneEnum;
+use Core\Database\Relations\HasOneEnums;
+use Core\Helpers\ModelFactoryHelper;
+use Core\Structures\Validation;
 use Illuminate\Validation\Validator;
 
 /**

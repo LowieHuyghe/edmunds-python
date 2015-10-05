@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,14 +11,14 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 use Faker\Generator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use LH\Core\Database\Relations\HasOneEnum;
-use LH\Core\Structures\Client\Input;
-use LH\Core\Structures\Validation;
+use Core\Database\Relations\HasOneEnum;
+use Core\Structures\Client\Input;
+use Core\Structures\Validation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

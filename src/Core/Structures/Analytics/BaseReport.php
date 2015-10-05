@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,13 +11,13 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Analytics;
+namespace Core\Structures\Analytics;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Structures\Http\Request;
-use LH\Core\Structures\Http\Response;
-use LH\Core\Structures\Validation;
-use LH\Core\Structures\Client\Visitor;
-use LH\Core\Structures\BaseStructure;
+use Core\Structures\Http\Request;
+use Core\Structures\Http\Response;
+use Core\Structures\Validation;
+use Core\Structures\Client\Visitor;
+use Core\Structures\BaseStructure;
 
 /**
  * The structure for reports

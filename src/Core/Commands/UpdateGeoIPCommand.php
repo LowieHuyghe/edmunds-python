@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Commands;
+namespace Core\Commands;
 
-use LH\Core\Structures\Client\Location;
-use LH\Core\Structures\Admin\Pm;
+use Core\Structures\Client\Location;
+use Core\Structures\Admin\Pm;
 
 /**
  * The command for updating the geoip-databases. Please shedule for every week.

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,10 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Structures\Client;
+namespace Core\Structures\Client;
 use Illuminate\Support\Facades\Config;
-use LH\Core\Models\User;
-use LH\Core\Structures\BaseStructure;
+use Core\Models\User;
+use Core\Structures\BaseStructure;
 
 /**
  * The helper responsible for localization

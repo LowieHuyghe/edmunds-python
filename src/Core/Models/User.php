@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace LH\Core\Models;
+namespace Core\Models;
 
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
@@ -19,8 +19,8 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
-use LH\Core\Database\Relations\BelongsToManyEnums;
-use LH\Core\Structures\Validation;
+use Core\Database\Relations\BelongsToManyEnums;
+use Core\Structures\Validation;
 
 /**
  * The model of the user

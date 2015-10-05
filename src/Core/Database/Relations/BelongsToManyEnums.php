@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LH Core
+ * Core
  *
  * The core of any web-project by Lowie Huyghe
  *
@@ -11,13 +11,13 @@
  * @since       Version 0.1
  */
 
-namespace LH\Core\Database\Relations;
+namespace Core\Database\Relations;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use LH\Core\Models\Enum;
-use LH\Core\Models\Enums\BaseEnum;
+use Core\Models\Enum;
+use Core\Models\Enums\BaseEnum;
 
 /**
  * Relation for has ManyEnums
