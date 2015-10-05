@@ -13,7 +13,6 @@
 
 namespace Core\Structures\Client;
 
-use Core\Helpers\BaseHelper;
 use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

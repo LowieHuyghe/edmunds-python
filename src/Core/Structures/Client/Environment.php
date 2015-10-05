@@ -45,7 +45,7 @@ use Core\Structures\Http\Request;
  * @property string $locale
  * @property string $localeFallback
  */
-class Browser extends BaseStructure
+class Environment extends BaseStructure
 {
 	/**
 	 * @var \Browser

@@ -310,7 +310,7 @@ class BaseReport extends BaseStructure
 		$visitor = Visitor::getInstance();
 
 		//Assign default values
-		$this->userAgent = $visitor->browser->userAgent;
+		$this->userAgent = $visitor->environment->userAgent;
 		$this->ip = $request->ip;
 		if ($visitor->isLoggedIn()) $this->userId = $visitor->user->id;
 		$this->userLanguage = $visitor->localization->locale;
