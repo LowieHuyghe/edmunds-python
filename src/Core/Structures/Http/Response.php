@@ -288,8 +288,14 @@ class Response extends BaseStructure
 		//For debugging purposes show the redirect-page
 		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
 		{
-			var_dump(debug_backtrace());
-			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect));
+			//Fetch the debugtrace
+			ob_start();
+			debug_print_backtrace();
+			$debugPrintBacktrace = ob_get_contents();
+			ob_end_clean();
+			$debugPrintBacktrace = explode("\n", $debugPrintBacktrace);
+
+			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect, $debugPrintBacktrace));
 		}
 
 		//Direct redirect
@@ -390,15 +396,30 @@ class Response extends BaseStructure
 	/**
 	 * Show the redirect page
 	 * @param $response
+	 * @param $debugPrintBacktrace
 	 * @return string
 	 */
-	private function viewRedirect($response)
+	private function viewRedirect($response, $debugPrintBacktrace)
 	{
+		//Format target-url
 		$targetUrl = parse_url($response->getTargetUrl(), PHP_URL_PATH);
 		if (empty($targetUrl))
 		{
 			$targetUrl = '/';
 		}
+
+		//Format backtrace
+		$debugTrace = array();
+		foreach ($debugPrintBacktrace as $line)
+		{
+			if (preg_match("@^#\d+.*?[Ii]lluminate@", $line))
+			{
+				break;
+			}
+			$debugTrace[] = str_replace(base_path(), '', $line);
+		}
+		$debugTrace = join('<br/>', $debugTrace);
+
 		return "<html>
 					<head>
 						<title>James The Redirector</title>
@@ -406,17 +427,26 @@ class Response extends BaseStructure
 					<body>
 						<style>
 							body {
-								margin: 0;
+								max-width: 75%;
+								margin: 30px auto;
 								padding: 0;
+
 								background-color: #F3F3F3;
 							}
 							div {
-								margin-top: 30px;
+								margin-bottom: 60px;
+
 								text-align: center;
 								font-size: 20px;
-								line-height: 30px;
-								font-family: 'Veranda, Arial, Serif';
+								line-height: 32px;
+								font-family: Georgia, serif;
 								color: #3F3F3F;
+							}
+							.debugtrace {
+								font-size: 13px;
+								line-height: 21px;
+								font-family: 'Courier New', Courier, monospace;
+								color: #999999;
 							}
 							a, a:link, a:visited, a:hover, a:active {
 								color: #3F3F3F;
@@ -482,8 +512,10 @@ class Response extends BaseStructure
 								c6.568-0.038,12.189-3.524,19.104-2.938c9.335,0.792,18.915,0.032,28.386-0.207c21.123-0.532,42.104-2.634,63.123-4.398
 								c2.004-0.168,4.073-0.763,3.985-2.749C413.378,42.289,411.138,42.313,409.605,42.425z M215.393,50.197
 								c2.168-3.776,4.548-5.223,7.446-5.978C221.429,46.956,219.259,48.683,215.393,50.197z'/>
-							</svg> <br/>
-							<br/>
+							</svg>
+						</div>
+						<div class='debugtrace'>
+							$debugTrace
 						</div>
 					</body>
 				</html>";
