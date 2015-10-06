@@ -293,7 +293,6 @@ class Response extends BaseStructure
 			debug_print_backtrace();
 			$debugPrintBacktrace = ob_get_contents();
 			ob_end_clean();
-			$debugPrintBacktrace = explode("\n", $debugPrintBacktrace);
 
 			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect, $debugPrintBacktrace));
 		}
@@ -396,7 +395,7 @@ class Response extends BaseStructure
 	/**
 	 * Show the redirect page
 	 * @param $response
-	 * @param $debugPrintBacktrace
+	 * @param string $debugPrintBacktrace
 	 * @return string
 	 */
 	private function viewRedirect($response, $debugPrintBacktrace)
@@ -409,6 +408,7 @@ class Response extends BaseStructure
 		}
 
 		//Format backtrace
+		$debugPrintBacktrace = explode("\n", $debugPrintBacktrace);
 		$debugTrace = array();
 		foreach ($debugPrintBacktrace as $line)
 		{
@@ -416,7 +416,9 @@ class Response extends BaseStructure
 			{
 				break;
 			}
-			$debugTrace[] = str_replace(base_path(), '', $line);
+			$line = str_replace(base_path(), '', $line);
+			$line = preg_replace("@^(#\d+)@", "<span class='tracenumber'>$1</span>", $line);
+			$debugTrace[] = $line;
 		}
 		$debugTrace = join('<br/>', $debugTrace);
 
@@ -447,6 +449,9 @@ class Response extends BaseStructure
 								line-height: 21px;
 								font-family: 'Courier New', Courier, monospace;
 								color: #999999;
+							}
+							.debugtrace .tracenumber {
+								color: #808080;
 							}
 							a, a:link, a:visited, a:hover, a:active {
 								color: #3F3F3F;
