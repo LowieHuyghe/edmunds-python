@@ -14,6 +14,7 @@
 namespace Core\Structures\Client;
 
 use Core\Structures\BaseStructure;
+use Core\Structures\Http\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -36,7 +37,7 @@ class Input extends BaseStructure
 	 * Fetch instance of the response-helper
 	 * @return Input
 	 */
-	public static function getInstance()
+	public static function current()
 	{
 		if (!isset(self::$instance))
 		{
@@ -47,40 +48,50 @@ class Input extends BaseStructure
 	}
 
 	/**
-	 * Get value by key
-	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
+	 * @var array
 	 */
-	public function get($key, $default = null)
+	private $input;
+
+	/**
+	 * Input constructor.
+	 */
+	public function __construct()
 	{
-		if (is_null($default))
-		{
-			return \Illuminate\Support\Facades\Input::get($key);
-		}
-		else
-		{
-			return \Illuminate\Support\Facades\Input::get($key, $default);
-		}
+		parent::__construct();
+
+		$this->input = Request::current()->input;
 	}
 
 	/**
-	 * Check if has value by key
-	 * @param string $key
+	 * Retrieve an input item from the request.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return string|string[]
+	 */
+	public function get($key, $default = null)
+	{
+		return Request::current()->input($key, $default);
+	}
+
+	/**
+	 * Determine if the request contains a non-empty value for an input item.
+	 *
+	 * @param  string|string[]  $key
 	 * @return bool
 	 */
 	public function has($key)
 	{
-		return \Illuminate\Support\Facades\Input::has($key);
+		return Request::current()->hasInput($key);
 	}
 
 	/**
 	 * Fetch all the data
-	 * @return array
+	 * @return string[]
 	 */
 	public function all()
 	{
-		return \Illuminate\Support\Facades\Input::all();
+		return Request::current()->input();
 	}
 
 	/**
@@ -90,7 +101,7 @@ class Input extends BaseStructure
 	 */
 	public function only($keys)
 	{
-		return \Illuminate\Support\Facades\Input::only($keys);
+		return Request::current()->inputOnly($keys);
 	}
 
 	/**
@@ -100,49 +111,50 @@ class Input extends BaseStructure
 	 */
 	public function except($keys)
 	{
-		return \Illuminate\Support\Facades\Input::except($keys);
+		return Request::current()->inputExcept($keys);
 	}
 
 	/**
 	 * Retrieve file
-	 * @param string $name
-	 * @return UploadedFile
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return UploadedFile|UploadedFile[]
 	 */
-	public function file($name)
+	public function file($key, $default = null)
 	{
-		return \Illuminate\Support\Facades\Input::file($name);
+		return Request::current()->file($key, $default);
 	}
 
 	/**
 	 * Check if file exists
-	 * @param string $name
+	 * @param string $key
 	 * @return bool
 	 */
-	public function hasFile($name)
+	public function hasFile($key)
 	{
-		return \Illuminate\Support\Facades\Input::hasFile($name);
+		return Request::current()->hasFile($key);
 	}
 
 	/**
 	 * Check if file is valid
-	 * @param string $name
+	 * @param string $key
 	 * @return bool
 	 */
-	public function fileIsValid($name)
+	public function fileIsValid($key)
 	{
-		return \Illuminate\Support\Facades\Input::file($name)->isValid();
+		return $this->file($key)->isValid();
 	}
 
 	/**
 	 * Check if file exists and is valid
-	 * @param string $name
+	 * @param string $key
 	 * @return bool
 	 */
-	public function fileExistsAndIsValid($name)
+	public function fileExistsAndIsValid($key)
 	{
-		if ($this->hasFile($name))
+		if ($this->hasFile($key))
 		{
-			return $this->fileIsValid($name);
+			return $this->fileIsValid($key);
 		}
 		return false;
 	}

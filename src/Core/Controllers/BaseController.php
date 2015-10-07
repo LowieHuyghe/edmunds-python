@@ -13,14 +13,14 @@
 
 namespace Core\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Core\Structures\Client\Input;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Visitor;
 use Core\Structures\Io\Validation;
-use Illuminate\Routing\Controller;
+use Laravel\Lumen\Routing\Controller;
+use Laravel\Lumen\Routing\DispatchesJobs;
+use Laravel\Lumen\Routing\ValidatesRequests;
 
 /**
  * Controller base to extend from
@@ -100,11 +100,11 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
-		$this->request = Request::getInstance();
-		$this->response = Response::getInstance();
-		$this->input = Input::getInstance();
+		$this->request = Request::current();
+		$this->response = Response::current();
+		$this->input = Input::current();
 		$this->validator = new Validation($this->input->all());
-		$this->visitor = Visitor::getInstance();
+		$this->visitor = Visitor::current();
 
 		$this->checkRights();
 	}

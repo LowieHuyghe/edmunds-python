@@ -13,8 +13,6 @@
 
 namespace Core\Structures\Http;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\View;
 use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 use Core\Exceptions\AbortException;
@@ -39,7 +37,7 @@ class Response extends BaseStructure
 	 * Fetch instance of the response-helper
 	 * @return Response
 	 */
-	public static function getInstance()
+	public static function current()
 	{
 		if (!isset(self::$instance))
 		{
@@ -53,7 +51,7 @@ class Response extends BaseStructure
 	 */
 	public function __construct()
 	{
-		$this->request = Request::getInstance();
+		$this->request = Request::current();
 	}
 
 	/**
@@ -286,7 +284,7 @@ class Response extends BaseStructure
 		$this->attachExtras($redirect);
 
 		//For debugging purposes show the redirect-page
-		if ($this->request->isLocalEnvironment() && Config::get('app.routing.redirecthalt'))
+		if ($this->request->isLocalEnvironment() && config('app.routing.redirecthalt'))
 		{
 			//Fetch the debugtrace
 			ob_start();
@@ -294,7 +292,7 @@ class Response extends BaseStructure
 			$debugPrintBacktrace = ob_get_contents();
 			ob_end_clean();
 
-			$redirect = \Illuminate\Support\Facades\Response::make($this->viewRedirect($redirect, $debugPrintBacktrace));
+			$redirect = response()->make($this->viewRedirect($redirect, $debugPrintBacktrace));
 		}
 
 		//Direct redirect
@@ -330,16 +328,16 @@ class Response extends BaseStructure
 
 		if ($this->responseType == 'download')
 		{
-			$response = \Illuminate\Support\Facades\Response::download($this->response['download']['filePath'], $this->response['download']['name']);
+			$response = response()->download($this->response['download']['filePath'], $this->response['download']['name']);
 		}
 		elseif ($this->responseType == 'json')
 		{
 			$this->assignHeader('Content-Type', 'application/json');
-			$response = \Illuminate\Support\Facades\Response::json($this->assignedData);
+			$response = response()->json($this->assignedData);
 		}
 		elseif ($this->responseType == 'content')
 		{
-			$response = \Illuminate\Support\Facades\Response::make($this->response['content']);
+			$response = response()->make($this->response['content']);
 		}
 		elseif (($this->responseType == 'view' || $this->responseType == 'xml') && !empty($this->response['view']))
 		{
@@ -350,14 +348,14 @@ class Response extends BaseStructure
 			{
 				if (is_null($response))
 				{
-					$response = View::make($view, $data);
+					$response = view($view, $data);
 				}
 				else
 				{
 					$response = $response->nest($key, $view, $data);
 				}
 			}
-			$response = \Illuminate\Support\Facades\Response::make($response);
+			$response = response()->make($response);
 
 			if ($this->responseType == 'xml')
 			{
@@ -366,7 +364,7 @@ class Response extends BaseStructure
 		}
 		else
 		{
-			$response = \Illuminate\Support\Facades\Response::make();
+			$response = response()->make();
 		}
 
 		if (!is_null($response))
@@ -387,7 +385,7 @@ class Response extends BaseStructure
 	{
 		$data = array_merge($this->assignedGeneralData, $this->assignedData, $input);
 
-		$response = View::make($view, $data);
+		$response = view($view, $data);
 		$render = $response->render();
 		return $render;
 	}
