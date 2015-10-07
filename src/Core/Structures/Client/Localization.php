@@ -12,7 +12,6 @@
  */
 
 namespace Core\Structures\Client;
-use Illuminate\Support\Facades\Config;
 use Core\Models\User;
 use Core\Structures\BaseStructure;
 
@@ -60,12 +59,12 @@ class Localization extends BaseStructure
 		//Use app-settings
 		if (!$locale)
 		{
-			$locale = Config::get('app.locale');
+			$locale = config('app.locale');
 		}
 
 		//Set
 		$this->locale = $locale;
-		$this->fallback = Config::get('app.fallback_locale');
+		$this->fallback = config('app.fallback_locale');
 	}
 
 }

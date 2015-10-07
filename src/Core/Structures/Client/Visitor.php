@@ -13,7 +13,6 @@
 
 namespace Core\Structures\Client;
 
-use Illuminate\Support\Facades\Auth;
 use Core\Models\User;
 use Core\Structures\BaseStructure;
 use Core\Structures\Http\Request;
@@ -50,7 +49,7 @@ class Visitor extends BaseStructure
 	 * Fetch instance of the visitor-helper
 	 * @return Visitor
 	 */
-	public static function getInstance()
+	public static function current()
 	{
 		if (!isset(self::$instance))
 		{
@@ -65,15 +64,15 @@ class Visitor extends BaseStructure
 	 */
 	public function __construct()
 	{
-		$request = Request::getInstance();
+		$request = Request::current();
 
 		$this->session = $request->session;
 		$this->environment = new Environment($request->userAgent);
 		$this->location = new Location($request->ip);
 
-		if (Auth::check())
+		if (app('auth')->check())
 		{
-			$authUser = Auth::user();
+			$authUser = app('auth')->user();
 			$this->user = User::findOrFail($authUser->id);
 			$this->response->assign('__login', $authUser);
 		}

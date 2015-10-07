@@ -12,8 +12,6 @@
  */
 
 namespace Core\Structures\Admin;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Core\Helpers\PushBulletHelper;
 use Core\Structures\BaseStructure;
 
@@ -54,7 +52,7 @@ class Pm extends BaseStructure
 	 */
 	public function send()
 	{
-		$title = Config::get('app.specs.sitename') . ': ' . $this->title;
+		$title = config('app.specs.sitename') . ': ' . $this->title;
 
 		if (!$this->hasErrors() && self::hasBeenLongEnoughForThisMessage($title, $this->message))
 		{
@@ -103,12 +101,12 @@ class Pm extends BaseStructure
 	{
 		$key = 'PmHelper_' . substr(md5($title . $message), 0, 7);
 
-		if (Cache::has($key))
+		if (app('cache')->has($key))
 		{
 			return false;
 		}
 
-		Cache::put($key, true, 10);
+		app('cache')->put($key, true, 10);
 
 		return true;
 	}

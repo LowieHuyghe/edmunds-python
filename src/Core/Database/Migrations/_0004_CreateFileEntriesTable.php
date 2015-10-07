@@ -14,8 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for file_entries-table
@@ -33,7 +31,7 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function up()
 	{
-		Schema::create('file_entries', function (Blueprint $table)
+		app('schema')->create('file_entries', function (Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('name', 20)->unique();
@@ -53,6 +51,6 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function down()
 	{
-		Schema::drop('file_entries');
+		app('schema')->drop('file_entries');
 	}
 }

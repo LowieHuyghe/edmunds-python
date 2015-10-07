@@ -12,7 +12,6 @@
  */
 
 namespace Core\Structures\Analytics;
-use Illuminate\Support\Facades\Config;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Io\Validation;
@@ -299,15 +298,15 @@ class BaseReport extends BaseStructure
 	 */
 	public function __construct()
 	{
-		$info = Config::get('analytics.data')[Config::get('analytics.default')];
+		$info = config('analytics.data')[config('analytics.default')];
 
 		//Set the version and tracking info
 		$this->version = $info['version'];
 		$this->trackingId = $info['trackingid'];
 
-		$request = Request::getInstance();
-		$response = Response::getInstance();
-		$visitor = Visitor::getInstance();
+		$request = Request::current();
+		$response = Response::current();
+		$visitor = Visitor::current();
 
 		//Assign default values
 		$this->userAgent = $visitor->environment->userAgent;

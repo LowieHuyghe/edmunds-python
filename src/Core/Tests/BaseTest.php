@@ -14,7 +14,6 @@
 namespace Core\Tests;
 
 use Illuminate\Foundation\Testing\TestCase;
-use Illuminate\Support\Facades\Mail;
 
 /**
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
