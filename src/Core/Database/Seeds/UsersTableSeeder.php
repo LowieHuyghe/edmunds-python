@@ -14,7 +14,6 @@
 namespace Core\Database\Seeds;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Core\Models\User;
 
 /**
@@ -35,7 +34,7 @@ class UsersTableSeeder extends Seeder
 	{
 		$user = new User();
 		$user->email = 'iam@lowiehuyghe.com';
-		$user->password = Hash::make('secret');
+		$user->password = app('hash')->make('secret');
 		$user->save();
 	}
 }

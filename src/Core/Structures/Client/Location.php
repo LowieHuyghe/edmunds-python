@@ -64,7 +64,7 @@ class Location extends BaseStructure
 	 */
 	public function __construct($ip)
 	{
-		if (Request::getInstance()->isLocalEnvironment())
+		if (Request::current()->isLocalEnvironment())
 		{
 			$this->ip = '213.118.118.244';
 		}

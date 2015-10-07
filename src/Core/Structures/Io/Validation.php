@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Io;
 use Core\Structures\BaseStructure;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Validator;
 
 /**
  * The validator for input
@@ -134,7 +134,7 @@ class Validation extends BaseStructure
 			}
 		}
 
-		$validator = Validator::make($this->input, $rules);
+		$validator = app('validator')->make($this->input, $rules);
 		foreach ($sometimes as $name => $values)
 		{
 			$validator->sometimes($name, $values['rules'], $values['function']);

@@ -40,17 +40,14 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public static function initialize($session)
 	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Session($session);
-		}
+		self::$instance = new Session($session);
 	}
 
 	/**
 	 * Fetch instance of the visitor-helper
 	 * @return Session
 	 */
-	public static function getInstance()
+	public static function current()
 	{
 		return self::$instance;
 	}

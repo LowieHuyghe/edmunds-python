@@ -14,8 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for enums-pivot-table
@@ -51,7 +49,7 @@ trait _0000_CreateEnumsPivotTable
 	 */
 	public function up()
 	{
-		Schema::create($this->table, function (Blueprint $table)
+		app('schema')->create($this->table, function (Blueprint $table)
 		{
 			$table->integer($this->idModel)->unsigned();
 			$table->integer($this->idEnum)->unsigned();
@@ -65,6 +63,6 @@ trait _0000_CreateEnumsPivotTable
 	 */
 	public function down()
 	{
-		Schema::drop($this->table);
+		app('schema')->drop($this->table);
 	}
 }

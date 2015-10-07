@@ -12,9 +12,9 @@
  */
 
 namespace Core\Structures\Http;
-use Illuminate\Support\Facades\App;
 use Core\Structures\BaseStructure;
 use Core\Structures\Client\Session;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * The helper for the request
@@ -35,6 +35,9 @@ use Core\Structures\Client\Session;
  * @property bool $ajax Check if call was ajax
  * @property bool $secure Check if call was over https
  * @property bool $json Check if call wants json
+ * @property string $method Return method of request
+ * @property array $segments Return method of route
+ * @property string $route Return the route
  */
 class Request extends BaseStructure
 {
@@ -48,19 +51,16 @@ class Request extends BaseStructure
 	 * Initialize the request-helper
 	 * @param \Illuminate\Http\Request $request
 	 */
-	public static function initialize($request)
+	public static function initialize(&$request)
 	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Request($request);
-		}
+		self::$instance = new Request($request);
 	}
 
 	/**
 	 * Fetch instance of the response-helper
 	 * @return Request
 	 */
-	public static function getInstance()
+	public static function current()
 	{
 		return self::$instance;
 	}
@@ -74,7 +74,7 @@ class Request extends BaseStructure
 	/**
 	 * @param \Illuminate\Http\Request $request
 	 */
-	public function __construct($request)
+	public function __construct(&$request)
 	{
 		$this->request = $request;
 	}
@@ -200,12 +200,107 @@ class Request extends BaseStructure
 	}
 
 	/**
+	 * Return method of route
+	 * @return string
+	 */
+	protected function getMethodAttribute()
+	{
+		return $this->request->method();
+	}
+
+	/**
+	 * Return segments of the route
+	 * @return array
+	 */
+	protected function getSegmentsAttribute()
+	{
+		return $this->request->segments();
+	}
+
+	/**
+	 * Return the route
+	 * @return string
+	 */
+	protected function getRouteAttribute()
+	{
+		return $this->request->route()[2]['route'];
+	}
+
+	/**
+	 * Retrieve an input item from the request.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return string|string[]
+	 */
+	public function input($key = null, $default = null)
+	{
+		return $this->request->input($key, $default);
+	}
+
+	/**
+	 * Get a subset of the items from the input data.
+	 *
+	 * @param  array  $keys
+	 * @return array
+	 */
+	public function inputOnly($keys)
+	{
+		return $this->request->only($keys);
+	}
+
+	/**
+	 * Get all of the input except for a specified array of items.
+	 *
+	 * @param  array  $keys
+	 * @return array
+	 */
+	public function inputExcept($keys)
+	{
+		return $this->request->except($keys);
+	}
+
+	/**
+	 * Determine if the request contains a non-empty value for an input item.
+	 *
+	 * @param  string|string[]  $key
+	 * @return bool
+	 */
+	public function hasInput($key)
+	{
+		return $this->request->has($key);
+	}
+
+	/**
+	 * Retrieve a file from the request.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $default
+	 * @return UploadedFile|UploadedFile[]
+	 */
+	public function file($key = null, $default = null)
+	{
+		return $this->request->file($key, $default);
+	}
+
+	/**
+	 * Determine if the uploaded data contains a file.
+	 *
+	 * @param  string  $key
+	 * @return bool
+	 */
+	public function hasFile($key)
+	{
+		return $this->request->hasFile($key);
+	}
+
+	/**
 	 * Check if local environment
 	 * @return bool
 	 */
 	public function isLocalEnvironment()
 	{
-		return App::environment('local');
+		return app()->environment() == 'local';
 	}
 
 	/**
@@ -214,7 +309,7 @@ class Request extends BaseStructure
 	 */
 	public function isProductionEnvironment()
 	{
-		return App::environment('production');
+		return app()->environment() == 'production';
 	}
 
 	/**
@@ -223,7 +318,7 @@ class Request extends BaseStructure
 	 */
 	public function isTestingEnvironment()
 	{
-		return App::environment('testing');
+		return app()->environment() == 'testing';
 	}
 
 }

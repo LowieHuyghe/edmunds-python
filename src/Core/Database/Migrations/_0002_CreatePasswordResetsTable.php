@@ -14,8 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for password_resets-table
@@ -33,7 +31,7 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function up()
 	{
-		Schema::create('password_resets', function (Blueprint $table)
+		app('schema')->create('password_resets', function (Blueprint $table)
 		{
 			$table->string('email')->index();
 			$table->string('token')->index();
@@ -47,6 +45,6 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function down()
 	{
-		Schema::drop('password_resets');
+		app('schema')->drop('password_resets');
 	}
 }

@@ -14,7 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for failedJobs-table
@@ -33,7 +32,7 @@ trait _0008_CreateFailedJobsTable
 	 */
 	public function up()
 	{
-		Schema::create('failed_jobs', function (Blueprint $table) {
+		app('schema')->create('failed_jobs', function (Blueprint $table) {
 			$table->increments('id');
 			$table->text('connection');
 			$table->text('queue');
@@ -49,6 +48,6 @@ trait _0008_CreateFailedJobsTable
 	 */
 	public function down()
 	{
-		Schema::drop('failed_jobs');
+		app('schema')->drop('failed_jobs');
 	}
 }

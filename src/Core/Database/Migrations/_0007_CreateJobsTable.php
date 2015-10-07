@@ -14,7 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for jobs-table
@@ -33,7 +32,7 @@ trait _0007_CreateJobsTable
 	 */
 	public function up()
 	{
-		Schema::create('jobs', function (Blueprint $table) {
+		app('schema')->create('jobs', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('queue');
 			$table->longText('payload');
@@ -53,6 +52,6 @@ trait _0007_CreateJobsTable
 	 */
 	public function down()
 	{
-		Schema::drop('jobs');
+		app('schema')->drop('jobs');
 	}
 }

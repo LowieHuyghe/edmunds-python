@@ -13,7 +13,6 @@
 
 namespace Core\Helpers;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\App;
 use Core\Models\Translation;
 use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
@@ -66,7 +65,7 @@ class TranslationHelper extends BaseHelper
 	 */
 	public function __construct()
 	{
-		$this->visitor = Visitor::getInstance();
+		$this->visitor = Visitor::current();
 	}
 
 	/**
@@ -120,7 +119,7 @@ class TranslationHelper extends BaseHelper
 			$translation->original = $key;
 
 			//Save if not in local-mode
-			if (Request::getInstance()->isProductionEnvironment())
+			if (Request::current()->isProductionEnvironment())
 			{
 				$translation->save();
 			}

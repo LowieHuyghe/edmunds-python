@@ -13,10 +13,6 @@
 
 namespace Core\Helpers;
 
-use Carbon\Carbon;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Core\Exceptions\ConfigNotFoundException;
 use Core\Structures\Client\Input;
 use Core\Structures\Client\Visitor;
@@ -24,6 +20,7 @@ use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Session;
 use Core\Exceptions\AbortException;
+use Laravel\Lumen\Routing\Controller;
 
 /**
  * The helper responsible for the routing
@@ -42,19 +39,31 @@ use Core\Exceptions\AbortException;
 class RouteHelper extends Controller
 {
 	/**
+	 * @var string
+	 */
+	private $route;
+
+	/**
 	 * Do the route logic
+	 * @param \Illuminate\Http\Request $request
 	 * @param string $route
 	 * @return mixed
 	 */
-	public function route($route)
+	public function route(\Illuminate\Http\Request $request, $route)
 	{
+		//Initialize stuff
+		Session::initialize($request->session());
+		$request->setSession(Session::current());
+		Request::initialize($request);
+
+		$this->route = $route;
+
 		$this->checkConfig();
 
 		$response = null;
-
 		try
 		{
-			$response = $this->routeHandler($route);
+			$response = $this->routeHandler();
 		}
 		catch (AbortException $ex)
 		{
@@ -63,19 +72,17 @@ class RouteHelper extends Controller
 				abort($ex->status, $ex->getMessage());
 			}
 		}
-
 		return $response;
 	}
 
 	/**
 	 * Do the route logic
-	 * @param string $route
 	 * @return \Illuminate\Http\Response
 	 */
-	private function routeHandler($route)
+	private function routeHandler()
 	{
 		//Check if it is a valid route
-		if (!$this->isValidRoute($route))
+		if (!$this->isValidRoute())
 		{
 			throw new AbortException(404);
 		}
@@ -105,13 +112,12 @@ class RouteHelper extends Controller
 
 	/**
 	 * Validate the route
-	 * @param string $route
 	 * @return bool
 	 */
-	private function isValidRoute($route)
+	private function isValidRoute()
 	{
 		//Only let the accepted routes through
-		return (preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', $route) === 1);
+		return (preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', Request::current()->route) === 1);
 	}
 
 	/**
@@ -121,45 +127,43 @@ class RouteHelper extends Controller
 	private function getAllConstants()
 	{
 		//Fetch namespace
-		$namespace = Config::get('app.routing.namespace');
+		$namespace = config('app.routing.namespace');
 		$namespace = trim($namespace, '\\');
 		//Fetch defaultController
-		$defaultController = Config::get('app.routing.default');
+		$defaultController = config('app.routing.default');
 		$defaultController = $namespace . '\\' . $defaultController;
 		//Fetch homeController
-		$homeController = Config::get('app.routing.home');
+		$homeController = config('app.routing.home');
 		$homeController = $namespace . '\\' . $homeController;
 
-		//Get the current request
-		$request = $this->getRouter()->getCurrentRequest();
 		//Get the call-method
-		$requestMethod = strtolower($request->method());
+		$requestMethod = strtolower(Request::current()->method);
 		if ($requestMethod == 'patch')
 		{
 			$requestMethod = 'put';
 		}
 		$requestType = null;
 		//Check if ajax-call
-		if ($request->ajax())
+		if (Request::current()->ajax)
 		{
 			$requestType = 'ajax';
 			//Set default response to ajax
-			Response::getInstance()->responseJson();
+			Response::current()->responseJson();
 		}
-		elseif ($request->wantsJson() || (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json'))
+		elseif (Request::current()->json || (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
 			//Set default response to json
-			Response::getInstance()->responseJson();
+			Response::current()->responseJson();
 		}
-		elseif (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'xml')
+		elseif (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
 			//Set default response to xml
-			Response::getInstance()->responseXml();
+			Response::current()->responseXml();
 		}
 		//Get route and its parts
-		$segments = $request->segments();
+		$segments = Request::current()->segments;
 
 		return array($namespace, $defaultController, $homeController, $requestMethod, $requestType, $segments);
 	}
@@ -398,15 +402,9 @@ class RouteHelper extends Controller
 		//Set the rights required
 		Visitor::$requiredRights = array_unique($requiredRights);
 
-		//Initiate some helpers
-		$request = self::getRouter()->getCurrentRequest();
-		Session::initialize($request->getSession());
-		$request->setSession(Session::getInstance());
-		Request::initialize($request);
-
 		//Initialize the controllers
-		$controller = App::make($controllerName);
-		$defaultController = App::make($defaultControllerName);
+		$controller = app($controllerName);
+		$defaultController = app($defaultControllerName);
 
 		//Initialize of defaultController
 		$defaultController->initialize();
@@ -455,18 +453,18 @@ class RouteHelper extends Controller
 				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
 				break;
 			default:
-				$response = Response::getInstance()->response404();
+				$response = Response::current()->response404();
 				break;
 		}
 
 		//set the status of the response
-		Response::getInstance()->assign('success', ($response !== false));
+		Response::current()->assign('success', ($response !== false));
 
 		//PostRender
 		$controller->postRender();
 
 		//Return response
-		return Response::getInstance()->getResponse();
+		return Response::current()->getResponse();
 	}
 
 	/**
@@ -475,12 +473,6 @@ class RouteHelper extends Controller
 	 */
 	private function checkConfig()
 	{
-		//Check if helper is included
-		if (!function_exists('lhCoreHelpersIncludedCheck'))
-		{
-			throw new \Exception('The helper-functions are not included in the project. Please require __DIR__."/../vendor/lh/core/src/core/helpers.php" before the autoloader.');
-		}
-
 		//Fetch the configuration
 		$config = ConfigHelper::get('core.config.required');
 
@@ -488,7 +480,7 @@ class RouteHelper extends Controller
 		$notFound = array();
 		foreach ($config as $line)
 		{
-			if (!Config::get($line))
+			if (!config($line))
 			{
 				$notFound[] = $line;
 			}

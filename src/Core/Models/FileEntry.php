@@ -13,9 +13,6 @@
 
 namespace Core\Models;
 use Faker\Generator;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Core\Database\Relations\HasOneEnum;
 use Core\Structures\Client\Input;
 use Core\Structures\Io\Validation;
@@ -128,7 +125,7 @@ class FileEntry extends BaseModel
 				$uploadSuccess = self::getDisk()->put($this->name, $contents);
 				break;
 			case 'uploadedFile':
-				$uploadSuccess = self::getDisk()->put($this->name, File::get($this->uploadedFile));
+				$uploadSuccess = self::getDisk()->put($this->name, app('file')->get($this->uploadedFile));
 				break;
 			default:
 				$uploadSuccess = true;
@@ -279,7 +276,7 @@ class FileEntry extends BaseModel
 	 */
 	private static function getDisk()
 	{
-		return Storage::disk(Config::get('filesystems.default'));
+		return app('storage')->disk(config('filesystems.default'));
 	}
 
 	/**
@@ -304,7 +301,7 @@ class FileEntry extends BaseModel
 	public static function generateFromInput($name)
 	{
 		//Fetch the uploaded file
-		$uploadedFile = Input::getInstance()->file($name);
+		$uploadedFile = Input::current()->file($name);
 		if (!$uploadedFile)
 		{
 			return null;

@@ -14,8 +14,6 @@
 namespace Core\Database\Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\Schema;
 
 /**
  * Migration for translations-table
@@ -33,7 +31,7 @@ trait _0005_CreateTranslationsTable
 	 */
 	public function up()
 	{
-		Schema::create('translations', function (Blueprint $table)
+		app('schema')->create('translations', function (Blueprint $table)
 		{
 			$table->primary('hash');
 			$table->string('hash', 32);
@@ -236,6 +234,6 @@ trait _0005_CreateTranslationsTable
 	 */
 	public function down()
 	{
-		Schema::drop('translations');
+		app('schema')->drop('translations');
 	}
 }

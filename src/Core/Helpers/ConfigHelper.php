@@ -13,12 +13,6 @@
 
 namespace Core\Helpers;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Core\Models\FileEntry;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
 /**
  * The helper responsible for the configuration
  *
@@ -71,7 +65,7 @@ class ConfigHelper extends BaseHelper
 		//Fetch the config
 		if (!isset(self::$config[$file]))
 		{
-			$filePath = __DIR__ . "/../_config/$file.php";
+			$filePath = __DIR__ . "/../../config/$file.php";
 			if (file_exists($filePath))
 			{
 				self::$config[$file] = require $filePath;

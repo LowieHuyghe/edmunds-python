@@ -13,7 +13,6 @@
 
 namespace Core\Controllers;
 
-use Illuminate\Support\Facades\Config;
 use Core\Models\User;
 
 /**
@@ -52,7 +51,7 @@ class LoginRequiredController extends BaseController
 		//If user is not logged in, redirect to other page
 		if (!$this->visitor->isLoggedIn())
 		{
-			$loginRoute = Config::get('app.routing.loginroute');
+			$loginRoute = config('app.routing.loginroute');
 			$this->response->responseRedirect($loginRoute, null, true);
 		}
 	}
