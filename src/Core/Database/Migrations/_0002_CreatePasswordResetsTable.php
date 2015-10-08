@@ -31,7 +31,7 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function up()
 	{
-		app('schema')->create('password_resets', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
 		{
 			$table->string('email')->index();
 			$table->string('token')->index();
@@ -45,6 +45,6 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('password_resets');
+		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
 	}
 }
