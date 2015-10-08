@@ -49,7 +49,7 @@ trait _0000_CreateEnumsPivotTable
 	 */
 	public function up()
 	{
-		app('schema')->create($this->table, function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create($this->table, function (Blueprint $table)
 		{
 			$table->integer($this->idModel)->unsigned();
 			$table->integer($this->idEnum)->unsigned();
@@ -63,6 +63,6 @@ trait _0000_CreateEnumsPivotTable
 	 */
 	public function down()
 	{
-		app('schema')->drop($this->table);
+		app('db')->connection()->getSchemaBuilder()->drop($this->table);
 	}
 }
