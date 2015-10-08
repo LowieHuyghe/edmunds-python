@@ -31,7 +31,7 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function up()
 	{
-		app('schema')->create('file_entries', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('name', 20)->unique();
@@ -51,6 +51,6 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('file_entries');
+		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
 	}
 }

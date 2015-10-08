@@ -32,7 +32,7 @@ trait _0007_CreateJobsTable
 	 */
 	public function up()
 	{
-		app('schema')->create('jobs', function (Blueprint $table) {
+		app('db')->connection()->getSchemaBuilder()->create('jobs', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('queue');
 			$table->longText('payload');
@@ -52,6 +52,6 @@ trait _0007_CreateJobsTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('jobs');
+		app('db')->connection()->getSchemaBuilder()->drop('jobs');
 	}
 }

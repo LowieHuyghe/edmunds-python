@@ -31,7 +31,7 @@ trait _0005_CreateTranslationsTable
 	 */
 	public function up()
 	{
-		app('schema')->create('translations', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('translations', function (Blueprint $table)
 		{
 			$table->primary('hash');
 			$table->string('hash', 32);
@@ -234,6 +234,6 @@ trait _0005_CreateTranslationsTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('translations');
+		app('db')->connection()->getSchemaBuilder()->drop('translations');
 	}
 }

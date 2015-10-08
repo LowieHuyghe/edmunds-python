@@ -32,7 +32,7 @@ trait _0008_CreateFailedJobsTable
 	 */
 	public function up()
 	{
-		app('schema')->create('failed_jobs', function (Blueprint $table) {
+		app('db')->connection()->getSchemaBuilder()->create('failed_jobs', function (Blueprint $table) {
 			$table->increments('id');
 			$table->text('connection');
 			$table->text('queue');
@@ -48,6 +48,6 @@ trait _0008_CreateFailedJobsTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('failed_jobs');
+		app('db')->connection()->getSchemaBuilder()->drop('failed_jobs');
 	}
 }

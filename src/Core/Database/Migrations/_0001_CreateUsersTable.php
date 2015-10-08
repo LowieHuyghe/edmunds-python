@@ -31,7 +31,7 @@ trait _0001_CreateUsersTable
 	 */
 	public function up()
 	{
-		app('schema')->create('users', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('users', function (Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('email')->unique();
@@ -49,6 +49,6 @@ trait _0001_CreateUsersTable
 	 */
 	public function down()
 	{
-		app('schema')->drop('users');
+		app('db')->connection()->getSchemaBuilder()->drop('users');
 	}
 }
