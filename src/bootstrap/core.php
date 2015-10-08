@@ -99,4 +99,4 @@ $app->post('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
 $app->put('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
 $app->delete('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
 
-$app->run();
+return $app;
