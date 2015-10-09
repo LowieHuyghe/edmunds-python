@@ -13,8 +13,6 @@
 
 namespace Core\Controllers;
 
-use Core\Models\User;
-
 /**
  * Controller to extend from which requires the user to log in
  *
@@ -26,33 +24,46 @@ use Core\Models\User;
 class LoginRequiredController extends BaseController
 {
 	/**
-	 * The logged in user
-	 * @var User
-	 */
-	protected $user;
-
-	/**
 	 * Constructor
+	 * @param bool $basic Is Basic authentication
 	 */
-	function __construct()
+	function __construct($basic = false)
 	{
 		parent::__construct();
 
-		$this->checkLogin();
+		$this->checkLogin($basic);
 
 		$this->response->assign('__login', $this->visitor->user);
 	}
 
 	/**
 	 * Check if user is logged in
+	 * @param bool $basic Is Basic authentication
 	 */
-	private function checkLogin()
+	private function checkLogin($basic = false)
 	{
 		//If user is not logged in, redirect to other page
 		if (!$this->visitor->isLoggedIn())
 		{
-			$loginRoute = config('app.routing.loginroute');
-			$this->response->responseRedirect($loginRoute, null, true);
+			if ($basic)
+			{
+				if ($email = $this->request->getServer('PHP_AUTH_USER') && $password = $this->request->getServer('PHP_AUTH_PW'))
+				{
+					$this->visitor->login($email, $password);
+				}
+				if (!$this->visitor->isLoggedIn())
+				{
+					$this->response->assignHeader('WWW-Authenticate', 'Basic' /*. 'realm="Comment"'*/);
+					$this->response->assignContent('Invalid credentials.');
+					$this->response->setStatus(401);
+					$this->response->send();
+				}
+			}
+			else
+			{
+				$loginRoute = config('app.routing.loginroute');
+				$this->response->responseRedirect($loginRoute, null, true);
+			}
 		}
 	}
 }
