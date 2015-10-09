@@ -13,6 +13,7 @@
 
 namespace Core\Helpers;
 
+use Core\Exceptions\AbortWithResponseException;
 use Core\Exceptions\ConfigNotFoundException;
 use Core\Structures\Client\Input;
 use Core\Structures\Client\Visitor;
@@ -64,6 +65,10 @@ class RouteHelper extends Controller
 		try
 		{
 			$response = $this->routeHandler();
+		}
+		catch (AbortWithResponseException $ex)
+		{
+			$response = Response::current()->getResponse();
 		}
 		catch (AbortException $ex)
 		{

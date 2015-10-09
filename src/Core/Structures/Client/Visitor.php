@@ -90,6 +90,51 @@ class Visitor extends BaseStructure
 	 */
 	public function isLoggedIn()
 	{
-		return (isset($this->user) && $this->user);
+		return app('auth')->check();
+	}
+
+	/**
+	 * Log a user in
+	 * @param User|string $userOrEmail
+	 * @param string $password
+	 * @param bool $once
+	 * @return bool
+	 */
+	public function login($userOrEmail, $password = null, $once = false)
+	{
+		if ($userOrEmail instanceof User && is_null($password)) //user
+		{
+			if ($once || app('auth')->login($userOrEmail))
+			{
+				$this->user = $userOrEmail;
+				return true;
+			}
+		}
+		else //email - password
+		{
+			if (app('auth')->once(array('email' => $userOrEmail, 'password' => $password))
+				|| app('auth')->attempt(array('email' => $userOrEmail, 'password' => $password)))
+			{
+				$user = User::where('email', '=', $userOrEmail);
+				$this->user = $user;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Log the current user out
+	 * @return bool
+	 */
+	public function logout()
+	{
+		if (app('auth')->logout())
+		{
+			$this->user = null;
+			return true;
+		}
+		return false;
 	}
 }

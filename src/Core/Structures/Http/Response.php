@@ -13,6 +13,7 @@
 
 namespace Core\Structures\Http;
 
+use Core\Exceptions\AbortWithResponseException;
 use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 use Core\Exceptions\AbortException;
@@ -95,6 +96,12 @@ class Response extends BaseStructure
 	 * @var string
 	 */
 	private $responseType = 'view';
+
+	/**
+	 * Status of the response
+	 * @var int
+	 */
+	private $status = 200;
 
 	/**
 	 * Assign data to response
@@ -185,6 +192,15 @@ class Response extends BaseStructure
 	}
 
 	/**
+	 * Set status of response
+	 * @param $status
+	 */
+	public function setStatus($status)
+	{
+		$this->status = $status;
+	}
+
+	/**
 	 * Fetch the build response
 	 * @param mixed $response
 	 */
@@ -201,6 +217,9 @@ class Response extends BaseStructure
 		{
 			$response->withCookie($cookie);
 		}
+
+		//Set status
+		$response->setStatusCode($this->status);
 	}
 
 	/**
@@ -316,6 +335,15 @@ class Response extends BaseStructure
 	public function responseUnauthorized()
 	{
 		throw new AbortException(403);
+	}
+
+	/**
+	 * Abort the request but send response
+	 * @throws AbortWithResponseException
+	 */
+	public function send()
+	{
+		throw new AbortWithResponseException();
 	}
 
 	/**
