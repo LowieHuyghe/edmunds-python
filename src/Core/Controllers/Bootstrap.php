@@ -82,7 +82,7 @@ class Bootstrap extends Controller
 					$message = $originalContent->getData()['message'];
 					if (Request::current()->isLocalEnvironment())
 					{
-						dc(debug_backtrace());
+						abort($response->getStatusCode(), $message, $response->headers->all());
 					}
 				}
 				else
