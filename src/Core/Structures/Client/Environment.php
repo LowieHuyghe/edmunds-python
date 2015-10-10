@@ -58,6 +58,8 @@ class Environment extends BaseStructure
 	 */
 	public function __construct($userAgent)
 	{
+		parent::__construct();
+
 		$this->userAgent = $userAgent;
 	}
 

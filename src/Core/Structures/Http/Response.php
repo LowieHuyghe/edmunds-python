@@ -62,6 +62,8 @@ class Response extends BaseStructure
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+
 		$this->request = Request::current();
 	}
 

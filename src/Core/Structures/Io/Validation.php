@@ -43,6 +43,8 @@ class Validation extends BaseStructure
 	 */
 	public function __construct($input = null)
 	{
+		//parent::__construct();
+
 		if ($input)
 		{
 			$this->input = $input;

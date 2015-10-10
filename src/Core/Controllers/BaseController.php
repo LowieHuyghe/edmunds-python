@@ -18,6 +18,7 @@ use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Visitor;
 use Core\Structures\Io\Validation;
+use Core\Structures\Registry\Registry;
 use Laravel\Lumen\Routing\Controller;
 use Laravel\Lumen\Routing\DispatchesJobs;
 use Laravel\Lumen\Routing\ValidatesRequests;
@@ -96,6 +97,12 @@ class BaseController extends Controller
 	protected $visitor;
 
 	/**
+	 * The registry
+	 * @var Registry
+	 */
+	protected $registry;
+
+	/**
 	 * The constructor for the BaseController
 	 */
 	function __construct()
@@ -105,6 +112,7 @@ class BaseController extends Controller
 		$this->input = Input::current();
 		$this->validator = new Validation($this->input->all());
 		$this->visitor = Visitor::current();
+		$this->registry = Registry::current();
 
 		$this->checkRights();
 	}

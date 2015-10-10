@@ -76,6 +76,8 @@ class Request extends BaseStructure
 	 */
 	public function __construct(&$request)
 	{
+		parent::__construct();
+
 		$this->request = $request;
 	}
 
