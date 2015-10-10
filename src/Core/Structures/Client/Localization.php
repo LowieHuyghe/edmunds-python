@@ -36,6 +36,8 @@ class Localization extends BaseStructure
 	 */
 	public function __construct($browser, $location, $user)
 	{
+		parent::__construct();
+
 		$locale = null;
 
 		//Use user for locale
