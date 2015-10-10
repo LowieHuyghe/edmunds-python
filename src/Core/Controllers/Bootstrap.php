@@ -11,10 +11,11 @@
  * @since		Version 0.1
  */
 
-namespace Core\Helpers;
+namespace Core\Controllers;
 
 use Core\Exceptions\AbortWithResponseException;
 use Core\Exceptions\ConfigNotFoundException;
+use Core\Helpers\ConfigHelper;
 use Core\Structures\Client\Input;
 use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
@@ -28,7 +29,7 @@ use Laravel\Lumen\Routing\Controller;
  * To use it, just add the following to routes.php:
  *
 	Route::any('{all}', [
-		'uses' => '\Core\Helpers\RouteHelper@route'
+		'uses' => '\Core\Controllers\Bootstrap@route'
 	])->where('all', '.*');
  *
  *
@@ -37,7 +38,7 @@ use Laravel\Lumen\Routing\Controller;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class RouteHelper extends Controller
+class Bootstrap extends Controller
 {
 	/**
 	 * @var string

@@ -94,9 +94,9 @@ if ($providers)
 |
 */
 
-$app->get('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
-$app->post('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
-$app->put('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
-$app->delete('{route:.*}', array('uses' => '\Core\Helpers\RouteHelper@route'));
+$app->get('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
+$app->post('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
+$app->put('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
+$app->delete('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
 
 return $app;
