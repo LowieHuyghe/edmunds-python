@@ -120,7 +120,7 @@ class FileController extends BaseController
 		if ($fileEntry)
 		{
 			//Set response type to download
-			$this->response->responseDownload($fileEntry->getPath(), $fileEntry->original_name);
+			$this->response->assignDownload($fileEntry->getPath(), $fileEntry->original_name);
 			return true;
 		}
 		else
