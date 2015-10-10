@@ -147,6 +147,27 @@ class Response extends BaseStructure
 	}
 
 	/**
+	 * Assign a download
+	 * @param string $filePath
+	 * @param string $name
+	 */
+	public function assignDownload($filePath, $name = null)
+	{
+		$this->response[self::TYPE_DOWNLOAD] = array('filePath' => $filePath, 'name' => $name);
+		$this->setType(self::TYPE_DOWNLOAD);
+	}
+
+	/**
+	 * Assign content
+	 * @param mixed $content
+	 */
+	public function assignContent($content)
+	{
+		$this->response[self::TYPE_CONTENT] = array('content' => $content);
+		$this->setType(self::TYPE_CONTENT);
+	}
+
+	/**
 	 * Assign cookies to response
 	 * @param string $key
 	 * @param mixed $value
@@ -200,31 +221,6 @@ class Response extends BaseStructure
 	public function setType($type)
 	{
 		$this->responseType = $type;
-	}
-
-	/**
-	 * Return a download
-	 * @param string $filePath
-	 * @param string $name
-	 */
-	public function responseDownload($filePath, $name = null)
-	{
-		$this->response[self::TYPE_DOWNLOAD] = array('filePath' => $filePath, 'name' => $name);
-		$this->setType(self::TYPE_DOWNLOAD);
-
-		$this->send();
-	}
-
-	/**
-	 * Return content
-	 * @param mixed $content
-	 */
-	public function responseContent($content)
-	{
-		$this->response[self::TYPE_CONTENT] = array('content' => $content);
-		$this->setType(self::TYPE_CONTENT);
-
-		$this->send();
 	}
 
 	/**
