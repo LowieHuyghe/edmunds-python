@@ -13,7 +13,7 @@
 
 namespace Core\Controllers;
 
-use Core\Exceptions\AbortWithResponseException;
+use Core\Exceptions\AbortException;
 use Core\Exceptions\ConfigNotFoundException;
 use Core\Helpers\ConfigHelper;
 use Core\Structures\Client\Input;
@@ -21,7 +21,7 @@ use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Session;
-use Core\Exceptions\AbortException;
+use Illuminate\View\View;
 use Laravel\Lumen\Routing\Controller;
 
 /**
@@ -50,6 +50,9 @@ class Bootstrap extends Controller
 	 * @param \Illuminate\Http\Request $request
 	 * @param string $route
 	 * @return mixed
+	 * @throws ConfigNotFoundException
+	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function route(\Illuminate\Http\Request $request, $route)
 	{
@@ -67,16 +70,32 @@ class Bootstrap extends Controller
 		{
 			$response = $this->routeHandler();
 		}
-		catch (AbortWithResponseException $ex)
-		{
-			$response = Response::current()->getResponse();
-		}
 		catch (AbortException $ex)
 		{
-			if ($ex->status)
+			$response = Response::current()->getResponse();
+			if ($response->getStatusCode() >= 400)
 			{
-				abort($ex->status, $ex->getMessage());
+				$originalContent = $response->getOriginalContent();
+				if ($originalContent instanceof View)
+				{
+					//TODO @Lowie Logging!
+					$message = $originalContent->getData()['message'];
+					if (Request::current()->isLocalEnvironment())
+					{
+						dc(debug_backtrace());
+					}
+				}
+				else
+				{
+					//TODO @Lowie Logging!
+					abort($response->getStatusCode(), $originalContent, $response->headers->all());
+				}
 			}
+		}
+		catch (Exception $ex)
+		{
+			//TODO @Lowie Logging!
+			throw $ex;
 		}
 		return $response;
 	}
@@ -90,7 +109,11 @@ class Bootstrap extends Controller
 		//Check if it is a valid route
 		if (!$this->isValidRoute())
 		{
-			throw new AbortException(404);
+			Response::current()->response404();
+		}
+		elseif (app()->isDownForMaintenance())
+		{
+			Response::current()->response503(true);
 		}
 
 		//Get all the constants
@@ -100,7 +123,7 @@ class Bootstrap extends Controller
 		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments);
 		if (!$controllerName)
 		{
-			throw new AbortException(404);
+			Response::current()->response404();
 		}
 		$this->prepareController($controllerName);
 
@@ -109,7 +132,7 @@ class Bootstrap extends Controller
 		if (!$methodName
 			|| !$this->areParametersValid($parameterSpecs, $parameters))
 		{
-			throw new AbortException(404);
+			Response::current()->response404();
 		}
 
 		//Call the method
@@ -154,19 +177,19 @@ class Bootstrap extends Controller
 		{
 			$requestType = 'ajax';
 			//Set default response to ajax
-			Response::current()->responseJson();
+			Response::current()->setType(Response::TYPE_JSON);
 		}
 		elseif (Request::current()->json || (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
 			//Set default response to json
-			Response::current()->responseJson();
+			Response::current()->setType(Response::TYPE_JSON);
 		}
 		elseif (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
 			//Set default response to xml
-			Response::current()->responseXml();
+			Response::current()->setType(Response::TYPE_XML);
 		}
 		//Get route and its parts
 		$segments = Request::current()->segments;
