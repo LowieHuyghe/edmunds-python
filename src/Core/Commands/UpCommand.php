@@ -11,17 +11,38 @@
  * @since		Version 0.1
  */
 
-namespace Core\Exceptions;
+namespace Core\Commands;
 
 /**
- * Exception to stop the flow of the app and finish but do send response (instead of die and exit so logging can be done)
+ * The command for putting the app back live.
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class AbortWithResponseException extends BaseException
-{
-	//
+class UpCommand extends BaseCommand {
+	/**
+	 * The console command name.
+	 *
+	 * @var string
+	 */
+	protected $name = 'up';
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = "Bring the application out of maintenance mode";
+	/**
+	 * Execute the console command.
+	 *
+	 * @return void
+	 */
+	public function fire()
+	{
+		@unlink($this->laravel->storagePath().'/framework/down');
+		$this->info('Application is now live.');
+	}
+
 }

@@ -146,7 +146,7 @@ class BaseController extends Controller
 		}
 
 		//Visitor is not authorized to be here
-		$this->response->responseUnauthorized();
+		$this->response->response401();
 	}
 
 	/**
