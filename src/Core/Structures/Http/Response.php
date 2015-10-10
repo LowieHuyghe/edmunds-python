@@ -13,10 +13,9 @@
 
 namespace Core\Structures\Http;
 
-use Core\Exceptions\AbortWithResponseException;
+use Core\Exceptions\AbortException;
 use Core\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
-use Core\Exceptions\AbortException;
 
 /**
  * The helper responsible for the response
@@ -28,6 +27,17 @@ use Core\Exceptions\AbortException;
  */
 class Response extends BaseStructure
 {
+	const	TYPE_VIEW			= 1,
+			TYPE_JSON			= 2,
+			TYPE_XML			= 3,
+			TYPE_CONTENT		= 4,
+			TYPE_DOWNLOAD		= 5,
+			TYPE_REDIRECT		= 6,
+
+			TYPE_401			= 401,
+			TYPE_404			= 404,
+			TYPE_503			= 503;
+
 	/**
 	 * Instance of the response-helper
 	 * @var Response
@@ -95,13 +105,7 @@ class Response extends BaseStructure
 	 * The response type
 	 * @var string
 	 */
-	private $responseType = 'view';
-
-	/**
-	 * Status of the response
-	 * @var int
-	 */
-	private $status = 200;
+	private $responseType = self::TYPE_VIEW;
 
 	/**
 	 * Assign data to response
@@ -132,35 +136,14 @@ class Response extends BaseStructure
 			$key = '_';
 		}
 
-		if (!isset($this->response['view']))
+		if (!isset($this->response[self::TYPE_VIEW]))
 		{
-			$this->response['view'] = array($key => $view);
+			$this->response[self::TYPE_VIEW] = array($key => $view);
 		}
 		else
 		{
-			$this->response['view'][$key] = $view;
+			$this->response[self::TYPE_VIEW][$key] = $view;
 		}
-	}
-
-	/**
-	 * Return a download
-	 * @param string $filePath
-	 * @param string $name
-	 */
-	public function assignDownload($filePath, $name = null)
-	{
-		$this->response['download'] = array('filePath' => $filePath, 'name' => $name);
-		$this->responseDownload();
-	}
-
-	/**
-	 * Return content
-	 * @param mixed $content
-	 */
-	public function assignContent($content)
-	{
-		$this->response['content'] = $content;
-		$this->responseContent();
 	}
 
 	/**
@@ -192,17 +175,8 @@ class Response extends BaseStructure
 	}
 
 	/**
-	 * Set status of response
-	 * @param $status
-	 */
-	public function setStatus($status)
-	{
-		$this->status = $status;
-	}
-
-	/**
 	 * Fetch the build response
-	 * @param mixed $response
+	 * @param \Illuminate\Http\Response $response
 	 */
 	private function attachExtras(&$response)
 	{
@@ -217,49 +191,40 @@ class Response extends BaseStructure
 		{
 			$response->withCookie($cookie);
 		}
-
-		//Set status
-		$response->setStatusCode($this->status);
 	}
 
 	/**
-	 * Force response type content
+	 * Force the type of the response
+	 * @param string $type
 	 */
-	public function responseContent()
+	public function setType($type)
 	{
-		$this->responseType = 'content';
+		$this->responseType = $type;
 	}
 
 	/**
-	 * Force response type view
+	 * Return a download
+	 * @param string $filePath
+	 * @param string $name
 	 */
-	public function responseView()
+	public function responseDownload($filePath, $name = null)
 	{
-		$this->responseType = 'view';
+		$this->response[self::TYPE_DOWNLOAD] = array('filePath' => $filePath, 'name' => $name);
+		$this->setType(self::TYPE_DOWNLOAD);
+
+		$this->send();
 	}
 
 	/**
-	 * Force response type json
+	 * Return content
+	 * @param mixed $content
 	 */
-	public function responseJson()
+	public function responseContent($content)
 	{
-		$this->responseType = 'json';
-	}
+		$this->response[self::TYPE_CONTENT] = array('content' => $content);
+		$this->setType(self::TYPE_CONTENT);
 
-	/**
-	 * Force response type xml
-	 */
-	public function responseXml()
-	{
-		$this->responseType = 'xml';
-	}
-
-	/**
-	 * Force response type download
-	 */
-	public function responseDownload()
-	{
-		$this->responseType = 'download';
+		$this->send();
 	}
 
 	/**
@@ -286,64 +251,63 @@ class Response extends BaseStructure
 			$this->request->session->set('intended_route', $this->request->path);
 		}
 
-		//Make the redirect-response
-		$redirect = redirect($uri);
+		$this->response[self::TYPE_REDIRECT] = array('uri' => $uri, 'input' => $input);
+		$this->setType(self::TYPE_REDIRECT);
 
-		//Assign input
-		if ($input === true)
-		{
-			$redirect = $redirect->withInput();
-		}
-		else
-		{
-			$redirect = $redirect->withInput($input);
-		}
+		$this->send();
+	}
 
-		//Assign cookies, headers
-		$this->attachExtras($redirect);
+	/**
+	 * 401
+	 * @param string $message
+	 */
+	public function response401($message = '')
+	{
+		$this->assignView(null, 'errors.401');
+		$this->assign('message', $message);
 
-		//For debugging purposes show the redirect-page
-		if ($this->request->isLocalEnvironment() && config('app.routing.redirecthalt'))
-		{
-			//Fetch the debugtrace
-			ob_start();
-			debug_print_backtrace();
-			$debugPrintBacktrace = ob_get_contents();
-			ob_end_clean();
+		$this->setType(self::TYPE_401);
 
-			$redirect = response()->make($this->viewRedirect($redirect, $debugPrintBacktrace));
-		}
-
-		//Direct redirect
-		$redirect->send();
-
-		//With a view-response, 'send' doesn't stop the code
-		throw new AbortException();
+		$this->send();
 	}
 
 	/**
 	 * 404
+	 * @param string $message
 	 */
-	public function response404()
+	public function response404($message = '')
 	{
-		throw new AbortException(404);
+		$this->assignView(null, 'errors.404');
+		$this->assign('message', $message);
+
+		$this->setType(self::TYPE_404);
+
+		$this->send();
 	}
 
 	/**
-	 * Unauthorized
+	 * 503
+	 * @param bool $maintenance
+	 * @param string $message
 	 */
-	public function responseUnauthorized()
+	public function response503($maintenance = false, $message = '')
 	{
-		throw new AbortException(403);
+		$this->assignView(null, 'errors.503');
+		$this->assign('maintenance', $maintenance);
+		$this->assign('message', $message);
+
+		$this->setType(self::TYPE_503);
+
+		$this->send();
 	}
 
 	/**
 	 * Abort the request but send response
-	 * @throws AbortWithResponseException
+	 * @throws AbortException
 	 */
 	public function send()
 	{
-		throw new AbortWithResponseException();
+		throw new AbortException();
 	}
 
 	/**
@@ -354,25 +318,51 @@ class Response extends BaseStructure
 	{
 		$response = null;
 
-		if ($this->responseType == 'download')
+		if ($this->responseType == self::TYPE_REDIRECT)
 		{
-			$response = response()->download($this->response['download']['filePath'], $this->response['download']['name']);
+			//Make the redirect-response
+			$response = redirect($this->response[self::TYPE_REDIRECT]['uri']);
+			//Assign input
+			if ($this->response[self::TYPE_REDIRECT]['input'] === true)
+			{
+				$response = $response->withInput();
+			}
+			else
+			{
+				$response = $response->withInput($this->response[self::TYPE_REDIRECT]['input']);
+			}
+
+			//For debugging purposes show the redirect-page
+			if ($this->request->isLocalEnvironment() && config('app.routing.redirecthalt'))
+			{
+				//Fetch the debugtrace
+				ob_start();
+				debug_print_backtrace();
+				$debugPrintBacktrace = ob_get_contents();
+				ob_end_clean();
+
+				$response = response()->make($this->viewRedirect($response, $debugPrintBacktrace));
+			}
 		}
-		elseif ($this->responseType == 'json')
+		elseif ($this->responseType == self::TYPE_DOWNLOAD)
+		{
+			$response = response()->download($this->response[self::TYPE_DOWNLOAD]['filePath'], $this->response[self::TYPE_DOWNLOAD]['name']);
+		}
+		elseif ($this->responseType == self::TYPE_JSON)
 		{
 			$this->assignHeader('Content-Type', 'application/json');
 			$response = response()->json($this->assignedData);
 		}
-		elseif ($this->responseType == 'content')
+		elseif ($this->responseType == self::TYPE_CONTENT)
 		{
-			$response = response()->make($this->response['content']);
+			$response = response()->make($this->response[self::TYPE_CONTENT]['content']);
 		}
-		elseif (($this->responseType == 'view' || $this->responseType == 'xml') && !empty($this->response['view']))
+		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML, self::TYPE_401, self::TYPE_404, self::TYPE_503)) && !empty($this->response[self::TYPE_VIEW]))
 		{
 			$data = array_merge($this->assignedGeneralData, $this->assignedData);
-			ksort($this->response['view']);
+			ksort($this->response[self::TYPE_VIEW]);
 
-			foreach ($this->response['view'] as $key => $view)
+			foreach ($this->response[self::TYPE_VIEW] as $key => $view)
 			{
 				if (is_null($response))
 				{
@@ -385,9 +375,20 @@ class Response extends BaseStructure
 			}
 			$response = response()->make($response);
 
-			if ($this->responseType == 'xml')
+			switch ($this->responseType)
 			{
-				$this->assignHeader('Content-Type', 'application/xml');
+				case self::TYPE_401:
+					$response->setStatusCode(401);
+					break;
+				case self::TYPE_404:
+					$response->setStatusCode(404);
+					break;
+				case self::TYPE_503:
+					$response->setStatusCode(503);
+					break;
+				case self::TYPE_XML:
+					$this->assignHeader('Content-Type', 'application/xml');
+					break;
 			}
 		}
 		else
@@ -415,6 +416,7 @@ class Response extends BaseStructure
 
 		$response = view($view, $data);
 		$render = $response->render();
+
 		return $render;
 	}
 

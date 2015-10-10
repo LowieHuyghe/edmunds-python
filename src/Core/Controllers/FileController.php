@@ -52,7 +52,7 @@ class FileController extends BaseController
 		$this->validator->max('file', self::SIZE_MAX_PICTURE);
 
 		//Set response type to json
-		$this->response->responseJson();
+		$this->response->setType(Response::TYPE_JSON);
 
 		if ($this->validator->hasErrors())
 		{
@@ -76,7 +76,7 @@ class FileController extends BaseController
 		$this->validator->max('file', self::SIZE_MAX_DOCUMENT);
 
 		//Set response type to json
-		$this->response->responseJson();
+		$this->response->setType(Response::TYPE_JSON);
 
 		if ($this->validator->hasErrors())
 		{
@@ -120,13 +120,13 @@ class FileController extends BaseController
 		if ($fileEntry)
 		{
 			//Set response type to download
-			$this->response->assignDownload($fileEntry->getPath(), $fileEntry->original_name);
+			$this->response->responseDownload($fileEntry->getPath(), $fileEntry->original_name);
 			return true;
 		}
 		else
 		{
 			//Set response type to json
-			$this->response->responseJson();
+			$this->response->setType(Response::TYPE_JSON);
 			return false;
 		}
 	}
@@ -141,7 +141,7 @@ class FileController extends BaseController
 		$fileEntry = FileEntry::find($id);
 
 		//Set response type to json
-		$this->response->responseJson();
+		$this->response->setType(Response::TYPE_JSON);
 
 		//Delete the file
 		return ($fileEntry && $fileEntry->delete());

@@ -23,29 +23,32 @@ namespace Core\Controllers;
  */
 class LoginRequiredController extends BaseController
 {
+	const	TYPE_LOGIN = 1,
+			TYPE_BASIC = 2;
+
 	/**
 	 * Constructor
-	 * @param bool $basic Is Basic authentication
+	 * @param int $type type of authentication
 	 */
-	function __construct($basic = false)
+	function __construct($type = self::TYPE_LOGIN)
 	{
 		parent::__construct();
 
-		$this->checkLogin($basic);
+		$this->checkLogin($type);
 
 		$this->response->assign('__login', $this->visitor->user);
 	}
 
 	/**
 	 * Check if user is logged in
-	 * @param bool $basic Is Basic authentication
+	 * @param int $type Type of authentication
 	 */
-	private function checkLogin($basic = false)
+	private function checkLogin($type = self::TYPE_LOGIN)
 	{
 		//If user is not logged in, redirect to other page
 		if (!$this->visitor->isLoggedIn())
 		{
-			if ($basic)
+			if ($type == self::TYPE_BASIC)
 			{
 				if ($email = $this->request->getServer('PHP_AUTH_USER') && $password = $this->request->getServer('PHP_AUTH_PW'))
 				{
@@ -54,9 +57,7 @@ class LoginRequiredController extends BaseController
 				if (!$this->visitor->isLoggedIn())
 				{
 					$this->response->assignHeader('WWW-Authenticate', 'Basic' /*. 'realm="Comment"'*/);
-					$this->response->assignContent('Invalid credentials.');
-					$this->response->setStatus(401);
-					$this->response->send();
+					$this->response->response401('Invalid credentials.');
 				}
 			}
 			else
