@@ -41,6 +41,8 @@ class Pm extends BaseStructure
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+
 		$this->message = null;
 		$this->type = self::TYPE_NOTE;
 		$this->extra = null;

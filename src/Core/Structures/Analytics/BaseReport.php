@@ -298,6 +298,8 @@ class BaseReport extends BaseStructure
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+
 		$info = config('analytics.data')[config('analytics.default')];
 
 		//Set the version and tracking info

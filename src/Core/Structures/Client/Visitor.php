@@ -64,6 +64,8 @@ class Visitor extends BaseStructure
 	 */
 	public function __construct()
 	{
+		parent::__construct();
+
 		$request = Request::current();
 
 		$this->session = $request->session;
