@@ -97,12 +97,6 @@ class BaseController extends Controller
 	protected $visitor;
 
 	/**
-	 * The registry
-	 * @var Registry
-	 */
-	protected $registry;
-
-	/**
 	 * The constructor for the BaseController
 	 */
 	function __construct()
@@ -112,7 +106,6 @@ class BaseController extends Controller
 		$this->input = Input::current();
 		$this->validator = new Validation($this->input->all());
 		$this->visitor = Visitor::current();
-		$this->registry = Registry::current();
 
 		$this->checkRights();
 	}
