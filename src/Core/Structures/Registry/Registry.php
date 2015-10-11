@@ -44,6 +44,10 @@ class Registry extends BaseStructure
 		return self::$instance;
 	}
 
+	/**
+	 * Registry
+	 * @var array
+	 */
 	private $registry = array();
 
 	/**
@@ -67,6 +71,21 @@ class Registry extends BaseStructure
 		}
 
 		return $this->registry['cache'][$store ?: 0];
+	}
+
+	/**
+	 * Get a instance of the db
+	 * @param string $connection
+	 * @return Db
+	 */
+	public function db($connection = null)
+	{
+		if (!isset($this->registry['db'][$connection ?: 0]))
+		{
+			$this->registry['db'][$connection ?: 0] = new Db($connection);
+		}
+
+		return $this->registry['db'][$connection ?: 0];
 	}
 
 }
