@@ -121,17 +121,20 @@ class Db extends BaseStructure
 	{
 		return app('db')->connection($this->connection)->transaction(function() use ($callable)
 		{
-			return $callable($this);
+			return call_user_func($callable, $this);
 		});
 	}
 
 	/**
 	 * Add listener for database stuff
-	 * @param callable $callable function($sql, $bindings, $time)
+	 * @param callable $callable function($sql, $bindings, $time, $connection)
 	 */
 	public function listen($callable)
 	{
-		app('db')->connection($this->connection)->listen($callable);
+		app('db')->connection($this->connection)->listen(function($sql, $bindings, $time) use ($callable)
+		{
+			return call_user_func($callable, $sql, $bindings, $time, $this->connection);
+		});
 	}
 
 }
