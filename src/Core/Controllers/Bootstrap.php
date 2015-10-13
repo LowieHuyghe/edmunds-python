@@ -21,6 +21,7 @@ use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Session;
+use Core\Structures\Http\Route;
 use Illuminate\View\View;
 use Laravel\Lumen\Routing\Controller;
 
@@ -125,18 +126,17 @@ class Bootstrap extends Controller
 		{
 			Response::current()->response404();
 		}
-		$this->prepareController($controllerName);
 
 		//Get the name of the method
-		list($methodName, $parameterSpecs, $parameters, $requiredRights) = $this->getMethodName($controllerName, $requestMethod, $remainingSegments);
-		if (!$methodName
-			|| !$this->areParametersValid($parameterSpecs, $parameters))
+		list($route, $parameters) = $this->getRoute($controllerName, $requestMethod, $remainingSegments);
+		if (!$route
+			|| !$this->areParametersValid($route->parameters, $parameters))
 		{
 			Response::current()->response404();
 		}
 
 		//Call the method
-		return $this->callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights);
+		return $this->callMethod($defaultControllerName, $controllerName, $route, $parameters);
 	}
 
 	/**
@@ -249,56 +249,6 @@ class Bootstrap extends Controller
 	}
 
 	/**
-	 * Prepare the controller
-	 * @param string $controllerName
-	 */
-	private function prepareController($controllerName)
-	{
-		$routeMethods = $controllerName::getRouteMethods();
-
-		//Preparing the routeMethods
-		if (!isset($routeMethods[0]))
-		{
-			$routeMethods[0] = array();
-		}
-		foreach ($routeMethods as $key => $value)
-		{
-			if (!is_numeric($key))
-			{
-				$routeMethods[0][$key] = $value;
-				unset($routeMethods[$key]);
-			}
-		}
-
-		//Preparing each route of the routeMethods
-
-		foreach ($routeMethods as $uriPosition => $v)
-		{
-			$routeMethodUriSpecs = &$routeMethods[$uriPosition];
-			foreach ($routeMethodUriSpecs as $route => &$routeMethodRouteSpecs)
-			{
-				//Parameters
-				if (!isset($routeMethodRouteSpecs['p']))
-				{
-					$routeMethodRouteSpecs['p'] = array();
-				}
-
-				//Roles
-				if (!isset($routeMethodRouteSpecs['r']))
-				{
-					$routeMethodRouteSpecs['r'] = array();
-				}
-				elseif (!is_array($routeMethodRouteSpecs['r']))
-				{
-					$routeMethodRouteSpecs['r'] = array($routeMethodRouteSpecs['r']);
-				}
-			}
-		}
-
-		$controllerName::setRouteMethods($routeMethods);
-	}
-
-	/**
 	 * Validate the className and check if it exists
 	 * @param string $className
 	 * @return bool
@@ -318,85 +268,74 @@ class Bootstrap extends Controller
 	 * @param array $remainingSegments
 	 * @return array
 	 */
-	private function getMethodName($controllerName, $requestMethod, $remainingSegments)
+	private function getRoute($controllerName, $requestMethod, $remainingSegments)
 	{
-		$routeMethods = $controllerName::getRouteMethods();
+		$routes = collect(call_user_func(array($controllerName, 'getRoutes')));
 
 		//Check if it is index-page and otherwise filter it out
 		if (empty($remainingSegments))
 		{
-			if ($requestMethod == 'get' && isset($routeMethods[0]['getIndex']))
+			if ($requestMethod == 'get' && $route = $routes->where('name', 'getIndex')->first())
 			{
-				return array($requestMethod .'Index', array(), array(), $routeMethods[0]['getIndex']['r']);
+				return array($route, $remainingSegments);
 			}
-			return array(null, null, null, null);
+			return array(null, null);
 		}
-		elseif (isset($routeMethods[0]['getIndex']))
+		elseif ($keys = $routes->where('name', 'getIndex')->keys())
 		{
-			unset($routeMethods[0]['getIndex']);
+			foreach ($keys as $key) $routes->forget($key);
 		}
 
 		//If root methods are enabled, fetch them but give priority to other methods
-		$rootMethodName = null;
-		$rootMethodOptions = null;
+		$rootRoute = null;
 		foreach (array('get', 'post', 'put', 'delete') as $name)
 		{
-			if (isset($routeMethods[0][$name]))
+			if ($keys = $routes->where('name', $name)->keys())
 			{
 				if ($requestMethod == $name)
 				{
-					$rootMethodName = $name;
-					$rootMethodOptions = $routeMethods[0][$name];
+					$rootRoute = $routes->get($keys[0]);
 				}
-				unset($routeMethods[0][$name]);
+				foreach ($keys as $key) $routes->forget($key);
 			}
 		}
 
-		$methodName = null;
-		$parameterSpecs = array();
-		$requiredRights = null;
+		$currentRoute = null;
 		//Looping through all the different options for this controller
-		for ($uriPosition = 0; $uriPosition < count($remainingSegments); ++$uriPosition)
+		for ($namePosition = 0; $namePosition < count($remainingSegments); ++$namePosition)
 		{
-			if (!isset($routeMethods[$uriPosition]))
+			$routesForPosition = $routes->where('namePosition', $namePosition);
+			if (!$routesForPosition->count())
 			{
 				continue;
 			}
-			$controllerMethodsSpecs = $routeMethods[$uriPosition];
 
-			//2 => array( 'home' => array('get') )
-			foreach ($controllerMethodsSpecs as $controllerMethodName => $routeMethodNameOptions)
+			$routesForPosition->each(function (Route $route) use ($requestMethod, &$remainingSegments, $namePosition, &$currentRoute)
 			{
-				if (strtolower($controllerMethodName) == strtolower($requestMethod . $remainingSegments[$uriPosition]))
+				if (strtolower($route->name) == strtolower($requestMethod . $remainingSegments[$namePosition]))
 				{
-					$methodName = $controllerMethodName;
-					//Fetch parameter-count from array
-					$parameterSpecs = $routeMethodNameOptions['p'];
-					//Fetch rights from array
-					$requiredRights = $routeMethodNameOptions['r'];
+					$currentRoute = $route;
 					//Remove the methodName from the segments
-					array_splice($remainingSegments, $uriPosition, 1);
-					break;
+					array_splice($remainingSegments, $namePosition, 1);
+					return false;
 				}
-			}
+			});
 		}
 
 		//Check rootMethod option
-		if (!$methodName && $rootMethodName)
+		if (!$currentRoute && $rootRoute)
 		{
-			$methodName = $rootMethodName;
-			$parameterSpecs = $rootMethodOptions['p'];
-			$requiredRights = $rootMethodOptions['r'];
+			$currentRoute = $rootRoute;
 		}
 
 		//Check if parameter-count is right
-		if (count($parameterSpecs) != count($remainingSegments))
+		if (count($currentRoute->parameters) != count($remainingSegments))
 		{
-			return array(null, null, null, null);
+			return array(null, null);
 		}
 
 		//Return the right method
-		return array($methodName, $parameterSpecs, $remainingSegments, $requiredRights);
+		return array($currentRoute, $remainingSegments);
 	}
 
 	/**
@@ -421,76 +360,27 @@ class Bootstrap extends Controller
 	 * Call the method of the controller and return the response
 	 * @param string $defaultControllerName
 	 * @param string $controllerName
-	 * @param string $methodName
+	 * @param Route $route
 	 * @param array $parameters
-	 * @param array $requiredRights
 	 * @return \Illuminate\Http\Response
 	 */
-	private function callMethod($defaultControllerName, $controllerName, $methodName, $parameters, $requiredRights)
+	private function callMethod($defaultControllerName, $controllerName, $route, $parameters)
 	{
 		//Set the rights required
-		Visitor::$requiredRights = array_unique($requiredRights);
+		Visitor::$requiredRights = array_unique($route->rights);
 
 		//Initialize the controllers
 		$controller = app($controllerName);
 		$defaultController = app($defaultControllerName);
 
-		//Initialize of defaultController
+		//Initialize, call method, finalize
 		$defaultController->initialize();
-
-		//Initialize
 		$controller->initialize();
-
-		//PreRender
-		$controller->preRender();
-
-		$response = null;
-		//Call method with variables
-		switch (count($parameters))
-		{
-			case 0:
-				$response = $controller->$methodName();
-				break;
-			case 1:
-				$response = $controller->$methodName($parameters[0]);
-				break;
-			case 2:
-				$response = $controller->$methodName($parameters[0], $parameters[1]);
-				break;
-			case 3:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2]);
-				break;
-			case 4:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3]);
-				break;
-			case 5:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4]);
-				break;
-			case 6:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5]);
-				break;
-			case 7:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6]);
-				break;
-			case 8:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7]);
-				break;
-			case 9:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8]);
-				break;
-			case 10:
-				$response = $controller->$methodName($parameters[0], $parameters[1], $parameters[2], $parameters[3], $parameters[4], $parameters[5], $parameters[6], $parameters[7], $parameters[8], $parameters[9]);
-				break;
-			default:
-				$response = Response::current()->response404();
-				break;
-		}
+		$response = call_user_func_array(array($controller, $route->name), $parameters);
+		$controller->finalize();
 
 		//set the status of the response
 		Response::current()->assign('success', ($response !== false));
-
-		//PostRender
-		$controller->postRender();
 
 		//Return response
 		return Response::current()->getResponse();
