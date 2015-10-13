@@ -34,13 +34,13 @@ class Db extends BaseStructure
 
 	/**
 	 * Constructor
-	 * @param string $connection
+	 * @param string $driver
 	 */
-	public function __construct($connection = null)
+	public function __construct($driver = null)
 	{
 		parent::__construct();
 
-		$this->connection = $connection;
+		$this->connection = $driver;
 	}
 
 	/**

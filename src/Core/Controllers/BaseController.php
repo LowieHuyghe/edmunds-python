@@ -20,8 +20,6 @@ use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Route;
 use Core\Structures\Io\Validation;
 use Laravel\Lumen\Routing\Controller;
-use Laravel\Lumen\Routing\DispatchesJobs;
-use Laravel\Lumen\Routing\ValidatesRequests;
 
 /**
  * Controller base to extend from
@@ -33,9 +31,6 @@ use Laravel\Lumen\Routing\ValidatesRequests;
  */
 class BaseController extends Controller
 {
-
-	use DispatchesJobs, ValidatesRequests;
-
 	/**
 	 * Get the accepted methods for routing
 	 * @return Route[]
