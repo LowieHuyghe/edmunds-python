@@ -13,6 +13,7 @@
 
 namespace Core\Controllers;
 
+use Core\Controllers\Login\LoginRequiredController;
 use Core\Structures\Client\Input;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;

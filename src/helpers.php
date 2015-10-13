@@ -1,31 +1,33 @@
 <?php
 
-	/**
-	 * Function to check if the helpers are included in the project
-	 */
-	function lhCoreHelpersIncludedCheck() {}
-
-	/**
-	 * Translate a string
-	 * @param string $message
-	 * @param array $parameters
-	 * @return string
-	 */
-	function trans($message, $parameters = array(), $locale = null)
+	if (defined('trans'))
 	{
-		return \Core\Helpers\TranslationHelper::getInstance()->trans($message, $parameters, $locale);
+		/**
+		 * Translate a string
+		 * @param string $message
+		 * @param array $parameters
+		 * @return string
+		 */
+		function trans($message, $parameters = array(), $locale = null)
+		{
+			return \Core\Helpers\TranslationHelper::getInstance()->trans($message, $parameters, $locale);
+		}
 	}
 
-	/**
-	 * Translate a string with pluralization
-	 * @param string $message
-	 * @param int $count
-	 * @param array $parameters
-	 * @return string
-	 */
-	function trans_choice($message, $count, $parameters = array(), $locale = null)
+
+	if (defined('trans_choice'))
 	{
-		return \Core\Helpers\TranslationHelper::getInstance()->transChoice($message, $count, $parameters, $locale);
+		/**
+		 * Translate a string with pluralization
+		 * @param string $message
+		 * @param int $count
+		 * @param array $parameters
+		 * @return string
+		 */
+		function trans_choice($message, $count, $parameters = array(), $locale = null)
+		{
+			return \Core\Helpers\TranslationHelper::getInstance()->transChoice($message, $count, $parameters, $locale);
+		}
 	}
 
 	/**
@@ -144,27 +146,30 @@
 		return null;
 	}
 
-	/**
-	 * Get / set the specified configuration value.
-	 *
-	 * If an array is passed as the key, we will assume you want to set an array of values.
-	 *
-	 * @param  array|string  $key
-	 * @param  mixed  $default
-	 * @return mixed
-	 */
-	function config($key = null, $default = null)
+	if (defined('config'))
 	{
-		if (is_null($key)) {
-			return app('config');
-		}
+		/**
+		 * Get / set the specified configuration value.
+		 *
+		 * If an array is passed as the key, we will assume you want to set an array of values.
+		 *
+		 * @param  array|string  $key
+		 * @param  mixed  $default
+		 * @return mixed
+		 */
+		function config($key = null, $default = null)
+		{
+			if (is_null($key)) {
+				return app('config');
+			}
 
-		if (is_array($key)) {
-			return app('config')->set($key);
-		}
+			if (is_array($key)) {
+				return app('config')->set($key);
+			}
 
-		app()->configure(explode('.', $key)[0]);
-		return app('config')->get($key, $default);
+			app()->configure(explode('.', $key)[0]);
+			return app('config')->get($key, $default);
+		}
 	}
 
 	/**

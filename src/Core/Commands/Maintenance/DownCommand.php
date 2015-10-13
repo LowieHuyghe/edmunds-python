@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands;
+namespace Core\Commands\Maintenance;
 
 /**
  * The command for putting the app in maintenance mode.

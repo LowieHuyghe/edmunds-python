@@ -11,38 +11,23 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands;
+namespace Core\Controllers\Login;
 
 /**
- * The command for putting the app back live.
+ * Controller to extend from which requires the user to log in with basic authentication
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class UpCommand extends BaseCommand {
+class LoginBasicRequiredController extends LoginRequiredController
+{
 	/**
-	 * The console command name.
-	 *
-	 * @var string
+	 * Constructor
 	 */
-	protected $name = 'up';
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = "Bring the application out of maintenance mode";
-	/**
-	 * Execute the console command.
-	 *
-	 * @return void
-	 */
-	public function fire()
+	function __construct()
 	{
-		@unlink($this->laravel->storagePath().'/framework/down');
-		$this->info('Application is now live.');
+		parent::__construct(self::TYPE_BASIC);
 	}
-
 }

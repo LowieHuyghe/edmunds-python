@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace Core\Controllers\Login;
 
 /**
  * Controller to extend from which requires the user to log in
