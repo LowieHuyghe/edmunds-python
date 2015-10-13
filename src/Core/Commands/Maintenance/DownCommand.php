@@ -11,23 +11,38 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace Core\Commands\Maintenance;
 
 /**
- * Controller to extend from which requires the user to log in with basic authentication
+ * The command for putting the app in maintenance mode.
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class LoginBasicRequiredController extends LoginRequiredController
-{
+class DownCommand extends BaseCommand {
 	/**
-	 * Constructor
+	 * The console command name.
+	 *
+	 * @var string
 	 */
-	function __construct()
+	protected $name = 'down';
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = "Put the application into maintenance mode";
+	/**
+	 * Execute the console command.
+	 *
+	 * @return void
+	 */
+	public function fire()
 	{
-		parent::__construct(self::TYPE_BASIC);
+		touch($this->laravel->storagePath().'/framework/down');
+		$this->comment('Application is now in maintenance mode.');
 	}
+
 }
