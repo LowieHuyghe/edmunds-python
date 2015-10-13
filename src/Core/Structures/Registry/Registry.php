@@ -88,4 +88,19 @@ class Registry extends BaseStructure
 		return $this->registry['db'][$connection ?: 0];
 	}
 
+	/**
+	 * Get a instance of the queue
+	 * @param string $driver
+	 * @return Queue
+	 */
+	public function queue($driver = null)
+	{
+		if (!isset($this->registry['queue'][$driver ?: 0]))
+		{
+			$this->registry['queue'][$driver ?: 0] = new Queue($driver);
+		}
+
+		return $this->registry['queue'][$driver ?: 0];
+	}
+
 }
