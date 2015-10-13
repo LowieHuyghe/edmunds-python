@@ -17,8 +17,8 @@ use Core\Structures\Client\Input;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Client\Visitor;
+use Core\Structures\Http\Route;
 use Core\Structures\Io\Validation;
-use Core\Structures\Registry\Registry;
 use Laravel\Lumen\Routing\Controller;
 use Laravel\Lumen\Routing\DispatchesJobs;
 use Laravel\Lumen\Routing\ValidatesRequests;
@@ -37,33 +37,12 @@ class BaseController extends Controller
 	use DispatchesJobs, ValidatesRequests;
 
 	/**
-	 * List of the accepted methods for routing
-	 * @var array
-	 */
-//	public static $routeMethods = array(
-//		'index' => array(),
-//		'/' => array('p' => array('\d+')),
-//		1 => array(
-//			'user' => array('p' => array('\d+', '\d+', '\d+')),
-//		),
-//	);
-
-	/**
 	 * Get the accepted methods for routing
-	 * @return array
+	 * @return Route[]
 	 */
-	public static function getRouteMethods()
+	public static function getRoutes()
 	{
-		return static::$routeMethods;
-	}
-
-	/**
-	 * Set the accepted methods for routing
-	 * @param array $routeMethods
-	 */
-	public static function setRouteMethods($routeMethods)
-	{
-		static::$routeMethods = $routeMethods;
+		return array();
 	}
 
 	/**
@@ -159,17 +138,9 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * Function called after initialization
-	 */
-	public function preRender()
-	{
-		//
-	}
-
-	/**
 	 * Function called after method
 	 */
-	public function postRender()
+	public function finalize()
 	{
 		//
 	}

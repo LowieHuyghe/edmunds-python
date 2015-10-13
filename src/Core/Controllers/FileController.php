@@ -13,6 +13,7 @@
 
 namespace Core\Controllers;
 
+use Core\Structures\Http\Route;
 use Illuminate\Http\JsonResponse;
 use Core\Helpers\FileHelper;
 use Core\Models\FileEntry;
@@ -31,15 +32,18 @@ class FileController extends BaseController
 			SIZE_MAX_DOCUMENT = 3 * 1024 * 1024;
 
 	/**
-	 * List of the accepted methods for routing
-	 * @var array
+	 * Get the accepted methods for routing
+	 * @return Route[]
 	 */
-	public static $routeMethods = array(
-		'get' => array('p' => array('\d+')),
-		'postPicture' => array(),
-		'postDocument' => array(),
-		'postDelete' => array('p' => array('\d+')),
-	);
+	public static function getRoutes()
+	{
+		return array(
+			new Route('get', array('\d+')),
+			new Route('postPicture'),
+			new Route('postDocument'),
+			new Route('postDelete', array('\d+')),
+		);
+	}
 
 	/**
 	 * Upload a picture
