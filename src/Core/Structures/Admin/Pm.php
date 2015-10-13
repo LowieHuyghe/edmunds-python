@@ -14,6 +14,7 @@
 namespace Core\Structures\Admin;
 use Core\Helpers\PushBulletHelper;
 use Core\Structures\BaseStructure;
+use Core\Structures\Registry\Registry;
 
 /**
  * The helper for pm'ing someone directly and fast
@@ -103,12 +104,12 @@ class Pm extends BaseStructure
 	{
 		$key = 'PmHelper_' . substr(md5($title . $message), 0, 7);
 
-		if (app('cache')->has($key))
+		if (Registry::cache()->has($key))
 		{
 			return false;
 		}
 
-		app('cache')->put($key, true, 10);
+		Registry::cache()->save($key, true, 5);
 
 		return true;
 	}
