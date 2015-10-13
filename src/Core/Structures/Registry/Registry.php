@@ -26,51 +26,24 @@ use Core\Structures\BaseStructure;
 class Registry extends BaseStructure
 {
 	/**
-	 * Instance of the registry
-	 * @var Registry
-	 */
-	private static $instance;
-
-	/**
-	 * Fetch instance of the response-helper
-	 * @return Registry
-	 */
-	public static function current()
-	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Registry();
-		}
-		return self::$instance;
-	}
-
-	/**
 	 * Registry
 	 * @var array
 	 */
-	private $registry = array();
-
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-	}
+	private static $registry = array();
 
 	/**
 	 * Get a instance of the cache
 	 * @param string $store
 	 * @return Cache
 	 */
-	public function cache($store = null)
+	public static function cache($store = null)
 	{
-		if (!isset($this->registry['cache'][$store ?: 0]))
+		if (!isset(self::$registry['cache'][$store ?: 0]))
 		{
-			$this->registry['cache'][$store ?: 0] = new Cache($store);
+			self::$registry['cache'][$store ?: 0] = new Cache($store);
 		}
 
-		return $this->registry['cache'][$store ?: 0];
+		return self::$registry['cache'][$store ?: 0];
 	}
 
 	/**
@@ -78,14 +51,14 @@ class Registry extends BaseStructure
 	 * @param string $connection
 	 * @return Db
 	 */
-	public function db($connection = null)
+	public static function db($connection = null)
 	{
-		if (!isset($this->registry['db'][$connection ?: 0]))
+		if (!isset(self::$registry['db'][$connection ?: 0]))
 		{
-			$this->registry['db'][$connection ?: 0] = new Db($connection);
+			self::$registry['db'][$connection ?: 0] = new Db($connection);
 		}
 
-		return $this->registry['db'][$connection ?: 0];
+		return self::$registry['db'][$connection ?: 0];
 	}
 
 	/**
@@ -93,14 +66,14 @@ class Registry extends BaseStructure
 	 * @param string $driver
 	 * @return Queue
 	 */
-	public function queue($driver = null)
+	public static function queue($driver = null)
 	{
-		if (!isset($this->registry['queue'][$driver ?: 0]))
+		if (!isset(self::$registry['queue'][$driver ?: 0]))
 		{
-			$this->registry['queue'][$driver ?: 0] = new Queue($driver);
+			self::$registry['queue'][$driver ?: 0] = new Queue($driver);
 		}
 
-		return $this->registry['queue'][$driver ?: 0];
+		return self::$registry['queue'][$driver ?: 0];
 	}
 
 }
