@@ -13,7 +13,7 @@
 
 namespace Core\Tests;
 
-use Illuminate\Foundation\Testing\TestCase;
+use Laravel\Lumen\Testing\TestCase;
 
 /**
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
@@ -31,6 +31,7 @@ class BaseTest extends TestCase
 	 */
 	public function createApplication()
 	{
-		return require __DIR__.'/../../../bootstrap/app.php';
+		define('BASE_PATH', __DIR__ . '/../../..');
+		return require __DIR__.'/../../bootstrap/core.php';
 	}
 }
