@@ -24,31 +24,11 @@ namespace Core\Helpers;
 class EncryptionHelper extends BaseHelper
 {
 	/**
-	 * Instance of the pushbullet-helper
-	 * @var EncryptionHelper
-	 */
-	private static $instance;
-
-	/**
-	 * Fetch instance of the encryption-helper
-	 * @return EncryptionHelper
-	 */
-	public static function getInstance()
-	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new EncryptionHelper();
-		}
-
-		return self::$instance;
-	}
-
-	/**
 	 * Encrypt value
 	 * @param string $value
 	 * @return string
 	 */
-	public function encrypt($value)
+	public static function encrypt($value)
 	{
 		return app('crypt')->encrypt($value);
 	}
@@ -58,7 +38,7 @@ class EncryptionHelper extends BaseHelper
 	 * @param string $value
 	 * @return string
 	 */
-	public function decrypt($value)
+	public static function decrypt($value)
 	{
 		return app('crypt')->decrypt($value);
 	}
