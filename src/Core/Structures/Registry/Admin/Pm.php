@@ -43,7 +43,7 @@ class Pm extends BaseStructure
 	{
 		parent::__construct();
 
-		$this->driver = $driver;
+		$this->driver = $driver ?: config('app.admin.pm.driver');
 	}
 
 	/**
