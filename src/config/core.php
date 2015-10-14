@@ -37,7 +37,7 @@ return array(
 	'pm' => [
 		'pushbullet' => [
 			'account' => 'huyghe.lowie@gmail.com',
-			'token' => 'jue2B1zhgiU6cIwxAc55vY0rKfjL5iC5',
+			'token' => 'zqUrdQVluN9jqFTwzB3wRu6bTMGoXf0h',
 		],
 	],
 

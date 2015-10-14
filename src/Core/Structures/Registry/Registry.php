@@ -14,6 +14,7 @@
 namespace Core\Structures\Registry;
 
 use Core\Structures\BaseStructure;
+use Core\Structures\Registry\Admin\Pm;
 
 /**
  * A base for the structures to extend from
@@ -74,6 +75,21 @@ class Registry extends BaseStructure
 		}
 
 		return self::$registry['queue'][$driver ?: 0];
+	}
+
+	/**
+	 * Get a instance of the Pm
+	 * @param string $driver
+	 * @return Pm
+	 */
+	public static function adminPm($driver = null)
+	{
+		if (!isset(self::$registry['adminPm'][$driver ?: 0]))
+		{
+			self::$registry['adminPm'][$driver ?: 0] = new Pm($driver);
+		}
+
+		return self::$registry['adminPm'][$driver ?: 0];
 	}
 
 }
