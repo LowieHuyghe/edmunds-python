@@ -1,6 +1,9 @@
 <?php
 
-define('REAL_BASE_PATH', realpath(BASE_PATH));
+if (!defined('REAL_BASE_PATH'))
+{
+	define('REAL_BASE_PATH', realpath(BASE_PATH));
+}
 
 require_once __DIR__ . '/../helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';

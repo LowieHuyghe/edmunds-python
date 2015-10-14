@@ -13,7 +13,8 @@
 
 namespace CoreTest\Helpers;
 
-use Core\Structures\Admin\Pm;
+use Core\Structures\Registry\Admin\Pm;
+use Core\Structures\Registry\Registry;
 use Core\Tests\BaseTest;
 
 /**
@@ -30,12 +31,21 @@ class PmHelperTest extends BaseTest
 	/**
 	 * Test Send note
 	 */
-	public function testSend()
+	public function testSendNote()
 	{
-		$pm = new Pm();
-		$pm->title = 'Test-title';
+		$success = Registry::adminPm()->sendNote('Note-Title', "Note-Body\nhttp://www.pinterest.com");
 
-		$this->assertTrue($pm->send());
+		$this->assertTrue($success);
+	}
+
+	/**
+	 * Test Send file
+	 */
+	public function testSendFile()
+	{
+		$success = Registry::adminPm()->sendFile('File-Title', "https://www.google.be/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", 'File-Body');
+
+		$this->assertTrue($success);
 	}
 
 }

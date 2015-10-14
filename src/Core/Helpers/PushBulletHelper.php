@@ -89,26 +89,6 @@ class PushBulletHelper extends BaseHelper
 	}
 
 	/**
-	 * Send address
-	 * @param string $title
-	 * @param string $address
-	 */
-	public function sendAddress($title, $address)
-	{
-		$this->pushBullet->user($this->getAccount())->address($title, $address);
-	}
-
-	/**
-	 * Send list
-	 * @param string $title
-	 * @param array $list
-	 */
-	public function sendList($title, $list)
-	{
-		$this->pushBullet->user($this->getAccount())->list($title, $list);
-	}
-
-	/**
 	 * Send file
 	 * @param string $title
 	 * @param string $fileUrl

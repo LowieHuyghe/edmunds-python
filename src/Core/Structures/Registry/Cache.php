@@ -33,13 +33,13 @@ class Cache extends BaseStructure
 
 	/**
 	 * Constructor
-	 * @param string $store
+	 * @param string $driver
 	 */
-	public function __construct($store = null)
+	public function __construct($driver = null)
 	{
 		parent::__construct();
 
-		$this->store = $store;
+		$this->store = $driver;
 	}
 
 	/**
