@@ -61,12 +61,12 @@ class Localization extends BaseStructure
 		//Use app-settings
 		if (!$locale)
 		{
-			$locale = config('app.locale');
+			$locale = env('APP_LOCALE');
 		}
 
 		//Set
 		$this->locale = $locale;
-		$this->fallback = config('app.fallback_locale');
+		$this->fallback = env('APP_FALLBACK_LOCALE');
 	}
 
 }

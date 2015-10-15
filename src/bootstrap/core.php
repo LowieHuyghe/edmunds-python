@@ -4,11 +4,33 @@ if (!defined('REAL_BASE_PATH'))
 {
 	define('REAL_BASE_PATH', realpath(BASE_PATH));
 }
-
 require_once __DIR__ . '/../helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
 
+/*
+|--------------------------------------------------------------------------
+| Configuration
+|--------------------------------------------------------------------------
+|
+| Load the .env files
+|
+*/
+
+Dotenv::load(__DIR__ . '/..');
 Dotenv::load(REAL_BASE_PATH);
+
+$missingConfig = array();
+foreach (explode(',', env('CORE_CONFIG_REQUIRED')) as $line)
+{
+	if (!env($line))
+	{
+		$missingConfig[] = $line;
+	}
+}
+if (!empty($missingConfig))
+{
+	throw new \Exception("The following env-values are required:\n" . implode("\n", $missingConfig));
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +45,11 @@ Dotenv::load(REAL_BASE_PATH);
 
 $app = new Laravel\Lumen\Application(REAL_BASE_PATH);
 
-$app->withEloquent();
 $app->configure('app');
+$app->make('config')->set('app.key', env('APP_KEY'));
+$app->make('config')->set('app.cipher', env('APP_CIPHER'));
+
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -77,8 +102,7 @@ $app->middleware([
 |
 */
 
-$providers = config('app.providers');
-if ($providers)
+if ($providers = config('app.providers'))
 {
 	foreach ($providers as $provider)
 	{

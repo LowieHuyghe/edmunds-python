@@ -331,7 +331,7 @@ class Response extends BaseStructure
 			}
 
 			//For debugging purposes show the redirect-page
-			if ($this->request->isLocalEnvironment() && config('app.routing.redirecthalt'))
+			if ($this->request->isLocalEnvironment() && env('ROUTING_REDIRECTHALT'))
 			{
 				//Fetch the debugtrace
 				ob_start();
