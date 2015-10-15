@@ -4,7 +4,6 @@ if (!defined('REAL_BASE_PATH'))
 {
 	define('REAL_BASE_PATH', realpath(BASE_PATH));
 }
-require_once __DIR__ . '/../helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
 
 /*
@@ -43,11 +42,14 @@ if (!empty($missingConfig))
 |
 */
 
-$app = new Laravel\Lumen\Application(REAL_BASE_PATH);
+$app = new \Core\Structures\Application(REAL_BASE_PATH);
 
 $app->configure('app');
 $app->make('config')->set('app.key', env('APP_KEY'));
 $app->make('config')->set('app.cipher', env('APP_CIPHER'));
+
+$app->make('translator');
+$app->offsetSet('translator', \Core\Structures\Io\Translator::getInstance());
 
 $app->withEloquent();
 
