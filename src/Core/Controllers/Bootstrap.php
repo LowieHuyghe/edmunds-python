@@ -77,7 +77,7 @@ class Bootstrap extends Controller
 				{
 					//TODO @Lowie Logging!
 					$message = $originalContent->getData()['message'];
-					if (Request::current()->isLocalEnvironment() && env('APP_DEBUG'))
+					if (app()->isLocal() && env('APP_DEBUG'))
 					{
 						abort($response->getStatusCode(), $message, $response->headers->all());
 					}

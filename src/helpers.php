@@ -1,35 +1,5 @@
 <?php
 
-	if (defined('trans'))
-	{
-		/**
-		 * Translate a string
-		 * @param string $message
-		 * @param array $parameters
-		 * @return string
-		 */
-		function trans($message, $parameters = array(), $locale = null)
-		{
-			return \Core\Helpers\TranslationHelper::getInstance()->trans($message, $parameters, $locale);
-		}
-	}
-
-
-	if (defined('trans_choice'))
-	{
-		/**
-		 * Translate a string with pluralization
-		 * @param string $message
-		 * @param int $count
-		 * @param array $parameters
-		 * @return string
-		 */
-		function trans_choice($message, $count, $parameters = array(), $locale = null)
-		{
-			return \Core\Helpers\TranslationHelper::getInstance()->transChoice($message, $count, $parameters, $locale);
-		}
-	}
-
 	/**
 	 * Generate an uuid
 	 * @param int $version
@@ -42,7 +12,7 @@
 		if ($version == 3)
 		{
 			if(preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) !== 1) return null;
+                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
 
 			// Get hexadecimal components of namespace
 			$nhex = str_replace(array('-','{','}'), '', $namespace);
@@ -105,7 +75,7 @@
 		elseif ($version == 5)
 		{
 			if(preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) !== 1) return null;
+                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
 
 			// Get hexadecimal components of namespace
 			$nhex = str_replace(array('-','{','}'), '', $namespace);
@@ -144,32 +114,6 @@
 		}
 
 		return null;
-	}
-
-	if (defined('config'))
-	{
-		/**
-		 * Get / set the specified configuration value.
-		 *
-		 * If an array is passed as the key, we will assume you want to set an array of values.
-		 *
-		 * @param  array|string  $key
-		 * @param  mixed  $default
-		 * @return mixed
-		 */
-		function config($key = null, $default = null)
-		{
-			if (is_null($key)) {
-				return app('config');
-			}
-
-			if (is_array($key)) {
-				return app('config')->set($key);
-			}
-
-			app()->configure(explode('.', $key)[0]);
-			return app('config')->get($key, $default);
-		}
 	}
 
 	/**
