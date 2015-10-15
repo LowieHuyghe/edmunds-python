@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Database\Relations\HasOneEnum;
 use Core\Database\Relations\HasOneEnums;
-use Core\Helpers\ModelFactoryHelper;
 use Core\Structures\Io\Validation;
 use Illuminate\Validation\Validator;
 
@@ -141,7 +140,12 @@ class BaseModel extends Model
 	 */
 	public static function dummy($attributes = array())
 	{
-		return ModelFactoryHelper::createModel(get_called_class(), array(get_called_class(), 'factory'), $attributes);
+		$className = get_called_class();
+
+		$factory = app('Illuminate\Database\Eloquent\Factory');
+		$factory->define($className, array($className, 'factory'));
+
+		return factory($className)->make($attributes);
 	}
 
 	/**

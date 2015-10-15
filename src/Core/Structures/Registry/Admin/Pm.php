@@ -12,7 +12,8 @@
  */
 
 namespace Core\Structures\Registry\Admin;
-use Core\Helpers\PushBulletHelper;
+
+use Core\Structures\Admin\Pm\PushBullet;
 use Core\Structures\BaseStructure;
 use Core\Structures\Registry\Registry;
 
@@ -106,11 +107,11 @@ class Pm extends BaseStructure
 		switch($type)
 		{
 			case self::TYPE_FILE:
-				PushBulletHelper::getInstance()->sendFile($title, $extra, $body);
+				PushBullet::getInstance()->sendFile($title, $extra, $body);
 				break;
 			case self::TYPE_NOTE:
 			default:
-				PushBulletHelper::getInstance()->sendNote($title, $body);
+				PushBullet::getInstance()->sendNote($title, $body);
 				break;
 		}
 		return true;

@@ -11,7 +11,8 @@
  * @since		Version 0.1
  */
 
-namespace Core\Helpers;
+namespace Core\Structures\Admin\Pm;
+use Core\Structures\BaseStructure;
 use PHPushbullet\PHPushbullet;
 
 /**
@@ -22,23 +23,23 @@ use PHPushbullet\PHPushbullet;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PushBulletHelper extends BaseHelper
+class PushBullet extends BaseStructure
 {
 	/**
 	 * Instance of the pushbullet-helper
-	 * @var PushBulletHelper
+	 * @var PushBullet
 	 */
 	private static $instance;
 
 	/**
 	 * Fetch instance of the pushbullet-helper
-	 * @return PushBulletHelper
+	 * @return PushBullet
 	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new PushBulletHelper();
+			self::$instance = new PushBullet();
 		}
 
 		return self::$instance;
@@ -53,7 +54,7 @@ class PushBulletHelper extends BaseHelper
 	/**
 	 * Constructor
 	 */
-	private function __construct()
+	public function __construct()
 	{
 		$this->pushBullet = new PHPushbullet(env('CORE_ADMIN_PM_PUSHBULLET_TOKEN'));
 	}
