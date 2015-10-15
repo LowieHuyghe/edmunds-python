@@ -302,7 +302,7 @@ class Request extends BaseStructure
 	 */
 	public function isLocalEnvironment()
 	{
-		return app()->environment() == 'local' && env('APP_DEBUG');
+		return app()->environment() == 'local';
 	}
 
 	/**

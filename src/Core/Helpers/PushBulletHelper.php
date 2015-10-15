@@ -55,7 +55,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	private function __construct()
 	{
-		$this->pushBullet = new PHPushbullet(ConfigHelper::get('core.pm.pushbullet.token'));
+		$this->pushBullet = new PHPushbullet(env('CORE_ADMIN_PM_PUSHBULLET_TOKEN'));
 	}
 
 	/**
@@ -64,7 +64,7 @@ class PushBulletHelper extends BaseHelper
 	 */
 	private function getAccount()
 	{
-		return ConfigHelper::get('core.pm.pushbullet.account');
+		return env('CORE_ADMIN_PM_PUSHBULLET_ACCOUNT');
 	}
 
 	/**

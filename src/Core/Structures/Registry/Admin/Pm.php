@@ -43,7 +43,7 @@ class Pm extends BaseStructure
 	{
 		parent::__construct();
 
-		$this->driver = $driver ?: config('app.admin.pm.driver');
+		$this->driver = strtolower($driver ?: env('CORE_ADMIN_PM_DRIVER'));
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Pm extends BaseStructure
 	 */
 	public function sendNote($title, $body = null)
 	{
-		$title = config('app.specs.sitename') . ': ' . $title;
+		$title = env('APP_NAME') . ': ' . $title;
 
 		if (self::hasBeenLongEnough(self::TYPE_NOTE, $title, $body))
 		{
@@ -78,7 +78,7 @@ class Pm extends BaseStructure
 	 */
 	public function sendFile($title, $file, $body = null)
 	{
-		$title = config('app.specs.sitename') . ': ' . $title;
+		$title = env('APP_NAME') . ': ' . $title;
 
 		if (self::hasBeenLongEnough(self::TYPE_FILE, $title, $body, $file))
 		{

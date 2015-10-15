@@ -300,11 +300,9 @@ class BaseReport extends BaseStructure
 	{
 		parent::__construct();
 
-		$info = config('analytics.data')[config('analytics.default')];
-
 		//Set the version and tracking info
-		$this->version = $info['version'];
-		$this->trackingId = $info['trackingid'];
+		$this->version = env('ANALYTICS_GOOGLE_VERSION');
+		$this->trackingId = env('ANALYTICS_GOOGLE_TRACKINGID');
 
 		$request = Request::current();
 		$response = Response::current();

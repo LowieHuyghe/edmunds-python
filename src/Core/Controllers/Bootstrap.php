@@ -14,8 +14,6 @@
 namespace Core\Controllers;
 
 use Core\Exceptions\AbortException;
-use Core\Exceptions\ConfigNotFoundException;
-use Core\Helpers\ConfigHelper;
 use Core\Structures\Client\Input;
 use Core\Structures\Client\Visitor;
 use Core\Structures\Http\Request;
@@ -64,8 +62,6 @@ class Bootstrap extends Controller
 
 		$this->route = $route;
 
-		$this->checkConfig();
-
 		$response = null;
 		try
 		{
@@ -81,7 +77,7 @@ class Bootstrap extends Controller
 				{
 					//TODO @Lowie Logging!
 					$message = $originalContent->getData()['message'];
-					if (Request::current()->isLocalEnvironment())
+					if (Request::current()->isLocalEnvironment() && env('APP_DEBUG'))
 					{
 						abort($response->getStatusCode(), $message, $response->headers->all());
 					}
@@ -156,13 +152,13 @@ class Bootstrap extends Controller
 	private function getAllConstants()
 	{
 		//Fetch namespace
-		$namespace = config('app.routing.namespace');
+		$namespace = env('ROUTING_NAMESPACE');
 		$namespace = trim($namespace, '\\');
 		//Fetch defaultController
-		$defaultController = config('app.routing.default');
+		$defaultController = env('ROUTING_DEFAULTCONTROLLER');
 		$defaultController = $namespace . '\\' . $defaultController;
 		//Fetch homeController
-		$homeController = config('app.routing.home');
+		$homeController = env('ROUTING_HOMECONTROLLER');
 		$homeController = $namespace . '\\' . $homeController;
 
 		//Get the call-method
@@ -384,31 +380,5 @@ class Bootstrap extends Controller
 
 		//Return response
 		return Response::current()->getResponse();
-	}
-
-	/**
-	 * Check if all configuration is in place
-	 * @throws \Exception
-	 */
-	private function checkConfig()
-	{
-		//Fetch the configuration
-		$config = ConfigHelper::get('core.config.required');
-
-		//Check if everything is in place
-		$notFound = array();
-		foreach ($config as $line)
-		{
-			if (!config($line))
-			{
-				$notFound[] = $line;
-			}
-		}
-
-		//Throw error if needed
-		if (!empty($notFound))
-		{
-			throw new ConfigNotFoundException($notFound);
-		}
 	}
 }

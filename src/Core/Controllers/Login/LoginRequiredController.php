@@ -62,7 +62,7 @@ class LoginRequiredController extends BaseController
 			}
 			else
 			{
-				$loginRoute = config('app.routing.loginroute');
+				$loginRoute = env('ROUTING_LOGINROUTE');
 				$this->response->responseRedirect($loginRoute, null, true);
 			}
 		}
