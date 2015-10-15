@@ -12,6 +12,7 @@
  */
 
 namespace Core\Commands\Maintenance;
+use Core\Commands\BaseCommand;
 
 /**
  * The command for putting the app in maintenance mode.
