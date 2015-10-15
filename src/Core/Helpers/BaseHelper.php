@@ -12,7 +12,6 @@
  */
 
 namespace Core\Helpers;
-use Illuminate\Http\Request;
 
 /**
  * Helper base to extend from

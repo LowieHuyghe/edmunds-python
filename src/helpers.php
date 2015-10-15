@@ -181,3 +181,12 @@
 			(new \Illuminate\Support\Debug\Dumper())->dump($x);
 		}, func_get_args());
 	}
+
+	/**
+	 * Get a faker
+	 * @return \Faker\Generator
+	 */
+	function faker()
+	{
+		return (new \Faker\Generator());
+	}
