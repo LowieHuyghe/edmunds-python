@@ -296,31 +296,4 @@ class Request extends BaseStructure
 		return $this->request->hasFile($key);
 	}
 
-	/**
-	 * Check if local environment
-	 * @return bool
-	 */
-	public function isLocalEnvironment()
-	{
-		return app()->environment() == 'local';
-	}
-
-	/**
-	 * Check if production environment
-	 * @return bool
-	 */
-	public function isProductionEnvironment()
-	{
-		return app()->environment() == 'production';
-	}
-
-	/**
-	 * Check if testing environment
-	 * @return bool
-	 */
-	public function isTestingEnvironment()
-	{
-		return app()->environment() == 'testing';
-	}
-
 }

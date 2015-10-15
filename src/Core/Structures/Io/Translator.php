@@ -11,7 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace Core\Helpers;
+namespace Core\Structures\Io;
+
+use Core\Structures\BaseStructure;
 use Illuminate\Database\Eloquent\Collection;
 use Core\Models\Translation;
 use Core\Structures\Client\Visitor;
@@ -26,47 +28,33 @@ use Symfony\Component\Translation\MessageSelector;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class TranslationHelper extends BaseHelper
+class Translator extends BaseStructure
 {
 	/**
 	 * Instance of the localization-helper
-	 * @var TranslationHelper
+	 * @var Translator
 	 */
 	private static $instance;
 
 	/**
 	 * Fetch instance of the localization-helper
-	 * @return TranslationHelper
+	 * @return Translator
 	 */
 	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new TranslationHelper();
+			self::$instance = new Translator();
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * The visitor
-	 * @var Visitor
-	 */
-	protected $visitor;
-
-	/**
 	 * The selector of the messages
 	 * @var MessageSelector
 	 */
 	protected $selector;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->visitor = Visitor::current();
-	}
 
 	/**
 	 * Get the translation for a given key.
@@ -93,7 +81,7 @@ class TranslationHelper extends BaseHelper
 	{
 		$line = $this->get($id, $parameters, $locale);
 		$parameters['count'] = $number;
-		$locale = $locale ?: $this->visitor->localization->locale ?: $this->visitor->localization->fallback;
+		$locale = $locale ?: Visitor::current()->localization->locale ?: Visitor::current()->localization->fallback;
 		return $this->makeReplacements($this->getSelector()->choose($line, $number, $locale), $parameters);
 	}
 
@@ -119,7 +107,7 @@ class TranslationHelper extends BaseHelper
 			$translation->original = $key;
 
 			//Save if not in local-mode
-			if (Request::current()->isProductionEnvironment())
+			if (app()->isLocal())
 			{
 				$translation->save();
 			}
@@ -131,12 +119,12 @@ class TranslationHelper extends BaseHelper
 		{
 			$line = $translation->$locale;
 		}
-		$locale = $this->visitor->localization->locale;
+		$locale = Visitor::current()->localization->locale;
 		if (!$line && $locale && $translation->$locale)
 		{
 			$line = $translation->$locale;
 		}
-		$locale = $this->visitor->localization->fallback;
+		$locale = Visitor::current()->localization->fallback;
 		if (!$line && $locale && $translation->$locale)
 		{
 			$line = $translation->$locale;
