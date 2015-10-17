@@ -10,7 +10,6 @@
 /public
 /resources
 /storage
-/tests
 .env.example
 .gitattributes
 artisan
