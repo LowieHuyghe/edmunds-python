@@ -17,7 +17,6 @@ artisan
 gulpfile.js
 package.json
 phpspec.yml
-phpunit.xml
 readme.md
 server.php
 composer.lock
