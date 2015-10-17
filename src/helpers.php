@@ -1,6 +1,22 @@
 <?php
 
 	/**
+	 * Get the available container instance.
+	 *
+	 * @param  string  $make
+	 * @param  array   $parameters
+	 * @return mixed|\Core\Structures\Application
+	 */
+	function app($make = null, $parameters = [])
+	{
+		if (is_null($make)) {
+			return \Illuminate\Container\Container::getInstance();
+		}
+
+		return \Illuminate\Container\Container::getInstance()->make($make, $parameters);
+	}
+
+	/**
 	 * Translate a string
 	 * @param string $message
 	 * @param array $parameters
