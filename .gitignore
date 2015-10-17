@@ -1,6 +1,6 @@
 /vendor
 /node_modules
-.env
+/.env
 .idea
 
 /app
@@ -10,7 +10,7 @@
 /public
 /resources
 /storage
-.env.example
+/.env.example
 .gitattributes
 artisan
 gulpfile.js
