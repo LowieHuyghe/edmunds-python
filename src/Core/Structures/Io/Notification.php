@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
+namespace Core\Structures\Io;
 use Illuminate\Support\Collection;
 use Core\Structures\Io\Validation;
 

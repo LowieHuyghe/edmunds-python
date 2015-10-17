@@ -1,6 +1,30 @@
 <?php
 
 	/**
+	 * Translate a string
+	 * @param string $message
+	 * @param array $parameters
+	 * @param string $locale
+	 * @return string
+	 */
+	function trans($message, $parameters = array(), $locale = null)
+	{
+		return \Core\Structures\Io\Translator::getInstance()->trans($message, $parameters, $locale);
+	}
+	/**
+	 * Translate a string with pluralization
+	 * @param string $message
+	 * @param int $count
+	 * @param array $parameters
+	 * @param string $locale
+	 * @return string
+	 */
+	function trans_choice($message, $count, $parameters = array(), $locale = null)
+	{
+		return \Core\Structures\Io\Translator::getInstance()->transChoice($message, $count, $parameters, $locale);
+	}
+
+	/**
 	 * Generate an uuid
 	 * @param int $version
 	 * @param string $namespace
@@ -119,11 +143,22 @@
 	/**
 	 * Dump the passed variables and continue
 	 */
-	function dc()
+	function dd()
 	{
 		array_map(function ($x) {
 			(new \Illuminate\Support\Debug\Dumper())->dump($x);
 		}, func_get_args());
+	}
+
+	/**
+	 * Dump the passed variables and exit
+	 */
+	function de()
+	{
+		array_map(function ($x) {
+			(new \Illuminate\Support\Debug\Dumper())->dump($x);
+		}, func_get_args());
+		exit(1);
 	}
 
 	/**

@@ -4,6 +4,7 @@ if (!defined('REAL_BASE_PATH'))
 {
 	define('REAL_BASE_PATH', realpath(BASE_PATH));
 }
+require_once __DIR__ . '/../helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
 
 /*
@@ -47,9 +48,6 @@ $app = new \Core\Structures\Application(REAL_BASE_PATH);
 $app->configure('app');
 $app->make('config')->set('app.key', env('APP_KEY'));
 $app->make('config')->set('app.cipher', env('APP_CIPHER'));
-
-$app->make('translator');
-$app->offsetSet('translator', \Core\Structures\Io\Translator::getInstance());
 
 $app->withEloquent();
 
@@ -123,9 +121,9 @@ if ($providers = config('app.providers'))
 |
 */
 
-$app->get('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
-$app->post('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
-$app->put('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
-$app->delete('{route:.*}', array('uses' => '\Core\Controllers\Bootstrap@route'));
+$app->get('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
+$app->post('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
+$app->put('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
+$app->delete('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
 
 return $app;

@@ -28,7 +28,7 @@ use Laravel\Lumen\Routing\Controller;
  * To use it, just add the following to routes.php:
  *
 	Route::any('{all}', [
-		'uses' => '\Core\Controllers\Bootstrap@route'
+		'uses' => '\Core\Controllers\Router@route'
 	])->where('all', '.*');
  *
  *
@@ -37,7 +37,7 @@ use Laravel\Lumen\Routing\Controller;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Bootstrap extends Controller
+class Router extends Controller
 {
 	/**
 	 * @var string
