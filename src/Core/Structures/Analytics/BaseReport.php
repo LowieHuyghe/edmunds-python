@@ -157,8 +157,6 @@ use Core\Structures\BaseStructure;
  */
 class BaseReport extends BaseStructure
 {
-	const	KEY_CLIENTID	= 'analytics_clientid';
-
 	/**
 	 * The mapping of the parameters for the call
 	 * @var array
@@ -313,27 +311,7 @@ class BaseReport extends BaseStructure
 		$this->ip = $request->ip;
 		if ($visitor->isLoggedIn()) $this->userId = $visitor->user->id;
 		$this->userLanguage = $visitor->localization->locale;
-
-		//Fetch the clientId of the user
-		//First check session
-		$clientId = $request->session->get(self::KEY_CLIENTID);
-		if (!$clientId)
-		{
-			//Then check cookie
-			$clientId = $request->getCookie(self::KEY_CLIENTID);
-			if (!$clientId)
-			{
-				//Otherwise generate and save
-				$clientId = generate_uuid();
-				$request->session->set(self::KEY_CLIENTID, $clientId);
-				$response->assignCookie(self::KEY_CLIENTID, $clientId);
-			}
-			else
-			{
-				$request->session->set(self::KEY_CLIENTID, $clientId);
-			}
-		}
-		$this->clientId = $clientId;
+		$this->clientId = $visitor->id;
 
 		$this->validator = new Validation();
 		static::addValidationRules($this->validator);

@@ -16,6 +16,7 @@ namespace Core\Structures\Client;
 use Core\Models\User;
 use Core\Structures\BaseStructure;
 use Core\Structures\Http\Request;
+use Core\Structures\Http\Response;
 
 /**
  * The helper for the visitor
@@ -25,6 +26,7 @@ use Core\Structures\Http\Request;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
+ * @property string $id
  * @property User $user
  * @property Session $session
  * @property Environment $environment
@@ -84,6 +86,35 @@ class Visitor extends BaseStructure
 		}
 
 		$this->localization = new Localization($this->environment, $this->location, $this->user);
+	}
+
+	/**
+	 * Get the id of the visitor
+	 * @return string
+	 */
+	protected function getIdAttribute()
+	{
+		$idKey = 'visitor_id';
+
+		//First check session
+		$clientId = $this->session->get($idKey);
+		if (!$clientId)
+		{
+			//Then check cookie
+			$clientId = Request::current()->getCookie($idKey);
+			if (!$clientId)
+			{
+				//Otherwise generate and save
+				$clientId = generate_uuid();
+				$this->session->set($idKey, $clientId);
+				Response::current()->assignCookie($idKey, $clientId);
+			}
+			else
+			{
+				$this->session->set($idKey, $clientId);
+			}
+		}
+		return $clientId;
 	}
 
 	/**
