@@ -87,7 +87,13 @@ class Request extends BaseStructure
 	 */
 	protected function getIpAttribute()
 	{
-		return $this->request->ip();
+		$ip = $this->request->ip();
+
+		if ($ip == '127.0.0.1' && app()->isLocal())
+		{
+			$ip = '213.118.118.244';
+		}
+		return $ip;
 	}
 
 	/**

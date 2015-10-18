@@ -66,14 +66,7 @@ class Location extends BaseStructure
 	{
 		parent::__construct();
 
-		if (app()->isLocal())
-		{
-			$this->ip = '213.118.118.244';
-		}
-		else
-		{
-			$this->ip = $ip;
-		}
+		$this->ip = $ip;
 	}
 
 	/**
