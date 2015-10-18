@@ -14,6 +14,7 @@
 namespace Core\Structures\Client;
 
 use Core\Models\User;
+use Core\Structures\Auth;
 use Core\Structures\BaseStructure;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
@@ -28,6 +29,7 @@ use Core\Structures\Http\Response;
  *
  * @property string $id
  * @property User $user
+ * @property bool $loggedIn
  * @property Session $session
  * @property Environment $environment
  * @property Location $location
@@ -73,17 +75,7 @@ class Visitor extends BaseStructure
 		$this->session = $request->session;
 		$this->environment = new Environment($request->userAgent);
 		$this->location = new Location($request->ip);
-
-		if (app('auth')->check())
-		{
-			$authUser = app('auth')->user();
-			$this->user = User::findOrFail($authUser->id);
-			$this->response->assign('__login', $authUser);
-		}
-		else
-		{
-			$this->user = null;
-		}
+		$this->user = Auth::current()->user;
 
 		$this->localization = new Localization($this->environment, $this->location, $this->user);
 	}
@@ -121,53 +113,9 @@ class Visitor extends BaseStructure
 	 * Check if visitor is logged in
 	 * @return bool
 	 */
-	public function isLoggedIn()
+	protected function getLoggedInAttribute()
 	{
-		return app('auth')->check();
+		return Auth::isLoggedIn();
 	}
 
-	/**
-	 * Log a user in
-	 * @param User|string $userOrEmail
-	 * @param string $password
-	 * @param bool $once
-	 * @return bool
-	 */
-	public function login($userOrEmail, $password = null, $once = false)
-	{
-		if ($userOrEmail instanceof User && is_null($password)) //user
-		{
-			if ($once || app('auth')->login($userOrEmail))
-			{
-				$this->user = $userOrEmail;
-				return true;
-			}
-		}
-		else //email - password
-		{
-			if (app('auth')->once(array('email' => $userOrEmail, 'password' => $password))
-				|| app('auth')->attempt(array('email' => $userOrEmail, 'password' => $password)))
-			{
-				$user = User::where('email', '=', $userOrEmail);
-				$this->user = $user;
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Log the current user out
-	 * @return bool
-	 */
-	public function logout()
-	{
-		if (app('auth')->logout())
-		{
-			$this->user = null;
-			return true;
-		}
-		return false;
-	}
 }
