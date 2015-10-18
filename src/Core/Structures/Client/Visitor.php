@@ -31,7 +31,7 @@ use Core\Structures\Http\Response;
  * @property User $user
  * @property bool $loggedIn
  * @property Session $session
- * @property Environment $environment
+ * @property Context $context
  * @property Location $location
  * @property Localization $localization
  */
@@ -73,11 +73,11 @@ class Visitor extends BaseStructure
 		$request = Request::current();
 
 		$this->session = $request->session;
-		$this->environment = new Environment($request->userAgent);
+		$this->context = new Context($request->userAgent);
 		$this->location = new Location($request->ip);
 		$this->user = Auth::current()->user;
 
-		$this->localization = new Localization($this->environment, $this->location, $this->user);
+		$this->localization = new Localization($this->context, $this->location, $this->user);
 	}
 
 	/**

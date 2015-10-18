@@ -30,7 +30,7 @@ class Localization extends BaseStructure
 {
 	/**
 	 * Constructor
-	 * @param Environment $browser
+	 * @param Context $browser
 	 * @param Location $location
 	 * @param User $user
 	 */
