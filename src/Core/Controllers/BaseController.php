@@ -96,7 +96,7 @@ class BaseController extends Controller
 			return;
 		}
 
-		if ($this->visitor->isLoggedIn())
+		if ($this->visitor->loggedIn)
 		{
 			//There are rights, and user is logged in
 
@@ -115,7 +115,7 @@ class BaseController extends Controller
 				return;
 			}
 		}
-		elseif (is_a($this, LoginRequiredController::class))
+		elseif ($this instanceof LoginRequiredController)
 		{
 			//Roles and not logged in, but LoginRequired: user will be redirected to log in
 			return;
