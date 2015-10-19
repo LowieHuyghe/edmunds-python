@@ -12,8 +12,11 @@
  */
 
 namespace Core\Structures;
+use Carbon\Carbon;
+use Core\Models\Auth\LoginAttempt;
 use Core\Models\User;
 use Core\Structures\Client\Visitor;
+use Core\Structures\Http\Request;
 
 /**
  * The structure for authentication
@@ -25,6 +28,7 @@ use Core\Structures\Client\Visitor;
  *
  * @property bool $loggedIn
  * @property User $user
+ * @property int $loginAttempts
  */
 class Auth extends BaseStructure
 {
@@ -95,13 +99,25 @@ class Auth extends BaseStructure
 	}
 
 	/**
+	 * Get the number of attempts the user has made
+	 * @return int
+	 */
+	protected function getLoginAttemptsAttribute()
+	{
+		$ip = Request::current()->ip;
+		$dateTimeFrom = Carbon::now()->addHours(-7)->toDateTimeString();
+
+		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
+	}
+
+	/**
 	 * Log a user in
 	 * @param string $email
 	 * @param string $password
 	 * @param bool $once
 	 * @return bool
 	 */
-	public function loginWithCredentials($email, $password = null, $once = false)
+	public function loginWithCredentials($email, $password, $once = false)
 	{
 		$credentials = array('email' => $email, 'password' => $password);
 
@@ -116,15 +132,26 @@ class Auth extends BaseStructure
 
 		if ($loggedIn)
 		{
-			$user = User::where('email', '=', $email);
+			$user = User::where('email', '=', $email)->first();
 
 			$this->loggedInUser = $user;
 			Visitor::current()->user = $user;
-
-			return true;
 		}
 
-		return false;
+		//Log attempt
+		$loginAttempt = new LoginAttempt();
+		$loginAttempt->ip = Request::current()->ip;
+		$loginAttempt->type = 'credentials';
+		$loginAttempt->email = $email;
+		$loginAttempt->password = $password;
+		if ($loggedIn && $this->loggedInUser)
+		{
+			$loginAttempt->user()->associate($this->loggedInUser);
+		}
+		$loginAttempt->save();
+
+		//Return result
+		return $loggedIn;
 	}
 
 	/**

@@ -115,7 +115,7 @@ class Visitor extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
-		return Auth::isLoggedIn();
+		return Auth::current()->loggedIn;
 	}
 
 }

@@ -46,7 +46,7 @@ class LoginRequiredController extends BaseController
 	private function checkLogin($type = self::TYPE_LOGIN)
 	{
 		//If user is not logged in, redirect to other page
-		if (!$this->visitor->isLoggedIn())
+		if (!$this->visitor->loggedIn)
 		{
 			if ($type == self::TYPE_BASIC)
 			{
@@ -54,7 +54,7 @@ class LoginRequiredController extends BaseController
 				{
 					$this->visitor->login($email, $password);
 				}
-				if (!$this->visitor->isLoggedIn())
+				if (!$this->visitor->loggedIn)
 				{
 					$this->response->assignHeader('WWW-Authenticate', 'Basic' /*. 'realm="Comment"'*/);
 					$this->response->response401('Invalid credentials.');
