@@ -13,6 +13,7 @@
 
 namespace Core\Models;
 
+use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
@@ -21,7 +22,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Structures\Io\Validation;
+use Core\Io\Validation;
 
 /**
  * The model of the user
@@ -78,12 +79,13 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	/**
 	 * Roles belonging to this user
 	 * @return BelongsToManyEnums
+	 * @throws \Exception
 	 */
 	public function roles()
 	{
 		if (!isset($this->roleClass))
 		{
-			throw new Exception('The class representing the Roles not set');
+			throw new \Exception('The class representing the Roles not set');
 		}
 		return $this->belongsToManyEnums($this->roleClass, 'user_roles');
 	}

@@ -25,7 +25,7 @@
 	 */
 	function trans($message, $parameters = array(), $locale = null)
 	{
-		return \Core\Structures\Io\Translator::getInstance()->trans($message, $parameters, $locale);
+		return \Core\Io\Translator::getInstance()->trans($message, $parameters, $locale);
 	}
 	/**
 	 * Translate a string with pluralization
@@ -37,7 +37,7 @@
 	 */
 	function trans_choice($message, $count, $parameters = array(), $locale = null)
 	{
-		return \Core\Structures\Io\Translator::getInstance()->transChoice($message, $count, $parameters, $locale);
+		return \Core\Io\Translator::getInstance()->transChoice($message, $count, $parameters, $locale);
 	}
 
 	/**

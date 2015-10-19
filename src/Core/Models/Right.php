@@ -13,6 +13,7 @@
 
 namespace Core\Models;
 use Core\Bases\Models\BaseEnumModel;
+use Core\Database\Relations\BelongsToManyEnums;
 
 /**
  * The model for rights
@@ -33,12 +34,13 @@ class Right extends BaseEnumModel
 	/**
 	 * Roles belonging to this right
 	 * @return BelongsToManyEnums
+	 * @throws \Exception
 	 */
 	public function roles()
 	{
 		if (!isset($this->roleClass))
 		{
-			throw new Exception('The class representing the Roles not set');
+			throw new \Exception('The class representing the Roles not set');
 		}
 		return $this->belongsToManyEnums($this->roleClass, 'role_rights');
 	}
