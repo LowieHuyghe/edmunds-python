@@ -30,7 +30,7 @@ class EncryptionHelper extends BaseHelper
 	 */
 	public static function encrypt($value)
 	{
-		return app('crypt')->encrypt($value);
+		return app('encrypter')->encrypt($value);
 	}
 
 	/**
@@ -40,7 +40,7 @@ class EncryptionHelper extends BaseHelper
 	 */
 	public static function decrypt($value)
 	{
-		return app('crypt')->decrypt($value);
+		return app('encrypter')->decrypt($value);
 	}
 
 }
