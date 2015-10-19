@@ -15,7 +15,7 @@ namespace Core\Models\Auth;
 use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
-use Core\Structures\Io\Validation;
+use Core\Io\Validation;
 
 /**
  * The model for files

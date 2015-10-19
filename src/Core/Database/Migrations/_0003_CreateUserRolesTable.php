@@ -13,9 +13,6 @@
 
 namespace Core\Database\Migrations;
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
-
 /**
  * Migration for user-roles-table
  *

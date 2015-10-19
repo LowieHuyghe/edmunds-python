@@ -11,40 +11,35 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Helpers;
+namespace Core\Registry\Logging\Analytics;
 
-use Core\Bases\Tests\BaseTest;
-use Core\Registry\Registry;
+use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Http\Request;
 
 /**
- * Testing Pm-class
+ * The structure for page reports
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelperTest extends BaseTest
+class PageReport extends BaseReport
 {
-
 	/**
-	 * Test Send note
+	 * PageReport constructor.
 	 */
-	public function testSendNote()
+	public function __construct()
 	{
-		$success = Registry::adminPm()->sendNote('Note-Title', "Note-Body\nhttp://www.pinterest.com");
+		parent::__construct();
 
-		$this->assertTrue($success);
+		$this->type = 'pageview';
+		$this->documentHostName = Request::current()->root;
+		$path = substr(Request::current()->fullUrl, strlen($this->documentHostName));
+		if (!$path || $path[0] != '/')
+		{
+			$path = '/' . $path;
+		}
+		$this->documentPath = $path;
 	}
-
-	/**
-	 * Test Send file
-	 */
-	public function testSendFile()
-	{
-		$success = Registry::adminPm()->sendFile('File-Title', "https://www.google.be/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", 'File-Body');
-
-		$this->assertTrue($success);
-	}
-
 }

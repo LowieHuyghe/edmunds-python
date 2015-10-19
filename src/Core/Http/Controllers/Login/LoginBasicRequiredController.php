@@ -11,40 +11,23 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Helpers;
-
-use Core\Bases\Tests\BaseTest;
-use Core\Registry\Registry;
+namespace Core\Http\Controllers\Login;
 
 /**
- * Testing Pm-class
+ * Controller to extend from which requires the user to log in with basic authentication
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelperTest extends BaseTest
+class LoginBasicRequiredController extends LoginRequiredController
 {
-
 	/**
-	 * Test Send note
+	 * Constructor
 	 */
-	public function testSendNote()
+	function __construct()
 	{
-		$success = Registry::adminPm()->sendNote('Note-Title', "Note-Body\nhttp://www.pinterest.com");
-
-		$this->assertTrue($success);
+		parent::__construct(self::TYPE_BASIC);
 	}
-
-	/**
-	 * Test Send file
-	 */
-	public function testSendFile()
-	{
-		$success = Registry::adminPm()->sendFile('File-Title', "https://www.google.be/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", 'File-Body');
-
-		$this->assertTrue($success);
-	}
-
 }

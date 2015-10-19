@@ -13,16 +13,20 @@
 
 namespace Core\Bases\Structures;
 
+use Core\Bases\Models\BaseModel;
 use DateTime;
 use ArrayAccess;
 use Carbon\Carbon;
+use Faker\Generator;
+use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Validator;
 use JsonSerializable;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Core\Structures\Io\Validation;
+use Core\Io\Validation;
 
 /**
  * A base for the structures to extend from
@@ -192,7 +196,6 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 * Create a new Structure model instance.
 	 *
 	 * @param  array  $attributes
-	 * @return void
 	 */
 	public function __construct(array $attributes = [])
 	{
@@ -1625,6 +1628,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 * Define-function for the instance generator
 	 * @param Generator $faker
 	 * @return array
+	 * @throws \Exception
 	 */
 	protected static function factory($faker)
 	{

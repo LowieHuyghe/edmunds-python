@@ -12,10 +12,9 @@
  */
 
 namespace Core\Bases\Structures\Analytics;
-use Core\Structures\Http\Request;
-use Core\Structures\Http\Response;
-use Core\Structures\Io\Validation;
-use Core\Structures\Client\Visitor;
+use Core\Http\Request;
+use Core\Io\Validation;
+use Core\Http\Client\Visitor;
 use Core\Bases\Structures\BaseStructure;
 
 /**
@@ -303,7 +302,6 @@ class BaseReport extends BaseStructure
 		$this->trackingId = env('ANALYTICS_GOOGLE_TRACKINGID');
 
 		$request = Request::current();
-		$response = Response::current();
 		$visitor = Visitor::current();
 
 		//Assign default values
@@ -320,18 +318,17 @@ class BaseReport extends BaseStructure
 	/**
 	 * Save the instance of the report
 	 * @return mixed response
+	 * @throws \Exception
 	 */
 	public function report()
 	{
 		if (get_class() == get_called_class())
 		{
 			throw new \Exception('The BaseReport can not be reported for analytics');
-			return null;
 		}
 		if ($this->hasErrors())
 		{
 			throw new \Exception('This report has errors and can not be sent: ' . json_encode($this->getErrors()->getMessageBag()->toArray()));
-			return null;
 		}
 
 		$output = array();
@@ -344,7 +341,6 @@ class BaseReport extends BaseStructure
 			if (!isset($this->parameterMapping[$parameter]))
 			{
 				throw new \Exception("There is no mapping for the parameter: $parameter");
-				return null;
 			}
 
 			//Bool needs to be 1/0
