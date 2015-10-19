@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models;
+use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Structures\Io\Validation;
 

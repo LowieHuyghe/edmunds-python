@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace Core\Bases\Controllers;
 
 use Core\Controllers\Login\LoginRequiredController;
 use Core\Structures\Client\Input;

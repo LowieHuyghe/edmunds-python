@@ -12,8 +12,8 @@
  */
 
 namespace Core\Structures\Io;
+use Core\Bases\Structures\BaseStructure;
 use Illuminate\Support\Collection;
-use Core\Structures\Io\Validation;
 
 /**
  * The structure for notifications

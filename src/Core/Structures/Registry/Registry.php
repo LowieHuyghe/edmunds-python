@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Registry;
 
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Core\Structures\Registry\Admin\Pm;
 
 /**

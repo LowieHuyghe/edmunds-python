@@ -11,12 +11,12 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures\Analytics;
+namespace Core\Bases\Structures\Analytics;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 use Core\Structures\Io\Validation;
 use Core\Structures\Client\Visitor;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * The structure for reports

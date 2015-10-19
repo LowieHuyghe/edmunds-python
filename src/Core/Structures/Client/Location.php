@@ -15,7 +15,7 @@ namespace Core\Structures\Client;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Core\Structures\Http\Request;
 
 /**

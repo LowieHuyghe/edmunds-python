@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Jobs;
 
 use Illuminate\Bus\Queueable;
 

@@ -13,6 +13,7 @@
 
 namespace Core\Structures\Analytics;
 
+use Core\Bases\Structures\Analytics\BaseReport;
 use Core\Structures\Http\Request;
 
 /**

@@ -12,6 +12,7 @@
  */
 
 namespace Core\Helpers;
+use Core\Bases\Helpers\BaseHelper;
 
 /**
  * The helper to use Encryption

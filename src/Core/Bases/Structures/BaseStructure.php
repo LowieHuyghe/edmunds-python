@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
+namespace Core\Bases\Structures;
 
 use DateTime;
 use ArrayAccess;

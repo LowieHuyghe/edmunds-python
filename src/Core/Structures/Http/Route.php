@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Http;
 
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * The structure for the routes

@@ -15,7 +15,7 @@ namespace Core\Structures\Client;
 
 use Core\Models\User;
 use Core\Structures\Auth;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Core\Structures\Http\Request;
 use Core\Structures\Http\Response;
 

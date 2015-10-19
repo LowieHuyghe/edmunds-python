@@ -13,6 +13,7 @@
 
 namespace Core\Structures;
 use Carbon\Carbon;
+use Core\Bases\Structures\BaseStructure;
 use Core\Models\Auth\LoginAttempt;
 use Core\Models\User;
 use Core\Structures\Client\Visitor;

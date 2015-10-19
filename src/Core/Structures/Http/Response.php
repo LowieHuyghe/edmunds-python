@@ -14,7 +14,7 @@
 namespace Core\Structures\Http;
 
 use Core\Exceptions\AbortException;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**

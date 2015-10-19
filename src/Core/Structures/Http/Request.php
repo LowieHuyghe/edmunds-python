@@ -12,7 +12,7 @@
  */
 
 namespace Core\Structures\Http;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Core\Structures\Client\Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

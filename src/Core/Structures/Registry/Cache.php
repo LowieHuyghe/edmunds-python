@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Registry;
 
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * The cache to use

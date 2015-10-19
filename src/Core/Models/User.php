@@ -13,6 +13,7 @@
 
 namespace Core\Models;
 
+use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;

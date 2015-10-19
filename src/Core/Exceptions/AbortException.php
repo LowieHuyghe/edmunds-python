@@ -12,6 +12,7 @@
  */
 
 namespace Core\Exceptions;
+use Core\Bases\Exceptions\BaseException;
 
 /**
  * Exception to stop the flow of the app and finish (instead of die and exit so logging can be done)

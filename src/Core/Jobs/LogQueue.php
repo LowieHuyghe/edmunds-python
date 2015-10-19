@@ -12,7 +12,7 @@
  */
 
 namespace Core\Jobs;
-use Illuminate\Http\Request;
+use Core\Bases\Jobs\BaseQueue;
 
 /**
  * The command for updating the geoip-databases. Please shedule for every week.

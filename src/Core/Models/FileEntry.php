@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models;
+use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Database\Relations\HasOneEnum;
 use Core\Structures\Client\Input;

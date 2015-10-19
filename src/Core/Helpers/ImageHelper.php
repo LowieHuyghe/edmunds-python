@@ -13,7 +13,7 @@
 
 namespace Core\Helpers;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Core\Bases\Helpers\BaseHelper;
 
 /**
  * The helper responsible for image processing

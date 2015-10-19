@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Models;
+namespace Core\Bases\Models;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 use Core\Database\Relations\BelongsToManyEnums;
