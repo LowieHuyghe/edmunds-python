@@ -14,7 +14,7 @@
 namespace Core\Models;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
-use Core\Structures\Io\Validation;
+use Core\Io\Validation;
 
 /**
  * The model for translations

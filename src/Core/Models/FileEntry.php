@@ -15,8 +15,8 @@ namespace Core\Models;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Database\Relations\HasOneEnum;
-use Core\Structures\Client\Input;
-use Core\Structures\Io\Validation;
+use Core\Http\Client\Input;
+use Core\Io\Validation;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -77,12 +77,13 @@ class FileEntry extends BaseModel
 	/**
 	 * Type belonging to this FileEntry
 	 * @return HasOneEnum
+	 * @throws \Exception
 	 */
 	public function type()
 	{
 		if (!isset($this->typeClass))
 		{
-			throw new Exception('The class representing the Types not set');
+			throw new \Exception('The class representing the Types not set');
 		}
 		return $this->hasOneEnum($this->typeClass);
 	}
@@ -126,7 +127,7 @@ class FileEntry extends BaseModel
 				$uploadSuccess = self::getDisk()->put($this->name, $contents);
 				break;
 			case 'uploadedFile':
-				$uploadSuccess = self::getDisk()->put($this->name, app('file')->get($this->uploadedFile));
+				$uploadSuccess = self::getDisk()->put($this->name, app('files')->get($this->uploadedFile));
 				break;
 			default:
 				$uploadSuccess = true;

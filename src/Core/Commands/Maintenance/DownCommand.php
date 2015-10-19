@@ -42,7 +42,7 @@ class DownCommand extends BaseCommand {
 	 */
 	public function fire()
 	{
-		touch($this->laravel->storagePath().'/framework/down');
+		touch(app()->storagePath('framework/down'));
 		$this->comment('Application is now in maintenance mode.');
 	}
 

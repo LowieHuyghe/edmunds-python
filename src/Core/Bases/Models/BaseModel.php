@@ -16,8 +16,7 @@ use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Database\Relations\HasOneEnum;
-use Core\Database\Relations\HasOneEnums;
-use Core\Structures\Io\Validation;
+use Core\Io\Validation;
 use Illuminate\Validation\Validator;
 
 /**
@@ -152,6 +151,7 @@ class BaseModel extends Model
 	 * Define-function for the instance generator
 	 * @param Generator $faker
 	 * @return array
+	 * @throws \Exception
 	 */
 	protected static function factory($faker)
 	{

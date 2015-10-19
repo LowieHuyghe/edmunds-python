@@ -14,12 +14,12 @@
 namespace Core;
 
 use Core\Exceptions\AbortException;
-use Core\Structures\Client\Input;
-use Core\Structures\Client\Visitor;
-use Core\Structures\Http\Request;
-use Core\Structures\Http\Response;
-use Core\Structures\Client\Session;
-use Core\Structures\Http\Route;
+use Core\Http\Client\Input;
+use Core\Http\Client\Visitor;
+use Core\Http\Request;
+use Core\Http\Response;
+use Core\Http\Client\Session;
+use Core\Http\Route;
 use Illuminate\View\View;
 use Laravel\Lumen\Routing\Controller;
 
@@ -49,8 +49,6 @@ class Router extends Controller
 	 * @param \Illuminate\Http\Request $request
 	 * @param string $route
 	 * @return mixed
-	 * @throws ConfigNotFoundException
-	 * @throws Exception
 	 * @throws \Exception
 	 */
 	public function route(\Illuminate\Http\Request $request, $route)
@@ -89,7 +87,7 @@ class Router extends Controller
 				}
 			}
 		}
-		catch (Exception $ex)
+		catch (\Exception $ex)
 		{
 			//TODO @Lowie Logging!
 			throw $ex;

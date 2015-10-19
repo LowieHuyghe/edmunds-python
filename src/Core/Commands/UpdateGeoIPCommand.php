@@ -14,8 +14,9 @@
 namespace Core\Commands;
 
 use Core\Bases\Commands\BaseCommand;
-use Core\Structures\Client\Location;
-use Core\Structures\Admin\Pm;
+use Core\Http\Client\Location;
+use Core\Registry\Admin\Pm;
+use Core\Registry\Registry;
 
 /**
  * The command for updating the geoip-databases. Please shedule for every week.
@@ -181,9 +182,6 @@ class UpdateGeoIPCommand extends BaseCommand
 	 */
 	private function informAdminError($message)
 	{
-		$pm = new Pm();
-		$pm->title = 'GeoIP Error!';
-		$pm->message = $message;
-		$pm->send();
+		Registry::adminPm()->sendNote('GeoIP Error!', $message);
 	}
 }

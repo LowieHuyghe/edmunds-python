@@ -16,8 +16,6 @@ namespace Core\Database\Relations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Core\Models\Enum;
-use Core\Models\Enums\BaseEnum;
 
 /**
  * Relation for has ManyEnums
