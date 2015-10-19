@@ -139,16 +139,7 @@ class Auth extends BaseStructure
 		}
 
 		//Log attempt
-		$loginAttempt = new LoginAttempt();
-		$loginAttempt->ip = Request::current()->ip;
-		$loginAttempt->type = 'credentials';
-		$loginAttempt->email = $email;
-		$loginAttempt->password = $password;
-		if ($loggedIn && $this->loggedInUser)
-		{
-			$loginAttempt->user()->associate($this->loggedInUser);
-		}
-		$loginAttempt->save();
+		$this->logLoginAttempt('credentials', $email, $password);
 
 		//Return result
 		return $loggedIn;
@@ -171,6 +162,28 @@ class Auth extends BaseStructure
 		}
 
 		return false;
+	}
+
+	/**
+	 * Save the login attempt
+	 * @param string $type
+	 * @param string $email
+	 * @param string $password
+	 */
+	protected function logLoginAttempt($type, $email = null, $password = null)
+	{
+		$loginAttempt = new LoginAttempt();
+
+		$loginAttempt->ip = Request::current()->ip;
+		$loginAttempt->type = $type;
+		$loginAttempt->email = $email;
+		$loginAttempt->password = $password;
+		if ($this->loggedInUser)
+		{
+			$loginAttempt->user()->associate($this->loggedInUser);
+		}
+
+		$loginAttempt->save();
 	}
 
 	/**
