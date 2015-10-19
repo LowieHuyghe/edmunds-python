@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Io;
 
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Illuminate\Database\Eloquent\Collection;
 use Core\Models\Translation;
 use Core\Structures\Client\Visitor;

@@ -13,7 +13,7 @@
 
 namespace Core\Models\Auth;
 use Core\Helpers\EncryptionHelper;
-use Core\Models\BaseModel;
+use Core\Bases\Models\BaseModel;
 use Core\Models\User;
 use Core\Structures\Io\Validation;
 

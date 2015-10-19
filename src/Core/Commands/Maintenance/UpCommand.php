@@ -12,7 +12,7 @@
  */
 
 namespace Core\Commands\Maintenance;
-use Core\Commands\BaseCommand;
+use Core\Bases\Commands\BaseCommand;
 
 /**
  * The command for putting the app back live.

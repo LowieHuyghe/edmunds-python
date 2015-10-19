@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Controllers;
+namespace Core;
 
 use Core\Exceptions\AbortException;
 use Core\Structures\Client\Input;

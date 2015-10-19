@@ -13,7 +13,7 @@
 
 namespace Core\Models\Observers;
 
-use Core\Models\BaseModel;
+use Core\Bases\Models\BaseModel;
 
 /**
  * A base for the observers to extend from

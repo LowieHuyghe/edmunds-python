@@ -43,7 +43,7 @@ if (!empty($missingConfig))
 |
 */
 
-$app = new \Core\Structures\Application(REAL_BASE_PATH);
+$app = new \Core\Application(REAL_BASE_PATH);
 
 $app->configure('app');
 $app->make('config')->set('app.key', env('APP_KEY'));
@@ -121,9 +121,9 @@ if ($providers = config('app.providers'))
 |
 */
 
-$app->get('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
-$app->post('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
-$app->put('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
-$app->delete('{route:.*}', array('uses' => '\Core\Controllers\Router@route'));
+$app->get('{route:.*}', array('uses' => '\Core\Router@route'));
+$app->post('{route:.*}', array('uses' => '\Core\Router@route'));
+$app->put('{route:.*}', array('uses' => '\Core\Router@route'));
+$app->delete('{route:.*}', array('uses' => '\Core\Router@route'));
 
 return $app;

@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace Core\Commands;
+namespace Core\Bases\Commands;
 
 use Illuminate\Console\Command;
 

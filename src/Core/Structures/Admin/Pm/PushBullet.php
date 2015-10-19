@@ -12,7 +12,7 @@
  */
 
 namespace Core\Structures\Admin\Pm;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use PHPushbullet\PHPushbullet;
 
 /**

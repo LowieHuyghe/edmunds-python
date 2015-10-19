@@ -14,7 +14,7 @@
 namespace Core\Structures\Registry\Admin;
 
 use Core\Structures\Admin\Pm\PushBullet;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Core\Structures\Registry\Registry;
 
 /**

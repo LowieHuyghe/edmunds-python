@@ -11,44 +11,17 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
+namespace Core\Bases\Exceptions;
 
 /**
- * The structure for application
+ * Exception base to extend from
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.
+ * @since		Version 0.1
  */
-class Application extends \Laravel\Lumen\Application
+class BaseException extends \Exception
 {
-
-	/**
-	 * Check if local environment
-	 * @return bool
-	 */
-	public function isLocal()
-	{
-		return $this->environment() == 'local';
-	}
-
-	/**
-	 * Check if production environment
-	 * @return bool
-	 */
-	public function isProduction()
-	{
-		return app()->environment() == 'production';
-	}
-
-	/**
-	 * Check if testing environment
-	 * @return bool
-	 */
-	public function isTesting()
-	{
-		return app()->environment() == 'testing';
-	}
 
 }

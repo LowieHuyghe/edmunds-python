@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Models;
+namespace Core\Bases\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Core\Structures\Io\Validation;

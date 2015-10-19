@@ -12,6 +12,7 @@
  */
 
 namespace Core\Controllers\Login;
+use Core\Bases\Controllers\BaseController;
 
 /**
  * Controller to extend from which requires the user to log in

@@ -5,7 +5,7 @@
 	 *
 	 * @param  string  $make
 	 * @param  array   $parameters
-	 * @return mixed|\Core\Structures\Application
+	 * @return mixed|\Core\Application
 	 */
 	function app($make = null, $parameters = [])
 	{

@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Client;
 
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;

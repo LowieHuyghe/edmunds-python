@@ -13,7 +13,7 @@
 
 namespace Core\Structures\Client;
 use Core\Models\User;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * The helper responsible for localization
