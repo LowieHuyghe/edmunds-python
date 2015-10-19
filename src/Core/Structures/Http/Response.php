@@ -348,8 +348,14 @@ class Response extends BaseStructure
 		}
 		elseif ($this->responseType == self::TYPE_JSON)
 		{
+			$data = array();
+			foreach ($this->assignedData as $key => $value)
+			{
+				$data[snake_case($key)] = $value;
+			}
+
 			$this->assignHeader('Content-Type', 'application/json');
-			$response = response()->json($this->assignedData);
+			$response = response()->json($data);
 		}
 		elseif ($this->responseType == self::TYPE_CONTENT)
 		{
