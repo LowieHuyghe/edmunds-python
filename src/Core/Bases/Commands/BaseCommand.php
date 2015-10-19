@@ -11,19 +11,19 @@
  * @since       Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Commands;
 
-use Illuminate\Bus\Queueable;
+use Illuminate\Console\Command;
 
 /**
- * Job base to extend from
+ * Command base to extend from
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class BaseJob
+class BaseCommand extends Command
 {
-	use Queueable;
+
 }

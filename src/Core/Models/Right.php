@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models;
+use Core\Bases\Models\BaseEnumModel;
 
 /**
  * The model for rights

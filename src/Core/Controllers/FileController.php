@@ -13,6 +13,7 @@
 
 namespace Core\Controllers;
 
+use Core\Bases\Controllers\BaseController;
 use Core\Structures\Http\Route;
 use Illuminate\Http\JsonResponse;
 use Core\Helpers\FileHelper;

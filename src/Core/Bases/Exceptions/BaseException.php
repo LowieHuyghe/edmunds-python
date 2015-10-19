@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Exceptions;
+namespace Core\Bases\Exceptions;
 
 /**
  * Exception base to extend from

@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Helpers;
+namespace Core\Bases\Helpers;
 
 /**
  * Helper base to extend from

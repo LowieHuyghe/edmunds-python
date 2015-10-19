@@ -13,6 +13,7 @@
 
 namespace Core\Commands;
 
+use Core\Bases\Commands\BaseCommand;
 use Core\Structures\Client\Location;
 use Core\Structures\Admin\Pm;
 

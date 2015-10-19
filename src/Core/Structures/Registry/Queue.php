@@ -14,7 +14,7 @@
 namespace Core\Structures\Registry;
 
 use Core\Jobs\BaseQueue;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * The queue to use

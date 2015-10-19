@@ -11,44 +11,25 @@
  * @since		Version 0.1
  */
 
-namespace Core\Structures;
+namespace Core\Bases\Jobs;
+
+use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Core\Jobs\BaseJob;
 
 /**
- * The structure for application
+ * Queue base to extend from
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.
+ * @since		Version 0.1
  */
-class Application extends \Laravel\Lumen\Application
+class BaseQueue extends BaseJob implements SelfHandling, ShouldQueue
 {
+	use InteractsWithQueue, SerializesModels;
 
-	/**
-	 * Check if local environment
-	 * @return bool
-	 */
-	public function isLocal()
-	{
-		return $this->environment() == 'local';
-	}
-
-	/**
-	 * Check if production environment
-	 * @return bool
-	 */
-	public function isProduction()
-	{
-		return app()->environment() == 'production';
-	}
-
-	/**
-	 * Check if testing environment
-	 * @return bool
-	 */
-	public function isTesting()
-	{
-		return app()->environment() == 'testing';
-	}
-
+	//
 }

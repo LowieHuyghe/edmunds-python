@@ -12,7 +12,7 @@
  */
 
 namespace Core\Structures\Io;
-use Core\Structures\BaseStructure;
+use Core\Bases\Structures\BaseStructure;
 
 /**
  * A rule for validation
