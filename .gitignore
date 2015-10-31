@@ -10,7 +10,6 @@
 /public
 /resources
 /storage
-/.env.example
 .gitattributes
 artisan
 gulpfile.js
