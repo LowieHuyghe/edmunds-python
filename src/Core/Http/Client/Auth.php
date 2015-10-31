@@ -15,6 +15,7 @@ namespace Core\Http\Client;
 use Carbon\Carbon;
 use Core\Bases\Structures\BaseStructure;
 use Core\Models\Auth\LoginAttempt;
+use Core\Models\Auth\PasswordReset;
 use Core\Models\User;
 use Core\Http\Request;
 
@@ -201,6 +202,23 @@ class Auth extends BaseStructure
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get a password reset token
+	 * @param string $email
+	 * @return null|string
+	 */
+	public function getPasswordResetToken($email)
+	{
+		$passwordReset = new PasswordReset();
+		$passwordReset->email = $email;
+
+		if ($passwordReset->save())
+		{
+			return $passwordReset->token;
+		}
+		return null;
 	}
 
 }

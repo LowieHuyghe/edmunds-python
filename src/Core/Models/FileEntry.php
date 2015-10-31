@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models;
+use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Database\Relations\HasOneEnum;
@@ -35,6 +36,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property string $mime
  * @property FileType $type
  * @property int $size
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class FileEntry extends BaseModel
 {
@@ -49,6 +52,12 @@ class FileEntry extends BaseModel
 	 * @var bool|array
 	 */
 	public $timestamps = true;
+
+	/**
+	 * The attributes that should be mutated to dates.
+	 * @var array
+	 */
+	protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * The resource from the file

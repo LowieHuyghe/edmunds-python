@@ -41,14 +41,11 @@ class Validation extends BaseStructure
 	 * The constructor
 	 * @param array $input
 	 */
-	public function __construct($input = null)
+	public function __construct($input = array())
 	{
 		//parent::__construct();
 
-		if ($input)
-		{
-			$this->input = $input;
-		}
+		$this->input = $input;
 	}
 
 	/**

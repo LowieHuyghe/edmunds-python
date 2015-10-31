@@ -33,7 +33,9 @@ trait _0002_CreatePasswordResetsTable
 	{
 		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
 		{
+			$table->increments('id');
 			$table->string('email')->index();
+			$table->integer('user_id')->unsigned();
 			$table->string('token')->index();
 			$table->timestamps();
 		});

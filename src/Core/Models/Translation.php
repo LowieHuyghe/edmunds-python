@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models;
+use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Io\Validation;
@@ -210,6 +211,8 @@ use Core\Io\Validation;
  * @property string za		Zhuang, Chuang
  * @property string zh		Chinese
  * @property string zu		Zulu
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class Translation extends BaseModel
 {
@@ -218,6 +221,12 @@ class Translation extends BaseModel
 	 * @var bool|array
 	 */
 	public $timestamps = true;
+
+	/**
+	 * The attributes that should be mutated to dates.
+	 * @var array
+	 */
+	protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * Add the validation of the model
