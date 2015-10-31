@@ -69,7 +69,7 @@ class Cache extends BaseStructure
 	 * @param mixed $value
 	 * @param int $minutes 0 = Forever
 	 */
-	public function save($key, $value, $minutes = 60 * 24 * 5)
+	public function save($key, $value, $minutes = 7200)
 	{
 		if ($minutes)
 		{
