@@ -12,6 +12,7 @@
  */
 
 namespace Core\Models\Auth;
+use Carbon\Carbon;
 use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
@@ -25,16 +26,13 @@ use Core\Io\Validation;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property int $id
- * @property string $ip
- * @property string $type
  * @property string $email
- * @property string $password
  * @property User $user
- * @property Carbon created_at
- * @property Carbon updated_at
+ * @property string $token
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
-class LoginAttempt extends BaseModel
+class PasswordReset extends BaseModel
 {
 	/**
 	 * Enable or disable timestamps by default
@@ -58,32 +56,23 @@ class LoginAttempt extends BaseModel
 	}
 
 	/**
-	 * Get the password of the attempt
-	 * @return string
+	 * Save the password-reset
+	 * @param array $options
+	 * @return bool
 	 */
-	protected function getPasswordAttribute()
+	public function save(array $options = [])
 	{
-		if ($this->pass)
-		{
-			return EncryptionHelper::decrypt($this->pass);
-		}
-		return null;
-	}
+		//Set token
+		$this->token = EncryptionHelper::encrypt(time() . '_' . $this->email);
 
-	/**
-	 * Set the password of the attempt
-	 * @param string $password
-	 */
-	protected function setPasswordAttribute($password)
-	{
-		if ($password)
+		//Set user, if one
+		$user = User::where('email', '=', $this->email)->first();
+		if ($user)
 		{
-			$this->pass = EncryptionHelper::encrypt($password);
+			$this->user()->associate($user);
 		}
-		else
-		{
-			$this->pass = null;
-		}
+
+		return parent::save($options);
 	}
 
 	/**
@@ -92,15 +81,36 @@ class LoginAttempt extends BaseModel
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->value('id')->integer()->required();
-		$validator->value('ip')->ip()->max(255)->required();
-		$validator->value('type')->max(255)->required();
-
-		$validator->value('email')->email()->max(255);
-		$validator->value('pass')->max(255);
+		$validator->value('email')->max(255)->email()->required();
+		$validator->value('user_id')->integer()->required();
+		$validator->value('token')->max(255)->required();
 
 		$validator->value('created_at')->date();
 		$validator->value('updated_at')->date();
+	}
+
+	/**
+	 * Check if password-reset is still valid, and return it
+	 * @param string $token
+	 * @return PasswordReset
+	 */
+	public static function getWithValidCheck($token)
+	{
+		$passwordReset = PasswordReset::where('token', '=', $token)->first();
+
+		if ($passwordReset)
+		{
+			$latest = $passwordReset->created_at->addMinutes(15);
+			$now = Carbon::now();
+
+			if ($latest->gte($now))
+			{
+				$passwordReset->touch();
+				return $passwordReset;
+			}
+		}
+
+		return false;
 	}
 
 }

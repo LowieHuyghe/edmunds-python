@@ -33,7 +33,7 @@ class BaseModel extends Model
 	 * The validator
 	 * @var Validation
 	 */
-	protected $validator;
+	private $validator;
 
 	/**
 	 * Enable or disable timestamps by default
@@ -121,6 +121,22 @@ class BaseModel extends Model
 		$instance = new $enumClass();
 
 		return new BelongsToManyEnums($instance->newQuery(), $this, $enumClass, $table, $foreignKey, $otherKey, $relation);
+	}
+
+	/**
+	 * Save the model to the database.
+	 *
+	 * @param  array  $options
+	 * @return bool
+	 */
+	public function save(array $options = [])
+	{
+		if ($this->hasErrors())
+		{
+			return false;
+		}
+
+		return parent::save($options);
 	}
 
 	/**
