@@ -37,7 +37,6 @@ use Core\Io\Validation;
  * @property string $password Password of the user
  * @property Collection $roles Roles for this user
  * @property string $locale Locale for this user
- *
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property Carbon deleted_at
@@ -57,6 +56,12 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
+
+	/**
+	 * The attributes that should be mutated to dates.
+	 * @var array
+	 */
+	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * Timestamps in the table
@@ -139,6 +144,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
 		$validator->value('created_at')->date();
 		$validator->value('updated_at')->date();
+		$validator->value('deleted_at')->date();
 	}
 
 	/**
