@@ -16,14 +16,14 @@ namespace Core\Database\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for users-table
+ * Migration for auth_tokens-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0001_CreateUsersTable
+trait _0010_CreateAuthTokensTable
 {
 	/**
 	 * Run the migrations.
@@ -31,15 +31,12 @@ trait _0001_CreateUsersTable
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('users', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('auth_tokens', function (Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('email')->unique();
-			$table->string('password', 60);
-			$table->string('locale', 10);
-			$table->rememberToken();
+			$table->string('token')->index();
+			$table->integer('user_id')->unsigned();
 			$table->timestamps();
-			$table->softDeletes();
 		});
 	}
 
@@ -49,6 +46,6 @@ trait _0001_CreateUsersTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('users');
+		app('db')->connection()->getSchemaBuilder()->drop('auth_tokens');
 	}
 }

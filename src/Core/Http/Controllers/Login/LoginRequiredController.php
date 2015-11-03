@@ -26,7 +26,8 @@ use Core\Http\Client\Auth;
 class LoginRequiredController extends BaseController
 {
 	const	TYPE_LOGIN = 1,
-			TYPE_BASIC = 2;
+			TYPE_BASIC = 2,
+			TYPE_TOKEN = 3;
 
 	/**
 	 * Constructor
@@ -60,6 +61,18 @@ class LoginRequiredController extends BaseController
 				{
 					$this->response->assignHeader('WWW-Authenticate', 'Basic' /*. 'realm="Comment"'*/);
 					$this->response->response401('Invalid credentials.');
+				}
+			}
+			elseif ($type == self::TYPE_TOKEN)
+			{
+				//Check token in headers
+				if ($token = $this->request->getServer('PHP_AUTH_TOKEN'))
+				{
+					Auth::current()->loginWithToken($token);
+				}
+				if (!$this->visitor->loggedIn)
+				{
+					$this->response->response401();
 				}
 			}
 			else

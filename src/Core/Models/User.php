@@ -37,6 +37,7 @@ use Core\Io\Validation;
  * @property string $password Password of the user
  * @property Collection $roles Roles for this user
  * @property string $locale Locale for this user
+ * @property string $remember_token
  * @property Carbon created_at
  * @property Carbon updated_at
  * @property Carbon deleted_at
@@ -140,6 +141,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		$validator->value('id')->integer();
 		$validator->value('email')->max(255)->unique('users')->required();
 		$validator->value('password')->max(60);
+		$validator->value('locale')->max(10);
 		$validator->value('remember_token')->max(100);
 
 		$validator->value('created_at')->date();
@@ -157,7 +159,8 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		return array(
 			'email' => $faker->email,
 			'password' => str_random(10),
-			'remember_token' => str_random(10),
+			'locale' => str_random(2),
+			'remember_token' => str_random(32),
 		);
 	}
 
