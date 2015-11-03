@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Registry\Logging\Analytics;
+namespace Core\Analytics\Logging;
 
 use Core\Bases\Structures\Analytics\BaseReport;
 use Core\Http\Request;
