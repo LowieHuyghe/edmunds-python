@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Core\Bases\Structures\BaseStructure;
 use Core\Models\Auth\LoginAttempt;
 use Core\Models\Auth\PasswordReset;
+use Core\Models\Auth\AuthToken;
 use Core\Models\User;
 use Core\Http\Request;
 
@@ -120,6 +121,54 @@ class Auth extends BaseStructure
 	 */
 	public function loginWithCredentials($email, $password, $once = false)
 	{
+		//Login
+		$loggedIn = $this->loginWithCredentialsGeneric($email, $password, $once);
+
+		//Log attempt
+		$this->saveLoginAttempt('credentials', $email, $password);
+
+		//Return result
+		return $loggedIn;
+	}
+
+	/**
+	 * Login with credentials and retrieve a token on success
+	 * @param string $email
+	 * @param string $password
+	 * @param bool $once
+	 * @return string
+	 */
+	public function loginWithCredentialsForToken($email, $password, $once = false)
+	{
+		//Login with credentials
+		if ($this->loginWithCredentialsGeneric($email, $password, $once))
+		{
+			//Create auth-token
+			$authToken = new AuthToken();
+			$authToken->user()->associate($this->loggedInUser);
+
+			//Save and return
+			if ($authToken->save())
+			{
+				return $authToken->token;
+			}
+		}
+
+		//Log attempt
+		$this->saveLoginAttempt('credentials_for_token', $email, $password);
+
+		return null;
+	}
+
+	/**
+	 * Log the user in with credentials
+	 * @param string $email
+	 * @param string $password
+	 * @param bool $once
+	 * @return bool
+	 */
+	protected function loginWithCredentialsGeneric($email, $password, $once = false)
+	{
 		$credentials = array('email' => $email, 'password' => $password);
 
 		if ($once)
@@ -139,8 +188,35 @@ class Auth extends BaseStructure
 			Visitor::current()->user = $user;
 		}
 
-		//Log attempt
-		$this->logLoginAttempt('credentials', $email, $password);
+		//Return result
+		return $loggedIn;
+	}
+
+	/**
+	 * Log a user in with token
+	 * @param string $token
+	 * @param bool $once
+	 * @return bool
+	 */
+	public function loginWithToken($token, $once = false)
+	{
+		$loggedIn = false;
+
+		//Fetch the token
+		if ($authToken = AuthToken::where('token', '=', $token)->first())
+		{
+			$validUntil = $authToken->updated_at->addMinutes((int) env('CORE_AUTH_AUTHTOKEN_TTL'));
+
+			//Log user in
+			if ($loggedIn = $this->loginWithUser($authToken->user, $once))
+			{
+				//Check if session-id is still valid
+				if ($validUntil->gt(Carbon::now()))
+				{
+					$authToken->touch();
+				}
+			}
+		}
 
 		//Return result
 		return $loggedIn;
@@ -154,15 +230,15 @@ class Auth extends BaseStructure
 	 */
 	public function loginWithUser($user, $once = false)
 	{
-		if ($once || app('auth')->login($user))
+		if (!$once)
 		{
-			$this->loggedInUser = $user;
-			Visitor::current()->user = $user;
-
-			return true;
+			app('auth')->login($user);
 		}
 
-		return false;
+		$this->loggedInUser = $user;
+		Visitor::current()->user = $user;
+
+		return true;
 	}
 
 	/**
@@ -171,7 +247,7 @@ class Auth extends BaseStructure
 	 * @param string $email
 	 * @param string $password
 	 */
-	protected function logLoginAttempt($type, $email = null, $password = null)
+	protected function saveLoginAttempt($type, $email = null, $password = null)
 	{
 		$loginAttempt = new LoginAttempt();
 
