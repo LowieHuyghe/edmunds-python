@@ -36,7 +36,7 @@ trait _0002_CreatePasswordResetsTable
 			$table->increments('id');
 			$table->string('email')->index();
 			$table->integer('user_id')->unsigned();
-			$table->string('token')->index();
+			$table->string('token')->unique();
 			$table->timestamps();
 		});
 	}
