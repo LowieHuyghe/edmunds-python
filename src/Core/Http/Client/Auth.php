@@ -146,6 +146,7 @@ class Auth extends BaseStructure
 			//Create auth-token
 			$authToken = new AuthToken();
 			$authToken->user()->associate($this->loggedInUser);
+			$authToken->session_id = Visitor::current()->session->getId();
 
 			//Save and return
 			if ($authToken->save())
@@ -214,6 +215,15 @@ class Auth extends BaseStructure
 				if ($validUntil->gt(Carbon::now()))
 				{
 					$authToken->touch();
+					Visitor::current()->session->save();
+					Visitor::current()->session->setId($authToken->session_id);
+					Visitor::current()->session->start();
+				}
+				//Otherwise save new session-id
+				else
+				{
+					$authToken->session_id = Visitor::current()->session->getId();
+					$authToken->save();
 				}
 			}
 		}

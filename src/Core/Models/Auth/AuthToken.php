@@ -28,6 +28,7 @@ use Core\Io\Validation;
  *
  * @property string $token
  * @property User $user
+ * @property string $session_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -78,6 +79,7 @@ class AuthToken extends BaseModel
 	{
 		$validator->value('token')->max(255)->required();
 		$validator->value('user_id')->integer()->required();
+		$validator->value('session_id')->max(255)->required();
 
 		$validator->value('created_at')->date();
 		$validator->value('updated_at')->date();
