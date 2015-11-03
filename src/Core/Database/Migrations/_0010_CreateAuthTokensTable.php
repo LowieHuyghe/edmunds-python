@@ -34,7 +34,7 @@ trait _0010_CreateAuthTokensTable
 		app('db')->connection()->getSchemaBuilder()->create('auth_tokens', function (Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('token')->index();
+			$table->string('token')->unique();
 			$table->integer('user_id')->unsigned();
 			$table->timestamps();
 		});
