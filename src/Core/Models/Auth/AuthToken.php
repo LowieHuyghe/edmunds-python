@@ -26,13 +26,12 @@ use Core\Io\Validation;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property string $email
- * @property User $user
  * @property string $token
+ * @property User $user
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
-class PasswordReset extends BaseModel
+class AuthToken extends BaseModel
 {
 	/**
 	 * Enable or disable timestamps by default
@@ -62,14 +61,10 @@ class PasswordReset extends BaseModel
 	 */
 	public function save(array $options = [])
 	{
-		//Set token
-		$this->token = EncryptionHelper::encrypt(time() . '_' . $this->email);
-
-		//Set user, if one
-		$user = User::where('email', '=', $this->email)->first();
-		if ($user)
+		//Set token if not set
+		if (!$this->token)
 		{
-			$this->user()->associate($user);
+			$this->token = EncryptionHelper::encrypt(time() . '_' . $this->user->id);
 		}
 
 		return parent::save($options);
@@ -81,36 +76,11 @@ class PasswordReset extends BaseModel
 	 */
 	protected static function addValidationRules(&$validator)
 	{
-		$validator->value('email')->max(255)->email()->required();
-		$validator->value('user_id')->integer()->required();
 		$validator->value('token')->max(255)->required();
+		$validator->value('user_id')->integer()->required();
 
 		$validator->value('created_at')->date();
 		$validator->value('updated_at')->date();
-	}
-
-	/**
-	 * Check if password-reset is still valid, and return it
-	 * @param string $token
-	 * @return PasswordReset
-	 */
-	public static function getWithValidCheck($token)
-	{
-		$passwordReset = PasswordReset::where('token', '=', $token)->first();
-
-		if ($passwordReset)
-		{
-			$latest = $passwordReset->created_at->addMinutes((int) env('CORE_AUTH_PASSWORDRESET_TTL'));
-			$now = Carbon::now();
-
-			if ($latest->gte($now))
-			{
-				$passwordReset->touch();
-				return $passwordReset;
-			}
-		}
-
-		return false;
 	}
 
 }

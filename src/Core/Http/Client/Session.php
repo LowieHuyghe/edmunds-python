@@ -86,7 +86,6 @@ class Session extends BaseStructure implements SessionInterface
 	public function set($name, $value)
 	{
 		$this->session->set($name, $value);
-		$this->session->save();
 	}
 
 	/**
@@ -108,7 +107,6 @@ class Session extends BaseStructure implements SessionInterface
 	public function remove($name)
 	{
 		$value = $this->session->remove($name);
-		$this->session->save();
 		return $value;
 	}
 
