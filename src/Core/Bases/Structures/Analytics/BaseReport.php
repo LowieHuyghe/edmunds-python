@@ -375,6 +375,8 @@ class BaseReport extends BaseStructure
 		$validator->value('clientId')->required();
 		//Session
 		$validator->value('ipOverride')->ip();
+		//Traffic Sources
+		$validator->value('documentReferrer')->url();
 		//System Info
 		$validator->value('javaEnabled')->boolean();
 		//Hit
@@ -525,7 +527,7 @@ class BaseReport extends BaseStructure
 		//Social Interactions
 		$validator->value('socialNetwork')->requiredIf('hitType', array('social'));
 		$validator->value('socialAction')->requiredIf('hitType', array('social'));
-		$validator->value('socialActionTarget')->requiredIf('hitType', array('social'));
+		$validator->value('socialActionTarget')->requiredIf('hitType', array('social'))->url();
 		//Timing
 		$validator->value('userTimingCategory')->requiredIf('hitType', array('timing'));
 		$validator->value('userTimingVariableName')->requiredIf('hitType', array('timing'));
