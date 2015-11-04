@@ -185,3 +185,13 @@
 	{
 		return (new \Faker\Generator());
 	}
+
+	/**
+	 * Check if value is int
+	 * @param $var
+	 * @return bool
+	 */
+	function is_int_($var)
+	{
+		return is_numeric($var) && preg_match('@^\d+$@', $var);
+	}

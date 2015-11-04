@@ -26,132 +26,96 @@ use Core\Bases\Structures\BaseStructure;
  * @since		Version 0.1
  *
 	//General
- * @property int $version
- * @property int $trackingId
- * @property int $anonymizeIp
- * @property int $dataSource
+ * @property string $version
+ * @property string $trackingId
+ * @property string $anonymizeIp
+ * @property string $dataSource
  * @property int $queueTime
- * @property int $cacheBuster
+ * @property string $cacheBuster
 	//User
- * @property int $clientId
- * @property int $userId
+ * @property string $clientId
+ * @property string $userId
 	//Session
- * @property int $sessionControl
- * @property int $ip
- * @property int $userAgent
- * @property int $geoId
+ * @property string $sessionControl
+ * @property string $ipOverride
+ * @property string $userAgentOverride
+ * @property string $geographicalOverride
 	//Traffic Sources
- * @property int $referrer
- * @property int $campaignName
- * @property int $campaignSource
- * @property int $campaignMedium
- * @property int $campaignKeyword
- * @property int $campaignContent
- * @property int $campaignId
- * @property int $googleAdWordsId
- * @property int $googleDisplayAdsId
+ * @property string $documentReferrer
+ * @property string $campaignName
+ * @property string $campaignSource
+ * @property string $campaignMedium
+ * @property string $campaignKeyword
+ * @property string $campaignContent
+ * @property string $campaignId
+ * @property string $googleAdWordsId
+ * @property string $googleDisplayAdsId
 	//System Info
- * @property int $screenResolution
- * @property int $viewportSize
- * @property int $documentEncoding
- * @property int $screenColors
- * @property int $userLanguage
- * @property int $javaEnabled
- * @property int $flahsVersion
+ * @property string $screenResolution
+ * @property string $viewportSize
+ * @property string $documentEncoding
+ * @property string $screenColors
+ * @property string $userLanguage
+ * @property bool $javaEnabled
+ * @property string $flahsVersion
 	//Hit
- * @property int $type
- * @property int $nonInteractionHit
+ * @property string $hitType
+ * @property bool $nonInteractionHit
 	//Content Information
- * @property int $documentLocationUrl
- * @property int $documentHostName
- * @property int $documentPath
- * @property int $documentTitle
- * @property int $screenName
- * @property int $linkId
+ * @property string $documentLocationUrl
+ * @property string $documentHostName
+ * @property string $documentPath
+ * @property string $documentTitle
+ * @property string $screenName
+ * @property string $linkId
 	//App Tracking
- * @property int $applicationName
- * @property int $applicationId
- * @property int $applicationVersion
- * @property int $applicationInstallerId
-	//Event Tracking
- * @property int $eventCategory
- * @property int $eventAction
- * @property int $eventLabel
- * @property int $eventValue
-	//E-Commerce
- * @property int $transactionId
- * @property int $transactionAffiliation
- * @property int $transactionRevenue
- * @property int $transactionShipping
- * @property int $transactionTax
- * @property int $itemName
- * @property int $itemPrice
- * @property int $itemQuantity
- * @property int $itemCode
- * @property int $itemCategory
- * @property int $currencyCode
+ * @property string $applicationName
+ * @property string $applicationId
+ * @property string $applicationVersion
+ * @property string $applicationInstallerId
 	//Enhanced E-Commerce
- * @property int $productSku
- * @property int $productName
- * @property int $productBrand
- * @property int $productCategory
- * @property int $productVariant
- * @property int $productPrice
- * @property int $productQuantity
- * @property int $productCouponCode
- * @property int $productPosition
- * @property int $productCustomDimension
- * @property int $productCustomMetric
- * @property int $productAction
- * @property int $affiliation
- * @property int $revenue
- * @property int $tax
- * @property int $shipping
- * @property int $couponCode
- * @property int $productActionList
+ * @property array $productSku
+ * @property array $productName
+ * @property array $productBrand
+ * @property array $productCategory
+ * @property array $productVariant
+ * @property array $productPrice
+ * @property array $productQuantity
+ * @property array $productCouponCode
+ * @property array $productPosition
+ * @property array $productCustomDimension
+ * @property array $productCustomMetric
+ * @property string $productAction
+ * @property string $transactionId
+ * @property string $affiliation
+ * @property double $revenue
+ * @property double $tax
+ * @property double $shipping
+ * @property string $couponCode
+ * @property string $productActionList
  * @property int $checkoutStep
- * @property int $checkoutStepOption
- * @property int $productImpressionListName
- * @property int $productImpressionSku
- * @property int $productImpressionName
- * @property int $productImpressionBrand
- * @property int $productImpressionCategory
- * @property int $productImpressionVariant
- * @property int $productImpressionPosition
- * @property int $productImpressionPrice
- * @property int $productImpressionCustomDimension
- * @property int $productImpressionCustomMetric
- * @property int $promotionId
- * @property int $promotionName
- * @property int $promotionCreative
- * @property int $promotionPosition
- * @property int $promotionAction
-	//Social Interactions
- * @property int $socialNetwork
- * @property int $socialAction
- * @property int $socialActionTarget
-	//Timing
- * @property int $userTimingCategory
- * @property int $userTimingVariableName
- * @property int $userTimingTime
- * @property int $userTimingLabel
- * @property int $pageLoadTime
- * @property int $dnsTime
- * @property int $pageDownloadTime
- * @property int $redirectResponseTime
- * @property int $tcpConnectTime
- * @property int $serverResponseTime
- * @property int $domInteractiveTime
- * @property int $contentLoadTime
-	//Exceptions
- * @property int $exceptionDescription
- * @property int $exceptionFatal
+ * @property string $checkoutStepOption
+ * @property array $productImpressionListName
+ * @property array $productImpressionSku
+ * @property array $productImpressionName
+ * @property array $productImpressionBrand
+ * @property array $productImpressionCategory
+ * @property array $productImpressionVariant
+ * @property array $productImpressionPosition
+ * @property array $productImpressionPrice
+ * @property array $productImpressionCustomDimension
+ * @property array $productImpressionCustomMetric
+ * @property array $promotionId
+ * @property array $promotionName
+ * @property array $promotionCreative
+ * @property array $promotionPosition
+ * @property string $promotionAction
 	//Custom Dimensions/Metrics
- * @property int $customDimension
- * @property int $customMetric
+ * @property array $customDimension
+ * @property array $customMetric
 	//ContentExperiments
- * @property int $experimentId
- * @property int $experimentVariant
+ * @property string $experimentId
+ * @property string $experimentVariant
  *
  */
 class BaseReport extends BaseStructure
@@ -173,11 +137,11 @@ class BaseReport extends BaseStructure
 		'userId'=> 'uid',
 		//Session
 		'sessionControl' => 'sc',
-		'ip' => 'uip',
-		'userAgent'=> 'ua',
-		'geoId' => 'geoid',
+		'ipOverride' => 'uip',
+		'userAgentOverride'=> 'ua',
+		'geographicalOverride' => 'geoid',
 		//Traffic Sources
-		'referrer' => 'dr',
+		'documentReferrer' => 'dr',
 		'campaignName' => 'cn',
 		'campaignSource' => 'cs',
 		'campaignMedium' => 'cm',
@@ -195,7 +159,7 @@ class BaseReport extends BaseStructure
 		'javaEnabled' => 'je',
 		'flashVersion' => 'fl',
 		//Hit
-		'type' => 't',
+		'hitType' => 't',
 		'nonInteractionHit' => 'ni',
 		//Content Information
 		'documentLocationUrl' => 'dl',
@@ -305,11 +269,14 @@ class BaseReport extends BaseStructure
 		$visitor = Visitor::current();
 
 		//Assign default values
-		$this->userAgent = $visitor->context->userAgent;
-		$this->ip = $request->ip;
+		$this->dataSource = 'web';
+		$this->userAgentOverride = $visitor->context->userAgent;
+		$this->ipOverride = $request->ip;
 		if ($visitor->loggedIn) $this->userId = $visitor->user->id;
 		$this->userLanguage = $visitor->localization->locale;
 		$this->clientId = $visitor->id;
+
+		//Use queue time!
 
 		$this->validator = new Validation();
 		static::addValidationRules($this->validator);
@@ -367,13 +334,13 @@ class BaseReport extends BaseStructure
 		return $this->send($output);
 	}
 
-	private function send($data)
+	protected function send($data)
 	{
 		//Setup header
 		$header = array('Content-type: application/x-www-form-urlencoded');
-		if ($this->userAgent)
+		if ($this->userAgentOverride)
 		{
-			$header[] = 'User-Agent: ' . $this->userAgent;
+			$header[] = 'User-Agent: ' . $this->userAgentOverride;
 		}
 
 		//Setup options
@@ -407,50 +374,162 @@ class BaseReport extends BaseStructure
 		//User
 		$validator->value('clientId')->required();
 		//Session
-		$validator->value('ip')->ip();
+		$validator->value('ipOverride')->ip();
 		//System Info
 		$validator->value('javaEnabled')->boolean();
 		//Hit
-		$validator->value('type')->required();
+		$validator->value('hitType')->required();
 		$validator->value('nonInteractionHit')->boolean();
 		//Content Information
-		$validator->value('screenName')->requiredIf('type', array('screenview'))->sometimes(function($input) {
-			return (isset($input->dataSource) && in_array($input->dataSource, array('app')));
-		});
+		$validator->value('documentLocationUrl')->url();
+		$validator->value('screenName')->requiredIf('hitType', array('screenview'));
 		//App Tracking
 		$validator->value('applicationName')->requiredIf('dataSource', array('app'));
 		//Event Tracking
-		$validator->value('eventCategory')->requiredIf('type', array('event'));
-		$validator->value('eventAction')->requiredIf('type', array('event'));
+		$validator->value('eventCategory')->requiredIf('hitType', array('event'));
+		$validator->value('eventAction')->requiredIf('hitType', array('event'));
 		$validator->value('eventValue')->integer();
 		//E-Commerce
-		$validator->value('transactionId')->requiredIf('type', array('transaction', 'item'));
+		$validator->value('transactionId')->requiredIf('hitType', array('transaction', 'item'));
 		$validator->value('transactionRevenue')->numeric();
 		$validator->value('transactionShipping')->numeric();
 		$validator->value('transactionTax')->numeric();
-		$validator->value('itemName')->requiredIf('type', array('item'));
+		$validator->value('itemName')->requiredIf('hitType', array('item'));
 		$validator->value('itemPrice')->numeric();
 		$validator->value('itemQuantity')->integer();
 		//Enhanced E-Commerce
-		$validator->value('productPrice')->numeric();
-		$validator->value('productQuantity')->integer();
-		$validator->value('productPosition')->integer();
-		$validator->value('productCustomMetric')->integer();
+		$validator->value('productSku')->sometimes(function($input) {
+			$value = $input->productSku;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productName')->sometimes(function($input) {
+			$value = $input->productName;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productBrand')->sometimes(function($input) {
+			$value = $input->productBrand;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productCategory')->sometimes(function($input) {
+			$value = $input->productCategory;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productVariant')->sometimes(function($input) {
+			$value = $input->productVariant;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productPrice')->sometimes(function($input) {
+			$value = $input->productPrice;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_numeric($value[1]);
+		});
+		$validator->value('productQuantity')->sometimes(function($input) {
+			$value = $input->productQuantity;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]);
+		});
+		$validator->value('productCouponCode')->sometimes(function($input) {
+			$value = $input->productCouponCode;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productPosition')->sometimes(function($input) {
+			$value = $input->productPosition;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]);
+		});
+		$validator->value('productCustomDimension')->sometimes(function($input) {
+			$value = $input->productCustomDimension;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productCustomMetric')->sometimes(function($input) {
+			$value = $input->productCustomMetric;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
+				&& is_int_($value[2]);
+		});
 		$validator->value('revenue')->numeric();
 		$validator->value('tax')->numeric();
 		$validator->value('shipping')->numeric();
 		$validator->value('checkoutStep')->integer();
-		$validator->value('productImpressionPosition')->integer();
-		$validator->value('productImpressionPrice')->numeric();
-		$validator->value('productImpressionCustomMetric')->integer();
+		$validator->value('productImpressionListName')->sometimes(function($input) {
+			$value = $input->productImpressionListName;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('productImpressionSku')->sometimes(function($input) {
+			$value = $input->productImpressionSku;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productImpressionName')->sometimes(function($input) {
+			$value = $input->productImpressionName;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productImpressionBrand')->sometimes(function($input) {
+			$value = $input->productImpressionBrand;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productImpressionCategory')->sometimes(function($input) {
+			$value = $input->productImpressionCategory;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productImpressionVariant')->sometimes(function($input) {
+			$value = $input->productImpressionVariant;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
+		});
+		$validator->value('productImpressionPosition')->sometimes(function($input) {
+			$value = $input->productImpressionPosition;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
+				&& is_int_($value[2]);
+		});
+		$validator->value('productImpressionPrice')->sometimes(function($input) {
+			$value = $input->productImpressionPrice;
+			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
+				&& is_numeric($value[2]);
+		});
+		$validator->value('productImpressionCustomDimension')->sometimes(function($input) {
+			$value = $input->productImpressionCustomDimension;
+			return is_array($value) && count($value) == 4 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
+				&& is_int_($value[2]) && 1 <= $value[2] && $value[2] <= 200;
+		});
+		$validator->value('productImpressionCustomMetric')->sometimes(function($input) {
+			$value = $input->productImpressionCustomMetric;
+			return is_array($value) && count($value) == 4 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
+				&& is_int_($value[2]) && 1 <= $value[2] && $value[2] <= 200
+				&& is_int_($value[3]);
+		});
+		$validator->value('promotionId')->sometimes(function($input) {
+			$value = $input->promotionId;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('promotionName')->sometimes(function($input) {
+			$value = $input->promotionName;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('promotionCreative')->sometimes(function($input) {
+			$value = $input->promotionCreative;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('promotionPosition')->sometimes(function($input) {
+			$value = $input->promotionPosition;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
 		//Social Interactions
-		$validator->value('socialNetwork')->requiredIf('type', array('social'));
-		$validator->value('socialAction')->requiredIf('type', array('social'));
-		$validator->value('socialActionTarget')->requiredIf('type', array('social'));
+		$validator->value('socialNetwork')->requiredIf('hitType', array('social'));
+		$validator->value('socialAction')->requiredIf('hitType', array('social'));
+		$validator->value('socialActionTarget')->requiredIf('hitType', array('social'));
 		//Timing
-		$validator->value('userTimingCategory')->requiredIf('type', array('timing'));
-		$validator->value('userTimingVariableName')->requiredIf('type', array('timing'));
-		$validator->value('userTimingTime')->requiredIf('type', array('timing'))->integer();
+		$validator->value('userTimingCategory')->requiredIf('hitType', array('timing'));
+		$validator->value('userTimingVariableName')->requiredIf('hitType', array('timing'));
+		$validator->value('userTimingTime')->requiredIf('hitType', array('timing'))->integer();
 		$validator->value('pageLoadTime')->integer();
 		$validator->value('dnsTime')->integer();
 		$validator->value('pageDownloadTime')->integer();
@@ -462,6 +541,14 @@ class BaseReport extends BaseStructure
 		//Exceptions
 		$validator->value('exceptionFatal')->boolean();
 		//Custom Dimensions/Metrics
-		$validator->value('customMetric')->integer();
+		$validator->value('customDimension')->sometimes(function($input) {
+			$value = $input->customDimension;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
+		});
+		$validator->value('customMetric')->sometimes(function($input) {
+			$value = $input->customMetric;
+			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
+				&& is_int_($value[1]);
+		});
 	}
 }
