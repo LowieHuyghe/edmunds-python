@@ -14,32 +14,33 @@
 namespace Core\Analytics\Logging;
 
 use Core\Bases\Structures\Analytics\BaseReport;
-use Core\Http\Request;
 
 /**
- * The structure for page reports
+ * The structure for transaction reports
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+	//E-Commerce
+ * @property string $transactionId
+ * @property string $transactionAffiliation
+ * @property double $transactionRevenue
+ * @property double $transactionShipping
+ * @property double $transactionTax
+ * @property string $currencyCode
  */
-class PageReport extends BaseReport
+class TransactionReport extends BaseReport
 {
 	/**
-	 * PageReport constructor.
+	 * Constructor
 	 */
 	public function __construct()
 	{
 		parent::__construct();
 
-		$this->type = 'pageview';
-		$this->documentHostName = Request::current()->root;
-		$path = substr(Request::current()->fullUrl, strlen($this->documentHostName));
-		if (!$path || $path[0] != '/')
-		{
-			$path = '/' . $path;
-		}
-		$this->documentPath = $path;
+		$this->hitType = 'transaction';
 	}
+
 }
