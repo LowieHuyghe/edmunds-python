@@ -106,7 +106,7 @@ class Translator extends BaseStructure
 			$translation->original = $key;
 
 			//Save if not in local-mode
-			if (app()->isLocal())
+			if (!app()->isLocal())
 			{
 				$translation->save();
 			}
