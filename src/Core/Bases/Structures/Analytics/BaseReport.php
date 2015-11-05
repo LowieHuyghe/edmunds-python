@@ -16,6 +16,8 @@ use Core\Http\Request;
 use Core\Io\Validation;
 use Core\Http\Client\Visitor;
 use Core\Bases\Structures\BaseStructure;
+use Core\Registry\Queue;
+use Core\Registry\Registry;
 
 /**
  * The structure for reports
@@ -25,7 +27,7 @@ use Core\Bases\Structures\BaseStructure;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//General
+	* //General
  * @property string $version
  * @property string $trackingId
  * @property string $anonymizeIp
@@ -57,7 +59,7 @@ use Core\Bases\Structures\BaseStructure;
  * @property string $screenColors
  * @property string $userLanguage
  * @property bool $javaEnabled
- * @property string $flahsVersion
+ * @property string $flashVersion
 	//Hit
  * @property string $hitType
  * @property bool $nonInteractionHit
@@ -275,39 +277,42 @@ class BaseReport extends BaseStructure
 		if ($visitor->loggedIn) $this->userId = $visitor->user->id;
 		$this->userLanguage = $visitor->localization->locale;
 		$this->clientId = $visitor->id;
+		$this->cacheBuster = rand(0, 2000000000);
 
-		//Use queue time!
+		$this->documentEncoding = "UTF-8";
+		$this->documentLocationUrl = $request->fullUrl;
+		$this->documentHostName = $request->host;
+		$this->documentPath = $request->path;
+		if ($this->documentPath && $this->documentPath[0] != '/')
+		{
+			$this->documentPath = '/' . $this->documentPath;
+		}
+		$this->documentReferrer = $request->referrer;
 
+		//Add validation stuff
 		$this->validator = new Validation();
 		static::addValidationRules($this->validator);
 	}
 
 	/**
-	 * Save the instance of the report
-	 * @return mixed response
+	 * Report the log
 	 * @throws \Exception
 	 */
 	public function report()
 	{
-		if (get_class() == get_called_class())
-		{
-			throw new \Exception('The BaseReport can not be reported for analytics');
-		}
-		if ($this->hasErrors())
-		{
-			throw new \Exception('This report has errors and can not be sent: ' . json_encode($this->getErrors()->getMessageBag()->toArray()));
-		}
-
-		$output = array();
-		//Add cache buster to make sure link is loaded
-		$this->attributes['cacheBuster'] = rand(0, 2000000000);
+//		if ($this->hasErrors())
+//		{
+//			throw new \Exception('This report has errors and can not be sent: ' . json_encode($this->getErrors()->getMessageBag()->toArray()));
+//		}
 
 		//Set up all the variables and the right values
+		$data = array();
 		foreach ($this->attributes as $parameter => $value)
 		{
 			if (!isset($this->parameterMapping[$parameter]))
 			{
-				throw new \Exception("There is no mapping for the parameter: $parameter");
+				//throw new \Exception("There is no mapping for the parameter: $parameter");
+				continue;
 			}
 
 			//Bool needs to be 1/0
@@ -328,20 +333,32 @@ class BaseReport extends BaseStructure
 			}
 
 			//Add query-item
-			$output[$parameterName] = urlencode($value);
+			$data[$parameterName] = $value;
 		}
 
-		return $this->send($output);
-	}
-
-	protected function send($data)
-	{
 		//Setup header
 		$header = array('Content-type: application/x-www-form-urlencoded');
 		if ($this->userAgentOverride)
 		{
 			$header[] = 'User-Agent: ' . $this->userAgentOverride;
 		}
+
+		Registry::queue()->dispatch(array(get_called_class(), 'send'), array(
+			$header, $data, microtime(true),
+		), Queue::QUEUE_LOG);
+	}
+
+	/**
+	 * Send the data
+	 * @param array $header
+	 * @param array $data
+	 * @param int $timeReported
+	 */
+	public static function send($header, $data, $timeReported)
+	{
+		//Add queue time
+		$queueTime = round((microtime(true) - $timeReported) * 1000);
+		$data['qt'] = $queueTime;
 
 		//Setup options
 		$options = array(
@@ -351,13 +368,10 @@ class BaseReport extends BaseStructure
 				'content' => http_build_query($data),
 			),
 		);
-		$context  = stream_context_create($options);
+		$context = stream_context_create($options);
 
 		//Send request
-		$result = file_get_contents('http://www.google-analytics.com/collect', false, $context);
-
-		//Return result
-		return $result;
+		file_get_contents('http://www.google-analytics.com/collect', false, $context);
 	}
 
 	/**
