@@ -13,7 +13,7 @@
 
 namespace Core\Registry;
 
-use Core\Bases\Jobs\BaseQueue;
+use Core\Jobs\QueueJob;
 use Core\Bases\Structures\BaseStructure;
 
 /**
@@ -26,6 +26,8 @@ use Core\Bases\Structures\BaseStructure;
  */
 class Queue extends BaseStructure
 {
+	const	QUEUE_DEFAULT		= null,
+			QUEUE_LOG			= 'log';
 	/**
 	 * The default store to load from cache
 	 * @var string
@@ -45,50 +47,26 @@ class Queue extends BaseStructure
 
 	/**
 	 * Dispatch a job to its appropriate handler.
-	 * @param  BaseQueue  $job
-	 * @param string $conveyor
-	 * @return mixed
+	 * @param callable $callable
+	 * @param array $args
+	 * @param string $queue
+	 * @param int $attempts
+	 * @return \Illuminate\Http\Response
 	 */
-	public function dispatch($job, $conveyor = null)
+	public function dispatch($callable, $args, $queue = self::QUEUE_DEFAULT, $attempts = 1)
 	{
-		if ($conveyor)
+		if (env('QUEUE_IMMEDIATELY'))
 		{
-			$job = $job->onQueue($conveyor);
+			return call_user_func_array($callable, $args);
 		}
-		return app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
-	}
-
-	/**
-	 * Marshal a job and dispatch it to its appropriate handler.
-	 * @param  BaseQueue  $job
-	 * @param  array  $array
-	 * @param string $conveyor
-	 * @return mixed
-	 */
-	public function dispatchFromArray($job, array $array, $conveyor = null)
-	{
-		if ($conveyor)
+		else
 		{
-			$job = $job->onQueue($conveyor);
+			$job = new QueueJob($callable, $args, $attempts);
+			if ($queue) {
+				$job = $job->onQueue($queue);
+			}
+			return app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
 		}
-		return app('Illuminate\Contracts\Bus\Dispatcher')->dispatchFromArray($job, $array);
-	}
-
-	/**
-	 * Marshal a job and dispatch it to its appropriate handler.
-	 * @param  BaseQueue  $job
-	 * @param  \ArrayAccess  $source
-	 * @param  array  $extras
-	 * @param string $conveyor
-	 * @return mixed
-	 */
-	public function dispatchFrom($job, \ArrayAccess $source, $extras = [], $conveyor = null)
-	{
-		if ($conveyor)
-		{
-			$job = $job->onQueue($conveyor);
-		}
-		return app('Illuminate\Contracts\Bus\Dispatcher')->dispatchFrom($job, $source, $extras);
 	}
 
 }

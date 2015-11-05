@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @since		Version 0.1
  *
  * @property string $ip Return the ip of the visitor
- * @property string $referer Return the referer
+ * @property string $referrer Return the referrer
  * @property string $url Return the url
  * @property string $fullUrl Return the full url
  * @property string $root Return the root of the application
@@ -38,6 +38,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property string $method Return method of request
  * @property array $segments Return method of route
  * @property string $route Return the route
+ * @property string $host Return the host
  */
 class Request extends BaseStructure
 {
@@ -89,7 +90,7 @@ class Request extends BaseStructure
 	{
 		$ip = $this->request->ip();
 
-		if ($ip == '127.0.0.1' && app()->isLocal())
+		if (in_array($ip, array('127.0.0.1', '10.0.2.2')) && app()->isLocal())
 		{
 			$ip = '213.118.118.244';
 		}
@@ -97,10 +98,10 @@ class Request extends BaseStructure
 	}
 
 	/**
-	 * Return the referer
+	 * Return the referrer
 	 * @return string
 	 */
-	protected function getRefererAttribute()
+	protected function getReferrerAttribute()
 	{
 		return $this->getServer('HTTP_REFERER');
 	}
@@ -232,6 +233,15 @@ class Request extends BaseStructure
 	protected function getRouteAttribute()
 	{
 		return $this->request->route()[2]['route'];
+	}
+
+	/**
+	 * Return the host
+	 * @return string
+	 */
+	protected function getHostAttribute()
+	{
+		return $this->request->getHttpHost();
 	}
 
 	/**
