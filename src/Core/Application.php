@@ -12,6 +12,16 @@
  */
 
 namespace Core;
+use Core\Exceptions\AbortHttpException;
+use Core\Http\Client\Session;
+use Core\Http\Dispatcher;
+use Core\Http\Request;
+use Core\Http\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 /**
  * The structure for application
@@ -49,6 +59,98 @@ class Application extends \Laravel\Lumen\Application
 	public function isTesting()
 	{
 		return app()->environment() == 'testing';
+	}
+
+	/**
+	 * Dispatch the incoming request.
+	 *
+	 * @param  SymfonyRequest|null $request
+	 * @return Response
+	 */
+	public function dispatch($request = null)
+	{
+		if (!$request)
+		{
+			$request = \Illuminate\Http\Request::capture();
+		}
+
+		$this->instance('Illuminate\Http\Request', $request);
+		$this->ranServiceBinders['registerRequestBindings'] = true;
+
+		Session::initialize($request->getSession());
+		$request->setSession(Session::current());
+		Request::initialize($request);
+
+		$method = $request->getMethod();
+		$pathInfo = $request->getPathInfo();
+
+		try
+		{
+			if (app()->isDownForMaintenance())
+			{
+				abort(503);
+			}
+
+			return $this->sendThroughPipeline($this->middleware, function () use ($method, $pathInfo)
+			{
+				$result = $this->handleDispatcherResponse(
+					$this->createDispatcher()->dispatch($method, $pathInfo)
+				);
+				return $result;
+			});
+		}
+		catch (AbortHttpException $e)
+		{
+			$response = Response::current();
+
+			return $response->getResponse();
+		}
+		catch (Exception $e)
+		{
+			return $this->sendExceptionToHandler($e);
+		}
+		catch (Throwable $e)
+		{
+			return $this->sendExceptionToHandler($e);
+		}
+	}
+
+    /**
+     * Throw an HttpException with the given data.
+     *
+     * @param  int     $code
+     * @param  string  $message
+     * @param  array   $headers
+     * @return void
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
+    public function abort($code, $message = '', array $headers = [])
+    {
+		switch($code)
+		{
+			case 200:
+				throw new AbortHttpException($message);
+			case 401:
+				throw new UnauthorizedHttpException('Basic', $message);
+			case 403:
+				throw new AccessDeniedHttpException($message);
+			case 404:
+				throw new NotFoundHttpException($message);
+			case 503:
+				throw new ServiceUnavailableHttpException(null, $message);
+			default:
+				throw new HttpException($code, $message, null, $headers);
+		}
+    }
+
+	/**
+	 * Create a core Dispatcher instance for the application.
+	 * @return Dispatcher
+	 */
+	protected function createDispatcher()
+	{
+		return $this->dispatcher ?: new Dispatcher();
 	}
 
 }
