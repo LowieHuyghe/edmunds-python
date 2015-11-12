@@ -19,19 +19,6 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 Dotenv::load(__DIR__ . '/..');
 Dotenv::load(REAL_BASE_PATH);
 
-$missingConfig = array();
-foreach (explode(',', env('CORE_CONFIG_REQUIRED')) as $line)
-{
-	if (!env($line))
-	{
-		$missingConfig[] = $line;
-	}
-}
-if (!empty($missingConfig))
-{
-	throw new \Exception("The following env-values are required:\n" . implode("\n", $missingConfig));
-}
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -62,15 +49,41 @@ $app->withEloquent();
 |
 */
 
+if (!$exceptionHandler = env('APP_CUSTOM_EXCEPTION_HANDLER'))
+{
+	$exceptionHandler = Core\Exceptions\Handler::class;
+}
 $app->singleton(
 	Illuminate\Contracts\Debug\ExceptionHandler::class,
-	App\Exceptions\Handler::class
+	$exceptionHandler
 );
 
 $app->singleton(
 	Illuminate\Contracts\Console\Kernel::class,
 	App\Console\Kernel::class
 );
+
+/*
+|--------------------------------------------------------------------------
+| Configuration
+|--------------------------------------------------------------------------
+|
+| Check if all required configuration is supplied
+|
+*/
+
+$missingConfig = array();
+foreach (explode(',', env('CORE_CONFIG_REQUIRED')) as $line)
+{
+	if (!env($line))
+	{
+		$missingConfig[] = $line;
+	}
+}
+if (!empty($missingConfig))
+{
+	throw new \Exception("The following env-values are required:\n" . implode("\n", $missingConfig));
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -109,21 +122,5 @@ if ($providers = config('app.providers'))
 		$app->register($provider);
 	}
 }
-
-/*
-|--------------------------------------------------------------------------
-| Load The Application Routes
-|--------------------------------------------------------------------------
-|
-| Next we will include the routes file so that they can all be added to
-| the application. This will provide all of the URLs the application
-| can respond to, as well as the controllers that may handle them.
-|
-*/
-
-$app->get('{route:.*}', array('uses' => '\Core\Router@route'));
-$app->post('{route:.*}', array('uses' => '\Core\Router@route'));
-$app->put('{route:.*}', array('uses' => '\Core\Router@route'));
-$app->delete('{route:.*}', array('uses' => '\Core\Router@route'));
 
 return $app;

@@ -59,8 +59,7 @@ class LoginRequiredController extends BaseController
 				}
 				if (!$this->visitor->loggedIn)
 				{
-					$this->response->assignHeader('WWW-Authenticate', 'Basic' /*. 'realm="Comment"'*/);
-					$this->response->response401('Invalid credentials.');
+					abort(401, 'Invalid credentials.');
 				}
 			}
 			elseif ($type == self::TYPE_TOKEN)
@@ -72,7 +71,7 @@ class LoginRequiredController extends BaseController
 				}
 				if (!$this->visitor->loggedIn)
 				{
-					$this->response->response401();
+					abort(403);
 				}
 			}
 			else

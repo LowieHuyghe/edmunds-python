@@ -86,6 +86,41 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * [responseFlow description]
+	 * @param string $defaultControllerName
+	 * @param Route $route
+	 * @param array $parameters
+	 * @return Illuminate\Http\Response
+	 */
+	public function responseFlow($defaultControllerName, $route, $parameters)
+	{
+		//Make default controller
+		$defaultController = app($defaultControllerName);
+
+		//Initialize default controller
+		$defaultController->initialize();
+
+		//Initialiaz this controller
+		$this->initialize();
+		//Call the tight method
+		$response = call_user_func_array(array($this, $route->name), $parameters);
+		//Finalize this controller
+		$this->finalize();
+
+		//Finalize default controller
+		$defaultController->finalize();
+
+		//set the status of the response
+		if ($response === true || $response === false)
+		{
+			Response::current()->assign('success', $response);
+		}
+
+		//Return response
+		return Response::current()->getResponse();
+	}
+
+	/**
 	 * Check if user has all the required rights
 	 */
 	private function checkRights()
@@ -122,7 +157,7 @@ class BaseController extends Controller
 		}
 
 		//Visitor is not authorized to be here
-		$this->response->response401();
+		abort(403);
 	}
 
 	/**

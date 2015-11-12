@@ -11,136 +11,86 @@
  * @since		Version 0.1
  */
 
-namespace Core;
+namespace Core\Http;
 
-use Core\Exceptions\AbortException;
 use Core\Http\Client\Input;
 use Core\Http\Client\Visitor;
-use Core\Http\Request;
-use Core\Http\Response;
 use Core\Http\Client\Session;
-use Core\Http\Route;
 use Illuminate\View\View;
-use Laravel\Lumen\Routing\Controller;
 
 /**
  * The helper responsible for the routing
- * To use it, just add the following to routes.php:
- *
-	Route::any('{all}', [
-		'uses' => '\Core\Controllers\Router@route'
-	])->where('all', '.*');
- *
- *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Router extends Controller
+class Dispatcher implements \FastRoute\Dispatcher
 {
 	/**
-	 * @var string
+	 * Dispatches against the provided HTTP method verb and URI.
+	 *
+	 * Returns array with one of the following formats:
+	 *
+	 *     [self::NOT_FOUND]
+	 *     [self::METHOD_NOT_ALLOWED, ['GET', 'OTHER_ALLOWED_METHODS']]
+	 *     [self::FOUND, $handler, ['varName' => 'value', ...]]
+	 *
+	 * @param string $httpMethod
+	 * @param string $uri
+	 *
+	 * @return array
 	 */
-	private $route;
-
-	/**
-	 * Do the route logic
-	 * @param \Illuminate\Http\Request $request
-	 * @param string $route
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	public function route(\Illuminate\Http\Request $request, $route)
+	public function dispatch($httpMethod, $uri)
 	{
-		//Initialize stuff
-		Session::initialize($request->session());
-		$request->setSession(Session::current());
-		Request::initialize($request);
-
-		$this->route = $route;
-
-		$response = null;
-		try
-		{
-			$response = $this->routeHandler();
-		}
-		catch (AbortException $ex)
-		{
-			$response = Response::current()->getResponse();
-			if ($response->getStatusCode() >= 400)
-			{
-				$originalContent = $response->getOriginalContent();
-				if ($originalContent instanceof View)
-				{
-					//TODO @Lowie Logging!
-					$message = $originalContent->getData()['message'];
-					if (app()->isLocal() && env('APP_DEBUG'))
-					{
-						abort($response->getStatusCode(), $message, $response->headers->all());
-					}
-				}
-				else
-				{
-					//TODO @Lowie Logging!
-					abort($response->getStatusCode(), $originalContent, $response->headers->all());
-				}
-			}
-		}
-		catch (\Exception $ex)
-		{
-			//TODO @Lowie Logging!
-			throw $ex;
-		}
-		return $response;
-	}
-
-	/**
-	 * Do the route logic
-	 * @return \Illuminate\Http\Response
-	 */
-	private function routeHandler()
-	{
-		//Check if it is a valid route
-		if (!$this->isValidRoute())
-		{
-			Response::current()->response404();
-		}
-		elseif (app()->isDownForMaintenance())
-		{
-			Response::current()->response503(true);
-		}
-
 		//Get all the constants
 		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestType, $segments) = $this->getAllConstants();
 
 		//Get the controller and make instance of defaultController
 		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments);
-		if (!$controllerName)
-		{
-			Response::current()->response404();
-		}
 
 		//Get the name of the method
-		list($route, $parameters) = $this->getRoute($controllerName, $requestMethod, $remainingSegments);
-		if (!$route
-			|| !$this->areParametersValid($route->parameters, $parameters))
+		if ($controllerName)
 		{
-			Response::current()->response404();
+			list($route, $parameters) = $this->getRoute($controllerName, $requestMethod, $remainingSegments);
+			if ($route && $this->areParametersValid($route->parameters, $parameters))
+			{
+				//Prepare result
+				$routeResults = array(
+					self::FOUND,
+					array(
+						'uses' => '\\' . $controllerName . '@responseFlow',
+					),
+					array(
+						$defaultControllerName,
+						$route,
+						$parameters,
+					),
+				);
+
+				//Middleware
+				$middleware = $route->middleware;
+				if ($route->rights)
+				{
+					$middleware[] = 'auth';
+					$middleware[] = 'rights';
+				}
+				if ($middleware)
+				{
+					$routeResults[1]['middleware'] = $middleware;
+				}
+
+				//Return result
+				return $routeResults;
+			}
 		}
 
-		//Call the method
-		return $this->callMethod($defaultControllerName, $controllerName, $route, $parameters);
-	}
-
-	/**
-	 * Validate the route
-	 * @return bool
-	 */
-	private function isValidRoute()
-	{
-		//Only let the accepted routes through
-		return (preg_match('/^[\w\d\/$\-_\.\+!\*]*$/', Request::current()->route) === 1);
+		//No route found
+		return array(
+			self::NOT_FOUND,
+			array(),
+			array(),
+		);
 	}
 
 	/**
@@ -348,35 +298,5 @@ class Router extends Controller
 		}
 
 		return true;
-	}
-
-	/**
-	 * Call the method of the controller and return the response
-	 * @param string $defaultControllerName
-	 * @param string $controllerName
-	 * @param Route $route
-	 * @param array $parameters
-	 * @return \Illuminate\Http\Response
-	 */
-	private function callMethod($defaultControllerName, $controllerName, $route, $parameters)
-	{
-		//Set the rights required
-		Visitor::$requiredRights = array_unique($route->rights);
-
-		//Initialize the controllers
-		$controller = app($controllerName);
-		$defaultController = app($defaultControllerName);
-
-		//Initialize, call method, finalize
-		$defaultController->initialize();
-		$controller->initialize();
-		$response = call_user_func_array(array($controller, $route->name), $parameters);
-		$controller->finalize();
-
-		//set the status of the response
-		Response::current()->assign('success', ($response !== false));
-
-		//Return response
-		return Response::current()->getResponse();
 	}
 }

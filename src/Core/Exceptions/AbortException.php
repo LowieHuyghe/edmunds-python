@@ -22,23 +22,7 @@ use Core\Bases\Exceptions\BaseException;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class AbortException extends BaseException
+class AbortHttpException extends BaseException
 {
-	/**
-	 * Status of the abort
-	 * @var int
-	 */
-	public $status;
-
-	/**
-	 * Constructor
-	 * @param int $status
-	 * @param string $message
-	 */
-	public function __construct($status = null, $message = null)
-	{
-		parent::__construct($message);
-
-		$this->status = $status;
-	}
+	//
 }

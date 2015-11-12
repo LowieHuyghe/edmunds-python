@@ -13,7 +13,6 @@
 
 namespace Core\Http;
 
-use Core\Exceptions\AbortException;
 use Core\Bases\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Cookie;
 
@@ -35,6 +34,7 @@ class Response extends BaseStructure
 			TYPE_REDIRECT		= 6,
 
 			TYPE_401			= 401,
+			TYPE_403			= 403,
 			TYPE_404			= 404,
 			TYPE_503			= 503;
 
@@ -111,12 +111,19 @@ class Response extends BaseStructure
 
 	/**
 	 * Assign data to response
-	 * @param string $key
+	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function assign($key, $value)
+	public function assign($key, $value = null)
 	{
-		if (is_string($value) && starts_with($value, '_'))
+		if (is_array($key))
+		{
+			foreach ($key as $valueKey => $value)
+			{
+				$this->assign($valueKey, $value);
+			}
+		}
+		elseif (is_string($value) && starts_with($value, '_'))
 		{
 			$this->assignedGeneralData[$key] = $value;
 		}
@@ -189,12 +196,22 @@ class Response extends BaseStructure
 
 	/**
 	 * Assign headers to response
-	 * @param string $key
+	 * @param string|array $key
 	 * @param mixed $value
 	 */
-	public function assignHeader($key, $value)
+	public function assignHeader($key, $value = null)
 	{
-		$this->assignedHeaders[$key] = $value;
+		if (is_array($key))
+		{
+			foreach ($key as $valueKey => $value)
+			{
+				$this->assignHeader($valueKey, $value);
+			}
+		}
+		else
+		{
+			$this->assignedHeaders[$key] = $value;
+		}
 	}
 
 	/**
@@ -256,56 +273,11 @@ class Response extends BaseStructure
 	}
 
 	/**
-	 * 401
-	 * @param string $message
-	 */
-	public function response401($message = '')
-	{
-		$this->assignView(null, 'errors.401');
-		$this->assign('message', $message);
-
-		$this->setType(self::TYPE_401);
-
-		$this->send();
-	}
-
-	/**
-	 * 404
-	 * @param string $message
-	 */
-	public function response404($message = '')
-	{
-		$this->assignView(null, 'errors.404');
-		$this->assign('message', $message);
-
-		$this->setType(self::TYPE_404);
-
-		$this->send();
-	}
-
-	/**
-	 * 503
-	 * @param bool $maintenance
-	 * @param string $message
-	 */
-	public function response503($maintenance = false, $message = '')
-	{
-		$this->assignView(null, 'errors.503');
-		$this->assign('maintenance', $maintenance);
-		$this->assign('message', $message);
-
-		$this->setType(self::TYPE_503);
-
-		$this->send();
-	}
-
-	/**
 	 * Abort the request but send response
-	 * @throws AbortException
 	 */
 	public function send()
 	{
-		throw new AbortException();
+		abort(200);
 	}
 
 	/**
@@ -361,7 +333,7 @@ class Response extends BaseStructure
 		{
 			$response = response()->make($this->response[self::TYPE_CONTENT]['content']);
 		}
-		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML, self::TYPE_401, self::TYPE_404, self::TYPE_503)) && !empty($this->response[self::TYPE_VIEW]))
+		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML, self::TYPE_401, self::TYPE_403, self::TYPE_404, self::TYPE_503)) && !empty($this->response[self::TYPE_VIEW]))
 		{
 			$data = array_merge($this->assignedGeneralData, $this->assignedData);
 			ksort($this->response[self::TYPE_VIEW]);
@@ -383,6 +355,9 @@ class Response extends BaseStructure
 			{
 				case self::TYPE_401:
 					$response->setStatusCode(401);
+					break;
+				case self::TYPE_403:
+					$response->setStatusCode(403);
 					break;
 				case self::TYPE_404:
 					$response->setStatusCode(404);
