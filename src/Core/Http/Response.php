@@ -31,12 +31,7 @@ class Response extends BaseStructure
 			TYPE_XML			= 3,
 			TYPE_CONTENT		= 4,
 			TYPE_DOWNLOAD		= 5,
-			TYPE_REDIRECT		= 6,
-
-			TYPE_401			= 401,
-			TYPE_403			= 403,
-			TYPE_404			= 404,
-			TYPE_503			= 503;
+			TYPE_REDIRECT		= 6;
 
 	/**
 	 * Instance of the response-helper
@@ -96,6 +91,12 @@ class Response extends BaseStructure
 	 * @var array
 	 */
 	private $assignedHeaders = array();
+
+	/**
+	 * The status code of the response
+	 * @var int
+	 */
+	private $statusCode = 200;
 
 	/**
 	 * The response
@@ -215,6 +216,15 @@ class Response extends BaseStructure
 	}
 
 	/**
+	 * Change the status code of the response
+	 * @param int $statusCode
+	 */
+	public function setStatusCode($statusCode)
+	{
+		$this->statusCode = $statusCode;
+	}
+
+	/**
 	 * Fetch the build response
 	 * @param \Illuminate\Http\Response $response
 	 */
@@ -231,6 +241,9 @@ class Response extends BaseStructure
 		{
 			$response->withCookie($cookie);
 		}
+
+		//Set status code
+		$response->setStatusCode($this->statusCode);
 	}
 
 	/**
@@ -333,7 +346,7 @@ class Response extends BaseStructure
 		{
 			$response = response()->make($this->response[self::TYPE_CONTENT]['content']);
 		}
-		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML, self::TYPE_401, self::TYPE_403, self::TYPE_404, self::TYPE_503)) && !empty($this->response[self::TYPE_VIEW]))
+		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML)) && !empty($this->response[self::TYPE_VIEW]))
 		{
 			$data = array_merge($this->assignedGeneralData, $this->assignedData);
 			ksort($this->response[self::TYPE_VIEW]);
@@ -353,18 +366,6 @@ class Response extends BaseStructure
 
 			switch ($this->responseType)
 			{
-				case self::TYPE_401:
-					$response->setStatusCode(401);
-					break;
-				case self::TYPE_403:
-					$response->setStatusCode(403);
-					break;
-				case self::TYPE_404:
-					$response->setStatusCode(404);
-					break;
-				case self::TYPE_503:
-					$response->setStatusCode(503);
-					break;
 				case self::TYPE_XML:
 					$this->assignHeader('Content-Type', 'application/xml');
 					break;
