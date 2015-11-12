@@ -27,6 +27,7 @@ use Core\Bases\Structures\BaseStructure;
  * @property int $namePosition Ex: 1 when /12/{name}/ab
  * @property array $parameters Ex: array('\d+', \w+)
  * @property array $rights Ex: array(1, 2, 3)
+ * @property array $middleware Ex: array('auth',)
  */
 class Route extends BaseStructure
 {
@@ -37,8 +38,9 @@ class Route extends BaseStructure
 	 * @param int $namePosition Ex: 1 when /12/{name}/ab
 	 * @param array $parameters Ex: array('\d+', \w+)
 	 * @param array $rights Ex: array(1, 2, 3)
+	 * @param array $middleware Ex: array('auth')
 	 */
-	public function __construct($name, $parameters = array(), $namePosition = 0, $rights = array())
+	public function __construct($name, $parameters = array(), $namePosition = 0, $rights = array(), $middleware = array())
 	{
 		parent::__construct();
 
@@ -46,6 +48,7 @@ class Route extends BaseStructure
 		$this->parameters = $parameters;
 		$this->namePosition = $namePosition;
 		$this->rights = $rights;
+		$this->middleware = $middleware;
 	}
 
 }
