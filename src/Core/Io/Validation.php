@@ -79,6 +79,10 @@ class Validation extends BaseStructure
 				{
 					if ($key != 'sometimes')
 					{
+						if ($key == 'unique')
+						{
+							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input['id']) && $this->input['id']) ? (',' . $this->input['id']) : '') . ($value[3] ? (',' . $value[3]) : '');
+						}
 						$vs[] = $key . (is_null($value) ? '' : ":$value");
 					}
 					else
@@ -114,6 +118,10 @@ class Validation extends BaseStructure
 				{
 					if ($key != 'sometimes')
 					{
+						if ($key == 'unique')
+						{
+							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input['id']) && $this->input['id']) ? (',' . $this->input['id']) : '') . ($value[3] ? (',' . $value[3]) : '');
+						}
 						$vs[] = $key . (is_null($value) ? '' : ":$value");
 					}
 					else
@@ -171,7 +179,7 @@ class Validation extends BaseStructure
 	{
 		if (!isset($this->values[$name]))
 		{
-			$this->values[$name] = new ValidationRule();
+			$this->values[$name] = new ValidationRule($name);
 		}
 		return $this->values[$name];
 	}

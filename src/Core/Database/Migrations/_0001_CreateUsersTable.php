@@ -37,6 +37,7 @@ trait _0001_CreateUsersTable
 			$table->string('email')->unique();
 			$table->string('password', 60);
 			$table->string('locale', 10);
+			$table->integer('gender_id')->unsigned();
 			$table->rememberToken();
 			$table->timestamps();
 			$table->softDeletes();

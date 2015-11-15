@@ -31,6 +31,23 @@ class ValidationRule extends BaseStructure
 	public $rules = array();
 
 	/**
+	 * The name of the column used
+	 * @var string
+	 */
+	protected $column;
+
+	/**
+	 * Consrtuctor
+	 * @param string $column
+	 */
+	public function __construct($column)
+	{
+		$this->column = $column;
+
+		parent::__construct();
+	}
+
+	/**
 	 * Add a field to the validator's rules
 	 * @param string $key
 	 * @param string|callable $value
@@ -424,11 +441,11 @@ class ValidationRule extends BaseStructure
 	 * 	In the rule above, only rows with an account_id of 1 would be included in the unique check.
 	 * @param string $table
 	 * @param string $column
-	 * @param string $except
+	 * @param string $addExcept
 	 * @param array $where
 	 * @return ValidationRule
 	 */
-	public function unique($table, $column = null, $except = null, $where = array())
+	public function unique($table, $column = null, $addExcept = true, $where = array())
 	{
 		if (!empty($where))
 		{
@@ -446,27 +463,15 @@ class ValidationRule extends BaseStructure
 				}
 				$string .= "$key,$value";
 			}
-
+			$where = $string;
 		}
 
-		if (is_null($column) && is_null($except) && empty($where))
+		if (is_null($column))
 		{
-			$rule = $table;
-		}
-		elseif (is_null($except) && empty($where))
-		{
-			$rule = "$table,$column";
-		}
-		elseif (empty($where))
-		{
-			$rule = "$table,$column,$except";
-		}
-		else
-		{
-			$rule = "$table,$column,$except,$where";
+			$column = $this->column;
 		}
 
-		$this->add('unique', $rule);
+		$this->add('unique', array($table, $column, $addExcept, $where));
 		return $this;
 	}
 	/**
