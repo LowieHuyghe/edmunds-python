@@ -27,6 +27,7 @@ use Core\Io\Validation;
  *
  * @property string hash
  * @property string original
+ * @property int $used
  * @property string aa		Afar
  * @property string ab		Abkhaz
  * @property string ae		Avestan
@@ -216,6 +217,13 @@ use Core\Io\Validation;
  */
 class Translation extends BaseModel
 {
+
+    /**
+     * The primary key for the model.
+     * @var string
+     */
+    protected $primaryKey = 'hash';
+
 	/**
 	 * Timestamps in the table
 	 * @var bool|array
@@ -235,8 +243,8 @@ class Translation extends BaseModel
 	protected static function addValidationRules(&$validator)
 	{
 		$validator->value('hash')->max(32)->required();
-
 		$validator->value('original')->max(21800)->required();
+		$validator->value('used')->integer()->required();
 
 		$validator->value('aa')->max(21800);
 		$validator->value('ab')->max(21800);
@@ -437,6 +445,7 @@ class Translation extends BaseModel
 		return array(
 			'hash' => str_random(60),
 			'original' => $faker->realText(100, 5),
+			'used' => rand(1, 3),
 			'en' => $faker->realText(100, 5),
 			'nl' => $faker->realText(100, 5),
 		);
