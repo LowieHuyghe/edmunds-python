@@ -25,10 +25,6 @@
 	 */
 	function trans($message, $locale = null, $onlyReplacements = false)
 	{
-		if (app()->isLocal())
-		{
-			$onlyReplacements = true;
-		}
 		return \Core\Io\Translator::getInstance()->trans($message, $locale, $onlyReplacements);
 	}
 

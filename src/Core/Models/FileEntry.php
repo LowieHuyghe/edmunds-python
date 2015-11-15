@@ -14,10 +14,10 @@
 namespace Core\Models;
 use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
-use Faker\Generator;
-use Core\Database\Relations\HasOneEnum;
+use Core\Database\Relations\BelongsToEnum;
 use Core\Http\Client\Input;
 use Core\Io\Validation;
+use Faker\Generator;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -85,7 +85,7 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Type belonging to this FileEntry
-	 * @return HasOneEnum
+	 * @return BelongsToEnum
 	 * @throws \Exception
 	 */
 	public function type()
@@ -94,7 +94,7 @@ class FileEntry extends BaseModel
 		{
 			throw new \Exception('The class representing the Types not set');
 		}
-		return $this->hasOneEnum($this->typeClass);
+		return $this->belongsToEnum($this->typeClass);
 	}
 
 	/**

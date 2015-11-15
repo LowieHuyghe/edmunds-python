@@ -14,7 +14,6 @@
 namespace Core\Bases\Models;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Database\Relations\HasOneEnum;
 use Core\Io\Validation;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
