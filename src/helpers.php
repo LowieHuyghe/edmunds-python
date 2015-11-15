@@ -19,25 +19,17 @@
 	/**
 	 * Translate a string
 	 * @param string $message
-	 * @param array $parameters
 	 * @param string $locale
+	 * @param bool $onlyReplacements
 	 * @return string
 	 */
-	function trans($message, $parameters = array(), $locale = null)
+	function trans($message, $locale = null, $onlyReplacements = false)
 	{
-		return \Core\Io\Translator::getInstance()->trans($message, $parameters, $locale);
-	}
-	/**
-	 * Translate a string with pluralization
-	 * @param string $message
-	 * @param int $count
-	 * @param array $parameters
-	 * @param string $locale
-	 * @return string
-	 */
-	function trans_choice($message, $count, $parameters = array(), $locale = null)
-	{
-		return \Core\Io\Translator::getInstance()->transChoice($message, $count, $parameters, $locale);
+		if (app()->isLocal())
+		{
+			$onlyReplacements = true;
+		}
+		return \Core\Io\Translator::getInstance()->trans($message, $locale, $onlyReplacements);
 	}
 
 	/**
@@ -52,7 +44,7 @@
 		if ($version == 3)
 		{
 			if(preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
+					'[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
 
 			// Get hexadecimal components of namespace
 			$nhex = str_replace(array('-','{','}'), '', $namespace);
@@ -115,7 +107,7 @@
 		elseif ($version == 5)
 		{
 			if(preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
+					  '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $namespace) !== 1) return null;
 
 			// Get hexadecimal components of namespace
 			$nhex = str_replace(array('-','{','}'), '', $namespace);

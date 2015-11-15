@@ -14,13 +14,22 @@
 namespace Core\Io;
 
 use Core\Bases\Structures\BaseStructure;
-use Illuminate\Database\Eloquent\Collection;
-use Core\Models\Translation;
+use Core\Exceptions\TranslationException;
 use Core\Http\Client\Visitor;
+use Core\Http\Response;
+use Core\Models\Gender;
+use Core\Models\Translation;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Arr;
+use Illuminate\Translation\FileLoader;
 use Symfony\Component\Translation\MessageSelector;
 
 /**
  * The helper responsible for translations
+ * Example:
+ *   Your are a ~~gender{__login}||man|woman~~
+ *   You have ~~plural{appels}||an appels|{appels} appels~~
+ *   You have ~~plural{pears}||{1}a pear|]1,Inf[multiple pears~~
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
@@ -56,105 +65,163 @@ class Translator extends BaseStructure
 	protected $selector;
 
 	/**
+	 * The loader implementation.
+	 *
+	 * @var \Illuminate\Translation\LoaderInterface
+	 */
+	protected $loader;
+
+	/**
+	 * The array of loaded translation groups.
+	 *
+	 * @var array
+	 */
+	protected $loaded = [];
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->loader = new FileLoader(app('files'), app()->resourcePath('lang'));
+
+		parent::__construct();
+	}
+
+	/**
+	 * Get the possible locales
+	 * @param string $locale
+	 * @return array
+	 */
+	protected function getLocales($locale)
+	{
+		$locales = array(
+			$locale,
+			Visitor::current()->localization->locale,
+			env('APP_LOCALE'),
+			env('APP_FALLBACK_LOCALE'),
+		);
+
+		return array_values(array_unique(array_filter($locales)));
+	}
+
+	/**
+	 * Get the domain where to fetch the translation
+	 * @return string
+	 */
+	protected function getGroup()
+	{
+		return '_generated';
+	}
+
+	/**
+	 * Get the key used for a translation
+	 * @param string $message
+	 * @return string
+	 */
+	protected function getKey($message)
+	{
+		return md5($message);
+	}
+
+	/**
 	 * Get the translation for a given key.
 	 *
-	 * @param  string  $id
-	 * @param  array   $parameters
-	 * @param  string  $locale
+	 * @param string  $message
+	 * @param string  $locale
+	 * @param bool $onlyReplacements
 	 * @return string
 	 */
-	public function trans($id, array $parameters = [], $locale = null)
+	public function trans($message, $locale = null, $onlyReplacements = false)
 	{
-		return $this->get($id, $parameters, $locale);
-	}
-	/**
-	 * Get a translation according to an integer value.
-	 *
-	 * @param  string  $id
-	 * @param  int     $number
-	 * @param  array   $parameters
-	 * @param  string  $locale
-	 * @return string
-	 */
-	public function transChoice($id, $number, array $parameters = [], $locale = null)
-	{
-		$line = $this->get($id, $parameters, $locale);
-		$parameters['count'] = $number;
-		$locale = $locale ?: Visitor::current()->localization->locale ?: Visitor::current()->localization->fallback;
-		return $this->makeReplacements($this->getSelector()->choose($line, $number, $locale), $parameters);
-	}
+		$namespace = '*';
+		$group = $this->getGroup();
 
-	/**
-	 * Get the translation for the given key.
-	 *
-	 * @param  string  $key
-	 * @param  array   $replace
-	 * @param  string  $locale
-	 * @return string
-	 */
-	protected function get($key, array $replace = [], $locale)
-	{
-		//Fetch the translation
-		$hash = md5($key);
-		$translation = Translation::where('hash', '=', $hash)->first();
+		$parameters = Response::current()->getAssignments();
+		$key = $this->getKey($message);
 
-		//Create a new one if not exist
-		if (!$translation)
+		if (!$onlyReplacements)
 		{
-			$translation = new Translation();
-			$translation->hash = $hash;
-			$translation->original = $key;
-
-			//Save if not in local-mode
-			if (!app()->isLocal())
+			$locales = $this->getLocales($locale);
+			foreach ($locales as $potLocale)
 			{
-				$translation->save();
+				$this->load($namespace, $group, $potLocale);
+				$translated = Arr::get($this->loaded[$namespace][$group][$potLocale], $key);
+				if ($translated != $key)
+				{
+					$message = $translated;
+					break;
+				}
 			}
 		}
 
-		//Get the line
-		$line = null;
-		if ($locale && isset($translation->$locale))
-		{
-			$line = $translation->$locale;
-		}
-		$locale = Visitor::current()->localization->locale;
-		if (!$line && $locale && $translation->$locale)
-		{
-			$line = $translation->$locale;
-		}
-		$locale = Visitor::current()->localization->fallback;
-		if (!$line && $locale && $translation->$locale)
-		{
-			$line = $translation->$locale;
-		}
-		elseif (!$line)
-		{
-			$line = $translation->original;
-		}
-
-		return $this->makeReplacements($line, $replace);
+		return $this->makeReplacements($key, $message, $parameters, $locale);
 	}
 
 	/**
 	 * Make the place-holder replacements on a line.
 	 *
-	 * @param  string  $line
-	 * @param  array   $replace
+	 * @param  string $key
+	 * @param  string $line
+	 * @param  array $replace
+	 * @param  string $locale
 	 * @return string
 	 */
-	protected function makeReplacements($line, array $replace)
+	protected function makeReplacements($key, $line, array $replace, $locale)
 	{
 		$replace = $this->sortReplacements($replace);
-		foreach ($replace as $key => $value) {
-			$line = str_replace(':'.$key, $value, $line);
+
+		$regex = "/~~([pPgG]){([^~\|{}]+?)}\|\|((?!~~).+?\|(?!~~).+?)~~/";
+
+		$count = 1;
+		while($count > 0)
+		{
+			$line = preg_replace_callback($regex, function(array $matches) use ($replace)
+			{
+				$type = strtoupper($matches[1]);
+				$value = $this->getValue($matches[2], $replace);
+				$message = $matches[3];
+
+
+				switch($type)
+				{
+					case 'G':
+						$parts = explode('|', $message);
+						if ($value->gender->id == Gender::MALE)
+							$message = $parts[0];
+						else
+							$message = $parts[1];
+						break;
+					case 'P':
+						$message = $this->getSelector()->choose($message, $value, 'nl');
+						break;
+					default:
+						throw new TranslationException("Unknown function '$type' used (lng: $locale, key: $key)");
+				}
+
+				return $message;
+			}, $line, -1, $count);
 		}
+
+		//Check if delimiters are still used
+		if (($pos = strpos($line, '~~')) !== false)
+		{
+			throw new TranslationException("Delimiter still present on position $pos (lng: $locale, key: $key)");
+		}
+
+		$line = preg_replace_callback("/{([^{}]+?)}/", function (array $matches) use ($replace)
+		{
+			$value = $matches[1];
+			return $this->getValue($value, $replace);
+		}, $line);
+
 		return $line;
 	}
+
 	/**
 	 * Sort the replacements array.
 	 *
-	 * @param  array  $replace
+	 * @param  array $replace
 	 * @return array
 	 */
 	protected function sortReplacements(array $replace)
@@ -168,12 +235,76 @@ class Translator extends BaseStructure
 	 * Get the message selector instance.
 	 * @return MessageSelector
 	 */
-	public function getSelector()
+	protected function getSelector()
 	{
 		if (!isset($this->selector)) {
 			$this->selector = new MessageSelector;
 		}
 		return $this->selector;
+	}
+
+	/**
+	 * Get the value of something
+	 * @param string $name
+	 * @param array $replace
+	 * @return string
+	 */
+	protected function getValue($name, $replace)
+	{
+		$parts = explode('.', $name);
+		$part = array_shift($parts);
+
+		$value = $replace[$part];
+
+		foreach ($parts as $part)
+		{
+			if (is_array($value))
+			{
+				$value = $value[$part];
+			}
+			else
+			{
+				$query = 'get' . ucfirst($part);
+				$value = $value->$query();
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Load the specified language group.
+	 *
+	 * @param  string  $namespace
+	 * @param  string  $group
+	 * @param  string  $locale
+	 * @return void
+	 */
+	public function load($namespace, $group, $locale)
+	{
+		if ($this->isLoaded($namespace, $group, $locale)) {
+			return;
+		}
+
+		// The loader is responsible for returning the array of language lines for the
+		// given namespace, group, and locale. We'll set the lines in this array of
+		// lines that have already been loaded so that we can easily access them.
+		$lines = $this->loader->load($locale, $group, $namespace);
+
+		$this->loaded[$namespace][$group][$locale] = $lines;
+	}
+
+	/**
+	 * Determine if the given group has been loaded.
+	 *
+	 * @param  string  $namespace
+	 * @param  string  $group
+	 * @param  string  $locale
+	 * @return bool
+	 */
+	protected function isLoaded($namespace, $group, $locale)
+	{
+		return isset($this->loaded[$namespace][$group][$locale]);
 	}
 
 }

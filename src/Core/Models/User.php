@@ -15,14 +15,16 @@ namespace Core\Models;
 
 use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
+use Core\Database\Relations\BelongsToEnum;
+use Core\Database\Relations\BelongsToManyEnums;
+use Core\Io\Validation;
+use Core\Models\Gender;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
-use Core\Database\Relations\BelongsToManyEnums;
-use Core\Io\Validation;
 
 /**
  * The model of the user
@@ -37,6 +39,7 @@ use Core\Io\Validation;
  * @property string $password Password of the user
  * @property Collection $roles Roles for this user
  * @property string $locale Locale for this user
+ * @property Gender $gender Gender of the user
  * @property string $remember_token
  * @property Carbon created_at
  * @property Carbon updated_at
@@ -97,6 +100,15 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	}
 
 	/**
+	 * Gender of the user
+	 * @return BelongsToEnum
+	 */
+	public function gender()
+	{
+		return $this->belongsToEnum(Gender::class);
+	}
+
+	/**
 	 * Check if user has role
 	 * @param $roleId
 	 * @return bool
@@ -140,6 +152,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	{
 		$validator->value('id')->integer();
 		$validator->value('email')->max(255)->unique('users')->required();
+		$validator->value('gender_id')->integer();
 		$validator->value('password')->max(60);
 		$validator->value('locale')->max(10);
 		$validator->value('remember_token')->max(100);
@@ -158,9 +171,10 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	{
 		return array(
 			'email' => $faker->email,
-			'password' => str_random(10),
+			'password' => str_random(32),
 			'locale' => str_random(2),
 			'remember_token' => str_random(32),
+			'gender_id' => Gender::all()->random()->id,
 		);
 	}
 

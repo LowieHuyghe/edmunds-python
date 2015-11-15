@@ -135,6 +135,15 @@ class Response extends BaseStructure
 	}
 
 	/**
+	 * Get the assignments
+	 * @return array
+	 */
+	public function getAssignments()
+	{
+		return array_merge($this->assignedGeneralData, $this->assignedData);
+	}
+
+	/**
 	 * Return view
 	 * @param string $view
 	 * @param string $key

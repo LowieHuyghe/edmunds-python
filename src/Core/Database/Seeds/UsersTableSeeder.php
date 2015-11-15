@@ -13,8 +13,9 @@
 
 namespace Core\Database\Seeds;
 
-use Illuminate\Database\Seeder;
+use Core\Models\Gender;
 use Core\Models\User;
+use Illuminate\Database\Seeder;
 
 /**
  * Seeder for the users-table
@@ -32,9 +33,18 @@ class UsersTableSeeder extends Seeder
 	 */
 	public function run()
 	{
-		$user = new User();
-		$user->email = 'iam@lowiehuyghe.com';
-		$user->password = app('hash')->make('secret');
-		$user->save();
+		$password = app('hash')->make('secret');
+
+		for ($i=0; $i < 100; $i++)
+		{
+			$user = User::dummy();
+			if ($i == 0)
+			{
+				$user->email = 'iam@lowiehuyghe';
+				$user->gender_id = Gender::MALE;
+			}
+			$user->password = $password;
+			$user->save();
+		}
 	}
 }
