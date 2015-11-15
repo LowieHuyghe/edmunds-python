@@ -12,11 +12,12 @@
  */
 
 namespace Core\Bases\Models;
-use Faker\Generator;
-use Illuminate\Database\Eloquent\Model;
+use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Database\Relations\HasOneEnum;
 use Core\Io\Validation;
+use Faker\Generator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Validator;
 
 /**
@@ -75,24 +76,39 @@ class BaseModel extends Model
 		return $this->validator->getErrors();
 	}
 
-	/**
-	 * Define a one-to-one-enum relationship.
-	 *
-	 * @param  string  $enumClass
-	 * @param  string  $foreignKey
-	 * @param  string  $localKey
-	 * @return HasOneEnum
-	 */
-	public function hasOneEnum($enumClass, $foreignKey = null, $localKey = null)
-	{
-		$foreignKey = $foreignKey ?: $this->getForeignKey();
+    /**
+     * Define an inverse one-to-one or many relationship.
+     *
+     * @param  string  $enumClass
+     * @param  string  $foreignKey
+     * @param  string  $otherKey
+     * @param  string  $relation
+     * @return BelongsToEnum
+     */
+    public function belongsToEnum($enumClass, $foreignKey = null, $otherKey = null, $relation = null)
+    {
+        // If no relation name was given, we will use this debug backtrace to extract
+        // the calling method's name and use that as the relationship name as most
+        // of the time this will be what we desire to use for the relationships.
+        if (is_null($relation)) {
+            list($current, $caller) = debug_backtrace(false, 2);
 
-		$instance = new $enumClass();
+            $relation = $caller['function'];
+        }
 
-		$localKey = $localKey ?: $this->getKeyName();
+        // If no foreign key was supplied, we can use a backtrace to guess the proper
+        // foreign key name by using the name of the relationship function, which
+        // when combined with an "_id" should conventionally match the columns.
+        if (is_null($foreignKey)) {
+            $foreignKey = snake_case($relation).'_id';
+        }
 
-		return new HasOneEnum($instance->newQuery(), $this, $enumClass, $foreignKey, $localKey);
-	}
+        $instance = new $enumClass();
+
+        $otherKey = $otherKey ?: $instance->getKeyName();
+
+        return new BelongsToEnum($instance->newQuery(), $this, $enumClass, $foreignKey, $otherKey, $relation);
+    }
 
 	/**
 	 * Define a many-to-many-enum relationship.
