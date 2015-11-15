@@ -83,9 +83,18 @@ class Translator extends BaseStructure
 	 */
 	public function __construct()
 	{
-		$this->loader = new FileLoader(app('files'), app()->resourcePath('lang'));
+		$this->loader = new FileLoader(app('files'), self::getLangPath());
 
 		parent::__construct();
+	}
+
+	/**
+	 * Get the path where the language files are stored
+	 * @return string
+	 */
+	public static function getLangPath()
+	{
+		return app()->resourcePath('lang');
 	}
 
 	/**
@@ -109,7 +118,7 @@ class Translator extends BaseStructure
 	 * Get the domain where to fetch the translation
 	 * @return string
 	 */
-	protected function getGroup()
+	public static function getGroup()
 	{
 		return '_generated';
 	}
@@ -119,7 +128,7 @@ class Translator extends BaseStructure
 	 * @param string $message
 	 * @return string
 	 */
-	protected function getKey($message)
+	public static function getKey($message)
 	{
 		return md5($message);
 	}
@@ -135,10 +144,10 @@ class Translator extends BaseStructure
 	public function trans($message, $locale = null, $onlyReplacements = false)
 	{
 		$namespace = '*';
-		$group = $this->getGroup();
+		$group = self::getGroup();
 
 		$parameters = Response::current()->getAssignments();
-		$key = $this->getKey($message);
+		$key = self::getKey($message);
 
 		if (!$onlyReplacements)
 		{
@@ -149,8 +158,14 @@ class Translator extends BaseStructure
 				$translated = Arr::get($this->loaded[$namespace][$group][$potLocale], $key);
 				if ($translated != $key)
 				{
-					$message = $translated;
-					break;
+					try
+					{
+						return $this->makeReplacements($key, $translated, $parameters, $locale);
+					}
+					catch(TranslationException $e)
+					{
+						//TODO logging
+					}
 				}
 			}
 		}
