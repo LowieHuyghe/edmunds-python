@@ -48,9 +48,19 @@ class SyncCommand extends BaseCommand
 	 */
 	public function fire()
 	{
+		$this->sync();
+
+		$this->generate();
+	}
+
+	/**
+	 * Sync all the translations in the database
+	 */
+	protected function sync()
+	{
 		$this->info('Syncing the translations.');
 
-		$this->resetUsed();
+		Registry::db()->builder('translations')->update(array('used' => 0));
 
 		$files = $this->getAllFiles(base_path());
 		$regex = "/trans\(\"(.*?)\"\)/";
@@ -90,11 +100,58 @@ class SyncCommand extends BaseCommand
 	}
 
 	/**
-	 * Reset all the used to 0
+	 * Generate all the translation files
 	 */
-	protected function resetUsed()
+	protected function generate()
 	{
-		Registry::db()->builder('translations')->update(array('used' => 0));
+		$this->info('Generating the translation-files.');
+
+		$translations = Translation::where('used', '>', 0)->get();
+
+		//Fetch all translations
+		$all = array();
+
+		$translations->each(function($translation) use (&$all)
+		{
+			$group = Translator::getGroup($translation->hash);
+
+			foreach ($translation->getAttributes() as $lang => $value)
+			{
+				if (strlen($lang) != 2 || !$value)
+				{
+					continue;
+				}
+				$all[$lang][$group][$translation->hash] = $value;
+			}
+		});
+
+		//Process everything and save
+		$langDir = Translator::getLangPath();
+		foreach ($all as $lang => $langValue)
+		{
+			foreach ($langValue as $group => $groupValue)
+			{
+				$text = '<?php return array(';
+
+				foreach ($groupValue as $hash => $value)
+				{
+					$text .= "'$hash' => \"$value\",";
+				}
+
+				$text .= ');';
+
+				//Put contents in files
+				$dir = $langDir.DIRECTORY_SEPARATOR.$lang;
+				$file = $dir.DIRECTORY_SEPARATOR.$group.'.php';
+				if (!file_exists($dir))
+				{
+					mkdir($dir, 0777, true);
+				}
+				file_put_contents($file, $text);
+			}
+		}
+
+		$this->info('Completed generating the translation-files.');
 	}
 
 	/**
