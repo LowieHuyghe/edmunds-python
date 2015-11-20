@@ -15,7 +15,7 @@ namespace Core\Models;
 use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 
 /**
  * The model for translations

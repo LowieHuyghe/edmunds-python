@@ -13,7 +13,7 @@
 
 namespace Core\Bases\Structures\Analytics;
 use Core\Http\Request;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 use Core\Http\Client\Visitor;
 use Core\Bases\Structures\BaseStructure;
 use Core\Registry\Queue;

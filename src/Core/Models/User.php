@@ -17,7 +17,7 @@ use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 use Core\Models\Gender;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
