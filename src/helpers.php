@@ -19,13 +19,14 @@
 	/**
 	 * Translate a string
 	 * @param string $message
+	 * @param array $parameters
 	 * @param string $locale
 	 * @param bool $onlyReplacements
 	 * @return string
 	 */
-	function trans($message, $locale = null, $onlyReplacements = false)
+	function trans($message, $parameters = array(), $locale = null, $onlyReplacements = false)
 	{
-		return \Core\Io\Translator::getInstance()->trans($message, $locale, $onlyReplacements);
+		return \Core\Io\Translator::getInstance()->trans($message, $parameters, null, $locale, $onlyReplacements);
 	}
 
 	/**

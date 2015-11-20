@@ -15,7 +15,7 @@ namespace Core\Bases\Models;
 
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Collection;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 
 /**
  * The model of the enum-models

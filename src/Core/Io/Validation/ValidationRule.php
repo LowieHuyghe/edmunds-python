@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Io;
+namespace Core\Io\Validation;
 use Core\Bases\Structures\BaseStructure;
 
 /**

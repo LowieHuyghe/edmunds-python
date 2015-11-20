@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 
 /**
  * The model for files

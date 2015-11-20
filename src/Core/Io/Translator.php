@@ -36,7 +36,7 @@ use Symfony\Component\Translation\MessageSelector;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Translator extends BaseStructure
+class Translator extends BaseStructure implements \Symfony\Component\Translation\TranslatorInterface
 {
 	/**
 	 * Instance of the localization-helper
@@ -115,7 +115,7 @@ class Translator extends BaseStructure
 	}
 
 	/**
-	 * Get the domain where to fetch the translation
+	 * Get the group where to fetch the translation
 	 * @param string $key
 	 * @return string
 	 */
@@ -138,17 +138,16 @@ class Translator extends BaseStructure
 	 * Get the translation for a given key.
 	 *
 	 * @param string  $message
+	 * @param array $parameters
 	 * @param string  $locale
 	 * @param bool $onlyReplacements
 	 * @return string
 	 */
-	public function trans($message, $locale = null, $onlyReplacements = false)
+	public function trans($message, array $parameters = array(), $domain = null, $locale = null, $onlyReplacements = false)
 	{
 		$namespace = '*';
 		$key = self::getKey($message);
 		$group = self::getGroup($key);
-
-		$parameters = Response::current()->getAssignments();
 
 		if (!$onlyReplacements)
 		{
@@ -194,21 +193,21 @@ class Translator extends BaseStructure
 		{
 			$line = preg_replace_callback($regex, function(array $matches) use ($replace)
 			{
-				$type = strtoupper($matches[1]);
+				$type = strtolower($matches[1]);
 				$value = $this->getValue($matches[2], $replace);
 				$message = $matches[3];
 
 
 				switch($type)
 				{
-					case 'G':
+					case 'g':
 						$parts = explode('|', $message);
 						if ($value->gender->id == Gender::MALE)
 							$message = $parts[0];
 						else
 							$message = $parts[1];
 						break;
-					case 'P':
+					case 'p':
 						$message = $this->getSelector()->choose($message, $value, 'nl');
 						break;
 					default:
@@ -322,5 +321,20 @@ class Translator extends BaseStructure
 	{
 		return isset($this->loaded[$namespace][$group][$locale]);
 	}
+
+    /**
+     * @deprecated
+     */
+    public function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null) {}
+
+    /**
+     * @deprecated
+     */
+    public function setLocale($locale) {}
+
+    /**
+     * @deprecated
+     */
+    public function getLocale() {}
 
 }

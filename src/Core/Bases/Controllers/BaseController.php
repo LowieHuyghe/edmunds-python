@@ -19,7 +19,7 @@ use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Client\Visitor;
 use Core\Http\Route;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 use Laravel\Lumen\Routing\Controller;
 
 /**

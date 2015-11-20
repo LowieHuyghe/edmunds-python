@@ -11,9 +11,10 @@
  * @since		Version 0.1
  */
 
-namespace Core\Io;
+namespace Core\Io\Validation;
 use Core\Bases\Structures\BaseStructure;
-use Illuminate\Validation\Validator;
+use Core\Io\Translator;
+use Core\Io\Validation\Validator;
 
 /**
  * The validator for input
@@ -141,7 +142,12 @@ class Validation extends BaseStructure
 			}
 		}
 
-		$validator = app('validator')->make($this->input, $rules);
+		//Make validator
+		$validator = new Validator(Translator::getInstance(), $this->input, $rules);
+		if (isset(app()['validation.presence'])) {
+			$validator->setPresenceVerifier(app()['validation.presence']);
+		}
+
 		foreach ($sometimes as $name => $values)
 		{
 			$validator->sometimes($name, $values['rules'], $values['function']);

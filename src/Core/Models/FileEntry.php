@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Http\Client\Input;
-use Core\Io\Validation;
+use Core\Io\Validation\Validation;
 use Faker\Generator;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
