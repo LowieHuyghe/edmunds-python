@@ -4,7 +4,9 @@ if (!defined('REAL_BASE_PATH'))
 {
 	define('REAL_BASE_PATH', realpath(BASE_PATH));
 }
-require_once __DIR__ . '/../helpers.php';
+define('CORE_BASE_PATH', realpath(__DIR__ . '/..'));
+
+require_once CORE_BASE_PATH . '/helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
 
 /*
@@ -16,7 +18,7 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-Dotenv::load(__DIR__ . '/..');
+Dotenv::load(CORE_BASE_PATH);
 Dotenv::load(REAL_BASE_PATH);
 
 /*
