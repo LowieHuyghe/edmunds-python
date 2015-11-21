@@ -146,6 +146,15 @@ class FileEntry extends BaseModel
 		//If success save the entry in the database
 		if ($uploadSuccess)
 		{
+			//Update some props of the file when changed
+			if ($this->lastTouched)
+			{
+				$path = $this->getPath();
+				$size = self::getDisk()->getSize($this->name);
+				$md5 = md5_file($path);
+				$sha1 = sha1_file($path);
+			}
+
 			return parent::save($options);
 		}
 
