@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Helpers;
+namespace CoreTest\Registry\Admin;
 
 use Core\Bases\Tests\BaseTest;
 use Core\Registry\Registry;
@@ -24,25 +24,35 @@ use Core\Registry\Registry;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelperTest extends BaseTest
+class PmTest extends BaseTest
 {
 
 	/**
-	 * Test Send note
+	 * Test Info
 	 */
-	public function testSendNote()
+	public function testInfo()
 	{
-		$success = Registry::adminPm()->sendNote('Note-Title', "Note-Body\nhttp://www.pinterest.com");
+		$success = Registry::pm()->info('Info-Title', "The body of the info");
 
 		$this->assertTrue($success);
 	}
 
 	/**
-	 * Test Send file
+	 * Test Warning
 	 */
-	public function testSendFile()
+	public function testWarning()
 	{
-		$success = Registry::adminPm()->sendFile('File-Title', "https://www.google.be/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", 'File-Body');
+		$success = Registry::pm()->warning('Warning-Title', "The body of the warning");
+
+		$this->assertTrue($success);
+	}
+
+	/**
+	 * Test Error
+	 */
+	public function testError()
+	{
+		$success = Registry::pm()->error('Error-Title', "The body of the error");
 
 		$this->assertTrue($success);
 	}
