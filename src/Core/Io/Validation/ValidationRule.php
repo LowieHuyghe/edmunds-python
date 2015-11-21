@@ -440,12 +440,12 @@ class ValidationRule extends BaseStructure
 	 * 		'email' => 'unique:users,email_address,NULL,id,account_id,1'
 	 * 	In the rule above, only rows with an account_id of 1 would be included in the unique check.
 	 * @param string $table
+	 * @param string $premiumKey Will add an exception for the given premiumKey
 	 * @param string $column
-	 * @param string $addExcept
 	 * @param array $where
 	 * @return ValidationRule
 	 */
-	public function unique($table, $column = null, $addExcept = true, $where = array())
+	public function unique($table, $premiumKey = null, $column = null, $where = array())
 	{
 		if (!empty($where))
 		{
@@ -471,7 +471,7 @@ class ValidationRule extends BaseStructure
 			$column = $this->column;
 		}
 
-		$this->add('unique', array($table, $column, $addExcept, $where));
+		$this->add('unique', array($table, $column, $premiumKey, $where));
 		return $this;
 	}
 	/**

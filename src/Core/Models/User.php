@@ -147,11 +147,12 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('id')->integer();
-		$validator->value('email')->max(255)->unique('users')->required();
+		$validator->value('email')->max(255)->unique('users', $model->getKeyName())->required();
 		$validator->value('gender_id')->integer();
 		$validator->value('password')->max(60);
 		$validator->value('locale')->max(10);

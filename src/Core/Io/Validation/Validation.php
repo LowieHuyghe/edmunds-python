@@ -15,6 +15,7 @@ namespace Core\Io\Validation;
 use Core\Bases\Structures\BaseStructure;
 use Core\Io\Translator;
 use Core\Io\Validation\Validator;
+use Illuminate\Validation\DatabasePresenceVerifier;
 
 /**
  * The validator for input
@@ -82,7 +83,7 @@ class Validation extends BaseStructure
 					{
 						if ($key == 'unique')
 						{
-							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input['id']) && $this->input['id']) ? (',' . $this->input['id']) : '') . ($value[3] ? (',' . $value[3]) : '');
+							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input[$value[2]]) && $this->input[$value[2]]) ? (',' . $this->input[$value[2]]) : '') . ($value[3] ? (',' . $value[3]) : '');
 						}
 						$vs[] = $key . (is_null($value) ? '' : ":$value");
 					}
@@ -121,7 +122,7 @@ class Validation extends BaseStructure
 					{
 						if ($key == 'unique')
 						{
-							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input['id']) && $this->input['id']) ? (',' . $this->input['id']) : '') . ($value[3] ? (',' . $value[3]) : '');
+							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input[$value[2]]) && $this->input[$value[2]]) ? (',' . $this->input[$value[2]]) : '') . ($value[3] ? (',' . $value[3]) : '');
 						}
 						$vs[] = $key . (is_null($value) ? '' : ":$value");
 					}
@@ -144,9 +145,11 @@ class Validation extends BaseStructure
 
 		//Make validator
 		$validator = new Validator(Translator::getInstance(), $this->input, $rules);
-		if (isset(app()['validation.presence'])) {
-			$validator->setPresenceVerifier(app()['validation.presence']);
+		if (!isset(app()['validation.presence']))
+		{
+			$this->registerPresenceVerifier();
 		}
+		$validator->setPresenceVerifier(app()['validation.presence']);
 
 		foreach ($sometimes as $name => $values)
 		{
@@ -189,5 +192,16 @@ class Validation extends BaseStructure
 		}
 		return $this->values[$name];
 	}
+
+    /**
+     * Register the database presence verifier.
+     * @return void
+     */
+    protected function registerPresenceVerifier()
+    {
+        app()->singleton('validation.presence', function () {
+            return new DatabasePresenceVerifier(app()['db']);
+        });
+    }
 
 }

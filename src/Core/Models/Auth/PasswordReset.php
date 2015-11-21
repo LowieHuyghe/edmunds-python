@@ -78,8 +78,9 @@ class PasswordReset extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('email')->max(255)->email()->required();
 		$validator->value('user_id')->integer()->required();

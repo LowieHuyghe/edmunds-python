@@ -354,11 +354,12 @@ class FileEntry extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('id')->integer();
-		$validator->value('name')->required()->max(20)->unique('file_entries');
+		$validator->value('name')->required()->max(20)->unique('file_entries', $this->getKey());
 		$validator->value('md5')->required()->max(32);
 		$validator->value('sha1')->required()->max(40);
 		$validator->value('original_name')->required()->max(255);
