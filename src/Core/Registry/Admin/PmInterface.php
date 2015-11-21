@@ -11,40 +11,43 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Helpers;
+namespace Core\Registry\Admin;
 
-use Core\Bases\Tests\BaseTest;
+use Core\Bases\Structures\BaseStructure;
+use Core\Registry\Admin\Pm\Slack;
 use Core\Registry\Registry;
 
 /**
- * Testing Pm-class
+ * The interface for pm-classes
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class PmHelperTest extends BaseTest
+interface PmInterface
 {
+	/**
+	 * Send the pm
+	 * @param string $title
+	 * @param string $body
+	 * @return bool
+	 */
+	public function info($title, $body = null);
 
 	/**
-	 * Test Send note
+	 * Send the pm
+	 * @param string $title
+	 * @param string $body
+	 * @return bool
 	 */
-	public function testSendNote()
-	{
-		$success = Registry::adminPm()->sendNote('Note-Title', "Note-Body\nhttp://www.pinterest.com");
-
-		$this->assertTrue($success);
-	}
+	public function warning($title, $body = null);
 
 	/**
-	 * Test Send file
+	 * Send the pm
+	 * @param string $title
+	 * @param string $body
+	 * @return bool
 	 */
-	public function testSendFile()
-	{
-		$success = Registry::adminPm()->sendFile('File-Title', "https://www.google.be/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", 'File-Body');
-
-		$this->assertTrue($success);
-	}
-
+	public function error($title, $body = null);
 }
