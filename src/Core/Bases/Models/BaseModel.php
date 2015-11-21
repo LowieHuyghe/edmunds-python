@@ -50,7 +50,7 @@ class BaseModel extends Model
 		parent::__construct($attributes);
 
 		$this->validator = new Validation();
-		static::addValidationRules($this->validator);
+		static::addValidationRules($this->validator, $this);
 	}
 
 	/**
@@ -157,8 +157,9 @@ class BaseModel extends Model
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		//
 	}

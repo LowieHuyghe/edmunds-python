@@ -13,9 +13,10 @@
 
 namespace Core\Bases\Models;
 
+use Core\Bases\Models\BaseModel;
+use Core\Io\Validation\Validation;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Collection;
-use Core\Io\Validation\Validation;
 
 /**
  * The model of the enum-models
@@ -131,8 +132,9 @@ class BaseEnumModel extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('id')->integer();
 		$validator->value('name')->required()->max(32);

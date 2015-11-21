@@ -74,8 +74,9 @@ class AuthToken extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('token')->max(255)->required();
 		$validator->value('user_id')->integer()->required();
