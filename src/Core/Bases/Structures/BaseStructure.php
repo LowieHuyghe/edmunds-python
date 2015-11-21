@@ -204,7 +204,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		$this->fill($attributes);
 
 		$this->validator = new Validation();
-		static::addValidationRules($this->validator);
+		static::addValidationRules($this->validator, $this);
 	}
 
 	/**
@@ -1603,8 +1603,9 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		//
 	}

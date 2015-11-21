@@ -89,8 +89,9 @@ class LoginAttempt extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
 		$validator->value('id')->integer()->required();
 		$validator->value('ip')->ip()->max(255)->required();

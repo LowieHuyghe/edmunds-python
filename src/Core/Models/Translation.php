@@ -239,10 +239,11 @@ class Translation extends BaseModel
 	/**
 	 * Add the validation of the model
 	 * @param Validation $validator
+	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator)
+	protected static function addValidationRules(&$validator, $model)
 	{
-		$validator->value('hash')->max(32)->required();
+		$validator->value('hash')->max(32)->unique('translations', $model->getKeyName())->required();
 		$validator->value('original')->max(21800)->required();
 		$validator->value('used')->integer()->required();
 
