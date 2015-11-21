@@ -63,33 +63,40 @@ class SyncCommand extends BaseCommand
 		Registry::db()->builder('translations')->update(array('used' => 0));
 
 		$files = $this->getAllFiles(base_path());
-		$regex = "/trans\(\"((.|\n)*?)\"(.|\n)*?\)/";
+		$regexs = array(
+			"/trans\(\"((.|\n)*?)\"(.|\n)*?\)/",
+			"/trans\('((.|\n)*?)'(.|\n)*?\)/",
+		);
 
 		$progress = $this->output->createProgressBar(count($files));
 		foreach ($files as $file)
 		{
-			$matches = array();
-			if (preg_match_all($regex, file_get_contents($file), $matches))
+			foreach ($regexs as $regex)
 			{
-				foreach ($matches[1] as $match)
+				$matches = array();
+				if (preg_match_all($regex, file_get_contents($file), $matches))
 				{
-					$key = Translator::getKey($match);
-
-					$translation = Translation::where('hash', '=', $key)->first();
-					if ($translation)
+					foreach ($matches[1] as $match)
 					{
-						++$translation->used;
-					}
-					else
-					{
-						$translation = new Translation();
-						$translation->hash = $key;
-						$translation->original = $match;
-						$translation->used = 1;
-					}
-					$translation->save();
+						dd($match);
+						$key = Translator::getKey($match);
 
-					$progress->advance();
+						$translation = Translation::where('hash', '=', $key)->first();
+						if ($translation)
+						{
+							++$translation->used;
+						}
+						else
+						{
+							$translation = new Translation();
+							$translation->hash = $key;
+							$translation->original = $match;
+							$translation->used = 1;
+						}
+						$translation->save();
+
+						$progress->advance();
+					}
 				}
 			}
 		}
