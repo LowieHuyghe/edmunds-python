@@ -82,7 +82,7 @@ class Registry extends BaseStructure
 	 * @param string $driver
 	 * @return Pm
 	 */
-	public static function adminPm($driver = null)
+	public static function pm($driver = null)
 	{
 		if (!isset(self::$registry['adminPm'][$driver ?: 0]))
 		{

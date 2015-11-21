@@ -14,6 +14,7 @@
 namespace Core\Registry\Admin;
 
 use Core\Bases\Structures\BaseStructure;
+use Core\Registry\Admin\Pm\Slack;
 use Core\Registry\Registry;
 
 /**
@@ -24,11 +25,8 @@ use Core\Registry\Registry;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Pm extends BaseStructure
+class Pm extends BaseStructure implements PmInterface
 {
-	const	TYPE_NOTE = 1,
-			TYPE_FILE = 2;
-
 	/**
 	 * The default driver to load from cache
 	 * @var string
@@ -52,81 +50,68 @@ class Pm extends BaseStructure
 	 * @param string $body
 	 * @return bool
 	 */
-	public function sendNote($title, $body = null)
+	public function info($title, $body = null)
 	{
-		$title = env('APP_NAME') . ': ' . $title;
-
-		if (self::hasBeenLongEnough(self::TYPE_NOTE, $title, $body))
-		{
-			switch ($this->driver)
-			{
-				case 'pushbullet':
-				default:
-					return $this->sendPushBullet(self::TYPE_NOTE, $title, $body);
-			}
-		}
-
-		return true;
+		return $this->send('info', $title, $body);
 	}
 
 	/**
 	 * Send the pm
 	 * @param string $title
-	 * @param string $file
 	 * @param string $body
 	 * @return bool
 	 */
-	public function sendFile($title, $file, $body = null)
+	public function warning($title, $body = null)
 	{
-		$title = env('APP_NAME') . ': ' . $title;
-
-		if (self::hasBeenLongEnough(self::TYPE_FILE, $title, $body, $file))
-		{
-			switch ($this->driver)
-			{
-				case 'pushbullet':
-				default:
-					return $this->sendPushBullet(self::TYPE_FILE, $title, $body, $file);
-			}
-		}
-
-		return true;
+		return $this->send('warning', $title, $body);
 	}
 
 	/**
-	 * Send pm via pushBullet
-	 * @param int $type
+	 * Send the pm
 	 * @param string $title
 	 * @param string $body
-	 * @param mixed $extra
 	 * @return bool
 	 */
-	private function sendPushBullet($type, $title, $body = null, $extra = null)
+	public function error($title, $body = null)
 	{
-		switch($type)
+		return $this->send('error', $title, $body);
+	}
+
+	/**
+	 * Send the pm
+	 * @param  string $type
+	 * @param  string $title
+	 * @param  string $body
+	 * @return bool
+	 */
+	protected function send($type, $title, $body = null)
+	{
+		if (self::hasBeenLongEnough($type, $title, $body))
 		{
-			case self::TYPE_FILE:
-				PushBullet::getInstance()->sendFile($title, $extra, $body);
-				break;
-			case self::TYPE_NOTE:
-			default:
-				PushBullet::getInstance()->sendNote($title, $body);
-				break;
+			switch ($this->driver)
+			{
+				case 'slack':
+				default:
+					$class = Slack::class;
+			}
+
+			return $class::getInstance()->$type($title, $body);
 		}
+
 		return true;
 	}
 
 	/**
 	 * Check if this specific message has been sent already
+	 * @param string $type
 	 * @param string $title
 	 * @param string $body
-	 * @param int $type
-	 * @param mixed $extra
 	 * @return bool
 	 */
-	private static function hasBeenLongEnough($title, $body = null, $type = null, $extra = null)
+	private static function hasBeenLongEnough($type, $title, $body = null)
 	{
-		$key = 'Pm_' . substr(md5(json_encode($title) . json_encode($body) . json_encode($type) . json_encode($extra)), 0, 7);
+		return true;
+		$key = 'pm_' . substr(md5(json_encode($type) . json_encode($title) . json_encode($body)), 0, 7);
 
 		if (Registry::cache()->has($key))
 		{
