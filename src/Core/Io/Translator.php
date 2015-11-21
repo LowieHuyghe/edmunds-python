@@ -186,7 +186,7 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 	{
 		$replace = $this->sortReplacements($replace);
 
-		$regex = "/~~([pPgG]){([^~\|{}]+?)}\|\|((?!~~).+?\|(?!~~).+?)~~/";
+		$regex = "/~~([pPgG]){([^~\|{}]+?)}\|\|((?!~~)(.|\n)+?\|(?!~~)(.|\n)+?)~~/";
 
 		$count = 1;
 		while($count > 0)
@@ -196,7 +196,6 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 				$type = strtolower($matches[1]);
 				$value = $this->getValue($matches[2], $replace);
 				$message = $matches[3];
-
 
 				switch($type)
 				{
