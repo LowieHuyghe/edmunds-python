@@ -12,16 +12,19 @@
  */
 
 namespace Core;
+use Core\Analytics\Logging\PageviewReport;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Session;
 use Core\Http\Dispatcher;
 use Core\Http\Request;
 use Core\Http\Response;
+use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Throwable;
 
 /**
  * The structure for application
@@ -91,7 +94,7 @@ class Application extends \Laravel\Lumen\Application
 				abort(503);
 			}
 
-			return $this->sendThroughPipeline($this->middleware, function () use ($method, $pathInfo)
+			$response = $this->sendThroughPipeline($this->middleware, function () use ($method, $pathInfo)
 			{
 				$result = $this->handleDispatcherResponse(
 					$this->createDispatcher()->dispatch($method, $pathInfo)
@@ -103,16 +106,20 @@ class Application extends \Laravel\Lumen\Application
 		{
 			$response = Response::current();
 
-			return $response->getResponse();
+			$response = $response->getResponse();
 		}
-		catch (Exception $e)
+		catch (Exception $exception)
 		{
-			return $this->sendExceptionToHandler($e);
+			$response = $this->sendExceptionToHandler($exception);
 		}
-		catch (Throwable $e)
+		catch (Throwable $exception)
 		{
-			return $this->sendExceptionToHandler($e);
+			$response = $this->sendExceptionToHandler($exception);
 		}
+
+		$this->logPageView($response, isset($exception) ? $exception : null);
+
+		return $response;
 	}
 
     /**
@@ -151,6 +158,26 @@ class Application extends \Laravel\Lumen\Application
 	protected function createDispatcher()
 	{
 		return $this->dispatcher ?: new Dispatcher();
+	}
+
+	/**
+	 * Log the pageview
+	 * @param Response $response
+	 * @param Exception $exception
+	 */
+	protected function logPageView($response, $exception = null)
+	{
+		$pageview = new PageviewReport();
+
+		//Fetch title
+		$regex = "/<title>((.|\n)*?)<\/title>/i";
+		$matches = array();
+		if (preg_match($regex, $response->getContent(), $matches))
+		{
+			$pageview->documentTitle = trim($matches[1]);
+		}
+
+		$pageview->report();
 	}
 
 }

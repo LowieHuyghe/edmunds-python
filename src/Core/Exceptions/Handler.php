@@ -2,6 +2,7 @@
 
 namespace Core\Exceptions;
 
+use Core\Analytics\Logging\ExceptionReport;
 use Core\Http\Response;
 use Exception;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
@@ -32,7 +33,27 @@ class Handler extends ExceptionHandler
 	 */
 	public function report(Exception $e)
 	{
+		$this->logException($e);
+
 		return parent::report($e);
+	}
+
+	/**
+	 * Log the exception
+	 * @param  Exception $e
+	 */
+	protected function logException(Exception $e)
+	{
+		$message = $e->getMessage() ?: last(explode('\\', get_class($e)));
+		$file = str_replace(base_path(), '', $e->getFile());
+		$line = $e->getLine();
+		$trace = $e->getTrace();
+
+		$log = new ExceptionReport();
+		$log->exceptionDescription = "'$message' in $file:$line";
+
+		$log->exceptionFatal = true;
+		$log->report();
 	}
 
 	/**

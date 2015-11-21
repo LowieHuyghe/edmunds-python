@@ -289,9 +289,7 @@ class BaseReport extends BaseStructure
 		}
 		$this->documentReferrer = $request->referrer;
 
-		//Add validation stuff
-		$this->validator = new Validation();
-		static::addValidationRules($this->validator);
+		$this->customDimension = array('Environment', env('APP_ENV'));
 	}
 
 	/**
@@ -327,7 +325,7 @@ class BaseReport extends BaseStructure
 			{
 				for ($i=0 ; $i < count($value)-1 ; ++$i)
 				{
-					$parameterName = str_replace("{$i}", $value[$i], $parameterName);
+					$parameterName = str_replace('{' . $i . '}', $value[$i], $parameterName);
 				}
 				$value = last($value);
 			}
