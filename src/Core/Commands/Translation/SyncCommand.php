@@ -63,7 +63,7 @@ class SyncCommand extends BaseCommand
 		Registry::db()->builder('translations')->update(array('used' => 0));
 
 		$files = $this->getAllFiles(base_path());
-		$regex = "/trans\(\"(.*?)\"\)/";
+		$regex = "/trans\(\"((.|\n)*?)\"(.|\n)*?\)/";
 
 		$progress = $this->output->createProgressBar(count($files));
 		foreach ($files as $file)
