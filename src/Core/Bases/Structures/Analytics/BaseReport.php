@@ -289,7 +289,7 @@ class BaseReport extends BaseStructure
 		}
 		$this->documentReferrer = $request->referrer;
 
-		$this->customDimension = array('Environment', env('APP_ENV'));
+		$this->customDimension = array_merge($this->customDimension ?: array(), array(array('Environment', env('APP_ENV'))));
 	}
 
 	/**
@@ -319,19 +319,31 @@ class BaseReport extends BaseStructure
 				$value = $value ? 1 : 0;
 			}
 
-			//Some parameter-names need to be filled in
-			$parameterName = $this->parameterMapping[$parameter];
 			if (is_array($value))
 			{
-				for ($i=0 ; $i < count($value)-1 ; ++$i)
+				foreach ($value as $customValue)
 				{
-					$parameterName = str_replace('{' . $i . '}', $value[$i], $parameterName);
-				}
-				$value = last($value);
-			}
+					//Some parameter-names need to be filled in
+					$parameterName = $this->parameterMapping[$parameter];
 
-			//Add query-item
-			$data[$parameterName] = $value;
+					for ($i=0 ; $i < count($customValue)-1 ; ++$i)
+					{
+						$parameterName = str_replace('{' . $i . '}', $customValue[$i], $parameterName);
+					}
+					$customValue = last($customValue);
+
+					//Add query-item
+					$data[$parameterName] = $customValue;
+				}
+			}
+			else
+			{
+				//Some parameter-names need to be filled in
+				$parameterName = $this->parameterMapping[$parameter];
+
+				//Add query-item
+				$data[$parameterName] = $value;
+			}
 		}
 
 		//Setup header
