@@ -122,18 +122,18 @@ class Application extends \Laravel\Lumen\Application
 		return $response;
 	}
 
-    /**
-     * Throw an HttpException with the given data.
-     *
-     * @param  int     $code
-     * @param  string  $message
-     * @param  array   $headers
-     * @return void
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     */
-    public function abort($code, $message = '', array $headers = [])
-    {
+	/**
+	 * Throw an HttpException with the given data.
+	 *
+	 * @param  int     $code
+	 * @param  string  $message
+	 * @param  array   $headers
+	 * @return void
+	 *
+	 * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+	 */
+	public function abort($code, $message = '', array $headers = [])
+	{
 		switch($code)
 		{
 			case 200:
@@ -149,7 +149,7 @@ class Application extends \Laravel\Lumen\Application
 			default:
 				throw new HttpException($code, $message, null, $headers);
 		}
-    }
+	}
 
 	/**
 	 * Create a core Dispatcher instance for the application.

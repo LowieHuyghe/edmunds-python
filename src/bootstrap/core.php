@@ -34,6 +34,7 @@ Dotenv::load(REAL_BASE_PATH);
 
 $app = new \Core\Application(REAL_BASE_PATH);
 
+$app['path.config'] = base_path('config');
 $app->configure('app');
 $app->make('config')->set('app.key', env('APP_KEY'));
 $app->make('config')->set('app.cipher', env('APP_CIPHER'));
