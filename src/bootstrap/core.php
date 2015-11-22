@@ -38,6 +38,10 @@ $app['path.config'] = base_path('config');
 $app->configure('app');
 $app->make('config')->set('app.key', env('APP_KEY'));
 $app->make('config')->set('app.cipher', env('APP_CIPHER'));
+if ($formerFramework = env('FORMER_FRAMEWORK'))
+{
+	$app->make('config')->set('former.framework', $formerFramework);
+}
 
 $app->withEloquent();
 
