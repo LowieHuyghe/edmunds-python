@@ -101,7 +101,7 @@ class Location extends BaseStructure
 			}
 			catch(\InvalidArgumentException $e)
 			{
-				Registry::adminPm()->sendNote('GeoIP Error!', 'There is no city-geo-db.');
+				Registry::pm()->error('GeoIP Error!', 'There is no city-geo-db.');
 				$this->details['city'] = false;
 			}
 		}
