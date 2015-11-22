@@ -182,6 +182,6 @@ class UpdateGeoIPCommand extends BaseCommand
 	 */
 	private function informAdminError($message)
 	{
-		Registry::adminPm()->sendNote('GeoIP Error!', $message);
+		Registry::pm()->error('GeoIP Error!', $message);
 	}
 }
