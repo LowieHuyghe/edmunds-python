@@ -17,7 +17,8 @@
 		"cbschuld/browser.php": "*@dev",
 		"geoip2/geoip2": "~2.0",
 		"pda/pheanstalk": "~3.0",
-		"maknz/slack": "~1.7"
+		"maknz/slack": "~1.7",
+		"anahkiasen/former": "4.0.*@dev"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

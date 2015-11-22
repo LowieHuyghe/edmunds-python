@@ -13,10 +13,11 @@
 
 namespace Core\Http\Client;
 
-use Core\Models\User;
 use Core\Bases\Structures\BaseStructure;
+use Core\Helpers\MiscHelper;
 use Core\Http\Request;
 use Core\Http\Response;
+use Core\Models\User;
 
 /**
  * The helper for the visitor
@@ -96,7 +97,7 @@ class Visitor extends BaseStructure
 			if (!$clientId)
 			{
 				//Otherwise generate and save
-				$clientId = generate_uuid();
+				$clientId = MiscHelper::generate_uuid();
 				$this->session->set($idKey, $clientId);
 				Response::current()->assignCookie($idKey, $clientId);
 			}
