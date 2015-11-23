@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands;
+namespace Core\Console\Commands;
 
 use Core\Bases\Commands\BaseCommand;
 use Core\Http\Client\Location;
@@ -57,10 +57,11 @@ class UpdateGeoIPCommand extends BaseCommand
 	 */
 	public function handle()
 	{
-		$this->comment(sys_get_temp_dir());
-
 		foreach ($this->files as $name => $url)
 		{
+			$this->info("Started updating database '$name'");
+			$this->info("Fetching database");
+
 			$contents = file_get_contents($url);
 			$tmpFileNameGz = tempnam(sys_get_temp_dir(), $name);
 			$tmpFileNameMmdb = tempnam(sys_get_temp_dir(), $name);
@@ -70,6 +71,8 @@ class UpdateGeoIPCommand extends BaseCommand
 
 			if ($save)
 			{
+				$this->info("Processing database");
+
 				$this->unzipGz($tmpFileNameGz, $tmpFileNameMmdb);
 				unlink($tmpFileNameGz);
 
@@ -141,9 +144,13 @@ class UpdateGeoIPCommand extends BaseCommand
 					}
 					unlink($tmpFileNameMmdb);
 				}
+
+				$this->info("Succesfully updated");
 			}
 			else
 			{
+				$this->error("Couldn't download database '$name' from: $url");
+
 				unlink($tmpFileNameGz);
 				unlink($tmpFileNameMmdb);
 			}
@@ -182,6 +189,8 @@ class UpdateGeoIPCommand extends BaseCommand
 	 */
 	private function informAdminError($message)
 	{
+		$this->error($message);
+
 		Registry::pm()->error('GeoIP Error!', $message);
 	}
 }

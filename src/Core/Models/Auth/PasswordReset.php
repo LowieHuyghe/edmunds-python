@@ -101,7 +101,7 @@ class PasswordReset extends BaseModel
 
 		if ($passwordReset)
 		{
-			$latest = $passwordReset->created_at->addMinutes((int) env('CORE_AUTH_PASSWORDRESET_TTL'));
+			$latest = $passwordReset->created_at->addMinutes(config('core.auth.ttl.passwordreset'));
 			$now = Carbon::now();
 
 			if ($latest->gte($now))

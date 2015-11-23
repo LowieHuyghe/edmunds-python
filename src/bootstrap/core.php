@@ -18,7 +18,6 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-Dotenv::load(CORE_BASE_PATH);
 Dotenv::load(REAL_BASE_PATH);
 
 /*
@@ -35,12 +34,27 @@ Dotenv::load(REAL_BASE_PATH);
 $app = new \Core\Application(REAL_BASE_PATH);
 
 $app['path.config'] = base_path('config');
-$app->configure('app');
-$app->make('config')->set('app.key', env('APP_KEY'));
-$app->make('config')->set('app.cipher', env('APP_CIPHER'));
-if ($formerFramework = env('FORMER_FRAMEWORK'))
+//load core-config
+$app->make('config')->set('core', require(__DIR__ . '/../config/core.php'));
+//load other config
+foreach (scandir($app['path.config']) as $file)
 {
-	$app->make('config')->set('former.framework', $formerFramework);
+	if (!in_array($file, array('.', '..')))
+	{
+		$app->configure(pathinfo($file, PATHINFO_FILENAME));
+	}
+}
+//load env-vars in config
+foreach ($_ENV as $key => $value)
+{
+	if (preg_match("/^[a-zA-Z_]+$/", $key))
+	{
+		$key = strtolower(str_replace('_', '.', $key));
+		if (!$app->make('config')->has($key))
+		{
+			$app->make('config')->set($key, $value);
+		}
+	}
 }
 
 $app->withEloquent();
@@ -56,7 +70,7 @@ $app->withEloquent();
 |
 */
 
-if (!$exceptionHandler = env('APP_CUSTOM_EXCEPTION_HANDLER'))
+if (!$exceptionHandler = config('app.exceptions.handler'))
 {
 	$exceptionHandler = Core\Exceptions\Handler::class;
 }
@@ -64,10 +78,13 @@ $app->singleton(
 	Illuminate\Contracts\Debug\ExceptionHandler::class,
 	$exceptionHandler
 );
-
+if (!$consoleKernel = config('app.console.kernel'))
+{
+	$consoleKernel = Core\Console\Kernel::class;
+}
 $app->singleton(
 	Illuminate\Contracts\Console\Kernel::class,
-	App\Console\Kernel::class
+	$consoleKernel
 );
 
 /*
@@ -80,16 +97,17 @@ $app->singleton(
 */
 
 $missingConfig = array();
-foreach (explode(',', env('CORE_CONFIG_REQUIRED')) as $line)
+foreach (config('core.config.required') as $line)
 {
-	if (!env($line))
+	if (!config($line))
 	{
 		$missingConfig[] = $line;
 	}
 }
 if (!empty($missingConfig))
 {
-	throw new \Exception("The following env-values are required:\n" . implode("\n", $missingConfig));
+	dd(new Exception("The following config-values are required:\n" . implode("\n", $missingConfig)));
+	die;
 }
 
 /*

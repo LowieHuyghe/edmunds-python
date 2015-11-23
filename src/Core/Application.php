@@ -167,17 +167,20 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	protected function logPageView($response, $exception = null)
 	{
-		$pageview = new PageviewReport();
-
-		//Fetch title
-		$regex = "/<title>((.|\n)*?)<\/title>/i";
-		$matches = array();
-		if (preg_match($regex, $response->getContent(), $matches))
+		if (!app()->runningInConsole())
 		{
-			$pageview->documentTitle = trim($matches[1]);
-		}
+			$pageview = new PageviewReport();
 
-		$pageview->report();
+			//Fetch title
+			$regex = "/<title>((.|\n)*?)<\/title>/i";
+			$matches = array();
+			if (preg_match($regex, $response->getContent(), $matches))
+			{
+				$pageview->documentTitle = trim($matches[1]);
+			}
+
+			$pageview->report();
+		}
 	}
 
 }

@@ -124,7 +124,7 @@ class Response extends BaseStructure
 				$this->assign($valueKey, $value);
 			}
 		}
-		elseif (is_string($value) && starts_with($value, '_'))
+		elseif (is_string($key) && starts_with($key, '__'))
 		{
 			$this->assignedGeneralData[$key] = $value;
 		}
@@ -136,11 +136,28 @@ class Response extends BaseStructure
 
 	/**
 	 * Get the assignments
+	 * @param bool $withGeneral Inclusive '__xxx'-values
 	 * @return array
 	 */
-	public function getAssignments()
+	public function getAssignments($withGeneral = true)
 	{
 		return array_merge($this->assignedGeneralData, $this->assignedData);
+	}
+
+	/**
+	 * Get the assignments
+	 * @return array
+	 */
+	public function getAssignment($key)
+	{
+		if (is_string($key) && starts_with($key, '__'))
+		{
+			return $this->assignedGeneralData[$key];
+		}
+		else
+		{
+			return $this->assignedData[$key];
+		}
 	}
 
 	/**
@@ -325,7 +342,7 @@ class Response extends BaseStructure
 			}
 
 			//For debugging purposes show the redirect-page
-			if (app()->isLocal() && env('ROUTING_REDIRECTHALT'))
+			if (app()->isLocal() && config('routing.redirecthalt', false))
 			{
 				//Fetch the debugtrace
 				ob_start();
@@ -342,14 +359,8 @@ class Response extends BaseStructure
 		}
 		elseif ($this->responseType == self::TYPE_JSON)
 		{
-			$data = array();
-			foreach ($this->assignedData as $key => $value)
-			{
-				$data[snake_case($key)] = $value;
-			}
-
 			$this->assignHeader('Content-Type', 'application/json');
-			$response = response()->json($data);
+			$response = response()->json($this->assignedData);
 		}
 		elseif ($this->responseType == self::TYPE_CONTENT)
 		{

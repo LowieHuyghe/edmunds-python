@@ -206,7 +206,7 @@ class Auth extends BaseStructure
 		//Fetch the token
 		if ($authToken = AuthToken::where('token', '=', $token)->first())
 		{
-			$validUntil = $authToken->updated_at->addMinutes((int) env('CORE_AUTH_AUTHTOKEN_TTL'));
+			$validUntil = $authToken->updated_at->addMinutes(config('core.auth.ttl.authtoken'));
 
 			//Log user in
 			if ($loggedIn = $this->loginWithUser($authToken->user, $once))

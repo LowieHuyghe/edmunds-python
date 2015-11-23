@@ -55,7 +55,7 @@ class Queue extends BaseStructure
 	 */
 	public function dispatch($callable, $args, $queue = self::QUEUE_DEFAULT, $attempts = 1)
 	{
-		if (env('QUEUE_IMMEDIATELY'))
+		if (config('queue.immediately', false))
 		{
 			return call_user_func_array($callable, $args);
 		}

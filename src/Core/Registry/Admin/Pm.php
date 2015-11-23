@@ -41,7 +41,7 @@ class Pm extends BaseStructure implements PmInterface
 	{
 		parent::__construct();
 
-		$this->driver = strtolower($driver ?: env('CORE_ADMIN_PM_DRIVER'));
+		$this->driver = strtolower($driver ?: config('core.admin.pm.driver'));
 	}
 
 	/**

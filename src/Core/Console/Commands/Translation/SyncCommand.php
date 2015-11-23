@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands\Translation;
+namespace Core\Console\Commands\Translation;
 use Core\Bases\Commands\BaseCommand;
 use Core\Io\Translator;
 use Core\Models\Translation;
@@ -78,7 +78,6 @@ class SyncCommand extends BaseCommand
 				{
 					foreach ($matches[1] as $match)
 					{
-						dd($match);
 						$key = Translator::getKey($match);
 
 						$translation = Translation::where('hash', '=', $key)->first();

@@ -100,13 +100,13 @@ class Dispatcher implements \FastRoute\Dispatcher
 	private function getAllConstants()
 	{
 		//Fetch namespace
-		$namespace = env('ROUTING_NAMESPACE');
+		$namespace = config('routing.namespace');
 		$namespace = trim($namespace, '\\');
 		//Fetch defaultController
-		$defaultController = env('ROUTING_DEFAULTCONTROLLER');
+		$defaultController = config('routing.defaultcontroller');
 		$defaultController = $namespace . '\\' . $defaultController;
 		//Fetch homeController
-		$homeController = env('ROUTING_HOMECONTROLLER');
+		$homeController = config('routing.homecontroller');
 		$homeController = $namespace . '\\' . $homeController;
 
 		//Get the call-method

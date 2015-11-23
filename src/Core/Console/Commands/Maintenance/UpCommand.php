@@ -11,30 +11,30 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands\Maintenance;
+namespace Core\Console\Commands\Maintenance;
 use Core\Bases\Commands\BaseCommand;
 
 /**
- * The command for putting the app in maintenance mode.
+ * The command for putting the app back live.
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class DownCommand extends BaseCommand {
+class UpCommand extends BaseCommand {
 	/**
 	 * The console command name.
 	 *
 	 * @var string
 	 */
-	protected $name = 'down';
+	protected $name = 'up';
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = "Put the application into maintenance mode";
+	protected $description = "Bring the application out of maintenance mode";
 	/**
 	 * Execute the console command.
 	 *
@@ -42,8 +42,8 @@ class DownCommand extends BaseCommand {
 	 */
 	public function fire()
 	{
-		touch(app()->storagePath('framework/down'));
-		$this->comment('Application is now in maintenance mode.');
+		@unlink(app()->storagePath('framework/down'));
+		$this->info('Application is now live.');
 	}
 
 }

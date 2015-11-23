@@ -264,32 +264,35 @@ class BaseReport extends BaseStructure
 		parent::__construct();
 
 		//Set the version and tracking info
-		$this->version = env('ANALYTICS_GOOGLE_VERSION');
-		$this->trackingId = env('ANALYTICS_GOOGLE_TRACKINGID');
-
-		$request = Request::current();
-		$visitor = Visitor::current();
-
-		//Assign default values
-		$this->dataSource = 'web';
-		$this->userAgentOverride = $visitor->context->userAgent;
-		$this->ipOverride = $request->ip;
-		if ($visitor->loggedIn) $this->userId = $visitor->user->id;
-		$this->userLanguage = $visitor->localization->locale;
-		$this->clientId = $visitor->id;
+		$this->version = config('app.analytics.google.version');
+		$this->trackingId = config('app.analytics.google.version');
 		$this->cacheBuster = rand(0, 2000000000);
 
-		$this->documentEncoding = "UTF-8";
-		$this->documentLocationUrl = $request->fullUrl;
-		$this->documentHostName = $request->host;
-		$this->documentPath = $request->path;
-		if ($this->documentPath && $this->documentPath[0] != '/')
+		//Only if request is set
+		if ($request = Request::current())
 		{
-			$this->documentPath = '/' . $this->documentPath;
-		}
-		$this->documentReferrer = $request->referrer;
+			$visitor = Visitor::current();
 
-		$this->customDimension = array_merge($this->customDimension ?: array(), array(array('Environment', env('APP_ENV'))));
+			//Assign default values
+			$this->dataSource = 'web';
+			$this->userAgentOverride = $visitor->context->userAgent;
+			$this->ipOverride = $request->ip;
+			if ($visitor->loggedIn) $this->userId = $visitor->user->id;
+			$this->userLanguage = $visitor->localization->locale;
+			$this->clientId = $visitor->id;
+
+			$this->documentEncoding = "UTF-8";
+			$this->documentLocationUrl = $request->fullUrl;
+			$this->documentHostName = $request->host;
+			$this->documentPath = $request->path;
+			if ($this->documentPath && $this->documentPath[0] != '/')
+			{
+				$this->documentPath = '/' . $this->documentPath;
+			}
+			$this->documentReferrer = $request->referrer;
+		}
+
+		$this->customDimension = array_merge($this->customDimension ?: array(), array(array('Environment', config('app.env', false))));
 	}
 
 	/**
