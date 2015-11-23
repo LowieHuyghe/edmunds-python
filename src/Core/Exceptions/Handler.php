@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Exception $e)
 	{
-		if (!env('APP_DEBUG'))
+		if (!config('app.debug', false))
 		{
 			if ($e instanceof UnauthorizedHttpException
 				|| $e instanceof AccessDeniedHttpException
