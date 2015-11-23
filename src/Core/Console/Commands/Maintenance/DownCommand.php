@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Commands\Maintenance;
+namespace Core\Console\Commands\Maintenance;
 use Core\Bases\Commands\BaseCommand;
 
 /**

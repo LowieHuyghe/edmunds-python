@@ -107,8 +107,8 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 		$locales = array(
 			$locale,
 			Visitor::current()->localization->locale,
-			env('APP_LOCALE'),
-			env('APP_FALLBACK_LOCALE'),
+			config('app.locale'),
+			config('app.fallback'),
 		);
 
 		return array_values(array_unique(array_filter($locales)));

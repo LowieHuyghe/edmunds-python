@@ -58,16 +58,16 @@ class Slack extends BaseStructure implements PmInterface
 	{
 		parent::__construct();
 
-		$hook = env('CORE_ADMIN_PM_SLACK_HOOK');
+		$hook = config('core.admin.pm.slack.hook');
 		$settings = array(
-			'username' => env('APP_NAME'),
+			'username' => config('app.name'),
 		);
 
-		if ($channel = env('CORE_ADMIN_PM_SLACK_CHANNEL'))
+		if ($channel = config('core.admin.pm.slack.channel'))
 		{
 			$settings['channel'] = $channel;
 		}
-		if ($icon = env('CORE_ADMIN_PM_SLACK_ICON'))
+		if ($icon = config('core.admin.pm.slack.icon'))
 		{
 			$settings['icon'] = $icon;
 		}
@@ -83,7 +83,7 @@ class Slack extends BaseStructure implements PmInterface
 	 */
 	public function info($title, $body = null)
 	{
-		return $this->send($title, 'Info', $body, 'good', env('CORE_ADMIN_PM_SLACK_CHANNEL_INFO'));
+		return $this->send($title, 'Info', $body, 'good', config('core.admin.pm.slack.channel.info'));
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Slack extends BaseStructure implements PmInterface
 	 */
 	public function warning($title, $body = null)
 	{
-		return $this->send($title, 'Warning', $body, 'warning', env('CORE_ADMIN_PM_SLACK_CHANNEL_WARNING'));
+		return $this->send($title, 'Warning', $body, 'warning', config('core.admin.pm.slack.channel.warning'));
 	}
 
 	/**
@@ -105,7 +105,7 @@ class Slack extends BaseStructure implements PmInterface
 	 */
 	public function error($title, $body = null)
 	{
-		return $this->send($title, 'Error', $body, 'danger', env('CORE_ADMIN_PM_SLACK_CHANNEL_ERROR'));
+		return $this->send($title, 'Error', $body, 'danger', config('core.admin.pm.slack.channel.error'));
 	}
 
 	/**
