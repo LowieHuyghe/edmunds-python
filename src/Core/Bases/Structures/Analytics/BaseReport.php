@@ -264,8 +264,8 @@ class BaseReport extends BaseStructure
 		parent::__construct();
 
 		//Set the version and tracking info
-		$this->version = config('app.analytics.google.version');
-		$this->trackingId = config('app.analytics.google.version');
+		$this->version = config('analytics.google.version');
+		$this->trackingId = config('analytics.google.trackingid');
 		$this->cacheBuster = rand(0, 2000000000);
 
 		//Only if request is set
@@ -380,6 +380,7 @@ class BaseReport extends BaseStructure
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_POST, count($data));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
 
 		curl_close ($ch);

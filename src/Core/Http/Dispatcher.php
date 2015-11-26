@@ -58,7 +58,8 @@ class Dispatcher implements \FastRoute\Dispatcher
 			if ($route && $this->areParametersValid($route->parameters, $parameters))
 			{
 				//Set transaction name
-				NewRelic::current()->nameTransaction($controllerName . '@' . $route->name);
+				$transactionName = str_replace('\\', '/', substr($controllerName, strlen($namespace), -strlen('Controller'))) . '@' . $route->name;
+				NewRelic::current()->nameTransaction($transactionName);
 
 				//Prepare result
 				$routeResults = array(
