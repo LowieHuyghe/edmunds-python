@@ -373,18 +373,16 @@ class BaseReport extends BaseStructure
 		$queueTime = round((microtime(true) - $timeReported) * 1000);
 		$data['qt'] = $queueTime;
 
-		//Setup options
-		$options = array(
-			'http' => array(
-				'header'  => $header,
-				'method'  => 'POST',
-				'content' => http_build_query($data),
-			),
-		);
-		$context = stream_context_create($options);
-
 		//Send request
-		file_get_contents('http://www.google-analytics.com/collect', false, $context);
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL, 'https://ssl.google-analytics.com/collect');
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+		curl_setopt($ch, CURLOPT_POST, count($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		curl_exec($ch);
+
+		curl_close ($ch);
 	}
 
 	/**
