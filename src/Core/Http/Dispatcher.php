@@ -58,7 +58,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 			if ($route && $this->areParametersValid($route->parameters, $parameters))
 			{
 				//Set transaction name
-				$this->setNewRelicTransactionName($segments, $remainingSegments, $requestMethod, $route);
+				NewRelic::current()->nameTransaction($controllerName . '@' . $route->name);
 
 				//Prepare result
 				$routeResults = array(
@@ -303,43 +303,5 @@ class Dispatcher implements \FastRoute\Dispatcher
 		}
 
 		return true;
-	}
-
-	/**
-	 * Set the transaction name for New Relic
-	 * @param array $segments
-	 * @param array $remainingSegments
-	 * @param string $requestMethod
-	 * @param Route $route
-	 */
-	private function setNewRelicTransactionName($segments, $remainingSegments, $requestMethod, $route)
-	{
-		//Get controller part
-		$transaction = '/' . implode('/', array_splice($segments, 0, count($segments) - count($remainingSegments)));
-
-		//Get number of segments remaining
-		$loopCount = count($route->parameters);
-		if (!in_array($route->name, array($requestMethod, 'getIndex')))
-		{
-			++$loopCount;
-		}
-
-		//Make rest of transaction
-		$index = 0;
-		for ($i=0; $i < $loopCount; $i++)
-		{
-			if ($i == $route->namePosition && !in_array($route->name, array($requestMethod, 'getIndex')))
-			{
-				$transaction .= '/' . substr($route->name, strlen($requestMethod));
-			}
-			else
-			{
-				$transaction .= '/{' . $index . '}';
-				++$index;
-			}
-		}
-
-		//Set transaction name
-		NewRelic::current()->nameTransaction(strtolower($transaction));
 	}
 }
