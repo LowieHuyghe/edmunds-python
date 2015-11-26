@@ -49,10 +49,10 @@ foreach ($_ENV as $key => $value)
 {
 	if (preg_match("/^[a-zA-Z_]+$/", $key))
 	{
-		$key = strtolower(str_replace('_', '.', $key));
-		if (!$app->make('config')->has($key))
+		$configKey = strtolower(str_replace('_', '.', $key));
+		if (!$app->make('config')->has($configKey))
 		{
-			$app->make('config')->set($key, $value);
+			$app->make('config')->set($configKey, env($key));
 		}
 	}
 }
