@@ -13,9 +13,11 @@
 
 namespace Core\Http;
 
+use Core\Analytics\NewRelic;
 use Core\Http\Client\Input;
-use Core\Http\Client\Visitor;
 use Core\Http\Client\Session;
+use Core\Http\Client\Visitor;
+use Core\Http\Route;
 use Illuminate\View\View;
 
 /**
@@ -55,6 +57,9 @@ class Dispatcher implements \FastRoute\Dispatcher
 			list($route, $parameters) = $this->getRoute($controllerName, $requestMethod, $remainingSegments);
 			if ($route && $this->areParametersValid($route->parameters, $parameters))
 			{
+				//Set transaction name
+				$this->setNewRelicTransactionName($segments, $remainingSegments, $requestMethod, $route);
+
 				//Prepare result
 				$routeResults = array(
 					self::FOUND,
@@ -168,7 +173,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 				$className = '';
 				for ($j = 0; $j <= $i; ++$j)
 				{
-					$className .= '\\' . ucfirst($segments[$j]);
+					$className .= '\\' . ucfirst(strtolower($segments[$j]));
 				}
 				$className = $namespace . $className . ($requestType ? ucfirst($requestType) : '') . 'Controller';
 
@@ -298,5 +303,43 @@ class Dispatcher implements \FastRoute\Dispatcher
 		}
 
 		return true;
+	}
+
+	/**
+	 * Set the transaction name for New Relic
+	 * @param array $segments
+	 * @param array $remainingSegments
+	 * @param string $requestMethod
+	 * @param Route $route
+	 */
+	private function setNewRelicTransactionName($segments, $remainingSegments, $requestMethod, $route)
+	{
+		//Get controller part
+		$transaction = '/' . implode('/', array_splice($segments, 0, count($segments) - count($remainingSegments)));
+
+		//Get number of segments remaining
+		$loopCount = count($route->parameters);
+		if (!in_array($route->name, array($requestMethod, 'getIndex')))
+		{
+			++$loopCount;
+		}
+
+		//Make rest of transaction
+		$index = 0;
+		for ($i=0; $i < $loopCount; $i++)
+		{
+			if ($i == $route->namePosition && !in_array($route->name, array($requestMethod, 'getIndex')))
+			{
+				$transaction .= '/' . substr($route->name, strlen($requestMethod));
+			}
+			else
+			{
+				$transaction .= '/{' . $index . '}';
+				++$index;
+			}
+		}
+
+		//Set transaction name
+		NewRelic::current()->nameTransaction(strtolower($transaction));
 	}
 }
