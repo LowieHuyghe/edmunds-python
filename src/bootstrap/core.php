@@ -57,6 +57,9 @@ foreach ($_ENV as $key => $value)
 	}
 }
 
+//Set New Relic config
+\Core\Analytics\NewRelic::initialize(config('app.newrelic.appname'), config('app.newrelic.license'));
+
 $app->withEloquent();
 
 /*
