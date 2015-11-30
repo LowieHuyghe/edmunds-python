@@ -15,6 +15,7 @@ namespace Core\Http\Client;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Helpers\MiscHelper;
+use Core\Http\Client\Auth;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Models\User;
@@ -38,44 +39,23 @@ use Core\Models\User;
 class Visitor extends BaseStructure
 {
 	/**
-	 * Instance of the visitor-helper
-	 * @var Visitor
-	 */
-	private static $instance;
-
-	/**
 	 * The rights the user is required to have
 	 * @var array
 	 */
 	public static $requiredRights;
 
 	/**
-	 * Fetch instance of the visitor-helper
-	 * @return Visitor
-	 */
-	public static function current()
-	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Visitor();
-		}
-
-		return self::$instance;
-	}
-
-	/**
 	 * Constructor
+	 * @param Request $request
 	 */
-	public function __construct()
+	public function __construct($request)
 	{
 		parent::__construct();
-
-		$request = Request::current();
 
 		$this->session = $request->session;
 		$this->context = new Context($request->userAgent);
 		$this->location = new Location($request->ip);
-		$this->user = Auth::current()->user;
+		//$this->user = $auth->user;
 
 		$this->localization = new Localization($this->context, $this->location, $this->user);
 	}
@@ -93,13 +73,13 @@ class Visitor extends BaseStructure
 		if (!$clientId)
 		{
 			//Then check cookie
-			$clientId = Request::current()->getCookie($idKey);
+			$clientId = app(Request::class)->getCookie($idKey);
 			if (!$clientId)
 			{
 				//Otherwise generate and save
 				$clientId = MiscHelper::generate_uuid();
 				$this->session->set($idKey, $clientId);
-				Response::current()->assignCookie($idKey, $clientId);
+				app(Response::class)->assignCookie($idKey, $clientId);
 			}
 			else
 			{
