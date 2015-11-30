@@ -43,36 +43,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Request extends BaseStructure
 {
 	/**
-	 * Instance of the response-helper
-	 * @var Request
-	 */
-	private static $instance;
-
-	/**
-	 * Initialize the request-helper
-	 * @param \Illuminate\Http\Request $request
-	 */
-	public static function initialize(&$request)
-	{
-		self::$instance = new Request($request);
-	}
-
-	/**
-	 * Fetch instance of the response-helper
-	 * @return Request
-	 */
-	public static function current()
-	{
-		return self::$instance;
-	}
-
-	/**
-	 * The request
-	 * @var \Illuminate\Http\Request
-	 */
-	private $request;
-
-	/**
 	 * @param \Illuminate\Http\Request $request
 	 */
 	public function __construct(&$request)

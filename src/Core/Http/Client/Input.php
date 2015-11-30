@@ -41,10 +41,27 @@ class Input extends BaseStructure
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Input();
+			self::$instance = new Input(app(Request::class));
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * THe current request
+	 * @var Request
+	 */
+	private $request;
+
+	/**
+	 * Constructor
+	 * @param SessionInterface $session
+	 */
+	public function __construct(Request $request)
+	{
+		parent::__construct();
+
+		$this->request = $request;
 	}
 
 	/**
@@ -56,7 +73,7 @@ class Input extends BaseStructure
 	 */
 	public function get($key, $default = null)
 	{
-		return Request::current()->input($key, $default);
+		return $this->request ->input($key, $default);
 	}
 
 	/**
@@ -67,7 +84,7 @@ class Input extends BaseStructure
 	 */
 	public function has($key)
 	{
-		return Request::current()->hasInput($key);
+		return $this->request ->hasInput($key);
 	}
 
 	/**
@@ -76,7 +93,7 @@ class Input extends BaseStructure
 	 */
 	public function all()
 	{
-		return Request::current()->input();
+		return $this->request->input();
 	}
 
 	/**
@@ -86,7 +103,7 @@ class Input extends BaseStructure
 	 */
 	public function only($keys)
 	{
-		return Request::current()->inputOnly($keys);
+		return $this->request->inputOnly($keys);
 	}
 
 	/**
@@ -96,7 +113,7 @@ class Input extends BaseStructure
 	 */
 	public function except($keys)
 	{
-		return Request::current()->inputExcept($keys);
+		return $this->request->inputExcept($keys);
 	}
 
 	/**
@@ -107,7 +124,7 @@ class Input extends BaseStructure
 	 */
 	public function file($key, $default = null)
 	{
-		return Request::current()->file($key, $default);
+		return $this->request->file($key, $default);
 	}
 
 	/**
@@ -117,7 +134,7 @@ class Input extends BaseStructure
 	 */
 	public function hasFile($key)
 	{
-		return Request::current()->hasFile($key);
+		return $this->request->hasFile($key);
 	}
 
 	/**

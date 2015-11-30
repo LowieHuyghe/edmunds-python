@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
 				|| $e instanceof NotFoundHttpException
 				|| $e instanceof ServiceUnavailableHttpException)
 			{
-				$response = Response::current();
+				$response = app(Response::class);
 
 				$response->assignHeader($e->getHeaders());
 				$response->assignView(null, 'errors.' . $e->getStatusCode());

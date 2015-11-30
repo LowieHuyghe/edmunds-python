@@ -14,6 +14,7 @@
 namespace Core\Http;
 
 use Core\Bases\Structures\BaseStructure;
+use Core\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -32,34 +33,14 @@ class Response extends BaseStructure
 			TYPE_CONTENT		= 4,
 			TYPE_DOWNLOAD		= 5,
 			TYPE_REDIRECT		= 6;
-
-	/**
-	 * Instance of the response-helper
-	 * @var Response
-	 */
-	private static $instance;
-
-	/**
-	 * Fetch instance of the response-helper
-	 * @return Response
-	 */
-	public static function current()
-	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Response();
-		}
-		return self::$instance;
-	}
-
 	/**
 	 * Constructor
 	 */
-	public function __construct()
+	public function __construct($request)
 	{
 		parent::__construct();
 
-		$this->request = Request::current();
+		$this->request = $request;
 	}
 
 	/**
