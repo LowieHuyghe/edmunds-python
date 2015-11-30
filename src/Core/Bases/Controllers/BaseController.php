@@ -76,11 +76,11 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
-		$this->request = Request::current();
-		$this->response = Response::current();
+		$this->request = app(Request::class);
+		$this->response = app(Response::class);
+		$this->visitor = app(Visitor::class);
 		$this->input = Input::current();
 		$this->validator = new Validation($this->input->all());
-		$this->visitor = Visitor::current();
 
 		$this->checkRights();
 	}
@@ -113,11 +113,11 @@ class BaseController extends Controller
 		//set the status of the response
 		if ($response === true || $response === false)
 		{
-			Response::current()->assign('success', $response);
+			$this->response->assign('success', $response);
 		}
 
 		//Return response
-		return Response::current()->getResponse();
+		return $this->response->getResponse();
 	}
 
 	/**

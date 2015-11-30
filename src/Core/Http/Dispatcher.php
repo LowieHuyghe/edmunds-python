@@ -17,6 +17,8 @@ use Core\Analytics\NewRelic;
 use Core\Http\Client\Input;
 use Core\Http\Client\Session;
 use Core\Http\Client\Visitor;
+use Core\Http\Request;
+use Core\Http\Response;
 use Core\Http\Route;
 use Illuminate\View\View;
 
@@ -105,6 +107,9 @@ class Dispatcher implements \FastRoute\Dispatcher
 	 */
 	private function getAllConstants()
 	{
+		$request = app(Request::class);
+		$response = app(Response::class);
+
 		//Fetch namespace
 		$namespace = config('routing.namespace');
 		$namespace = trim($namespace, '\\');
@@ -116,33 +121,33 @@ class Dispatcher implements \FastRoute\Dispatcher
 		$homeController = $namespace . '\\' . $homeController;
 
 		//Get the call-method
-		$requestMethod = strtolower(Request::current()->method);
+		$requestMethod = strtolower($request->method);
 		if ($requestMethod == 'patch')
 		{
 			$requestMethod = 'put';
 		}
 		$requestType = null;
 		//Check if ajax-call
-		if (Request::current()->ajax)
+		if ($request->ajax)
 		{
 			$requestType = 'ajax';
 			//Set default response to ajax
-			Response::current()->setType(Response::TYPE_JSON);
+			$response->setType(Response::TYPE_JSON);
 		}
-		elseif (Request::current()->json || (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'json'))
+		elseif ($request->json || (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
 			//Set default response to json
-			Response::current()->setType(Response::TYPE_JSON);
+			$response->setType(Response::TYPE_JSON);
 		}
 		elseif (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
 			//Set default response to xml
-			Response::current()->setType(Response::TYPE_XML);
+			$response->setType(Response::TYPE_XML);
 		}
 		//Get route and its parts
-		$segments = Request::current()->segments;
+		$segments = $request->segments;
 
 		return array($namespace, $defaultController, $homeController, $requestMethod, $requestType, $segments);
 	}

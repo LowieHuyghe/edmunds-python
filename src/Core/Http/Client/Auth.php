@@ -14,11 +14,12 @@
 namespace Core\Http\Client;
 use Carbon\Carbon;
 use Core\Bases\Structures\BaseStructure;
+use Core\Http\Client\Visitor;
+use Core\Http\Request;
+use Core\Models\Auth\AuthToken;
 use Core\Models\Auth\LoginAttempt;
 use Core\Models\Auth\PasswordReset;
-use Core\Models\Auth\AuthToken;
 use Core\Models\User;
-use Core\Http\Request;
 
 /**
  * The structure for authentication
@@ -106,7 +107,7 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoginAttemptsAttribute()
 	{
-		$ip = Request::current()->ip;
+		$ip = app(Request::class)->ip;
 		$dateTimeFrom = Carbon::now()->addHours(-7)->toDateTimeString();
 
 		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
@@ -146,7 +147,7 @@ class Auth extends BaseStructure
 			//Create auth-token
 			$authToken = new AuthToken();
 			$authToken->user()->associate($this->loggedInUser);
-			$authToken->session_id = Visitor::current()->session->getId();
+			$authToken->session_id = app(Request::class)->session->getId();
 
 			//Save and return
 			if ($authToken->save())
@@ -186,7 +187,7 @@ class Auth extends BaseStructure
 			$user = User::where('email', '=', $email)->first();
 
 			$this->loggedInUser = $user;
-			Visitor::current()->user = $user;
+			app(Visitor::class)->user = $user;
 		}
 
 		//Return result
@@ -215,14 +216,14 @@ class Auth extends BaseStructure
 				if ($validUntil->gt(Carbon::now()))
 				{
 					$authToken->touch();
-					Visitor::current()->session->save();
-					Visitor::current()->session->setId($authToken->session_id);
-					Visitor::current()->session->start();
+					app(Request::class)->session->save();
+					app(Request::class)->session->setId($authToken->session_id);
+					app(Request::class)->session->start();
 				}
 				//Otherwise save new session-id
 				else
 				{
-					$authToken->session_id = Visitor::current()->session->getId();
+					$authToken->session_id = app(Request::class)->session->getId();
 					$authToken->save();
 				}
 			}
@@ -246,7 +247,7 @@ class Auth extends BaseStructure
 		}
 
 		$this->loggedInUser = $user;
-		Visitor::current()->user = $user;
+		app(Visitor::class)->user = $user;
 
 		return true;
 	}
@@ -261,7 +262,7 @@ class Auth extends BaseStructure
 	{
 		$loginAttempt = new LoginAttempt();
 
-		$loginAttempt->ip = Request::current()->ip;
+		$loginAttempt->ip = app(Request::class)->ip;
 		$loginAttempt->type = $type;
 		$loginAttempt->email = $email;
 		$loginAttempt->password = $password;
@@ -282,7 +283,7 @@ class Auth extends BaseStructure
 		if (app('auth')->logout())
 		{
 			$this->loggedInUser = null;
-			Visitor::current()->user = null;
+			app(Visitor::class)->user = null;
 
 			return true;
 		}

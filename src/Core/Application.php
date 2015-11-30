@@ -14,10 +14,13 @@
 namespace Core;
 use Core\Analytics\Logging\PageviewReport;
 use Core\Exceptions\AbortHttpException;
+use Core\Http\Client\Auth;
 use Core\Http\Client\Session;
+use Core\Http\Client\Visitor;
 use Core\Http\Dispatcher;
 use Core\Http\Request;
 use Core\Http\Response;
+use Core\Providers\HttpServiceProvider;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -72,20 +75,19 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function dispatch($request = null)
 	{
-		if (!$request)
+		if ($request)
 		{
-			$request = \Illuminate\Http\Request::capture();
+			$this->instance('Illuminate\Http\Request', $request);
+			$this->ranServiceBinders['registerRequestBindings'] = true;
+
+			$method = $request->getMethod();
+			$pathInfo = $request->getPathInfo();
 		}
-
-		$this->instance('Illuminate\Http\Request', $request);
-		$this->ranServiceBinders['registerRequestBindings'] = true;
-
-		Session::initialize($request->getSession());
-		$request->setSession(Session::current());
-		Request::initialize($request);
-
-		$method = $request->getMethod();
-		$pathInfo = $request->getPathInfo();
+		else
+		{
+			$method = $this->getMethod();
+			$pathInfo = $this->getPathInfo();
+		}
 
 		try
 		{
@@ -104,9 +106,7 @@ class Application extends \Laravel\Lumen\Application
 		}
 		catch (AbortHttpException $e)
 		{
-			$response = Response::current();
-
-			$response = $response->getResponse();
+			$response = $this[Response::class]->getResponse();
 		}
 		catch (Exception $exception)
 		{
@@ -181,6 +181,41 @@ class Application extends \Laravel\Lumen\Application
 
 			$pageview->report();
 		}
+	}
+
+	/**
+	 * Bootstrap the application container.
+	 *
+	 * @return void
+	 */
+	protected function bootstrapContainer()
+	{
+		parent::bootstrapContainer();
+
+		//Request
+		$this->app->singleton('core.request', function ($app)
+		{
+			$request = $app['request'];
+			$session = $request->getSession();
+			$request->setSession(new Session($session));
+
+			return new Request($request);
+		});
+		$this->app->bind(Request::class, 'core.request');
+
+		//Response
+		$this->app->singleton('core.response', function ($app)
+		{
+			return new Response($app['core.request']);
+		});
+		$this->app->bind(Response::class, 'core.response');
+
+    	//Visitor
+        $this->app->singleton('core.visitor', function ($app)
+        {
+            return new Visitor($app['core.request']);
+        });
+		$this->app->bind(Visitor::class, 'core.visitor');
 	}
 
 }

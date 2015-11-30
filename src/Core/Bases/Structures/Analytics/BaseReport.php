@@ -12,10 +12,10 @@
  */
 
 namespace Core\Bases\Structures\Analytics;
+use Core\Bases\Structures\BaseStructure;
+use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Io\Validation\Validation;
-use Core\Http\Client\Visitor;
-use Core\Bases\Structures\BaseStructure;
 use Core\Registry\Queue;
 use Core\Registry\Registry;
 
@@ -269,9 +269,9 @@ class BaseReport extends BaseStructure
 		$this->cacheBuster = rand(0, 2000000000);
 
 		//Only if request is set
-		if ($request = Request::current())
+		if ($request = app(Request::class))
 		{
-			$visitor = Visitor::current();
+			$visitor = app(Visitor::class);
 
 			//Assign default values
 			$this->dataSource = 'web';
