@@ -61,12 +61,6 @@ class Response extends BaseStructure
 	private $request;
 
 	/**
-	 * Assigned general data for response
-	 * @var array
-	 */
-	private $assignedGeneralData = array();
-
-	/**
 	 * Assigned data for response
 	 * @var array
 	 */
@@ -126,10 +120,6 @@ class Response extends BaseStructure
 				$this->assign($valueKey, $value);
 			}
 		}
-		elseif (is_string($key) && starts_with($key, '__'))
-		{
-			$this->assignedGeneralData[$key] = $value;
-		}
 		else
 		{
 			$this->assignedData[$key] = $value;
@@ -138,12 +128,11 @@ class Response extends BaseStructure
 
 	/**
 	 * Get the assignments
-	 * @param bool $withGeneral Inclusive '__xxx'-values
 	 * @return array
 	 */
-	public function getAssignments($withGeneral = true)
+	public function getAssignments()
 	{
-		return array_merge($this->assignedGeneralData, $this->assignedData);
+		return $this->assignedData;
 	}
 
 	/**
@@ -152,14 +141,7 @@ class Response extends BaseStructure
 	 */
 	public function getAssignment($key)
 	{
-		if (is_string($key) && starts_with($key, '__'))
-		{
-			return $this->assignedGeneralData[$key];
-		}
-		else
-		{
-			return $this->assignedData[$key];
-		}
+		return $this->assignedData[$key];
 	}
 
 	/**
@@ -171,17 +153,10 @@ class Response extends BaseStructure
 	{
 		if (is_null($key))
 		{
-			$key = '_';
+			$key = '__';
 		}
 
-		if (!isset($this->response[self::TYPE_VIEW]))
-		{
-			$this->response[self::TYPE_VIEW] = array($key => $view);
-		}
-		else
-		{
-			$this->response[self::TYPE_VIEW][$key] = $view;
-		}
+		$this->response[self::TYPE_VIEW][$key] = $view;
 	}
 
 	/**
@@ -359,37 +334,44 @@ class Response extends BaseStructure
 		{
 			$response = response()->download($this->response[self::TYPE_DOWNLOAD]['filePath'], $this->response[self::TYPE_DOWNLOAD]['name']);
 		}
-		elseif ($this->responseType == self::TYPE_JSON)
-		{
-			$this->assignHeader('Content-Type', 'application/json');
-			$response = response()->json($this->assignedData);
-		}
 		elseif ($this->responseType == self::TYPE_CONTENT)
 		{
 			$response = response()->make($this->response[self::TYPE_CONTENT]['content']);
 		}
-		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML)) && !empty($this->response[self::TYPE_VIEW]))
+		elseif (in_array($this->responseType, array(self::TYPE_VIEW, self::TYPE_XML)) && !empty($this->response[self::TYPE_VIEW]) || $this->responseType == self::TYPE_JSON)
 		{
-			$data = array_merge($this->assignedGeneralData, $this->assignedData);
-			ksort($this->response[self::TYPE_VIEW]);
-
-			foreach ($this->response[self::TYPE_VIEW] as $key => $view)
+			$data = $this->assignedData;
+			if (isset($this->response[self::TYPE_VIEW]))
 			{
-				if (is_null($response))
+				ksort($this->response[self::TYPE_VIEW]);
+
+				foreach ($this->response[self::TYPE_VIEW] as $key => $view)
 				{
-					$response = view($view, $data);
-				}
-				else
-				{
-					$response = $response->nest($key, $view, $data);
+					if (is_null($response))
+					{
+						$response = view($view, $data);
+					}
+					else
+					{
+						$response = $response->nest($key, $view, $data);
+					}
 				}
 			}
-			$response = response()->make($response);
 
 			switch ($this->responseType)
 			{
+				case self::TYPE_JSON:
+					$this->assignHeader('Content-Type', 'application/json');
+					if (!isset($data['html']) && $response)
+					{
+						$data['html'] = $response->render();
+					}
+					$response = response()->json($data);
+					break;
 				case self::TYPE_XML:
 					$this->assignHeader('Content-Type', 'application/xml');
+				default:
+					$response = response()->make($response);
 					break;
 			}
 		}
