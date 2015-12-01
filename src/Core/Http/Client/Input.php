@@ -37,11 +37,11 @@ class Input extends BaseStructure
 	 * Fetch instance of the response-helper
 	 * @return Input
 	 */
-	public static function current()
+	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Input(app(Request::class));
+			self::$instance = new Input(Request::getInstance());
 		}
 
 		return self::$instance;
@@ -57,7 +57,7 @@ class Input extends BaseStructure
 	 * Constructor
 	 * @param SessionInterface $session
 	 */
-	public function __construct(Request $request)
+	public function __construct($request)
 	{
 		parent::__construct();
 

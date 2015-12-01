@@ -55,7 +55,7 @@ class LoginRequiredController extends BaseController
 			{
 				if ($email = $this->request->getServer('PHP_AUTH_USER') && $password = $this->request->getServer('PHP_AUTH_PW'))
 				{
-					Auth::current()->loginWithCredentials($email, $password);
+					Auth::getInstance()->loginWithCredentials($email, $password);
 				}
 				if (!$this->visitor->loggedIn)
 				{
@@ -67,7 +67,7 @@ class LoginRequiredController extends BaseController
 				//Check token in headers
 				if ($token = $this->request->getServer('PHP_AUTH_TOKEN'))
 				{
-					Auth::current()->loginWithToken($token);
+					Auth::getInstance()->loginWithToken($token);
 				}
 				if (!$this->visitor->loggedIn)
 				{

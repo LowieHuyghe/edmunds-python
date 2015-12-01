@@ -61,7 +61,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 			{
 				//Set transaction name
 				$transactionName = str_replace('\\', '/', substr($controllerName, strlen($namespace), -strlen('Controller'))) . '@' . $route->name;
-				NewRelic::current()->nameTransaction($transactionName);
+				NewRelic::getInstance()->nameTransaction($transactionName);
 
 				//Prepare result
 				$routeResults = array(
@@ -107,8 +107,8 @@ class Dispatcher implements \FastRoute\Dispatcher
 	 */
 	private function getAllConstants()
 	{
-		$request = app(Request::class);
-		$response = app(Response::class);
+		$request = Request::getInstance();
+		$response = Response::getInstance();
 
 		//Fetch namespace
 		$namespace = config('routing.namespace');
@@ -134,13 +134,13 @@ class Dispatcher implements \FastRoute\Dispatcher
 			//Set default response to ajax
 			$response->setType(Response::TYPE_JSON);
 		}
-		elseif ($request->json || (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'json'))
+		elseif ($request->json || (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json'))
 		{
 			$requestType = 'json';
 			//Set default response to json
 			$response->setType(Response::TYPE_JSON);
 		}
-		elseif (Input::current()->has('output') && strtolower(Input::current()->get('output')) == 'xml')
+		elseif (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'xml')
 		{
 			$requestType = 'xml';
 			//Set default response to xml

@@ -76,10 +76,10 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
-		$this->request = app(Request::class);
-		$this->response = app(Response::class);
-		$this->visitor = app(Visitor::class);
-		$this->input = Input::current();
+		$this->request = Request::getInstance();
+		$this->response = Response::getInstance();
+		$this->visitor = Visitor::getInstance();
+		$this->input = Input::getInstance();
 		$this->validator = new Validation($this->input->all());
 
 		$this->checkRights();

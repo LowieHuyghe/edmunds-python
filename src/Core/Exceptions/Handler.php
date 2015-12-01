@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
 		// $line = $e->getLine();
 		// $trace = $e->getTrace();
 
-		NewRelic::current()->noticeError($message, $e);
+		NewRelic::getInstance()->noticeError($message, $e);
 
 		// $log = new ExceptionReport();
 		// $log->exceptionDescription = "'$message' in $file:$line";
@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
 				|| $e instanceof NotFoundHttpException
 				|| $e instanceof ServiceUnavailableHttpException)
 			{
-				$response = app(Response::class);
+				$response = Response::getInstance();
 
 				$response->assignHeader($e->getHeaders());
 				$response->assignView(null, 'errors.' . $e->getStatusCode());

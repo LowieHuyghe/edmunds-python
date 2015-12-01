@@ -79,6 +79,12 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 	protected $loaded = [];
 
 	/**
+	 * The locales used for translations
+	 * @var array
+	 */
+	protected $locales;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -102,16 +108,30 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 	 * @param string $locale
 	 * @return array
 	 */
-	protected function getLocales($locale)
+	protected function getLocales($locale = null)
 	{
-		$locales = array(
-			$locale,
-			app(Visitor::class)->localization->locale,
-			config('app.locale'),
-			config('app.fallback'),
-		);
+		//Set the default locales
+		if (!isset($this->locales))
+		{
+			$localization = Visitor::getInstance()->localization;
 
-		return array_values(array_unique(array_filter($locales)));
+			$this->locales = array(
+				$localization->locale,
+				$localization->fallback,
+			);
+		}
+
+		//Add one custom locale if necessary
+		if ($locale)
+		{
+			$locales = $this->locales;
+			$locales[] = $locale;
+			return array_unique(array_filter($locales));
+		}
+		else
+		{
+			return $this->locales;
+		}
 	}
 
 	/**

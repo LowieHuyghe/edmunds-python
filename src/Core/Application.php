@@ -183,39 +183,4 @@ class Application extends \Laravel\Lumen\Application
 		}
 	}
 
-	/**
-	 * Bootstrap the application container.
-	 *
-	 * @return void
-	 */
-	protected function bootstrapContainer()
-	{
-		parent::bootstrapContainer();
-
-		//Request
-		$this->app->singleton('core.request', function ($app)
-		{
-			$request = $app['request'];
-			$session = $request->getSession();
-			$request->setSession(new Session($session));
-
-			return new Request($request);
-		});
-		$this->app->bind(Request::class, 'core.request');
-
-		//Response
-		$this->app->singleton('core.response', function ($app)
-		{
-			return new Response($app['core.request']);
-		});
-		$this->app->bind(Response::class, 'core.response');
-
-    	//Visitor
-        $this->app->singleton('core.visitor', function ($app)
-        {
-            return new Visitor($app['core.request']);
-        });
-		$this->app->bind(Visitor::class, 'core.visitor');
-	}
-
 }

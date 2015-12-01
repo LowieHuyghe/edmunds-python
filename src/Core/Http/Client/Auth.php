@@ -14,7 +14,6 @@
 namespace Core\Http\Client;
 use Carbon\Carbon;
 use Core\Bases\Structures\BaseStructure;
-use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Models\Auth\AuthToken;
 use Core\Models\Auth\LoginAttempt;
@@ -45,11 +44,11 @@ class Auth extends BaseStructure
 	 * Fetch instance of the auth-structure
 	 * @return Auth
 	 */
-	public static function current()
+	public static function getInstance()
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Auth();
+			self::$instance = new Auth(Request::getInstance());
 		}
 
 		return self::$instance;
@@ -58,7 +57,24 @@ class Auth extends BaseStructure
 	/**
 	 * @var User
 	 */
-	private $loggedInUser = null;
+	private $loggedInUser;
+
+	/**
+	 * The current request
+	 * @var Request
+	 */
+	private $request;
+
+	/**
+	 * Constructor
+	 * @param Request $request
+	 */
+	public function __construct($request)
+	{
+		parent::__construct();
+
+		$this->request = $request;
+	}
 
 	/**
 	 * Check if visitor is logged in
@@ -75,12 +91,9 @@ class Auth extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		if ($this->loggedIn) //Logged in
+		if (!isset($this->loggedInUser))
 		{
-			$authUser = app('auth')->user(); //Get user
-
-			if (!$this->loggedInUser //There was no logged in user
-				|| $this->loggedInUser->id != $authUser->id) //Or userId does not match
+			if ($authUser = app('auth')->user()) //Get user
 			{
 				if ($user = User::find($authUser->id)) //Find user
 				{
@@ -92,10 +105,10 @@ class Auth extends BaseStructure
 					$this->logout();
 				}
 			}
-		}
-		elseif ($this->loggedInUser) //Not logged in, but loggedInUser is set
-		{
-			$this->loggedInUser = null;
+			else
+			{
+				$this->loggedInUser = null;
+			}
 		}
 
 		return $this->loggedInUser;
@@ -107,7 +120,7 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoginAttemptsAttribute()
 	{
-		$ip = app(Request::class)->ip;
+		$ip = $this->request->ip;
 		$dateTimeFrom = Carbon::now()->addHours(-7)->toDateTimeString();
 
 		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
@@ -147,7 +160,7 @@ class Auth extends BaseStructure
 			//Create auth-token
 			$authToken = new AuthToken();
 			$authToken->user()->associate($this->loggedInUser);
-			$authToken->session_id = app(Request::class)->session->getId();
+			$authToken->session_id = $this->request->session->getId();
 
 			//Save and return
 			if ($authToken->save())
@@ -187,7 +200,6 @@ class Auth extends BaseStructure
 			$user = User::where('email', '=', $email)->first();
 
 			$this->loggedInUser = $user;
-			app(Visitor::class)->user = $user;
 		}
 
 		//Return result
@@ -216,14 +228,14 @@ class Auth extends BaseStructure
 				if ($validUntil->gt(Carbon::now()))
 				{
 					$authToken->touch();
-					app(Request::class)->session->save();
-					app(Request::class)->session->setId($authToken->session_id);
-					app(Request::class)->session->start();
+					$this->request->session->save();
+					$this->request->session->setId($authToken->session_id);
+					$this->request->session->start();
 				}
 				//Otherwise save new session-id
 				else
 				{
-					$authToken->session_id = app(Request::class)->session->getId();
+					$authToken->session_id = $this->request->session->getId();
 					$authToken->save();
 				}
 			}
@@ -247,7 +259,6 @@ class Auth extends BaseStructure
 		}
 
 		$this->loggedInUser = $user;
-		app(Visitor::class)->user = $user;
 
 		return true;
 	}
@@ -262,7 +273,7 @@ class Auth extends BaseStructure
 	{
 		$loginAttempt = new LoginAttempt();
 
-		$loginAttempt->ip = app(Request::class)->ip;
+		$loginAttempt->ip = $this->request->ip;
 		$loginAttempt->type = $type;
 		$loginAttempt->email = $email;
 		$loginAttempt->password = $password;
@@ -283,7 +294,6 @@ class Auth extends BaseStructure
 		if (app('auth')->logout())
 		{
 			$this->loggedInUser = null;
-			app(Visitor::class)->user = null;
 
 			return true;
 		}

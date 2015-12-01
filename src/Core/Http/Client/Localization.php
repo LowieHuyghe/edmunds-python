@@ -46,16 +46,16 @@ class Localization extends BaseStructure
 			$locale = $user->locale;
 		}
 
-		//Use location for locale
-		if ($location && !$locale)
-		{
-			//
-		}
-
 		//Use browser for locale
 		if ($browser && !$locale)
 		{
 			$locale = $browser->locale;
+		}
+
+		//Use location for locale
+		if ($location && !$locale)
+		{
+			//
 		}
 
 		//Use app-settings
