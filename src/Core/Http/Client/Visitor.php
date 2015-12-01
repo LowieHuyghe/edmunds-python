@@ -31,7 +31,6 @@ use Core\Models\User;
  * @property string $id
  * @property User $user
  * @property bool $loggedIn
- * @property Session $session
  * @property Context $context
  * @property Location $location
  * @property Localization $localization
@@ -45,6 +44,32 @@ class Visitor extends BaseStructure
 	public static $requiredRights;
 
 	/**
+	 * Instance of the Visitor-structure
+	 * @var Visitor
+	 */
+	private static $instance;
+
+	/**
+	 * Fetch instance of the Visitor-structure
+	 * @return Visitor
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new Visitor(Request::getInstance());
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * The current request
+	 * @var Request
+	 */
+	private $request;
+
+	/**
 	 * Constructor
 	 * @param Request $request
 	 */
@@ -52,10 +77,9 @@ class Visitor extends BaseStructure
 	{
 		parent::__construct();
 
-		$this->session = $request->session;
+		$this->request = $request;
 		$this->context = new Context($request->userAgent);
 		$this->location = new Location($request->ip);
-		//$this->user = $auth->user;
 
 		$this->localization = new Localization($this->context, $this->location, $this->user);
 	}
@@ -69,21 +93,21 @@ class Visitor extends BaseStructure
 		$idKey = 'visitor_id';
 
 		//First check session
-		$clientId = $this->session->get($idKey);
+		$clientId = $this->request->session->get($idKey);
 		if (!$clientId)
 		{
 			//Then check cookie
-			$clientId = app(Request::class)->getCookie($idKey);
+			$clientId = $this->request->getCookie($idKey);
 			if (!$clientId)
 			{
 				//Otherwise generate and save
 				$clientId = MiscHelper::generate_uuid();
-				$this->session->set($idKey, $clientId);
-				app(Response::class)->assignCookie($idKey, $clientId);
+				$this->request->session->set($idKey, $clientId);
+				$this->request->assignCookie($idKey, $clientId);
 			}
 			else
 			{
-				$this->session->set($idKey, $clientId);
+				$this->request->session->set($idKey, $clientId);
 			}
 		}
 		return $clientId;
@@ -95,7 +119,16 @@ class Visitor extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
-		return Auth::current()->loggedIn;
+		return Auth::getInstance()->loggedIn;
+	}
+
+	/**
+	 * Fetch the current user
+	 * @return bool
+	 */
+	protected function getUserAttribute()
+	{
+		return Auth::getInstance()->user;
 	}
 
 }

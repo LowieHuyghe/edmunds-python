@@ -321,7 +321,7 @@ class FileEntry extends BaseModel
 	public static function generateFromInput($name)
 	{
 		//Fetch the uploaded file
-		$uploadedFile = Input::current()->file($name);
+		$uploadedFile = Input::getInstance()->file($name);
 		if (!$uploadedFile)
 		{
 			return null;
