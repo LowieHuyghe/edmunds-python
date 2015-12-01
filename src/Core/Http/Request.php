@@ -43,9 +43,29 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Request extends BaseStructure
 {
 	/**
+	 * Instance of the Request-structure
+	 * @var Request
+	 */
+	private static $instance;
+
+	/**
+	 * Fetch instance of the Request-structure
+	 * @return Request
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new Request(app('request'));
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * @param \Illuminate\Http\Request $request
 	 */
-	public function __construct(&$request)
+	public function __construct($request)
 	{
 		parent::__construct();
 

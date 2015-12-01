@@ -33,14 +33,25 @@ class Response extends BaseStructure
 			TYPE_CONTENT		= 4,
 			TYPE_DOWNLOAD		= 5,
 			TYPE_REDIRECT		= 6;
-	/**
-	 * Constructor
-	 */
-	public function __construct($request)
-	{
-		parent::__construct();
 
-		$this->request = $request;
+	/**
+	 * Instance of the Response-structure
+	 * @var Response
+	 */
+	private static $instance;
+
+	/**
+	 * Fetch instance of the Response-structure
+	 * @return Response
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new Response(Request::getInstance());
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -90,6 +101,16 @@ class Response extends BaseStructure
 	 * @var string
 	 */
 	private $responseType = self::TYPE_VIEW;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct($request)
+	{
+		parent::__construct();
+
+		$this->request = $request;
+	}
 
 	/**
 	 * Assign data to response

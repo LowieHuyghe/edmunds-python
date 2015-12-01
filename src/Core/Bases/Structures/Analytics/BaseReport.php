@@ -269,9 +269,9 @@ class BaseReport extends BaseStructure
 		$this->cacheBuster = rand(0, 2000000000);
 
 		//Only if request is set
-		if ($request = app(Request::class))
+		if ($request = Request::getInstance())
 		{
-			$visitor = app(Visitor::class);
+			$visitor = Visitor::getInstance();
 
 			//Assign default values
 			$this->dataSource = 'web';

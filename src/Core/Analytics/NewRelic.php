@@ -46,7 +46,7 @@ class NewRelic extends Agent
 	 * Fetch instance of the response-helper
 	 * @return Request
 	 */
-	public static function current()
+	public static function getInstance()
 	{
 		return self::$instance;
 	}
