@@ -94,6 +94,9 @@ class BaseController extends Controller
 	 */
 	public function responseFlow($defaultControllerName, $route, $parameters)
 	{
+		//Assign default values
+		$this->assignDefaults();
+
 		//Make default controller
 		$defaultController = app($defaultControllerName);
 
@@ -118,6 +121,19 @@ class BaseController extends Controller
 
 		//Return response
 		return $this->response->getResponse();
+	}
+
+	/**
+	 * Assign some default values
+	 */
+	protected function assignDefaults()
+	{
+		$this->response->assign('__root', $this->request->root);
+		$this->response->assign('__siteName', config('app.name'));
+
+		$this->response->assign('__local', app()->isLocal());
+
+		$this->response->assign('__login', $this->visitor->user);
 	}
 
 	/**
