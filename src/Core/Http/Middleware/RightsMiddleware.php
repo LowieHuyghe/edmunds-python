@@ -14,6 +14,9 @@
 namespace Core\Http\Middleware;
 
 use Core\Bases\Middleware\BaseMiddleware;
+use Core\Http\Client\Visitor;
+use Core\Http\Request;
+use Core\Http\Response;
 
 /**
  * Middleware for required rights
@@ -26,57 +29,36 @@ use Core\Bases\Middleware\BaseMiddleware;
 class RightsMiddleware extends BaseMiddleware
 {
 	/**
-	 * THe current request
-	 * @var Request
-	 */
-	private $request;
-
-	/**
-	 * THe current response
-	 * @var Response
-	 */
-	private $response;
-
-	/**
-	 * The current visitor
-	 * @var Visitor
-	 */
-	private $visitor;
-
-	/**
-	 * Contructor
-	 * @param Request $request
-	 * @param Response $response
-	 * @param Visitor $visitor
-	 */
-	public function __construct(Request $request, Response $response, Visitor $visitor)
-	{
-		parent::__construct();
-
-		$this->request = $request;
-		$this->response = $response;
-		$this->visitor = $visitor;
-	}
-
-	/**
 	 * Handle an incoming request.
 	 *
-	 * @param  \Illuminate\Http\Request  $request
+	 * @param  \Illuminate\Http\Request  $r
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
+	public function handle($r, \Closure $next)
 	{
-		if ($this->visitor->loggedIn)
+		$visitor = Visitor::getInstance();
+		$request = Request::getInstance();
+		$response = Response::getInstance();
+
+		//Check if logged in
+		$allowed = $visitor->loggedIn;
+		//Check if has all rights
+		if ($allowed)
 		{
-			if ($this->request->ajax)
+			foreach (Visitor::$requiredRights as $rightId)
 			{
-				abort(403);
+				if (!$visitor->user->hasRight($rightId))
+				{
+					$allowed = false;
+					break;
+				}
 			}
-			else
-			{
-				$this->response->responseRedirect(config('routing.loginroute'), null, true);
-			}
+		}
+
+		if (!$allowed)
+		{
+			abort(403);
 		}
 
 		return $next($request);

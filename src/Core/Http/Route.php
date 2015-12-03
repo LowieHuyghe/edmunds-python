@@ -14,6 +14,7 @@
 namespace Core\Http;
 
 use Core\Bases\Structures\BaseStructure;
+use Core\Http\Response;
 
 /**
  * The structure for the routes

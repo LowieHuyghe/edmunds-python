@@ -220,8 +220,8 @@ class SyncCommand extends BaseCommand
 	{
 		//Load defaults
 		$files = array_merge(
-			$this->getAllFiles(CORE_BASE_PATH . "/resources/lang"),
-			$this->getAllFiles(base_path("resources/lang"))
+			$this->getAllFiles(CORE_BASE_PATH . '/resources/lang'),
+			$this->getAllFiles(base_path('resources/lang'))
 		);
 
 		//Load all translations

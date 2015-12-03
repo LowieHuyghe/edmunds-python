@@ -103,7 +103,7 @@ class Visitor extends BaseStructure
 				//Otherwise generate and save
 				$clientId = MiscHelper::generate_uuid();
 				$this->request->session->set($idKey, $clientId);
-				$this->request->assignCookie($idKey, $clientId);
+				$this->request->cookie($idKey, $clientId);
 			}
 			else
 			{

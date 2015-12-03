@@ -13,6 +13,7 @@
 
 namespace Core\Http;
 use Core\Bases\Structures\BaseStructure;
+use Core\Http\Client\Input;
 use Core\Http\Client\Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -35,6 +36,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property bool $ajax Check if call was ajax
  * @property bool $secure Check if call was over https
  * @property bool $json Check if call wants json
+ * @property bool $xml Check if call wants xml
  * @property string $method Return method of request
  * @property array $segments Return method of route
  * @property string $route Return the route
@@ -195,7 +197,17 @@ class Request extends BaseStructure
 	 */
 	protected function getJsonAttribute()
 	{
-		return $this->request->wantsJson();
+		return $this->request->wantsJson()
+			|| (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json');
+	}
+
+	/**
+	 * Check if call wants xml
+	 * @return bool
+	 */
+	protected function getXmlAttribute()
+	{
+		return (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'xml');
 	}
 
 	/**

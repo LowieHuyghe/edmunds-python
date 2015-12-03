@@ -11,26 +11,26 @@
  * @since       Version 0.1
  */
 
-namespace Core\Bases\Middleware;
+namespace Core\Bases\Responses;
+
+use Core\Bases\Structures\BaseStructure;
 
 /**
- * Middleware base to extend from
+ * Base for Responses
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class BaseMiddleware
+class BaseResponse extends BaseStructure
 {
 	/**
-	 * Handle an incoming request.
-	 * @param  \Illuminate\Http\Request  $request
-	 * @param  \Closure  $next
-	 * @return mixed
+	 * Get the response
+	 * @return \Illuminate\Http\Response
 	 */
-	public function handle($request, \Closure $next)
+	public function getResponse()
 	{
-		return $next($request);
+		return response()->make();
 	}
 }
