@@ -42,6 +42,12 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * The default output type of the response, only used when set
+	 * @var int
+	 */
+	protected $outputType; //Response::TYPE_VIEW by default
+
+	/**
 	 * The current request
 	 * @var Request
 	 */
@@ -82,7 +88,10 @@ class BaseController extends Controller
 		$this->input = Input::getInstance();
 		$this->validator = new Validation($this->input->all());
 
-		$this->checkRights();
+		if (isset($this->outputType))
+		{
+			$this->response->outputType = $this->outputType;
+		}
 	}
 
 	/**
@@ -134,46 +143,6 @@ class BaseController extends Controller
 		$this->response->assign('__local', app()->isLocal());
 
 		$this->response->assign('__login', $this->visitor->user);
-	}
-
-	/**
-	 * Check if user has all the required rights
-	 */
-	private function checkRights()
-	{
-		//If no roles required, return
-		if (count(Visitor::$requiredRights) === 0)
-		{
-			return;
-		}
-
-		if ($this->visitor->loggedIn)
-		{
-			//There are rights, and user is logged in
-
-			$hasRights = true;
-			foreach (Visitor::$requiredRights as $rightId)
-			{
-				if (!$this->visitor->user->hasRight($rightId))
-				{
-					$hasRights = false;
-					break;
-				}
-			}
-
-			if ($hasRights)
-			{
-				return;
-			}
-		}
-		elseif ($this instanceof LoginRequiredController)
-		{
-			//Roles and not logged in, but LoginRequired: user will be redirected to log in
-			return;
-		}
-
-		//Visitor is not authorized to be here
-		abort(403);
 	}
 
 	/**

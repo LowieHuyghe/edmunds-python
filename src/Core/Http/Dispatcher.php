@@ -17,6 +17,9 @@ use Core\Analytics\NewRelic;
 use Core\Http\Client\Input;
 use Core\Http\Client\Session;
 use Core\Http\Client\Visitor;
+use Core\Http\Controllers\Login\LoginRequiredController;
+use Core\Http\Middleware\AuthMiddleware;
+use Core\Http\Middleware\RightsMiddleware;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Route;
@@ -48,10 +51,10 @@ class Dispatcher implements \FastRoute\Dispatcher
 	public function dispatch($httpMethod, $uri)
 	{
 		//Get all the constants
-		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $requestType, $segments) = $this->getAllConstants();
+		list($namespace, $defaultControllerName, $homeControllerName, $requestMethod, $segments) = $this->getAllConstants();
 
 		//Get the controller and make instance of defaultController
-		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments);
+		list($controllerName, $remainingSegments) = $this->getController($namespace, $defaultControllerName, $homeControllerName, $segments);
 
 		//Get the name of the method
 		if ($controllerName)
@@ -80,8 +83,17 @@ class Dispatcher implements \FastRoute\Dispatcher
 				$middleware = $route->middleware;
 				if ($route->rights)
 				{
-					$middleware[] = 'auth';
-					$middleware[] = 'rights';
+					Visitor::$requiredRights = $route->rights;
+
+					app()->bind('core.auth', AuthMiddleware::class);
+					app()->bind('core.rights', RightsMiddleware::class);
+					$middleware[] = 'core.auth';
+					$middleware[] = 'core.rights';
+				}
+				elseif (is_subclass_of($controllerName, LoginRequiredController::class))
+				{
+					app()->bind('core.auth', AuthMiddleware::class);
+					$middleware[] = 'core.auth';
 				}
 				if ($middleware)
 				{
@@ -108,7 +120,6 @@ class Dispatcher implements \FastRoute\Dispatcher
 	private function getAllConstants()
 	{
 		$request = Request::getInstance();
-		$response = Response::getInstance();
 
 		//Fetch namespace
 		$namespace = config('routing.namespace');
@@ -126,30 +137,11 @@ class Dispatcher implements \FastRoute\Dispatcher
 		{
 			$requestMethod = 'put';
 		}
-		$requestType = null;
-		//Check if ajax-call
-		if ($request->ajax)
-		{
-			$requestType = 'ajax';
-			//Set default response to ajax
-			$response->setType(Response::TYPE_JSON);
-		}
-		elseif ($request->json || (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json'))
-		{
-			$requestType = 'json';
-			//Set default response to json
-			$response->setType(Response::TYPE_JSON);
-		}
-		elseif (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'xml')
-		{
-			$requestType = 'xml';
-			//Set default response to xml
-			$response->setType(Response::TYPE_XML);
-		}
+
 		//Get route and its parts
 		$segments = $request->segments;
 
-		return array($namespace, $defaultController, $homeController, $requestMethod, $requestType, $segments);
+		return array($namespace, $defaultController, $homeController, $requestMethod, $segments);
 	}
 
 	/**
@@ -157,11 +149,10 @@ class Dispatcher implements \FastRoute\Dispatcher
 	 * @param string $namespace
 	 * @param string $defaultControllerName
 	 * @param string $homeControllerName
-	 * @param string $requestType
 	 * @param array $segments
 	 * @return array
 	 */
-	private function getController($namespace, $defaultControllerName, $homeControllerName, $requestType, $segments)
+	private function getController($namespace, $defaultControllerName, $homeControllerName, $segments)
 	{
 		//Go through all the parts back to front
 		$controllerLoopCount = min(3, count($segments));
@@ -181,7 +172,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 				{
 					$className .= '\\' . ucfirst(strtolower($segments[$j]));
 				}
-				$className = $namespace . $className . ($requestType ? ucfirst($requestType) : '') . 'Controller';
+				$className = $namespace . $className . 'Controller';
 
 				//Home controller only approachable when called from '/'
 				//Default controller not approachable

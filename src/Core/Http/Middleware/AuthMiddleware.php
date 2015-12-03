@@ -29,55 +29,26 @@ use Core\Http\Response;
 class AuthMiddleware extends BaseMiddleware
 {
 	/**
-	 * THe current request
-	 * @var Request
-	 */
-	private $request;
-
-	/**
-	 * THe current response
-	 * @var Response
-	 */
-	private $response;
-
-	/**
-	 * The current visitor
-	 * @var Visitor
-	 */
-	private $visitor;
-
-	/**
-	 * Contructor
-	 * @param Request $request
-	 * @param Response $response
-	 * @param Visitor $visitor
-	 */
-	public function __construct(Request $request, Response $response, Visitor $visitor)
-	{
-		parent::__construct();
-
-		$this->request = $request;
-		$this->response = $response;
-		$this->visitor = $visitor;
-	}
-
-	/**
 	 * Handle an incoming request.
-	 * @param  Request  $request
+	 * @param  \Illuminate\Http\Request $r
 	 * @param  \Closure  $next
 	 * @return mixed
 	 */
-	public function handle($request, Closure $next)
+	public function handle($r, \Closure $next)
 	{
-		if ($this->visitor->loggedIn)
+		$visitor = Visitor::getInstance();
+		$request = Request::getInstance();
+		$response = Response::getInstance();
+
+		if (!$visitor->loggedIn)
 		{
-			if ($this->request->ajax)
+			if ($request->ajax)
 			{
 				abort(403);
 			}
 			else
 			{
-				$this->response->responseRedirect(config('routing.loginroute'), null, true);
+				$response->redirect(config('routing.loginroute'), null, true);
 			}
 		}
 
