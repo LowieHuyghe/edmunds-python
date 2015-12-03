@@ -76,10 +76,10 @@ class Handler extends ExceptionHandler
 			{
 				$response = Response::getInstance();
 
-				$response->assignHeader($e->getHeaders());
-				$response->assignView(null, 'errors.' . $e->getStatusCode());
+				$response->header($e->getHeaders());
+				$response->render(null, 'errors.' . $e->getStatusCode());
 				$response->assign('message', $e->getMessage());
-				$response->setStatusCode($e->getStatusCode());
+				$response->statusCode = $e->getStatusCode();
 				$response->setType(Response::TYPE_VIEW);
 
 				if ($e instanceof ServiceUnavailableHttpException)

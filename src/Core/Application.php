@@ -106,7 +106,7 @@ class Application extends \Laravel\Lumen\Application
 		}
 		catch (AbortHttpException $e)
 		{
-			$response = $this[Response::class]->getResponse();
+			$response = Response::getInstance()->getResponse();
 		}
 		catch (Exception $exception)
 		{
