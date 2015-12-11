@@ -48,18 +48,6 @@ class FileEntry extends BaseModel
 	protected $table = 'file_entries';
 
 	/**
-	 * Timestamps in the table
-	 * @var bool|array
-	 */
-	public $timestamps = true;
-
-	/**
-	 * The attributes that should be mutated to dates.
-	 * @var array
-	 */
-	protected $dates = ['created_at', 'updated_at'];
-
-	/**
 	 * The resource from the file
 	 * @var resource
 	 */
@@ -353,22 +341,19 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		$validator->value('id')->integer();
-		$validator->value('name')->required()->max(20)->unique('file_entries', $this->getKey());
-		$validator->value('md5')->required()->max(32);
-		$validator->value('sha1')->required()->max(40);
-		$validator->value('original_name')->required()->max(255);
-		$validator->value('mime')->required()->max(20);
-		$validator->value('type')->required();
-		$validator->value('size')->required()->integer();
+		parent::addValidationRules();
 
-		$validator->value('created_at')->date();
-		$validator->value('updated_at')->date();
+		$this->validator->value('id')->integer();
+		$this->validator->value('name')->required()->max(20)->unique('file_entries', $this->getKey());
+		$this->validator->value('md5')->required()->max(32);
+		$this->validator->value('sha1')->required()->max(40);
+		$this->validator->value('original_name')->required()->max(255);
+		$this->validator->value('mime')->required()->max(20);
+		$this->validator->value('type')->required();
+		$this->validator->value('size')->required()->integer();
 	}
 
 	/**

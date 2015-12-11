@@ -12,7 +12,6 @@
  */
 
 namespace Core\Io\Validation;
-use Core\Bases\Structures\BaseStructure;
 use Core\Io\Translator;
 use Illuminate\Support\Str;
 

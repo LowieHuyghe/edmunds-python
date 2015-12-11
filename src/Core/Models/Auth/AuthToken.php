@@ -35,18 +35,6 @@ use Core\Io\Validation\Validation;
 class AuthToken extends BaseModel
 {
 	/**
-	 * Enable or disable timestamps by default
-	 * @var boolean
-	 */
-	public $timestamps = true;
-
-	/**
-	 * The attributes that should be mutated to dates.
-	 * @var array
-	 */
-	protected $dates = ['created_at', 'updated_at'];
-
-	/**
 	 * Get the user
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
@@ -73,17 +61,14 @@ class AuthToken extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		$validator->value('token')->max(255)->required();
-		$validator->value('user_id')->integer()->required();
-		$validator->value('session_id')->max(255)->required();
+		parent::addValidationRules();
 
-		$validator->value('created_at')->date();
-		$validator->value('updated_at')->date();
+		$this->validator->value('token')->max(255)->required();
+		$this->validator->value('user_id')->integer()->required();
+		$this->validator->value('session_id')->max(255)->required();
 	}
 
 }

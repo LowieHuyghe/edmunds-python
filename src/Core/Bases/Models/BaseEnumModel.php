@@ -130,14 +130,20 @@ class BaseEnumModel extends BaseModel
 	}
 
 	/**
-	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
+	 * Enable or disable timestamps by default
+	 * @var boolean
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	public $timestamps = false;
+
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules()
 	{
-		$validator->value('id')->integer();
-		$validator->value('name')->required()->max(32);
+		parent::addValidationRules();
+
+		$this->validator->value('id')->integer();
+		$this->validator->value('name')->required()->max(32);
 	}
 
 	/**

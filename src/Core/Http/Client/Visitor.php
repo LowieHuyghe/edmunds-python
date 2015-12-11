@@ -18,6 +18,7 @@ use Core\Helpers\MiscHelper;
 use Core\Http\Client\Auth;
 use Core\Http\Request;
 use Core\Http\Response;
+use Core\Models\Localization;
 use Core\Models\User;
 
 /**
@@ -32,7 +33,6 @@ use Core\Models\User;
  * @property User $user
  * @property bool $loggedIn
  * @property Context $context
- * @property Location $location
  * @property Localization $localization
  */
 class Visitor extends BaseStructure
@@ -79,9 +79,7 @@ class Visitor extends BaseStructure
 
 		$this->request = $request;
 		$this->context = new Context($request->userAgent);
-		$this->location = new Location($request->ip);
-
-		$this->localization = new Localization($this->context, $this->location, $this->user);
+		$this->localization = new Localization();
 	}
 
 	/**

@@ -19,12 +19,14 @@ use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Io\Validation\Validation;
 use Core\Models\Gender;
+use Core\Models\Localization;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * The model of the user
@@ -38,8 +40,8 @@ use Illuminate\Database\Eloquent\Collection;
  * @property string $email Email of the user
  * @property string $password Password of the user
  * @property Collection $roles Roles for this user
- * @property string $locale Locale for this user
  * @property Gender $gender Gender of the user
+ * @property Localization $localization
  * @property string $remember_token
  * @property Carbon created_at
  * @property Carbon updated_at
@@ -60,18 +62,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
-
-	/**
-	 * The attributes that should be mutated to dates.
-	 * @var array
-	 */
-	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-
-	/**
-	 * Timestamps in the table
-	 * @var bool|array
-	 */
-	public $timestamps = true;
 
 	/**
 	 * The class responsible for the roles
@@ -145,22 +135,28 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	}
 
 	/**
-	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
+	 * Get the localization of the user
+	 * @return HasOne
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	public function localization()
 	{
-		$validator->value('id')->integer();
-		$validator->value('email')->max(255)->unique('users', $model->getKeyName())->required();
-		$validator->value('gender_id')->integer();
-		$validator->value('password')->max(60);
-		$validator->value('locale')->max(10);
-		$validator->value('remember_token')->max(100);
+		return $this->hasOne(Localization::class);
+	}
 
-		$validator->value('created_at')->date();
-		$validator->value('updated_at')->date();
-		$validator->value('deleted_at')->date();
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules()
+	{
+		parent::addValidationRules();
+
+		$this->validator->value('id')->integer();
+		$this->validator->value('email')->max(255)->unique('users', $this->getKeyName())->required();
+		$this->validator->value('gender_id')->integer();
+		$this->validator->value('password')->max(60);
+		$this->validator->value('remember_token')->max(100);
+
+		$this->validator->value('deleted_at')->date();
 	}
 
 	/**
@@ -173,7 +169,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		return array(
 			'email' => $faker->email,
 			'password' => str_random(32),
-			'locale' => str_random(2),
 			'remember_token' => str_random(32),
 			'gender_id' => Gender::all()->random()->id,
 		);
