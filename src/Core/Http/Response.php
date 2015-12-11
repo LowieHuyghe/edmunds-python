@@ -69,11 +69,11 @@ class Response extends BaseStructure
 	protected $request;
 
 	/** @var array Assigned data for response */
-	protected $assignments;
+	protected $assignments = array();
 	/** @var Cookie[] Assigned cookies for response */
-	protected $cookies;
+	protected $cookies = array();
 	/** @var array Assigned headers for response */
-	protected $headers;
+	protected $headers = array();
 
 	/** @var BaseResponse */
 	protected $redirectResponse;
@@ -93,25 +93,8 @@ class Response extends BaseStructure
 
 		$this->request = $request;
 
-		$this->initialize();
-	}
-
-	/**
-	 * Initialize the Response
-	 */
-	protected function initialize()
-	{
 		$this->statusCode = 200;
 		$this->outputType = self::TYPE_VIEW;
-
-		$this->assignments = array();
-		$this->cookies = array();
-		$this->headers = array();
-
-		unset($this->redirectResponse);
-		unset($this->downloadResponse);
-		unset($this->contentResponse);
-		unset($this->viewResponse);
 	}
 
 	/**
