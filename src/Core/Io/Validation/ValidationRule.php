@@ -37,6 +37,11 @@ class ValidationRule extends BaseStructure
 	protected $column;
 
 	/**
+	 * Disable the validator
+	 */
+	protected $validator = false;
+
+	/**
 	 * Consrtuctor
 	 * @param string $column
 	 */
