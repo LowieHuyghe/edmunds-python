@@ -12,11 +12,12 @@
  */
 
 namespace Core\Http\Client;
+use Core\Bases\Structures\BaseStructure;
+use Core\Http\Request;
 use Core\Registry\Admin\Pm;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;
-use Core\Bases\Structures\BaseStructure;
 
 /**
  * The helper for the browser
@@ -60,13 +61,14 @@ class Location extends BaseStructure
 
 	/**
 	 * Constructor
-	 * @param string $ip
+	 * @param array $attributes
 	 */
-	public function __construct($ip)
+	public function __construct($attributes = array())
 	{
-		parent::__construct();
+		parent::__construct($attributes);
 
-		$this->ip = $ip;
+		$request = Request::getInstance();
+		$this->ip = $request->ip;
 	}
 
 	/**

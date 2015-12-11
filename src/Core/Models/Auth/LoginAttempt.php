@@ -37,18 +37,6 @@ use Core\Io\Validation\Validation;
 class LoginAttempt extends BaseModel
 {
 	/**
-	 * Enable or disable timestamps by default
-	 * @var boolean
-	 */
-	public $timestamps = true;
-
-	/**
-	 * The attributes that should be mutated to dates.
-	 * @var array
-	 */
-	protected $dates = ['created_at', 'updated_at'];
-
-	/**
 	 * Get the user
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 */
@@ -88,20 +76,17 @@ class LoginAttempt extends BaseModel
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		$validator->value('id')->integer()->required();
-		$validator->value('ip')->ip()->max(255)->required();
-		$validator->value('type')->max(255)->required();
+		parent::addValidationRules();
 
-		$validator->value('email')->email()->max(255);
-		$validator->value('pass')->max(255);
+		$this->validator->value('id')->integer()->required();
+		$this->validator->value('ip')->ip()->max(255)->required();
+		$this->validator->value('type')->max(255)->required();
 
-		$validator->value('created_at')->date();
-		$validator->value('updated_at')->date();
+		$this->validator->value('email')->email()->max(255);
+		$this->validator->value('pass')->max(255);
 	}
 
 }

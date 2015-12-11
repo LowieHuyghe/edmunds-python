@@ -51,7 +51,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 *
 	 * @var bool
 	 */
-	public $timestamps = true;
+	public $timestamps = false;
 
 	/**
 	 * The model's attributes.
@@ -100,7 +100,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 *
 	 * @var array
 	 */
-	protected $dates = [];
+	protected $dates = ['created_at', 'updated_at'];
 
 	/**
 	 * The storage format of the model's date columns.
@@ -203,8 +203,11 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 		$this->fill($attributes);
 
-		$this->validator = new Validation();
-		static::addValidationRules($this->validator, $this);
+		if (!isset($this->validator))
+		{
+			$this->validator = new Validation();
+			$this->addValidationRules();
+		}
 	}
 
 	/**
@@ -1602,12 +1605,13 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		//
+		$this->validator->value('created_at')->date();
+		$this->validator->value('updated_at')->date();
+
+		$this->validator->value('deleted_at')->date();
 	}
 
 	/**

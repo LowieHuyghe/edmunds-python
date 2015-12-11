@@ -33,13 +33,19 @@ class BaseModel extends Model
 	 * The validator
 	 * @var Validation
 	 */
-	private $validator;
+	protected $validator;
 
 	/**
 	 * Enable or disable timestamps by default
 	 * @var boolean
 	 */
-	public $timestamps = false;
+	public $timestamps = true;
+
+	/**
+	 * The attributes that should be mutated to dates.
+	 * @var array
+	 */
+	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
 	/**
 	 * Constructor
@@ -49,8 +55,11 @@ class BaseModel extends Model
 	{
 		parent::__construct($attributes);
 
-		$this->validator = new Validation();
-		static::addValidationRules($this->validator, $this);
+		if (!isset($this->validator))
+		{
+			$this->validator = new Validation();
+			$this->addValidationRules();
+		}
 	}
 
 	/**
@@ -156,12 +165,12 @@ class BaseModel extends Model
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		//
+		$this->validator->value('created_at')->date();
+		$this->validator->value('updated_at')->date();
+		$this->validator->value('deleted_at')->date();
 	}
 
 	/**

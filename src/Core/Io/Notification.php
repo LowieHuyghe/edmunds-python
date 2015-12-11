@@ -89,12 +89,12 @@ class Notification extends BaseStructure
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
-		$validator->value('title')->required();
+		parent::addValidationRules();
+
+		$this->validator->value('title')->required();
 	}
 
 	/**

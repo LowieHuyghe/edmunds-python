@@ -257,6 +257,12 @@ class BaseReport extends BaseStructure
 	);
 
 	/**
+	 * Enable or disable timestamps by default
+	 * @var boolean
+	 */
+	public $timestamps = false;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -388,193 +394,193 @@ class BaseReport extends BaseStructure
 
 	/**
 	 * Add the validation of the model
-	 * @param Validation $validator
-	 * @param BaseModel $model
 	 */
-	protected static function addValidationRules(&$validator, $model)
+	protected function addValidationRules()
 	{
+		parent::addValidationRules();
+
 		//General
-		$validator->value('version')->required();
-		$validator->value('trackingId')->required();
-		$validator->value('anonymizeIp')->boolean();
-		$validator->value('queueTime')->integer();
+		$this->validator->value('version')->required();
+		$this->validator->value('trackingId')->required();
+		$this->validator->value('anonymizeIp')->boolean();
+		$this->validator->value('queueTime')->integer();
 		//User
-		$validator->value('clientId')->required();
+		$this->validator->value('clientId')->required();
 		//Session
-		$validator->value('ipOverride')->ip();
+		$this->validator->value('ipOverride')->ip();
 		//Traffic Sources
-		$validator->value('documentReferrer')->url();
+		$this->validator->value('documentReferrer')->url();
 		//System Info
-		$validator->value('javaEnabled')->boolean();
+		$this->validator->value('javaEnabled')->boolean();
 		//Hit
-		$validator->value('hitType')->required();
-		$validator->value('nonInteractionHit')->boolean();
+		$this->validator->value('hitType')->required();
+		$this->validator->value('nonInteractionHit')->boolean();
 		//Content Information
-		$validator->value('documentLocationUrl')->url();
-		$validator->value('screenName')->requiredIf('hitType', array('screenview'));
+		$this->validator->value('documentLocationUrl')->url();
+		$this->validator->value('screenName')->requiredIf('hitType', array('screenview'));
 		//App Tracking
-		$validator->value('applicationName')->requiredIf('dataSource', array('app'));
+		$this->validator->value('applicationName')->requiredIf('dataSource', array('app'));
 		//Event Tracking
-		$validator->value('eventCategory')->requiredIf('hitType', array('event'));
-		$validator->value('eventAction')->requiredIf('hitType', array('event'));
-		$validator->value('eventValue')->integer();
+		$this->validator->value('eventCategory')->requiredIf('hitType', array('event'));
+		$this->validator->value('eventAction')->requiredIf('hitType', array('event'));
+		$this->validator->value('eventValue')->integer();
 		//E-Commerce
-		$validator->value('transactionId')->requiredIf('hitType', array('transaction', 'item'));
-		$validator->value('transactionRevenue')->numeric();
-		$validator->value('transactionShipping')->numeric();
-		$validator->value('transactionTax')->numeric();
-		$validator->value('itemName')->requiredIf('hitType', array('item'));
-		$validator->value('itemPrice')->numeric();
-		$validator->value('itemQuantity')->integer();
+		$this->validator->value('transactionId')->requiredIf('hitType', array('transaction', 'item'));
+		$this->validator->value('transactionRevenue')->numeric();
+		$this->validator->value('transactionShipping')->numeric();
+		$this->validator->value('transactionTax')->numeric();
+		$this->validator->value('itemName')->requiredIf('hitType', array('item'));
+		$this->validator->value('itemPrice')->numeric();
+		$this->validator->value('itemQuantity')->integer();
 		//Enhanced E-Commerce
-		$validator->value('productSku')->sometimes(function($input) {
+		$this->validator->value('productSku')->sometimes(function($input) {
 			$value = $input->productSku;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productName')->sometimes(function($input) {
+		$this->validator->value('productName')->sometimes(function($input) {
 			$value = $input->productName;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productBrand')->sometimes(function($input) {
+		$this->validator->value('productBrand')->sometimes(function($input) {
 			$value = $input->productBrand;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productCategory')->sometimes(function($input) {
+		$this->validator->value('productCategory')->sometimes(function($input) {
 			$value = $input->productCategory;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productVariant')->sometimes(function($input) {
+		$this->validator->value('productVariant')->sometimes(function($input) {
 			$value = $input->productVariant;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productPrice')->sometimes(function($input) {
+		$this->validator->value('productPrice')->sometimes(function($input) {
 			$value = $input->productPrice;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_numeric($value[1]);
 		});
-		$validator->value('productQuantity')->sometimes(function($input) {
+		$this->validator->value('productQuantity')->sometimes(function($input) {
 			$value = $input->productQuantity;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]);
 		});
-		$validator->value('productCouponCode')->sometimes(function($input) {
+		$this->validator->value('productCouponCode')->sometimes(function($input) {
 			$value = $input->productCouponCode;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productPosition')->sometimes(function($input) {
+		$this->validator->value('productPosition')->sometimes(function($input) {
 			$value = $input->productPosition;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]);
 		});
-		$validator->value('productCustomDimension')->sometimes(function($input) {
+		$this->validator->value('productCustomDimension')->sometimes(function($input) {
 			$value = $input->productCustomDimension;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productCustomMetric')->sometimes(function($input) {
+		$this->validator->value('productCustomMetric')->sometimes(function($input) {
 			$value = $input->productCustomMetric;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
 				&& is_int_($value[2]);
 		});
-		$validator->value('revenue')->numeric();
-		$validator->value('tax')->numeric();
-		$validator->value('shipping')->numeric();
-		$validator->value('checkoutStep')->integer();
-		$validator->value('productImpressionListName')->sometimes(function($input) {
+		$this->validator->value('revenue')->numeric();
+		$this->validator->value('tax')->numeric();
+		$this->validator->value('shipping')->numeric();
+		$this->validator->value('checkoutStep')->integer();
+		$this->validator->value('productImpressionListName')->sometimes(function($input) {
 			$value = $input->productImpressionListName;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('productImpressionSku')->sometimes(function($input) {
+		$this->validator->value('productImpressionSku')->sometimes(function($input) {
 			$value = $input->productImpressionSku;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productImpressionName')->sometimes(function($input) {
+		$this->validator->value('productImpressionName')->sometimes(function($input) {
 			$value = $input->productImpressionName;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productImpressionBrand')->sometimes(function($input) {
+		$this->validator->value('productImpressionBrand')->sometimes(function($input) {
 			$value = $input->productImpressionBrand;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productImpressionCategory')->sometimes(function($input) {
+		$this->validator->value('productImpressionCategory')->sometimes(function($input) {
 			$value = $input->productImpressionCategory;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productImpressionVariant')->sometimes(function($input) {
+		$this->validator->value('productImpressionVariant')->sometimes(function($input) {
 			$value = $input->productImpressionVariant;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200;
 		});
-		$validator->value('productImpressionPosition')->sometimes(function($input) {
+		$this->validator->value('productImpressionPosition')->sometimes(function($input) {
 			$value = $input->productImpressionPosition;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
 				&& is_int_($value[2]);
 		});
-		$validator->value('productImpressionPrice')->sometimes(function($input) {
+		$this->validator->value('productImpressionPrice')->sometimes(function($input) {
 			$value = $input->productImpressionPrice;
 			return is_array($value) && count($value) == 3 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
 				&& is_numeric($value[2]);
 		});
-		$validator->value('productImpressionCustomDimension')->sometimes(function($input) {
+		$this->validator->value('productImpressionCustomDimension')->sometimes(function($input) {
 			$value = $input->productImpressionCustomDimension;
 			return is_array($value) && count($value) == 4 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
 				&& is_int_($value[2]) && 1 <= $value[2] && $value[2] <= 200;
 		});
-		$validator->value('productImpressionCustomMetric')->sometimes(function($input) {
+		$this->validator->value('productImpressionCustomMetric')->sometimes(function($input) {
 			$value = $input->productImpressionCustomMetric;
 			return is_array($value) && count($value) == 4 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]) && 1 <= $value[1] && $value[1] <= 200
 				&& is_int_($value[2]) && 1 <= $value[2] && $value[2] <= 200
 				&& is_int_($value[3]);
 		});
-		$validator->value('promotionId')->sometimes(function($input) {
+		$this->validator->value('promotionId')->sometimes(function($input) {
 			$value = $input->promotionId;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('promotionName')->sometimes(function($input) {
+		$this->validator->value('promotionName')->sometimes(function($input) {
 			$value = $input->promotionName;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('promotionCreative')->sometimes(function($input) {
+		$this->validator->value('promotionCreative')->sometimes(function($input) {
 			$value = $input->promotionCreative;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('promotionPosition')->sometimes(function($input) {
+		$this->validator->value('promotionPosition')->sometimes(function($input) {
 			$value = $input->promotionPosition;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
 		//Social Interactions
-		$validator->value('socialNetwork')->requiredIf('hitType', array('social'));
-		$validator->value('socialAction')->requiredIf('hitType', array('social'));
-		$validator->value('socialActionTarget')->requiredIf('hitType', array('social'))->url();
+		$this->validator->value('socialNetwork')->requiredIf('hitType', array('social'));
+		$this->validator->value('socialAction')->requiredIf('hitType', array('social'));
+		$this->validator->value('socialActionTarget')->requiredIf('hitType', array('social'))->url();
 		//Timing
-		$validator->value('userTimingCategory')->requiredIf('hitType', array('timing'));
-		$validator->value('userTimingVariableName')->requiredIf('hitType', array('timing'));
-		$validator->value('userTimingTime')->requiredIf('hitType', array('timing'))->integer();
-		$validator->value('pageLoadTime')->integer();
-		$validator->value('dnsTime')->integer();
-		$validator->value('pageDownloadTime')->integer();
-		$validator->value('redirectResponseTime')->integer();
-		$validator->value('tcpConnectTime')->integer();
-		$validator->value('serverResponseTime')->integer();
-		$validator->value('domInteractiveTime')->integer();
-		$validator->value('contentLoadTime')->integer();
+		$this->validator->value('userTimingCategory')->requiredIf('hitType', array('timing'));
+		$this->validator->value('userTimingVariableName')->requiredIf('hitType', array('timing'));
+		$this->validator->value('userTimingTime')->requiredIf('hitType', array('timing'))->integer();
+		$this->validator->value('pageLoadTime')->integer();
+		$this->validator->value('dnsTime')->integer();
+		$this->validator->value('pageDownloadTime')->integer();
+		$this->validator->value('redirectResponseTime')->integer();
+		$this->validator->value('tcpConnectTime')->integer();
+		$this->validator->value('serverResponseTime')->integer();
+		$this->validator->value('domInteractiveTime')->integer();
+		$this->validator->value('contentLoadTime')->integer();
 		//Exceptions
-		$validator->value('exceptionFatal')->boolean();
+		$this->validator->value('exceptionFatal')->boolean();
 		//Custom Dimensions/Metrics
-		$validator->value('customDimension')->sometimes(function($input) {
+		$this->validator->value('customDimension')->sometimes(function($input) {
 			$value = $input->customDimension;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200;
 		});
-		$validator->value('customMetric')->sometimes(function($input) {
+		$this->validator->value('customMetric')->sometimes(function($input) {
 			$value = $input->customMetric;
 			return is_array($value) && count($value) == 2 && is_int_($value[0]) && 1 <= $value[0] && $value[0] <= 200
 				&& is_int_($value[1]);
