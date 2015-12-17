@@ -41,4 +41,28 @@ return array
 		),
 	),
 
+	'localization' => array(
+		'languages' => array(
+			'rtl' => array(
+				'ar',		// Arabic
+				// 'arc',	// Aramaic
+				// 'bcc',	// Southern Balochi
+				// 'bqi',	// Bakthiari
+				// 'ckb',	// Sorani Kurdish
+				'dv',		// Dhivehi
+				'fa',		// Persian
+				// 'glk',	// Gilaki
+				'he',		// Hebrew
+				// 'lrc',	// Northern Luri
+				// 'mzn',	// Mazanderani
+				// 'pnb',	// Western Punjabi
+				'ps',		// Pashto
+				'sd',		// Sindhi
+				'ug',		// Uyghur
+				'ur',		// Urdu
+				'yi',		// Yiddish
+			),
+		),
+	),
+
 );
