@@ -57,7 +57,7 @@ class Visitor extends BaseStructure
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Visitor(Request::getInstance());
+			self::$instance = new Visitor(Request::getInstance(), Response::getInstance());
 		}
 
 		return self::$instance;
@@ -67,19 +67,38 @@ class Visitor extends BaseStructure
 	 * The current request
 	 * @var Request
 	 */
-	private $request;
+	protected $request;
+
+	/**
+	 * The current response
+	 * @var Response
+	 */
+	protected $response;
+
+	/**
+	 * The id
+	 * @var string
+	 */
+	protected $visitorId;
+
+	/**
+	 * The localization
+	 * @var Localization
+	 */
+	protected $visitorLocalization;
 
 	/**
 	 * Constructor
 	 * @param Request $request
+	 * @param Response $response
 	 */
-	public function __construct($request)
+	public function __construct($request, $response)
 	{
 		parent::__construct();
 
 		$this->request = $request;
+		$this->response = $response;
 		$this->context = new Context($request->userAgent);
-		$this->localization = new Localization();
 	}
 
 	/**
@@ -88,27 +107,29 @@ class Visitor extends BaseStructure
 	 */
 	protected function getIdAttribute()
 	{
-		$idKey = 'visitor_id';
-
-		//First check session
-		$clientId = $this->request->session->get($idKey);
-		if (!$clientId)
+		if (!isset($this->visitorId))
 		{
-			//Then check cookie
-			$clientId = $this->request->getCookie($idKey);
+			$idKey = 'visitor_id';
+
+			//First check session
+			$clientId = $this->request->session->get($idKey);
 			if (!$clientId)
 			{
-				//Otherwise generate and save
-				$clientId = MiscHelper::generate_uuid();
+				//Then check cookie
+				$clientId = $this->request->getCookie($idKey);
+				if (!$clientId)
+				{
+					//Otherwise generate and save
+					$clientId = MiscHelper::generate_uuid();
+					$this->response->cookie($idKey, $clientId);
+				}
 				$this->request->session->set($idKey, $clientId);
-				$this->request->cookie($idKey, $clientId);
 			}
-			else
-			{
-				$this->request->session->set($idKey, $clientId);
-			}
+
+			$this->visitorId = $clientId;
 		}
-		return $clientId;
+
+		return $this->visitorId;
 	}
 
 	/**
@@ -127,6 +148,69 @@ class Visitor extends BaseStructure
 	protected function getUserAttribute()
 	{
 		return Auth::getInstance()->user;
+	}
+
+	/**
+	 * Fetch the localization
+	 * @return Localization
+	 */
+	protected function getLocalizationAttribute()
+	{
+		if (!isset($this->visitorLocalization))
+		{
+			$idKey = 'localization';
+
+			// update method for session and cookies
+			$updateLocalization = function ($localization) use ($idKey)
+			{
+				$localizationAttributes = $localization->__toString();
+
+				Request::getInstance()->session->set($idKey, $localizationAttributes);
+				Response::getInstance()->cookie($idKey, $localizationAttributes);
+			};
+			Localization::saving($updateLocalization);
+
+
+			// from user
+			if ($user = $this->user)
+			{
+				$localization = $user->localization;
+			}
+			else
+			{
+				// from session
+				$localizationAttributes = $this->request->session->get($idKey);
+				if (!$localizationAttributes)
+				{
+					// from cookie
+					$localizationAttributes = $this->request->getCookie($idKey);
+					if ($localizationAttributes)
+					{
+						$this->request->session->set($idKey, $localizationAttributes);
+					}
+				}
+
+				// recover
+				if ($localizationAttributes)
+				{
+					$localization = Localization::recover(json_decode($localizationAttributes, true));
+					dd($localization);
+				}
+				// make new and save
+				else
+				{
+					$localization = new Localization();
+					$localization->initialize();
+
+					$updateLocalization($localization);
+				}
+			}
+
+			// and set to visitor
+			$this->visitorLocalization = $localization;
+		}
+
+		return $this->visitorLocalization;
 	}
 
 }

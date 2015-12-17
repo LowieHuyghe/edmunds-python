@@ -55,7 +55,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 * The attributes that are mass assignable.
 	 * @var array
 	 */
-	protected $fillable = ['email', 'password', 'locale'];
+	protected $fillable = ['email', 'password'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.

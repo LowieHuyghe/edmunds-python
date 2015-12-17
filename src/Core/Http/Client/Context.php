@@ -293,7 +293,7 @@ class Context extends BaseStructure
 	{
 		if ($locale = $this->locale)
 		{
-			return substr($locale, 0, 2);
+			return locale_get_primary_language($locale);
 		}
 		return null;
 	}
@@ -306,7 +306,7 @@ class Context extends BaseStructure
 	{
 		if ($locale = $this->localeFallback)
 		{
-			return substr($locale, 0, 2);
+			return locale_get_primary_language($locale);
 		}
 		return null;
 	}

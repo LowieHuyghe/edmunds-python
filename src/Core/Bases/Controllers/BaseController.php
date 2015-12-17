@@ -143,6 +143,8 @@ class BaseController extends Controller
 		$this->response->assign('__local', app()->isLocal());
 
 		$this->response->assign('__login', $this->visitor->user);
+
+		$this->response->assign('__rtl', $this->visitor->localization->rtl);
 	}
 
 	/**

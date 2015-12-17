@@ -42,6 +42,13 @@ class BaseModel extends Model
 	public $timestamps = true;
 
 	/**
+	 * Array that represents the attributes that are models
+	 * Ex: 'location' => Location::class,
+	 * @var array
+	 */
+	protected $models = [];
+
+	/**
 	 * The attributes that should be mutated to dates.
 	 * @var array
 	 */
@@ -197,6 +204,32 @@ class BaseModel extends Model
 	protected static function factory($faker)
 	{
 		throw new \Exception('Factory not defined in ' . get_called_class());
+	}
+
+	/**
+	 * Recover instance from array of attributes
+	 * @param  array $attributes
+	 * @return BaseModel
+	 */
+	public static function recover($attributes)
+	{
+		$modelClass = get_called_class();
+		$model = new $modelClass();
+		$modelKeys = array_keys($model->models);
+
+		foreach ($attributes as $key => $value)
+		{
+			if (!in_array($key, $modelKeys))
+			{
+				$model->$key = $value;
+			}
+			else
+			{
+				$model->$key = call_user_func_array(array($model->models[$key], 'recover'), array($value));
+			}
+		}
+
+		return $model;
 	}
 
 }

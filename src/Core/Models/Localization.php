@@ -29,10 +29,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property User $user
  * @property string $locale The default locale
+ * @property string $language The default language
+ * @property bool $rtl Is language rtl
  * @property string $fallback The fallback locale
+ * @property string $fallbackLanguage The fallback language
+ * @property bool $fallbackRtl Is fallback rtl
  * @property string $currency The currency
  * @property string $timezone The timezone
- * @property bool $rtl Is it rtl
  * @property Location $location The location
  */
 class Localization extends BaseModel
@@ -50,15 +53,16 @@ class Localization extends BaseModel
 	protected $primaryKey = 'user_id';
 
 	/**
-	 * Constructor
-	 * @param array $attributes
+	 * The key used to store the settings in the session and cookie
+	 * @var string
 	 */
-	public function __construct($attributes = array())
-	{
-		parent::__construct($attributes);
+	protected $sessionCookieKey = 'localization';
 
-		$this->initialize();
-	}
+	/**
+	 * Array that represents the attributes that are models
+	 * @var array
+	 */
+	protected $models = []; //'location' => Location::class ];
 
 	/**
 	 * The user
@@ -72,16 +76,12 @@ class Localization extends BaseModel
 	/**
 	 * Initialize the properties
 	 */
-	protected function initialize()
+	public function initialize()
 	{
-		$changes = false;
-
 		//Check location
 		if (!$this->location)
 		{
 			$this->location = new Location();
-
-			$changes = true;
 		}
 
 		//Check locale
@@ -95,7 +95,6 @@ class Localization extends BaseModel
 				|| ($locale = config('app.locale'))) //app default
 			{
 				$this->locale = $locale;
-				$changes = true;
 			}
 		}
 
@@ -105,7 +104,6 @@ class Localization extends BaseModel
 			if ($currency = config('app.currency')) //app default
 			{
 				$this->currency = $currency;
-				$changes = true;
 			}
 		}
 
@@ -116,17 +114,26 @@ class Localization extends BaseModel
 				|| ($timezone = config('app.timezone'))) //app default
 			{
 				$this->timezone = $timezone;
-				$changes = true;
 			}
 		}
+	}
 
-		/**
-		 * Save the changes
-		 */
-		if ($changes && $this->user_id)
-		{
-			$this->save();
-		}
+	/**
+	 * Get the default language
+	 * @return string
+	 */
+	protected function getLanguageAttribute()
+	{
+		return locale_get_primary_language($this->locale);
+	}
+
+	/**
+	 * Check if language is right to left
+	 * @return bool
+	 */
+	protected function getRtlAttribute()
+	{
+		return in_array($this->language, config('core.localization.languages.rtl'));
 	}
 
 	/**
@@ -139,12 +146,21 @@ class Localization extends BaseModel
 	}
 
 	/**
-	 * Check if language is right to left
+	 * Get the fallback language
+	 * @return string
+	 */
+	protected function getFallbackLanguageAttribute()
+	{
+		return locale_get_primary_language($this->fallback);
+	}
+
+	/**
+	 * Check if fallback is right to left
 	 * @return bool
 	 */
-	protected function getRtlAttribute()
+	protected function getFallbackRtlAttribute()
 	{
-		return false;
+		return in_array($this->fallbackLanguage, config('core.localization.languages.rtl'));
 	}
 
 	/**
