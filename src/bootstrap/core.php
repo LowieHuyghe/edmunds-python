@@ -4,7 +4,10 @@ if (!defined('REAL_BASE_PATH'))
 {
 	define('REAL_BASE_PATH', realpath(BASE_PATH));
 }
-define('CORE_BASE_PATH', realpath(__DIR__ . '/..'));
+if (!defined('CORE_BASE_PATH'))
+{
+	define('CORE_BASE_PATH', realpath(__DIR__ . '/..'));
+}
 
 require_once CORE_BASE_PATH . '/helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
