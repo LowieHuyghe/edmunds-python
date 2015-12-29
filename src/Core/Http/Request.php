@@ -82,7 +82,7 @@ class Request extends BaseStructure
 	{
 		$ip = $this->request->ip();
 
-		if (in_array($ip, array('127.0.0.1', '10.0.2.2')) && app()->isLocal())
+		if (in_array($ip, array('127.0.0.1', '10.0.2.2', '192.168.99.1')) && app()->isLocal())
 		{
 			$ip = '213.118.118.244';
 		}

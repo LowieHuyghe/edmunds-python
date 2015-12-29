@@ -101,7 +101,8 @@ class Localization extends BaseModel
 		//Check currency
 		if (!$this->currency)
 		{
-			if ($currency = config('app.currency')) //app default
+			if (($currency = config('core.localization.currency.countries.' . strtoupper($this->location->countryCode)))
+				|| ($currency = config('app.currency'))) //app default
 			{
 				$this->currency = $currency;
 			}
@@ -133,7 +134,7 @@ class Localization extends BaseModel
 	 */
 	protected function getRtlAttribute()
 	{
-		return in_array($this->language, config('core.localization.languages.rtl'));
+		return in_array($this->language, config('core.localization.language.rtl'));
 	}
 
 	/**
@@ -160,7 +161,7 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackRtlAttribute()
 	{
-		return in_array($this->fallbackLanguage, config('core.localization.languages.rtl'));
+		return in_array($this->fallbackLanguage, config('core.localization.language.rtl'));
 	}
 
 	/**
