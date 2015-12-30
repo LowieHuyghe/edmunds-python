@@ -91,8 +91,8 @@ class Localization extends BaseModel
 			$context = new Context($request->userAgent);
 
 			if (($locale = $context->locale) //try context
-				|| false && ($locale = $this->location->locale) //try location
-				|| ($locale = config('app.locale'))) //app default
+				|| ($locale = config('app.localization.locale.default')) //app default
+				|| ($locale = config('core.localization.locale.default'))) //core default
 			{
 				$this->locale = $locale;
 			}
@@ -102,7 +102,8 @@ class Localization extends BaseModel
 		if (!$this->currency)
 		{
 			if (($currency = config('core.localization.currency.countries.' . strtoupper($this->location->countryCode)))
-				|| ($currency = config('app.currency'))) //app default
+				|| ($currency = config('app.localization.currency.default')) //app default
+				|| ($currency = config('core.localization.currency.default'))) //core default
 			{
 				$this->currency = $currency;
 			}
@@ -112,7 +113,8 @@ class Localization extends BaseModel
 		if (!$this->timezone)
 		{
 			if ($this->location->location && ($timezone = $this->location->location->timeZone) //fetch from location
-				|| ($timezone = config('app.timezone'))) //app default
+				|| ($timezone = config('app.localization.timezone.default')) //app default
+				|| ($timezone = config('core.localization.timezone.default'))) //core default
 			{
 				$this->timezone = $timezone;
 			}
@@ -134,7 +136,7 @@ class Localization extends BaseModel
 	 */
 	protected function getRtlAttribute()
 	{
-		return in_array($this->language, config('core.localization.language.rtl'));
+		return $this->isRtl($this->language);
 	}
 
 	/**
@@ -143,7 +145,11 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackAttribute()
 	{
-		return config('app.fallback');
+		if ($fallback = config('app.localization.locale.fallback'))
+		{
+			return $fallback;
+		}
+		return config('core.localization.locale.fallback');
 	}
 
 	/**
@@ -161,7 +167,20 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackRtlAttribute()
 	{
-		return in_array($this->fallbackLanguage, config('core.localization.language.rtl'));
+		return $this->isRtl($this->fallbackLanguage);
+	}
+
+	/**
+	 * Check if language is rtl
+	 * @param  string  $language
+	 * @return bool
+	 */
+	protected function isRtl($language)
+	{
+		return (
+			config('core.localization.language.direction.languages.' . $language) == 'rtl'
+			|| config('core.localization.language.direction.default') == 'rtl'
+		);
 	}
 
 	/**
@@ -186,8 +205,8 @@ class Localization extends BaseModel
 	{
 		return array(
 			'user_id' => $faker->integer,
-			'locale' => str_random(2),
-			'currency' => str_random(10),
+			'locale' => strtolower(str_random(2)),
+			'currency' => strtoupper(str_random(3)),
 			'timezone' => str_random(32),
 		);
 	}
