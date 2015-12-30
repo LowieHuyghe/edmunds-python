@@ -7,8 +7,7 @@ return array
 		'required' => array(
 			'app.name',
 			'app.key',
-			'app.locale',
-			'app.fallback',
+			'app.cipher',
 			'routing.namespace',
 			'routing.defaultcontroller',
 			'routing.namespace',
@@ -42,28 +41,36 @@ return array
 	),
 
 	'localization' => array(
+		'locale' => array(
+			'default' => 'en',
+			'fallback' => 'en',
+		),
 		'language' => array(
-			'rtl' => array(
-				'ar',		// Arabic
-				// 'arc',	// Aramaic
-				// 'bcc',	// Southern Balochi
-				// 'bqi',	// Bakthiari
-				// 'ckb',	// Sorani Kurdish
-				'dv',		// Dhivehi
-				'fa',		// Persian
-				// 'glk',	// Gilaki
-				'he',		// Hebrew
-				// 'lrc',	// Northern Luri
-				// 'mzn',	// Mazanderani
-				// 'pnb',	// Western Punjabi
-				'ps',		// Pashto
-				'sd',		// Sindhi
-				'ug',		// Uyghur
-				'ur',		// Urdu
-				'yi',		// Yiddish
+			'direction' => array(
+				'default' => 'ltr',
+				'languages' => array(
+					'ar' => 'rtl',		// Arabic
+					// 'arc' => 'rtl',	// Aramaic
+					// 'bcc' => 'rtl',	// Southern Balochi
+					// 'bqi' => 'rtl',	// Bakthiari
+					// 'ckb' => 'rtl',	// Sorani Kurdish
+					'dv' => 'rtl',		// Dhivehi
+					'fa' => 'rtl',		// Persian
+					// 'glk' => 'rtl',	// Gilaki
+					'he' => 'rtl',		// Hebrew
+					// 'lrc' => 'rtl',	// Northern Luri
+					// 'mzn' => 'rtl',	// Mazanderani
+					// 'pnb' => 'rtl',	// Western Punjabi
+					'ps' => 'rtl',		// Pashto
+					'sd' => 'rtl',		// Sindhi
+					'ug' => 'rtl',		// Uyghur
+					'ur' => 'rtl',		// Urdu
+					'yi' => 'rtl',		// Yiddish
+				),
 			),
 		),
 		'currency' => array(
+			'default' => 'EUR',
 			'countries' => array(
 				'AD' => 'EUR',	// Andorra
 				'AE' => 'AED',	// United Arab Emirates
@@ -1301,6 +1308,181 @@ return array
 					'decimals' => 2,
 				),
 			),
+		),
+		'date' => array(
+			'format' => array(
+				'default' => 'Y-m-d',
+				'countries' => array(
+					'AE' => 'd-m-Y',	// (unclear) United Arab Emirates
+					'AF' => 'Y-m-d',	// (unclear) Afghanistan
+					'AL' => 'd/m/Y',	// Albania
+					'AM' => 'd.m.Y',	// Armenia
+					'AR' => 'd-m-Y',	// (unclear) Argentina
+					'AT' => 'd.m.Y',	// Austria
+					'AU' => 'd-m-Y',	// (unclear) Australia
+					'AZ' => 'd.m.Y',	// Azerbaijan
+					'BA' => 'd-m-Y',	// (unclear) Bosnia and Herzegovina
+					'BB' => 'd-m-Y',	// (unclear) Barbados
+					'BD' => 'd-m-Y',	// Bangladesh
+					'BE' => 'd-m-Y',	// Belgium
+					'BG' => 'd.m.Y',	// Bulgaria
+					'BH' => 'd-m-Y',	// (unclear) Bahrain
+					'BN' => 'd-m-Y',	// (unclear) Brunei
+					'BO' => 'd-m-Y',	// (unclear) Bolivia
+					'BR' => 'd/m/Y',	// Brazil
+					'BY' => 'd.m.Y',	// Belarus
+					'BZ' => 'd-m-Y',	// (unclear) Belize
+					'CA' => 'd/m/Y',	// Canada
+					'CH' => 'd.m.Y',	// Switzerland
+					'CL' => 'd-m-Y',	// (unclear) Chile
+					'CN' => 'Y-m-d',	// China, People's Republic of
+					'CO' => 'd-m-Y',	// (unclear) Colombia
+					'CR' => 'd-m-Y',	// (unclear) Costa Rica
+					'CV' => 'd-m-Y',	// (unclear) Cape Verde
+					'CY' => 'd-m-Y',	// (unclear) Cyprus
+					'CZ' => 'd. m. Y.',	// Czech Republic
+					'DE' => 'd.m.Y',	// Germany
+					'DK' => 'd-m-Y',	// Denmark
+					'DM' => 'd-m-Y',	// (unclear) Dominica
+					'DO' => 'd-m-Y',	// (unclear) Dominican Republic
+					'DZ' => 'd/m/Y',	// Algeria
+					'EC' => 'd-m-Y',	// (unclear) Ecuador
+					'EE' => 'd.m.Y',	// Estonia
+					'EG' => 'd-m-Y',	// (unclear) Egypt
+					'ES' => 'd/m/Y',	// Spain
+					'ET' => 'd-m-Y',	// (unclear) Ethiopia
+					'FI' => 'd.m.Y',	// Finland
+					'FM' => 'm-d-Y',	// (unclear) Federated States of Micronesia
+					'FR' => 'd/m/Y',	// France
+					'GB' => 'd/m/Y',	// United Kingdom
+					'GD' => 'd-m-Y',	// (unclear) Grenada
+					'GE' => 'd.m.Y',	// Georgia
+					'GL' => 'd.m.Y',	// Greenland
+					'GR' => 'd-m-Y',	// (unclear) Greece
+					'GT' => 'd-m-Y',	// (unclear) Guatemala
+					'GY' => 'd-m-Y',	// (unclear) Guyana
+					'HK' => 'd/m/Y',	// Hong Kong
+					'HN' => 'd-m-Y',	// (unclear) Honduras
+					'HR' => 'd. m. Y.',	// Croatia
+					'HU' => 'Y. M. d.',	// Hungary
+					'ID' => 'd-m-Y',	// (unclear) Indonesia
+					'IE' => 'd-m-Y',	// Ireland
+					'IL' => 'd/m/Y',	// Israel
+					'IN' => 'd-m-Y',	// India
+					'IQ' => 'd/m/Y',	// Iraq
+					'IR' => 'Y/m/d',	// Iran
+					'IS' => 'd.m.Y',	// Iceland
+					'IT' => 'd/m/Y',	// Italy
+					'JM' => 'd-m-Y',	// (unclear) Jamaica
+					'JO' => 'd-m-Y',	// (unclear) Jordan
+					'JP' => 'Y-m-d',	// (unclear) Japan
+					'KE' => 'Y/m/d',	// Kenya
+					'KG' => 'd.m.Y',	// Kyrgyzstan
+					'KH' => 'd-m-Y',	// Cambodia
+					'KN' => 'd-m-Y',	// (unclear) Saint Kitts and Nevis
+					'KP' => 'Y/m/d',	// Korea
+					'KR' => 'Y/m/d',	// Korea
+					'KW' => 'd-m-Y',	// (unclear) Kuwait
+					'KZ' => 'd.m.Y',	// Kazakhstan
+					'LA' => 'd-m-Y',	// (unclear) Laos
+					'LB' => 'd-m-Y',	// (unclear) Lebanon
+					'LC' => 'd-m-Y',	// (unclear) Saint Lucia
+					'LI' => 'd.m.Y',	// Liechtenstein
+					'LK' => 'd-m-Y',	// (unclear) Sri Lanka
+					'LT' => 'Y-m-d',	// Lithuania
+					'LU' => 'd/m/Y',	// Luxembourg
+					'LV' => 'd.m.Y',	// Latvia
+					'LY' => 'd-m-Y',	// (unclear) Libya
+					'MA' => 'd-m-Y',	// (unclear) Morocco
+					'MC' => 'd-m-Y',	// (unclear) Monaco
+					'MD' => 'd-m-Y',	// (unclear) Moldova
+					'ME' => 'd.m.Y',	// Montenegro
+					'MK' => 'd.m.Y',	// Macedonia
+					'MM' => 'Y-m-d',	// (unclear) Myanmar
+					'MN' => 'Y.m.d',	// Mongolia
+					'MO' => 'd-m-Y',	// (unclear) Macau
+					'MT' => 'd-m-Y',	// (unclear) Malta
+					'MV' => 'd-m-Y',	// (unclear) Maldives
+					'MX' => 'd-m-Y',	// (unclear) Mexico
+					'MY' => 'd-m-Y',	// (unclear) Malaysia
+					'NA' => 'Y-m-d',	// (unclear) Namibia
+					'NG' => 'd/m/Y',	// Nigeria
+					'NI' => 'd-m-Y',	// (unclear) Nicaragua
+					'NL' => '"d-m-Y"',	// Netherlands
+					'NO' => 'd.m.Y',	// Norway
+					'NP' => 'Y-m-d',	// (unclear) Nepal
+					'NZ' => 'd-m-Y',	// (unclear) New Zealand
+					'OM' => 'd-m-Y',	// (unclear) Oman
+					'PA' => 'd-m-Y',	// (unclear) Panama
+					'PE' => 'd-m-Y',	// (unclear) Peru
+					'PH' => 'd-m-Y',	// (unclear) Philippines
+					'PK' => 'd-m-Y',	// (unclear) Pakistan
+					'PL' => 'd.m.Y',	// (unclear) Poland
+					'PT' => 'd/m/Y',	// Portugal
+					'PW' => 'd-m-Y',	// (unclear) Palau
+					'PY' => 'd-m-Y',	// (unclear) Paraguay
+					'QA' => 'd-m-Y',	// (unclear) Qatar
+					'RO' => 'd.m.Y',	// Romania
+					'RS' => 'd.m.Y',	// Serbia
+					'RU' => 'd.m.Y',	// Russia
+					'SA' => 'd/m/Y',	// Saudi Arabia
+					'SD' => 'd-m-Y',	// (unclear) Sudan
+					'SE' => 'Y-m-d',	// Sweden
+					'SG' => 'd-m-Y',	// (unclear) Singapore
+					'SI' => 'd.m.Y',	// Slovenia
+					'SK' => 'd. m. Y',	// Slovakia
+					'SR' => 'd-m-Y',	// (unclear) Suriname
+					'SV' => 'd-m-Y',	// (unclear) El Salvador
+					'SY' => 'd-m-Y',	// (unclear) Syria
+					'TH' => 'd/m/Y',	// Thailand
+					'TJ' => 'd.m.Y',	// Tajikistan
+					'TM' => 'd.m.Y',	// Turkmenistan
+					'TN' => 'd-m-Y',	// (unclear) Tunisia
+					'TR' => 'd.m.Y',	// Turkey
+					'TT' => 'd-m-Y',	// (unclear) Trinidad and Tobago
+					'TW' => 'Y-m-d',	// Taiwan,Republic of China
+					'UA' => 'd.m.Y',	// Ukraine
+					'US' => 'm/d/Y',	// United States of America
+					'UY' => 'd-m-Y',	// (unclear) Uruguay
+					'UZ' => 'd.m.Y',	// Uzbekistan
+					'VC' => 'd-m-Y',	// (unclear) Saint Vincent and the Grenadines
+					'VE' => 'd-m-Y',	// (unclear) Venezuela
+					'VN' => 'd-m-Y',	// (unclear) Vietnam
+					'YE' => 'd-m-Y',	// (unclear) Yemen
+					'ZA' => 'Y/m/d',	// South Africa
+					'ZW' => 'm-d-Y',	// (unclear) Zimbabwe
+				),
+			),
+		),
+		'time' => array(
+			'format' => array(
+				'default' => 'H:m',
+			),
+			'hours' => array(
+				'default' => 24,
+				'countries' => array(
+					'AG' => 12,	// Antigua and Barbuda
+					'AU' => 12,	// Australia
+					'BB' => 12,	// Barbados
+					'BS' => 12,	// The Bahamas
+					'BZ' => 12,	// Belize
+					'CA' => 12,	// Canada
+					'GB' => 12,	// The United Kingdom
+					'GD' => 12,	// Grenada
+					'JM' => 12,	// Jamaica
+					'KN' => 12,	// Saint Kitts and Nevis
+					'LC' => 12,	// Saint Lucia
+					'NZ' => 12,	// New Zealand
+					'PG' => 12,	// Papua New Guinea
+					'SB' => 12,	// Solomon Islands
+					'TV' => 12,	// Tuvalu
+					'US' => 12,	// United States of America
+					'VC' => 12,	// Saint Vincent and the Grenadines
+				),
+			),
+		),
+		'timezone' => array(
+			'default' => 'Europe/Brussels',
 		),
 	),
 
