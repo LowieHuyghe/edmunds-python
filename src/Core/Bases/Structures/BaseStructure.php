@@ -123,11 +123,11 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	protected $observables = [];
 
 	/**
-	 * Array that represents the attributes that are structures
+	 * Array that represents the attributes that are objects
 	 * Ex: 'location' => Location::class,
 	 * @var array
 	 */
-	protected $structures = [];
+	protected $recoverObjects = [];
 
 	/**
 	 * Indicates if the model exists.
@@ -1655,17 +1655,17 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	{
 		$structureClass = get_called_class();
 		$structure = new $structureClass();
-		$structureKeys = array_keys($structure->structures);
+		$objectKeys = array_keys($structure->recoverObjects);
 
 		foreach ($attributes as $key => $value)
 		{
-			if (!in_array($key, $structureKeys))
+			if (!in_array($key, $objectKeys))
 			{
 				$structure->$key = $value;
 			}
 			else
 			{
-				$structure->$key = call_user_func_array(array($structure->structures[$key], 'recover'), array($value));
+				$structure->$key = call_user_func_array(array($structure->recoverObjects[$key], 'recover'), array($value));
 			}
 		}
 
