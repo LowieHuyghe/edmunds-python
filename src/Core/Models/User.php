@@ -13,13 +13,14 @@
 
 namespace Core\Models;
 
-use Core\Localization\DateTime;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Io\Validation\Validation;
+use Core\Localization\DateTime;
 use Core\Models\Gender;
 use Core\Models\Localization;
+use Core\Models\Location;
 use Faker\Generator;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -42,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Collection $roles Roles for this user
  * @property Gender $gender Gender of the user
  * @property Localization $localization
+ * @property Location $location
  * @property string $remember_token
  * @property DateTime created_at
  * @property DateTime updated_at
@@ -141,6 +143,15 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	public function localization()
 	{
 		return $this->hasOne(Localization::class);
+	}
+
+	/**
+	 * Get the location of the user
+	 * @return HasOne
+	 */
+	public function location()
+	{
+		return $this->hasOne(Location::class);
 	}
 
 	/**

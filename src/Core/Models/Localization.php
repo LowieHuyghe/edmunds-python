@@ -12,15 +12,15 @@
  */
 
 namespace Core\Models;
-use NumberFormatter;
 use Core\Bases\Models\BaseModel;
 use Core\Http\Client\Context;
-use Core\Http\Client\Location;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Localization\DateTime;
+use Core\Models\Location;
 use Core\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use NumberFormatter;
 
 /**
  * The helper responsible for localization
@@ -39,7 +39,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $fallbackRtl Is fallback rtl
  * @property string $currency The currency
  * @property string $timezone The timezone
- * @property Location $location The location
  */
 class Localization extends BaseModel
 {
@@ -56,18 +55,6 @@ class Localization extends BaseModel
 	protected $primaryKey = 'user_id';
 
 	/**
-	 * The key used to store the settings in the session and cookie
-	 * @var string
-	 */
-	protected $sessionCookieKey = 'localization';
-
-	/**
-	 * Array that represents the attributes that are models
-	 * @var array
-	 */
-	protected $models = [ 'location' => Location::class ];
-
-	/**
 	 * The user
 	 * @return BelongsTo
 	 */
@@ -81,15 +68,10 @@ class Localization extends BaseModel
 	 */
 	public function initialize()
 	{
-		//Check location
-		if (!$this->location)
-		{
-			$this->location = new Location();
-		}
-
 		//Check locale
 		if (!$this->locale)
 		{
+			$visitor = Visitor::getInstance();
 			$request = Request::getInstance();
 			$context = new Context($request->userAgent);
 
@@ -99,7 +81,7 @@ class Localization extends BaseModel
 			{
 				// try glueing the countrycode to the back if no country is present
 				if (strlen($locale) == 2
-					&& $countryCode = $this->location->countryCode)
+					&& $countryCode = $visitor->location->country_code)
 				{
 					$locale .= "_$countryCode";
 				}
@@ -124,7 +106,9 @@ class Localization extends BaseModel
 		//Check timezone
 		if (!$this->timezone)
 		{
-			if ($this->location->location && ($timezone = $this->location->location->timeZone) //fetch from location
+			$visitor = Visitor::getInstance();
+
+			if ($visitor->location && ($timezone = $visitor->location->timezone) //fetch from location
 				|| ($timezone = config('app.localization.timezone.default')) //app default
 				|| ($timezone = config('core.localization.timezone.default'))) //core default
 			{
@@ -202,7 +186,7 @@ class Localization extends BaseModel
 		parent::addValidationRules();
 
 		$this->validator->value('user_id')->integer()->required();
-		$this->validator->value('locale')->max(10);
+		$this->validator->value('locale')->max(32);
 		$this->validator->value('currency')->max(10);
 		$this->validator->value('timezone')->max(255);
 	}
@@ -216,9 +200,9 @@ class Localization extends BaseModel
 	{
 		return array(
 			'user_id' => $faker->integer,
-			'locale' => strtolower(str_random(2)),
-			'currency' => strtoupper(str_random(3)),
-			'timezone' => str_random(32),
+			'locale' => $faker->locale,
+			'currency' => $faker->currencyCode,
+			'timezone' => $faker->timezone,
 		);
 	}
 

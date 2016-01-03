@@ -19,6 +19,7 @@ use Core\Http\Client\Auth;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Models\Localization;
+use Core\Models\Location;
 use Core\Models\User;
 
 /**
@@ -34,6 +35,7 @@ use Core\Models\User;
  * @property bool $loggedIn
  * @property Context $context
  * @property Localization $localization
+ * @property Location $location
  */
 class Visitor extends BaseStructure
 {
@@ -86,6 +88,12 @@ class Visitor extends BaseStructure
 	 * @var Localization
 	 */
 	protected $visitorLocalization;
+
+	/**
+	 * The location
+	 * @var Location
+	 */
+	protected $visitorLocation;
 
 	/**
 	 * Constructor
@@ -163,10 +171,10 @@ class Visitor extends BaseStructure
 			// update method for session and cookies
 			$updateLocalization = function ($localization) use ($idKey)
 			{
-				$localizationAttributes = $localization->__toString();
+				$localizationJson = $localization->toJson();
 
-				Request::getInstance()->session->set($idKey, $localizationAttributes);
-				Response::getInstance()->cookie($idKey, $localizationAttributes);
+				Request::getInstance()->session->set($idKey, $localizationJson);
+				Response::getInstance()->cookie($idKey, $localizationJson);
 			};
 			Localization::saving($updateLocalization);
 
@@ -179,21 +187,25 @@ class Visitor extends BaseStructure
 			else
 			{
 				// from session
-				$localizationAttributes = $this->request->session->get($idKey);
-				if (!$localizationAttributes)
+				$localizationJson = $this->request->session->get($idKey);
+				if (!$localizationJson)
 				{
 					// from cookie
-					$localizationAttributes = $this->request->getCookie($idKey);
-					if ($localizationAttributes)
+					$localizationJson = $this->request->getCookie($idKey);
+					if ($localizationJson)
 					{
-						$this->request->session->set($idKey, $localizationAttributes);
+						$this->request->session->set($idKey, $localizationJson);
 					}
+				}
+				elseif (!$this->request->getCookie($idKey))
+				{
+					$this->response->cookie($idKey, $localizationJson);
 				}
 
 				// recover
-				if ($localizationAttributes)
+				if ($localizationJson)
 				{
-					$localization = Localization::recover(json_decode($localizationAttributes, true));
+					$localization = Localization::recover(json_decode($localizationJson, true));
 				}
 				// make new and save
 				else
@@ -210,6 +222,58 @@ class Visitor extends BaseStructure
 		}
 
 		return $this->visitorLocalization;
+	}
+
+	/**
+	 * Fetch the location
+	 * @return Location
+	 */
+	protected function getLocationAttribute()
+	{
+		if (!isset($this->visitorLocation))
+		{
+			$idKey = 'visitor_location';
+
+			// update method for session
+			$updateLocation = function ($location) use ($idKey)
+			{
+				$locationJson = $location->toJson();
+
+				Request::getInstance()->session->set($idKey, $locationJson);
+			};
+			Location::saving($updateLocation);
+
+
+			// from user
+			if ($user = $this->user)
+			{
+				$location = $user->location;
+			}
+			else
+			{
+				// from session
+				$locationJson = $this->request->session->get($idKey);
+
+				// recover
+				if ($locationJson)
+				{
+					$location = Location::recover(json_decode($locationJson, true));
+				}
+				// make new and save
+				else
+				{
+					$location = new Location();
+					$location->initialize($this->request->ip);
+
+					$updateLocation($location);
+				}
+			}
+
+			// and set to visitor
+			$this->visitorLocation = $location;
+		}
+
+		return $this->visitorLocation;
 	}
 
 }

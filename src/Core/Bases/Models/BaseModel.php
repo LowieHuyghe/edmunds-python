@@ -43,11 +43,11 @@ class BaseModel extends Model
 	public $timestamps = true;
 
 	/**
-	 * Array that represents the attributes that are models
+	 * Array that represents the attributes that are objects
 	 * Ex: 'location' => Location::class,
 	 * @var array
 	 */
-	protected $models = [];
+	protected $recoverObjects = [];
 
 	/**
 	 * The attributes that should be mutated to dates.
@@ -268,17 +268,17 @@ class BaseModel extends Model
 	{
 		$modelClass = get_called_class();
 		$model = new $modelClass();
-		$modelKeys = array_keys($model->models);
+		$objectKeys = array_keys($model->recoverObjects);
 
 		foreach ($attributes as $key => $value)
 		{
-			if (!in_array($key, $modelKeys))
+			if (!in_array($key, $objectKeys))
 			{
 				$model->$key = $value;
 			}
 			else
 			{
-				$model->$key = call_user_func_array(array($model->models[$key], 'recover'), array($value));
+				$model->$key = call_user_func_array(array($model->recoverObjects[$key], 'recover'), array($value));
 			}
 		}
 

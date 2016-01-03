@@ -14,7 +14,7 @@
 namespace Core\Console\Commands;
 
 use Core\Bases\Commands\BaseCommand;
-use Core\Http\Client\Location;
+use Core\Models\Location;
 use Core\Registry\Admin\Pm;
 use Core\Registry\Registry;
 
