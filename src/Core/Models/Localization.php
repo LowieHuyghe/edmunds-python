@@ -97,6 +97,13 @@ class Localization extends BaseModel
 				|| ($locale = config('app.localization.locale.default')) //app default
 				|| ($locale = config('core.localization.locale.default'))) //core default
 			{
+				// try glueing the countrycode to the back if no country is present
+				if (strlen($locale) == 2
+					&& $countryCode = $this->location->countryCode)
+				{
+					$locale .= "_$countryCode";
+				}
+
 				$this->locale = $locale;
 			}
 		}
