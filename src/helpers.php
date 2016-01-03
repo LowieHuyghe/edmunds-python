@@ -79,19 +79,3 @@
 
 		return app('former');
 	}
-
-	/**
-	 * Get the primary language from a locale
-	 * @param  string $locale
-	 * @return string
-	 */
-	function locale_get_primary_language($locale)
-	{
-		$matches = array();
-		if (preg_match("/(\w+).*?/", $locale, $matches))
-		{
-			return strtolower($matches[1]);
-		}
-
-		return null;
-	}

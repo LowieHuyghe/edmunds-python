@@ -158,7 +158,7 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorLocalization))
 		{
-			$idKey = 'localization';
+			$idKey = 'visitor_localization';
 
 			// update method for session and cookies
 			$updateLocalization = function ($localization) use ($idKey)

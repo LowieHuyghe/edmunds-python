@@ -31,8 +31,8 @@ use Core\Io\Validation\Validation;
  * @property string $email
  * @property string $password
  * @property User $user
- * @property Carbon created_at
- * @property Carbon updated_at
+ * @property DateTime created_at
+ * @property DateTime updated_at
  */
 class LoginAttempt extends BaseModel
 {

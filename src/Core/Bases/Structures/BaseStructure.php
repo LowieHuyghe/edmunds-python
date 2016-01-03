@@ -14,9 +14,8 @@
 namespace Core\Bases\Structures;
 
 use Core\Bases\Models\BaseModel;
-use DateTime;
 use ArrayAccess;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Collection;
@@ -122,6 +121,13 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 * @var array
 	 */
 	protected $observables = [];
+
+	/**
+	 * Array that represents the attributes that are structures
+	 * Ex: 'location' => Location::class,
+	 * @var array
+	 */
+	protected $structures = [];
 
 	/**
 	 * Indicates if the model exists.
@@ -553,11 +559,11 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	/**
 	 * Get a fresh timestamp for the model.
 	 *
-	 * @return \Carbon\Carbon
+	 * @return DateTime
 	 */
 	public function freshTimestamp()
 	{
-		return new Carbon;
+		return new DateTime;
 	}
 
 	/**
@@ -1242,47 +1248,47 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		return $value->format($format);
 	}
 
-	/**
-	 * Return a timestamp as DateTime object.
-	 *
-	 * @param  mixed  $value
-	 * @return \Carbon\Carbon
-	 */
-	protected function asDateTime($value)
-	{
-		// If this value is already a Carbon instance, we shall just return it as is.
-		// This prevents us having to reinstantiate a Carbon instance when we know
-		// it already is one, which wouldn't be fulfilled by the DateTime check.
-		if ($value instanceof Carbon) {
-			return $value;
-		}
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param  mixed  $value
+     * @return DateTime
+     */
+    protected function asDateTime($value)
+    {
+        // If this value is already a DateTime instance, we shall just return it as is.
+        // This prevents us having to reinstantiate a DateTime instance when we know
+        // it already is one, which wouldn't be fulfilled by the DateTime check.
+        if ($value instanceof DateTime) {
+            return $value;
+        }
 
-		// If the value is already a DateTime instance, we will just skip the rest of
-		// these checks since they will be a waste of time, and hinder performance
-		// when checking the field. We will just return the DateTime right away.
-		if ($value instanceof DateTime) {
-			return Carbon::instance($value);
-		}
+        // If the value is already a DateTime instance, we will just skip the rest of
+        // these checks since they will be a waste of time, and hinder performance
+        // when checking the field. We will just return the DateTime right away.
+        if ($value instanceof \DateTime) {
+            return DateTime::instance($value);
+        }
 
-		// If this value is an integer, we will assume it is a UNIX timestamp's value
-		// and format a Carbon object from this timestamp. This allows flexibility
-		// when defining your date fields as they might be UNIX timestamps here.
-		if (is_numeric($value)) {
-			return Carbon::createFromTimestamp($value);
-		}
+        // If this value is an integer, we will assume it is a UNIX timestamp's value
+        // and format a DateTime object from this timestamp. This allows flexibility
+        // when defining your date fields as they might be UNIX timestamps here.
+        if (is_numeric($value)) {
+            return DateTime::createFromTimestamp($value);
+        }
 
-		// If the value is in simply year, month, day format, we will instantiate the
-		// Carbon instances from that format. Again, this provides for simple date
-		// fields on the database, while still supporting Carbonized conversion.
-		if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
-			return Carbon::createFromFormat('Y-m-d', $value)->startOfDay();
-		}
+        // If the value is in simply year, month, day format, we will instantiate the
+        // DateTime instances from that format. Again, this provides for simple date
+        // fields on the database, while still supporting DateTimeized conversion.
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
+            return DateTime::createFromFormat('Y-m-d', $value)->startOfDay();
+        }
 
-		// Finally, we will just assume this date is in the format used by default on
-		// the database connection and use that format to create the Carbon object
-		// that is returned back out to the developers after we convert it here.
-		return Carbon::createFromFormat($this->getDateFormat(), $value);
-	}
+        // Finally, we will just assume this date is in the format used by default on
+        // the database connection and use that format to create the DateTime object
+        // that is returned back out to the developers after we convert it here.
+        return DateTime::createFromFormat($this->getDateFormat(), $value);
+    }
 
 	/**
 	 * Prepare a date for array / JSON serialization.
@@ -1290,7 +1296,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 * @param  \DateTime  $date
 	 * @return string
 	 */
-	protected function serializeDate(DateTime $date)
+	protected function serializeDate(\DateTime $date)
 	{
 		return $date->format($this->getDateFormat());
 	}
@@ -1617,7 +1623,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	/**
 	 * Create an instance of the model
 	 * @param array $attributes
-	 * @return BaseModel
+	 * @return BaseStructure
 	 */
 	public static function dummy($attributes = array())
 	{
@@ -1638,5 +1644,31 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	protected static function factory($faker)
 	{
 		throw new \Exception('Factory not defined in ' . get_called_class());
+	}
+
+	/**
+	 * Recover instance from array of attributes
+	 * @param  array $attributes
+	 * @return BaseStructure
+	 */
+	public static function recover($attributes)
+	{
+		$structureClass = get_called_class();
+		$structure = new $structureClass();
+		$structureKeys = array_keys($structure->structures);
+
+		foreach ($attributes as $key => $value)
+		{
+			if (!in_array($key, $structureKeys))
+			{
+				$structure->$key = $value;
+			}
+			else
+			{
+				$structure->$key = call_user_func_array(array($structure->structures[$key], 'recover'), array($value));
+			}
+		}
+
+		return $structure;
 	}
 }

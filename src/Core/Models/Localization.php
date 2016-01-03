@@ -12,10 +12,13 @@
  */
 
 namespace Core\Models;
+use NumberFormatter;
 use Core\Bases\Models\BaseModel;
 use Core\Http\Client\Context;
 use Core\Http\Client\Location;
+use Core\Http\Client\Visitor;
 use Core\Http\Request;
+use Core\Localization\DateTime;
 use Core\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -62,7 +65,7 @@ class Localization extends BaseModel
 	 * Array that represents the attributes that are models
 	 * @var array
 	 */
-	protected $models = []; //'location' => Location::class ];
+	protected $models = [ 'location' => Location::class ];
 
 	/**
 	 * The user
@@ -101,7 +104,9 @@ class Localization extends BaseModel
 		//Check currency
 		if (!$this->currency)
 		{
-			if (($currency = config('core.localization.currency.countries.' . strtoupper($this->location->countryCode)))
+			$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
+
+			if (($currency = $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE))
 				|| ($currency = config('app.localization.currency.default')) //app default
 				|| ($currency = config('core.localization.currency.default'))) //core default
 			{
@@ -145,11 +150,10 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackAttribute()
 	{
-		if ($fallback = config('app.localization.locale.fallback'))
-		{
-			return $fallback;
-		}
-		return config('core.localization.locale.fallback');
+		return (
+			config('app.localization.locale.fallback')
+			?: config('core.localization.locale.fallback')
+		);
 	}
 
 	/**

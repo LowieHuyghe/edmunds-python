@@ -12,7 +12,7 @@
  */
 
 namespace Core\Models;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Http\Client\Input;
@@ -36,8 +36,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property string $mime
  * @property FileType $type
  * @property int $size
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
  */
 class FileEntry extends BaseModel
 {

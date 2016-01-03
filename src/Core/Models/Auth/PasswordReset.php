@@ -12,7 +12,7 @@
  */
 
 namespace Core\Models\Auth;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
@@ -29,8 +29,8 @@ use Core\Io\Validation\Validation;
  * @property string $email
  * @property User $user
  * @property string $token
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
  */
 class PasswordReset extends BaseModel
 {
@@ -87,7 +87,7 @@ class PasswordReset extends BaseModel
 		if ($passwordReset)
 		{
 			$latest = $passwordReset->created_at->addMinutes(config('core.auth.ttl.passwordreset'));
-			$now = Carbon::now();
+			$now = DateTime::now();
 
 			if ($latest->gte($now))
 			{

@@ -15,6 +15,7 @@ namespace Core\Bases\Models;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
 use Core\Io\Validation\Validation;
+use Core\Localization\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Validator;
@@ -169,6 +170,58 @@ class BaseModel extends Model
 
 		return parent::save($options);
 	}
+
+    /**
+     * Get a fresh timestamp for the model.
+     *
+     * @return DateTime
+     */
+    public function freshTimestamp()
+    {
+        return new DateTime;
+    }
+
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param  mixed  $value
+     * @return DateTime
+     */
+    protected function asDateTime($value)
+    {
+        // If this value is already a DateTime instance, we shall just return it as is.
+        // This prevents us having to reinstantiate a DateTime instance when we know
+        // it already is one, which wouldn't be fulfilled by the DateTime check.
+        if ($value instanceof DateTime) {
+            return $value;
+        }
+
+        // If the value is already a DateTime instance, we will just skip the rest of
+        // these checks since they will be a waste of time, and hinder performance
+        // when checking the field. We will just return the DateTime right away.
+        if ($value instanceof \DateTime) {
+            return DateTime::instance($value);
+        }
+
+        // If this value is an integer, we will assume it is a UNIX timestamp's value
+        // and format a DateTime object from this timestamp. This allows flexibility
+        // when defining your date fields as they might be UNIX timestamps here.
+        if (is_numeric($value)) {
+            return DateTime::createFromTimestamp($value);
+        }
+
+        // If the value is in simply year, month, day format, we will instantiate the
+        // DateTime instances from that format. Again, this provides for simple date
+        // fields on the database, while still supporting DateTimeized conversion.
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
+            return DateTime::createFromFormat('Y-m-d', $value)->startOfDay();
+        }
+
+        // Finally, we will just assume this date is in the format used by default on
+        // the database connection and use that format to create the DateTime object
+        // that is returned back out to the developers after we convert it here.
+        return DateTime::createFromFormat($this->getDateFormat(), $value);
+    }
 
 	/**
 	 * Add the validation of the model

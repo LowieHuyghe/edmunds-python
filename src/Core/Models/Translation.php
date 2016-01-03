@@ -12,7 +12,7 @@
  */
 
 namespace Core\Models;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
 use Core\Io\Validation\Validation;
@@ -212,8 +212,8 @@ use Core\Io\Validation\Validation;
  * @property string za		Zhuang, Chuang
  * @property string zh		Chinese
  * @property string zu		Zulu
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
  */
 class Translation extends BaseModel
 {
