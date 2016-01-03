@@ -169,14 +169,13 @@ class Visitor extends BaseStructure
 			$idKey = 'visitor_localization';
 
 			// update method for session and cookies
-			$updateLocalization = function ($localization) use ($idKey)
+			Localization::saving(function ($localization) use ($idKey)
 			{
 				$localizationJson = $localization->toJson();
 
 				Request::getInstance()->session->set($idKey, $localizationJson);
 				Response::getInstance()->cookie($idKey, $localizationJson);
-			};
-			Localization::saving($updateLocalization);
+			});
 
 
 			// from user
@@ -211,9 +210,8 @@ class Visitor extends BaseStructure
 				else
 				{
 					$localization = new Localization();
-					$localization->initialize();
-
-					$updateLocalization($localization);
+					$localization->initialize($this->context->locale, $this->location->timezone);
+					$localization->save();
 				}
 			}
 
@@ -235,19 +233,24 @@ class Visitor extends BaseStructure
 			$idKey = 'visitor_location';
 
 			// update method for session
-			$updateLocation = function ($location) use ($idKey)
+			Location::saving(function ($location) use ($idKey)
 			{
 				$locationJson = $location->toJson();
 
 				Request::getInstance()->session->set($idKey, $locationJson);
-			};
-			Location::saving($updateLocation);
-
+			});
 
 			// from user
 			if ($user = $this->user)
 			{
 				$location = $user->location;
+
+				// check if needs to update
+				if ($location->ip != $this->request->ip)
+				{
+					$location->initialize($this->request->ip);
+					$location->save();
+				}
 			}
 			else
 			{
@@ -264,8 +267,7 @@ class Visitor extends BaseStructure
 				{
 					$location = new Location();
 					$location->initialize($this->request->ip);
-
-					$updateLocation($location);
+					$location->save();
 				}
 			}
 

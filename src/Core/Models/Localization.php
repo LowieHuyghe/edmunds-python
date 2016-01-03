@@ -13,9 +13,6 @@
 
 namespace Core\Models;
 use Core\Bases\Models\BaseModel;
-use Core\Http\Client\Context;
-use Core\Http\Client\Visitor;
-use Core\Http\Request;
 use Core\Localization\DateTime;
 use Core\Models\Location;
 use Core\Models\User;
@@ -65,55 +62,42 @@ class Localization extends BaseModel
 
 	/**
 	 * Initialize the properties
+	 * @param  string $locale
+	 * @param  string $timezone
 	 */
-	public function initialize()
+	public function initialize($locale, $timezone)
 	{
 		//Check locale
-		if (!$this->locale)
+		if ($locale //try given locale
+			|| ($locale = config('app.localization.locale.default')) //app default
+			|| ($locale = config('core.localization.locale.default'))) //core default
 		{
-			$visitor = Visitor::getInstance();
-			$request = Request::getInstance();
-			$context = new Context($request->userAgent);
-
-			if (($locale = $context->locale) //try context
-				|| ($locale = config('app.localization.locale.default')) //app default
-				|| ($locale = config('core.localization.locale.default'))) //core default
+			// try glueing the countrycode to the back if no country is present
+			if (strlen($locale) == 2
+				&& ($countryCode = $visitor->location->country_code))
 			{
-				// try glueing the countrycode to the back if no country is present
-				if (strlen($locale) == 2
-					&& $countryCode = $visitor->location->country_code)
-				{
-					$locale .= "_$countryCode";
-				}
-
-				$this->locale = $locale;
+				$locale .= "_$countryCode";
 			}
+
+			$this->locale = $locale;
 		}
 
 		//Check currency
-		if (!$this->currency)
-		{
-			$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
+		$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
-			if (($currency = $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE))
-				|| ($currency = config('app.localization.currency.default')) //app default
-				|| ($currency = config('core.localization.currency.default'))) //core default
-			{
-				$this->currency = $currency;
-			}
+		if (($currency = $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE))
+			|| ($currency = config('app.localization.currency.default')) //app default
+			|| ($currency = config('core.localization.currency.default'))) //core default
+		{
+			$this->currency = $currency;
 		}
 
 		//Check timezone
-		if (!$this->timezone)
+		if ($timezone //fetch from location
+			|| ($timezone = config('app.localization.timezone.default')) //app default
+			|| ($timezone = config('core.localization.timezone.default'))) //core default
 		{
-			$visitor = Visitor::getInstance();
-
-			if ($visitor->location && ($timezone = $visitor->location->timezone) //fetch from location
-				|| ($timezone = config('app.localization.timezone.default')) //app default
-				|| ($timezone = config('core.localization.timezone.default'))) //core default
-			{
-				$this->timezone = $timezone;
-			}
+			$this->timezone = $timezone;
 		}
 	}
 
