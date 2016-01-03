@@ -13,7 +13,7 @@
 
 namespace Core\Models;
 
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
@@ -43,9 +43,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Gender $gender Gender of the user
  * @property Localization $localization
  * @property string $remember_token
- * @property Carbon created_at
- * @property Carbon updated_at
- * @property Carbon deleted_at
+ * @property DateTime created_at
+ * @property DateTime updated_at
+ * @property DateTime deleted_at
  */
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
