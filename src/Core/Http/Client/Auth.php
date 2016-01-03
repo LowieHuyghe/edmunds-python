@@ -12,7 +12,7 @@
  */
 
 namespace Core\Http\Client;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
 use Core\Models\Auth\AuthToken;
@@ -121,7 +121,7 @@ class Auth extends BaseStructure
 	protected function getLoginAttemptsAttribute()
 	{
 		$ip = $this->request->ip;
-		$dateTimeFrom = Carbon::now()->addHours(-7)->toDateTimeString();
+		$dateTimeFrom = DateTime::now()->addHours(-7)->toDateTimeString();
 
 		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
 	}
@@ -225,7 +225,7 @@ class Auth extends BaseStructure
 			if ($loggedIn = $this->loginWithUser($authToken->user, $once))
 			{
 				//Check if session-id is still valid
-				if ($validUntil->gt(Carbon::now()))
+				if ($validUntil->gt(DateTime::now()))
 				{
 					$authToken->touch();
 					$this->request->session->save();

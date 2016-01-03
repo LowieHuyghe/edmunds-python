@@ -12,7 +12,7 @@
  */
 
 namespace Core\Models\Auth;
-use Carbon\Carbon;
+use Core\Localization\DateTime;
 use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
@@ -29,8 +29,8 @@ use Core\Io\Validation\Validation;
  * @property string $token
  * @property User $user
  * @property string $session_id
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property DateTime $created_at
+ * @property DateTime $updated_at
  */
 class AuthToken extends BaseModel
 {
