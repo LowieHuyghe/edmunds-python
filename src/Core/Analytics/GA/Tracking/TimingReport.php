@@ -11,28 +11,33 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
- * The structure for item reports
+ * The structure for timing reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//E-Commerce
- * @property string $transactionId
- * @property string $itemName
- * @property double $itemPrice
- * @property int $itemQuantity
- * @property string $itemCode
- * @property string $itemCategory
- * @property string $currencyCode
+	//Timing
+ * @property string $userTimingCategory
+ * @property string $userTimingVariableName
+ * @property int $userTimingTime
+ * @property string $userTimingLabel
+ * @property int $pageLoadTime
+ * @property int $dnsTime
+ * @property int $pageDownloadTime
+ * @property int $redirectResponseTime
+ * @property int $tcpConnectTime
+ * @property int $serverResponseTime
+ * @property int $domInteractiveTime
+ * @property int $contentLoadTime
  */
-class ItemReport extends BaseReport
+class TimingReport extends BaseGAReport
 {
 	/**
 	 * Constructor
@@ -41,7 +46,7 @@ class ItemReport extends BaseReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'item';
+		$this->hitType = 'timing';
 	}
 
 }

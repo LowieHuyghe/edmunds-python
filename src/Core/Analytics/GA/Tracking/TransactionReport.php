@@ -11,23 +11,27 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
- * The structure for exception reports
+ * The structure for transaction reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//Exceptions
- * @property string $exceptionDescription
- * @property bool $exceptionFatal
+	//E-Commerce
+ * @property string $transactionId
+ * @property string $transactionAffiliation
+ * @property double $transactionRevenue
+ * @property double $transactionShipping
+ * @property double $transactionTax
+ * @property string $currencyCode
  */
-class ExceptionReport extends BaseReport
+class TransactionReport extends BaseGAReport
 {
 	/**
 	 * Constructor
@@ -36,7 +40,7 @@ class ExceptionReport extends BaseReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'exception';
+		$this->hitType = 'transaction';
 	}
 
 }

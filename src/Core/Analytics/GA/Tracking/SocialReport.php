@@ -11,9 +11,9 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
  * The structure for social reports
@@ -28,7 +28,7 @@ use Core\Bases\Structures\Analytics\BaseReport;
  * @property string $socialAction
  * @property string $socialActionTarget
  */
-class SocialReport extends BaseReport
+class SocialReport extends BaseGAReport
 {
 	/**
 	 * Constructor

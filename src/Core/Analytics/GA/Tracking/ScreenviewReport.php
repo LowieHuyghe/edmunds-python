@@ -11,25 +11,19 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
- * The structure for event reports
+ * The structure for screenview reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
- *
-	//Event Tracking
- * @property string $eventCategory
- * @property string $eventAction
- * @property string $eventLabel
- * @property int $eventValue
  */
-class EventReport extends BaseReport
+class ScreenviewReport extends BaseGAReport
 {
 	/**
 	 * Constructor
@@ -38,7 +32,7 @@ class EventReport extends BaseReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'event';
+		$this->hitType = 'screenview';
 	}
 
 }

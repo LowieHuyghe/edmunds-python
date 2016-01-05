@@ -11,19 +11,23 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
- * The structure for pageview reports
+ * The structure for exception reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+	//Exceptions
+ * @property string $exceptionDescription
+ * @property bool $exceptionFatal
  */
-class PageviewReport extends BaseReport
+class ExceptionReport extends BaseGAReport
 {
 	/**
 	 * Constructor
@@ -32,7 +36,7 @@ class PageviewReport extends BaseReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'pageview';
+		$this->hitType = 'exception';
 	}
 
 }

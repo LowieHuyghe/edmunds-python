@@ -2,7 +2,7 @@
 
 namespace Core\Exceptions;
 
-use Core\Analytics\Logging\ExceptionReport;
+use Core\Analytics\GA\Tracking\ExceptionReport;
 use Core\Analytics\NewRelic;
 use Core\Http\Response;
 use Exception;
