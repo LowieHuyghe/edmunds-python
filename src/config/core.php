@@ -12,8 +12,8 @@ return array
 			'routing.defaultcontroller',
 			'routing.namespace',
 			'routing.loginroute',
-			'analytics.google.version',
-			'analytics.google.trackingid',
+			'analytics.ga.version',
+			'analytics.ga.trackingid',
 		),
 	),
 
