@@ -12,7 +12,7 @@
  */
 
 namespace Core;
-use Core\Analytics\Logging\PageviewReport;
+use Core\Analytics\GA\Tracking\PageviewReport;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
 use Core\Http\Client\Session;
