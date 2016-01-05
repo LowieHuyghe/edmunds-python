@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Bases\Analytics;
+namespace Core\Bases\Analytics\Tracking;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Visitor;

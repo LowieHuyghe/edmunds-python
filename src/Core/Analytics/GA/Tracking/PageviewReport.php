@@ -13,7 +13,7 @@
 
 namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Analytics\BaseGAReport;
+use Core\Bases\Analytics\Tracking\BaseGAReport;
 
 /**
  * The structure for pageview reports
