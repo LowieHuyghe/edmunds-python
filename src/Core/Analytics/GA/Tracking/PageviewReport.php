@@ -11,27 +11,19 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Logging;
+namespace Core\Analytics\GA\Tracking;
 
-use Core\Bases\Structures\Analytics\BaseReport;
+use Core\Bases\Analytics\BaseGAReport;
 
 /**
- * The structure for transaction reports
+ * The structure for pageview reports
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
- *
-	//E-Commerce
- * @property string $transactionId
- * @property string $transactionAffiliation
- * @property double $transactionRevenue
- * @property double $transactionShipping
- * @property double $transactionTax
- * @property string $currencyCode
  */
-class TransactionReport extends BaseReport
+class PageviewReport extends BaseGAReport
 {
 	/**
 	 * Constructor
@@ -40,7 +32,7 @@ class TransactionReport extends BaseReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'transaction';
+		$this->hitType = 'pageview';
 	}
 
 }
