@@ -2,7 +2,7 @@
 
 namespace Core\Exceptions;
 
-use Core\Analytics\GA\Tracking\ExceptionReport;
+use Core\Analytics\Tracking\GA\ExceptionLog;
 use Core\Analytics\NewRelic;
 use Core\Http\Response;
 use Exception;
@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
 
 		NewRelic::getInstance()->noticeError($message, $e);
 
-		// $log = new ExceptionReport();
+		// $log = new ExceptionLog();
 		// $log->exceptionDescription = "'$message' in $file:$line";
 		// $log->exceptionFatal = true;
 		// $log->report();

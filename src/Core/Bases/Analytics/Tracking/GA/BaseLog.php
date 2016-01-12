@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Bases\Analytics\Tracking;
+namespace Core\Bases\Analytics\Tracking\GA;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Visitor;
@@ -21,7 +21,7 @@ use Core\Registry\Queue;
 use Core\Registry\Registry;
 
 /**
- * The structure for Google-Analytics reports
+ * The structure for Google-Analytics logs
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
@@ -121,7 +121,7 @@ use Core\Registry\Registry;
  * @property string $experimentVariant
  *
  */
-class BaseGAReport extends BaseReport
+class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 {
 	/**
 	 * The mapping of the parameters for the call
@@ -315,7 +315,7 @@ class BaseGAReport extends BaseReport
 		$queueTime = round((microtime(true) - $timeReported) * 1000);
 		$data['qt'] = $queueTime;
 
-		BaseReport::send($apiUrl, $header, $data, $timeReported);
+		\Core\Bases\Analytics\Tracking\BaseLog::send($apiUrl, $header, $data, $timeReported);
 	}
 
 	/**

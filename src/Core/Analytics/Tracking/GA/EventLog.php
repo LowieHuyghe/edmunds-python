@@ -11,27 +11,25 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\GA\Tracking;
+namespace Core\Analytics\Tracking\GA;
 
-use Core\Bases\Analytics\Tracking\BaseGAReport;
+use Core\Bases\Analytics\Tracking\GA\BaseLog;
 
 /**
- * The structure for transaction reports
+ * The structure for event reports
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//E-Commerce
- * @property string $transactionId
- * @property string $transactionAffiliation
- * @property double $transactionRevenue
- * @property double $transactionShipping
- * @property double $transactionTax
- * @property string $currencyCode
+	//Event Tracking
+ * @property string $eventCategory
+ * @property string $eventAction
+ * @property string $eventLabel
+ * @property int $eventValue
  */
-class TransactionReport extends BaseGAReport
+class EventLog extends BaseLog
 {
 	/**
 	 * Constructor
@@ -40,7 +38,7 @@ class TransactionReport extends BaseGAReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'transaction';
+		$this->hitType = 'event';
 	}
 
 }
