@@ -12,7 +12,8 @@
  */
 
 namespace Core;
-use Core\Analytics\Tracking\GA\PageviewLog;
+use Core\Analytics\Tracking\Piwik\PageviewLog;
+use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
 use Core\Http\Client\Session;
@@ -118,6 +119,8 @@ class Application extends \Laravel\Lumen\Application
 		}
 
 		$this->logPageView($response, isset($exception) ? $exception : null);
+		// and send them all
+		BaseLog::flushReports();
 
 		return $response;
 	}
@@ -176,7 +179,7 @@ class Application extends \Laravel\Lumen\Application
 			$matches = array();
 			if (preg_match($regex, $response->getContent(), $matches))
 			{
-				$pageview->documentTitle = trim($matches[1]);
+				$pageview->actionName = trim($matches[1]);
 			}
 
 			$pageview->report();

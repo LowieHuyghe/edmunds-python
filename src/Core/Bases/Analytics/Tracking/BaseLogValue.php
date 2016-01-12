@@ -37,6 +37,12 @@ class BaseLogValue extends BaseStructure
 	protected $parameterMapping = array();
 
 	/**
+	 * Enable or disable timestamps by default
+	 * @var boolean
+	 */
+	public $timestamps = false;
+
+	/**
 	 * Get the attributes mapped
 	 * @return array
 	 */
