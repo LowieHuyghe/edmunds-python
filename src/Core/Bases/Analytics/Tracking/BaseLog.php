@@ -21,21 +21,15 @@ use Core\Registry\Queue;
 use Core\Registry\Registry;
 
 /**
- * The structure for reports
+ * The structure for logs
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class BaseReport extends BaseStructure
+class BaseLog extends BaseLogValue
 {
-	/**
-	 * The mapping of the parameters for the call
-	 * @var array
-	 */
-	protected $parameterMapping = array();
-
 	/**
 	 * The api-url
 	 * @var string
@@ -59,48 +53,8 @@ class BaseReport extends BaseStructure
 //			throw new \Exception('This report has errors and can not be sent: ' . json_encode($this->getErrors()->getMessageBag()->toArray()));
 //		}
 
-		//Set up all the variables and the right values
-		$data = array();
-		foreach ($this->attributes as $parameter => $value)
-		{
-			if (!isset($this->parameterMapping[$parameter]))
-			{
-				//throw new \Exception("There is no mapping for the parameter: $parameter");
-				continue;
-			}
-
-			//Bool needs to be 1/0
-			if (is_bool($value))
-			{
-				$value = $value ? 1 : 0;
-			}
-
-			if (is_array($value))
-			{
-				foreach ($value as $customValue)
-				{
-					//Some parameter-names need to be filled in
-					$parameterName = $this->parameterMapping[$parameter];
-
-					for ($i=0 ; $i < count($customValue)-1 ; ++$i)
-					{
-						$parameterName = str_replace('{' . $i . '}', $customValue[$i], $parameterName);
-					}
-					$customValue = last($customValue);
-
-					//Add query-item
-					$data[$parameterName] = $customValue;
-				}
-			}
-			else
-			{
-				//Some parameter-names need to be filled in
-				$parameterName = $this->parameterMapping[$parameter];
-
-				//Add query-item
-				$data[$parameterName] = $value;
-			}
-		}
+		// fetch data
+		$data = $this->getAttributesMapped();
 
 		//Setup header
 		$header = array('Content-type: application/x-www-form-urlencoded');

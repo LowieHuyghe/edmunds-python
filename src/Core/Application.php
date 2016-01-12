@@ -12,7 +12,7 @@
  */
 
 namespace Core;
-use Core\Analytics\GA\Tracking\PageviewReport;
+use Core\Analytics\Tracking\GA\PageviewLog;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
 use Core\Http\Client\Session;
@@ -169,7 +169,7 @@ class Application extends \Laravel\Lumen\Application
 	{
 		if (!app()->runningInConsole())
 		{
-			$pageview = new PageviewReport();
+			$pageview = new PageviewLog();
 
 			//Fetch title
 			$regex = "/<title>((.|\n)*?)<\/title>/i";
