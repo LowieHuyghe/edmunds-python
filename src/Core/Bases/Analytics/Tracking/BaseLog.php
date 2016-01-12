@@ -30,17 +30,8 @@ use Core\Registry\Registry;
  */
 class BaseLog extends BaseLogValue
 {
-	/**
-	 * The api-url
-	 * @var string
-	 */
+	/** @var string The api-url*/
 	protected static $apiUrl;
-
-	/**
-	 * Enable or disable timestamps by default
-	 * @var boolean
-	 */
-	public $timestamps = false;
 
 	/**
 	 * Report the log
@@ -48,42 +39,25 @@ class BaseLog extends BaseLogValue
 	 */
 	public function report()
 	{
-//		if ($this->hasErrors())
-//		{
-//			throw new \Exception('This report has errors and can not be sent: ' . json_encode($this->getErrors()->getMessageBag()->toArray()));
-//		}
-
-		// fetch data
-		$data = $this->getAttributesMapped();
-
-		//Setup header
-		$header = array('Content-type: application/x-www-form-urlencoded');
-		if ($this->userAgentOverride)
-		{
-			$header[] = 'User-Agent: ' . $this->userAgentOverride;
-		}
-
-		Registry::queue()->dispatch(array(get_called_class(), 'send'), array(
-			$header, $data, microtime(true),
-		), Queue::QUEUE_LOG);
+		//
 	}
 
 	/**
 	 * Send the data
-	 * @param string $apiUrl
 	 * @param array $header
+	 * @param int $count
 	 * @param array $data
-	 * @param int $timeReported
+	 * @param double $timeReported
 	 */
-	public static function send($apiUrl, $header, $data, $timeReported)
+	public static function send($header, $count, $data, $timeReported)
 	{
 		//Send request
 		$ch = curl_init();
 
 		curl_setopt($ch, CURLOPT_URL, static::$apiUrl);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-		curl_setopt($ch, CURLOPT_POST, count($data));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		curl_setopt($ch, CURLOPT_POST, $count);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
 

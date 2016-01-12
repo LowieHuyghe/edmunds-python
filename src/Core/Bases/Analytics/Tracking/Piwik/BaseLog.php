@@ -177,11 +177,11 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 		'otherTrackBots' => 'bots',
 	);
 
-	/**
-	 * The api-url
-	 * @var string
-	 */
+	/** @var string The api-url */
 	protected static $apiUrl = 'https://stats.lowiehuyghe.com/piwik.php';
+
+	/** @var array All the api requests bundled */
+	protected static $requests = array();
 
 	/**
 	 * Constructor
@@ -192,7 +192,7 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 
 		//Set the version and tracking info
 		$this->version = config('analytics.piwik.version');
-		$this->trackingId = config('analytics.piwik.siteid');
+		$this->siteId = config('analytics.piwik.siteid');
 		$this->cacheBuster = rand(0, 2000000000);
 		$this->record = true;
 
@@ -200,28 +200,28 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 		if ($request = Request::getInstance())
 		{
 			$visitor = Visitor::getInstance();
+			$visitorId = substr(str_replace('-', '', $visitor->id), 0, 16); // visitor id must only be 16 long and only hexdec chars
 
 			//Assign default values
-			$this->visitorIdUnique = $visitor->id;
+			$this->visitorIdUnique = $visitorId;
 
 			$this->url = $request->fullUrl;
 			$this->actionCharset = "UTF-8";
 
 			$this->otherAuthIp = $request->ip;
-			if ($authToken = config('analytics.piwik.token')) $this->otherAuthToken = $authToken;
 
 			$this->userUserAgent = $visitor->context->userAgent;
 			if ($visitor->loggedIn) $this->userId = $visitor->user->id;
 			$this->userAcceptLanguage = $visitor->context->acceptLanguage;
-			$this->userVisitorId = $visitor->id;
-			$this->userReferrer = $request->referrer;
+			$this->userVisitorId = $visitorId;
+			if ($request->referrer) $this->userReferrer = $request->referrer;
 			$time = new DateTime();
 			$this->userTimeLocalHour = $time->hour;
 			$this->userTimeLocalMinute = $time->minute;
 			$this->userTimeLocalSecond = $time->second;
 		}
 
-		$this->userCustomVariablesVisitScope = array_merge($this->userCustomVariablesVisitScope ?: array(), array(array('Environment', config('app.env', false))));
+		//$this->userCustomVariablesVisitScope = array_merge($this->userCustomVariablesVisitScope ?: array(), array(array('Environment', config('app.env', false))));
 	}
 
 	/**
@@ -230,10 +230,31 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 	 */
 	public function report()
 	{
+		// add report time
 		$time = new DateTime(null, 'UTC');
 		$this->otherAuthTime = $time->timestamp;
 
-		\Core\Bases\Analytics\Tracking\BaseLog::report();
+		// fetch data
+		self::$requests[] = '?' . http_build_query($this->getAttributesMapped());
+	}
+
+	/**
+	 * Flush all the saved up reports
+	 */
+	public static function flushReports()
+	{
+		//Setup header
+		$header = array('Content-type: application/x-www-form-urlencoded');
+
+		// fetch data
+		$data = array(
+			'requests' => self::$requests,
+			'token_auth' => config('analytics.piwik.token'),
+		);
+
+		Registry::queue()->dispatch(array(get_called_class(), 'send'), array(
+			$header, count($data), json_encode($data), microtime(true),
+		), Queue::QUEUE_LOG);
 	}
 
 	/**
