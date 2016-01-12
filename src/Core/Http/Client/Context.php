@@ -44,6 +44,7 @@ use Core\Http\Request;
  * @property string $languageFallback
  * @property string $locale
  * @property string $localeFallback
+ * @property string $acceptLanguage
  */
 class Context extends BaseStructure
 {
@@ -336,7 +337,7 @@ class Context extends BaseStructure
 	 */
 	private function getMostAcceptedLanguage($index = 0)
 	{
-		if ($browserLanguage = Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE'))
+		if ($browserLanguage = $this->acceptLanguage)
 		{
 			// break up string into pieces (languages and q factors)
 		    preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $browserLanguage, $lang_parse);
@@ -362,5 +363,14 @@ class Context extends BaseStructure
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the http accept language
+	 * @return string
+	 */
+	protected function getAcceptLanguage()
+	{
+		return Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE');
 	}
 }

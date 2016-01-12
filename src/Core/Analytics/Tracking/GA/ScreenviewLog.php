@@ -11,23 +11,19 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\GA\Tracking;
+namespace Core\Analytics\Tracking\GA;
 
-use Core\Bases\Analytics\Tracking\BaseGAReport;
+use Core\Bases\Analytics\Tracking\GA\BaseLog;
 
 /**
- * The structure for exception reports
+ * The structure for screenview reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
- *
-	//Exceptions
- * @property string $exceptionDescription
- * @property bool $exceptionFatal
  */
-class ExceptionReport extends BaseGAReport
+class ScreenviewLog extends BaseLog
 {
 	/**
 	 * Constructor
@@ -36,7 +32,7 @@ class ExceptionReport extends BaseGAReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'exception';
+		$this->hitType = 'screenview';
 	}
 
 }

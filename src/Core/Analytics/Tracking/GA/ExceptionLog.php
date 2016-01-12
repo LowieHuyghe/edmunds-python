@@ -11,28 +11,23 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\GA\Tracking;
+namespace Core\Analytics\Tracking\GA;
 
-use Core\Bases\Analytics\Tracking\BaseGAReport;
+use Core\Bases\Analytics\Tracking\GA\BaseLog;
 
 /**
- * The structure for item reports
+ * The structure for exception reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//E-Commerce
- * @property string $transactionId
- * @property string $itemName
- * @property double $itemPrice
- * @property int $itemQuantity
- * @property string $itemCode
- * @property string $itemCategory
- * @property string $currencyCode
+	//Exceptions
+ * @property string $exceptionDescription
+ * @property bool $exceptionFatal
  */
-class ItemReport extends BaseGAReport
+class ExceptionLog extends BaseLog
 {
 	/**
 	 * Constructor
@@ -41,7 +36,7 @@ class ItemReport extends BaseGAReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'item';
+		$this->hitType = 'exception';
 	}
 
 }

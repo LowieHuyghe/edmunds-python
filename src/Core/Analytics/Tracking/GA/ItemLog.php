@@ -11,24 +11,28 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\GA\Tracking;
+namespace Core\Analytics\Tracking\GA;
 
-use Core\Bases\Analytics\Tracking\BaseGAReport;
+use Core\Bases\Analytics\Tracking\GA\BaseLog;
 
 /**
- * The structure for social reports
+ * The structure for item reports
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	//Social Interactions
- * @property string $socialNetwork
- * @property string $socialAction
- * @property string $socialActionTarget
+	//E-Commerce
+ * @property string $transactionId
+ * @property string $itemName
+ * @property double $itemPrice
+ * @property int $itemQuantity
+ * @property string $itemCode
+ * @property string $itemCategory
+ * @property string $currencyCode
  */
-class SocialReport extends BaseGAReport
+class ItemLog extends BaseLog
 {
 	/**
 	 * Constructor
@@ -37,7 +41,7 @@ class SocialReport extends BaseGAReport
 	{
 		parent::__construct();
 
-		$this->hitType = 'social';
+		$this->hitType = 'item';
 	}
 
 }
