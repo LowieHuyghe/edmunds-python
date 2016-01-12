@@ -303,19 +303,37 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 	}
 
 	/**
+	 * Report the log
+	 * @throws \Exception
+	 */
+	public function report()
+	{
+		// fetch data
+		$data = $this->getAttributesMapped();
+
+		//Setup header
+		$header = array('Content-type: application/x-www-form-urlencoded');
+		if ($this->userAgentOverride) $header[] = 'User-Agent: ' . $this->userAgentOverride;
+
+		Registry::queue()->dispatch(array(get_called_class(), 'send'), array(
+			$header, count($data), $data, microtime(true),
+		), Queue::QUEUE_LOG);
+	}
+
+	/**
 	 * Send the data
-	 * @param string $apiUrl
 	 * @param array $header
+	 * @param int $count
 	 * @param array $data
 	 * @param int $timeReported
 	 */
-	public static function send($apiUrl, $header, $data, $timeReported)
+	public static function send($header, $count, $data, $timeReported)
 	{
 		//Add queue time
 		$queueTime = round((microtime(true) - $timeReported) * 1000);
 		$data['qt'] = $queueTime;
 
-		\Core\Bases\Analytics\Tracking\BaseLog::send($apiUrl, $header, $data, $timeReported);
+		\Core\Bases\Analytics\Tracking\BaseLog::send($header, count($data), http_build_query($data), $timeReported);
 	}
 
 	/**
