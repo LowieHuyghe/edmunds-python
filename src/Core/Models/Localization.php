@@ -13,6 +13,7 @@
 
 namespace Core\Models;
 use Core\Bases\Models\BaseModel;
+use Core\Http\Client\Visitor;
 use Core\Localization\DateTime;
 use Core\Models\Location;
 use Core\Models\User;
@@ -62,24 +63,25 @@ class Localization extends BaseModel
 
 	/**
 	 * Initialize the properties
-	 * @param  string $locale
 	 * @param  string $timezone
+	 * @param  string $locale
+	 * @param  string $fallback
 	 */
-	public function initialize($locale, $timezone)
+	public function initialize($timezone, $locale, $fallback = null)
 	{
 		//Check locale
-		if ($locale //try given locale
-			|| ($locale = config('app.localization.locale.default')) //app default
-			|| ($locale = config('core.localization.locale.default'))) //core default
+		$acceptedLocales = config('app.localization.locale.accepted', array());
+		if ($locale && (in_array($locale, $acceptedLocales) || in_array(locale_get_primary_language($locale), $acceptedLocales)))
 		{
-			// try glueing the countrycode to the back if no country is present
-			if (strlen($locale) == 2
-				&& ($countryCode = $visitor->location->country_code))
-			{
-				$locale .= "_$countryCode";
-			}
-
 			$this->locale = $locale;
+		}
+		elseif ($fallback && (in_array($fallback, $acceptedLocales) || in_array(locale_get_primary_language($fallback), $acceptedLocales)))
+		{
+			$this->locale = $fallback;
+		}
+		else
+		{
+			$this->locale = config('app.localization.locale.default') ?: config('core.localization.locale.default');
 		}
 
 		//Check currency
