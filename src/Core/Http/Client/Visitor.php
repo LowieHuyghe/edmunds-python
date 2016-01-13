@@ -210,7 +210,7 @@ class Visitor extends BaseStructure
 				else
 				{
 					$localization = new Localization();
-					$localization->initialize($this->context->locale, $this->location->timezone);
+					$localization->initialize($this->location->timezone, $this->context->locale, $this->context->localeFallback);
 					$localization->save();
 				}
 			}

@@ -357,7 +357,7 @@ class Context extends BaseStructure
 
 				if (count($langs) > $index)
 				{
-			        return strtolower(array_keys($langs)[$index]);
+			        return array_keys($langs)[$index];
 				}
 		    }
 		}
@@ -369,7 +369,7 @@ class Context extends BaseStructure
 	 * Get the http accept language
 	 * @return string
 	 */
-	protected function getAcceptLanguage()
+	protected function getAcceptLanguageAttribute()
 	{
 		return Request::getInstance()->getServer('HTTP_ACCEPT_LANGUAGE');
 	}
