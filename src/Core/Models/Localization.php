@@ -70,54 +70,39 @@ class Localization extends BaseModel
 	 */
 	public function initialize($timezone, $countryCode, $locale, $fallback = null)
 	{
+		// check locale
 		$locale = $locale ? self::normalizeLocale($locale) : null;
 		$fallback = $fallback ? self::normalizeLocale($fallback) : null;
 
-		//LOCALE
-		// check it
-		if ($locale && $this->getAcceptedLocale($locale)) // given locale
+		if (($locale && $this->getAcceptedLocale($locale)) // given locale
+			|| (($locale = $fallback) && $this->getAcceptedLocale($fallback)) // given fallback
+			|| ($locale = $this->fallback))
 		{
-			$locale = $locale;
-		}
-		elseif ($fallback && $this->getAcceptedLocale($fallback)) // given fallback
-		{
-			$locale = $fallback;
-		}
-		else // fallback
-		{
-			$locale = $this->fallback;
+			$locale = Locale::parseLocale($locale);
+
+			// add currency when possible
+			if ($countryCode && (!isset($locale['region']) || !$locale['region']))
+			{
+				$locale['region'] = strtoupper($countryCode);
+			}
+
+			$this->attributes['locale'] = Locale::composeLocale($locale);
 		}
 
-		// split it, add countryCode, parse it
-		$locale = Locale::parseLocale($locale);
-		if ($countryCode && (!isset($locale['region']) || !$locale['region']))
-		{
-			$locale['region'] = strtoupper($countryCode);
-		}
-		$this->attributes['locale'] = Locale::composeLocale($locale);
 
-
-		// CURRENCY
-		// check it
+		// check currency
 		$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
 		$currency = self::normalizeCurrency($formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE));
 
-		if ($this->getAcceptedCurrency($currency))
+		if ($this->getAcceptedCurrency($currency)
+			|| ($currency = self::normalizeCurrency(config('app.localization.currency.default')))
+			|| ($currency = self::normalizeCurrency(config('core.localization.currency.default'))))
 		{
-			$currency = $currency;
+			$this->attributes['currency'] = $currency;
 		}
-		else
-		{
-			$currency = self::normalizeCurrency(
-				config('app.localization.currency.default') // app default
-				?: config('core.localization.currency.default') // core default
-			);
-		}
-		$this->attributes['currency'] = $currency;
 
 
-		//TIMEZONE
-		// check it
+		// check timezone
 		if ($timezone // given timezone
 			|| ($timezone = config('app.localization.timezone.default')) // app default
 			|| ($timezone = config('core.localization.timezone.default'))) // core default
