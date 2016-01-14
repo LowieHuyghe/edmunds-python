@@ -19,6 +19,7 @@ use Core\Models\Location;
 use Core\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use NumberFormatter;
+use Locale;
 
 /**
  * The helper responsible for localization
@@ -30,13 +31,12 @@ use NumberFormatter;
  *
  * @property User $user
  * @property string $locale The default locale
- * @property string $language The default language
- * @property bool $rtl Is language rtl
- * @property string $fallback The fallback locale
- * @property string $fallbackLanguage The fallback language
- * @property bool $fallbackRtl Is fallback rtl
+ * @property-read string $fallback The fallback locale
+ * @property-read bool $rtl Is language rtl
+ * @property-read bool $fallbackRtl Is fallback rtl
  * @property string $currency The currency
  * @property string $timezone The timezone
+ * @readonl
  */
 class Localization extends BaseModel
 {
@@ -64,61 +64,89 @@ class Localization extends BaseModel
 	/**
 	 * Initialize the properties
 	 * @param  string $timezone
+	 * @param  string $countryCode
 	 * @param  string $locale
 	 * @param  string $fallback
 	 */
-	public function initialize($timezone, $locale, $fallback = null)
+	public function initialize($timezone, $countryCode, $locale, $fallback = null)
 	{
-		//Check locale
-		$acceptedLocales = config('app.localization.locale.accepted', array());
-		if ($locale && (in_array($locale, $acceptedLocales) || in_array(locale_get_primary_language($locale), $acceptedLocales)))
+		$locale = $locale ? self::normalizeLocale($locale) : null;
+		$fallback = $fallback ? self::normalizeLocale($fallback) : null;
+
+		//LOCALE
+		// check it
+		if ($locale && $this->getAcceptedLocale($locale)) // given locale
 		{
-			$this->locale = $locale;
+			$locale = $locale;
 		}
-		elseif ($fallback && (in_array($fallback, $acceptedLocales) || in_array(locale_get_primary_language($fallback), $acceptedLocales)))
+		elseif ($fallback && $this->getAcceptedLocale($fallback)) // given fallback
 		{
-			$this->locale = $fallback;
+			$locale = $fallback;
+		}
+		else // fallback
+		{
+			$locale = $this->fallback;
+		}
+
+		// split it, add countryCode, parse it
+		$locale = Locale::parseLocale($locale);
+		if ($countryCode && (!isset($locale['region']) || !$locale['region']))
+		{
+			$locale['region'] = strtoupper($countryCode);
+		}
+		$this->attributes['locale'] = Locale::composeLocale($locale);
+
+
+		// CURRENCY
+		// check it
+		$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
+		$currency = self::normalizeCurrency($formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE));
+
+		if ($this->getAcceptedCurrency($currency))
+		{
+			$currency = $currency;
 		}
 		else
 		{
-			$this->locale = config('app.localization.locale.default') ?: config('core.localization.locale.default');
+			$currency = self::normalizeCurrency(
+				config('app.localization.currency.default') // app default
+				?: config('core.localization.currency.default') // core default
+			);
 		}
+		$this->attributes['currency'] = $currency;
 
-		//Check currency
-		$formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
 
-		if (($currency = $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE))
-			|| ($currency = config('app.localization.currency.default')) //app default
-			|| ($currency = config('core.localization.currency.default'))) //core default
-		{
-			$this->currency = $currency;
-		}
-
-		//Check timezone
-		if ($timezone //fetch from location
-			|| ($timezone = config('app.localization.timezone.default')) //app default
-			|| ($timezone = config('core.localization.timezone.default'))) //core default
+		//TIMEZONE
+		// check it
+		if ($timezone // given timezone
+			|| ($timezone = config('app.localization.timezone.default')) // app default
+			|| ($timezone = config('core.localization.timezone.default'))) // core default
 		{
 			$this->timezone = $timezone;
 		}
 	}
 
 	/**
-	 * Get the default language
+	 * Get the default locale
 	 * @return string
 	 */
-	protected function getLanguageAttribute()
+	protected function getLocaleAttribute()
 	{
-		return locale_get_primary_language($this->locale);
+		return $this->getAcceptedLocale($this->attributes['locale']);
 	}
 
 	/**
-	 * Check if language is right to left
-	 * @return bool
+	 * Set the default locale
+	 * @property string $locale
 	 */
-	protected function getRtlAttribute()
+	protected function setLocaleAttribute($locale)
 	{
-		return $this->isRtl($this->language);
+		$locale = self::normalizeLocale($locale);
+
+		if ($this->getAcceptedLocale($locale))
+		{
+			$this->attributes['locale'] = $locale;
+		}
 	}
 
 	/**
@@ -127,19 +155,19 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackAttribute()
 	{
-		return (
+		return self::normalizeLocale(
 			config('app.localization.locale.fallback')
 			?: config('core.localization.locale.fallback')
 		);
 	}
 
 	/**
-	 * Get the fallback language
-	 * @return string
+	 * Check if locale is right to left
+	 * @return bool
 	 */
-	protected function getFallbackLanguageAttribute()
+	protected function getRtlAttribute()
 	{
-		return locale_get_primary_language($this->fallback);
+		return $this->isRtl($this->locale);
 	}
 
 	/**
@@ -148,20 +176,101 @@ class Localization extends BaseModel
 	 */
 	protected function getFallbackRtlAttribute()
 	{
-		return $this->isRtl($this->fallbackLanguage);
+		return $this->isRtl($this->fallback);
 	}
 
 	/**
-	 * Check if language is rtl
-	 * @param  string  $language
+	 * Check if locale is rtl
+	 * @param  string  $locale
 	 * @return bool
 	 */
-	protected function isRtl($language)
+	protected function isRtl($locale)
 	{
 		return (
-			config('core.localization.language.direction.languages.' . $language) == 'rtl'
-			|| config('core.localization.language.direction.default') == 'rtl'
+			config('core.localization.locale.direction.languages.' . Locale::getPrimaryLanguage($locale)) == 'rtl'
+			|| config('core.localization.locale.direction.default') == 'rtl'
 		);
+	}
+
+	/**
+	 * Get the default currency
+	 * @return string
+	 */
+	protected function getCurrencyAttribute()
+	{
+		return $this->attributes['currency'];
+	}
+
+	/**
+	 * Set the default currency
+	 * @property string $currency
+	 */
+	protected function setCurrencyAttribute($currency)
+	{
+		$currency = self::normalizeCurrency($currency);
+
+		if ($this->getAcceptedCurrency($currency))
+		{
+			$this->attributes['currency'] = $currency;
+		}
+	}
+
+	/**
+	 * Get the accepted locale from a locale
+	 * @param  string $locale
+	 * @return string
+	 */
+	protected function getAcceptedLocale($locale)
+	{
+		$acceptedLocales = config('app.localization.locale.accepted', array());
+
+		if (in_array($locale, $acceptedLocales))
+		{
+			return $locale;
+		}
+
+		$locale = Locale::getPrimaryLanguage($locale);
+		if (in_array($locale, $acceptedLocales))
+		{
+			return $locale;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get the accepted currency
+	 * @param  string $currency
+	 * @return string
+	 */
+	protected function getAcceptedCurrency($currency)
+	{
+		if (in_array($currency, config('app.localization.currency.accepted', array())))
+		{
+			return $currency;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Normalize a locale
+	 * @param  string $locale
+	 * @return string
+	 */
+	public static function normalizeLocale($locale)
+	{
+		return Locale::composeLocale(Locale::parseLocale($locale));
+	}
+
+	/**
+	 * Normalize a currency
+	 * @param  string $currency
+	 * @return string
+	 */
+	public static function normalizeCurrency($currency)
+	{
+		return strtoupper($currency);
 	}
 
 	/**
