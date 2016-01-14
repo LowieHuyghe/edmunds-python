@@ -44,8 +44,6 @@ return array
 		'locale' => array(
 			'default' => 'en',
 			'fallback' => 'en',
-		),
-		'language' => array(
 			'direction' => array(
 				'default' => 'ltr',
 				'languages' => array(

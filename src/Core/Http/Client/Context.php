@@ -14,6 +14,7 @@
 namespace Core\Http\Client;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
+use Core\Models\Localization;
 
 /**
  * The helper for the browser
@@ -357,7 +358,7 @@ class Context extends BaseStructure
 
 				if (count($langs) > $index)
 				{
-			        return array_keys($langs)[$index];
+			        return Localization::normalizeLocale(array_keys($langs)[$index]);
 				}
 		    }
 		}
