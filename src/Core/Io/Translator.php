@@ -115,23 +115,21 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 		{
 			$localization = Visitor::getInstance()->localization;
 
-			$this->locales = array(
+			$this->locales = array_unique(array_filter(array(
 				$localization->locale,
 				$localization->fallback,
-			);
+			)));
 		}
+		$locales = $this->locales;
 
 		//Add one custom locale if necessary
 		if ($locale)
 		{
-			$locales = $this->locales;
 			$locales[] = $locale;
-			return array_unique(array_filter($locales));
+			$locales = array_unique(array_filter($locales));
 		}
-		else
-		{
-			return $this->locales;
-		}
+
+		return $locales;
 	}
 
 	/**

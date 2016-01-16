@@ -163,7 +163,7 @@ class BaseModel extends Model
 	 */
 	public function save(array $options = [])
 	{
-		if ($this->hasErrors())
+		if ((!isset($options['validate']) || $options['validate']) && $this->hasErrors())
 		{
 			return false;
 		}

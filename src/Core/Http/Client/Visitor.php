@@ -171,7 +171,7 @@ class Visitor extends BaseStructure
 			// update method for session and cookies
 			Localization::saving(function ($localization) use ($idKey)
 			{
-				$localizationJson = $localization->toJson();
+				$localizationJson = json_encode($localization->getAttributes());
 
 				Request::getInstance()->session->set($idKey, $localizationJson);
 				Response::getInstance()->cookie($idKey, $localizationJson);
@@ -206,13 +206,37 @@ class Visitor extends BaseStructure
 				{
 					$localization = Localization::recover(json_decode($localizationJson, true));
 				}
-				// make new and save
-				else
+			}
+
+			// check for error
+			if (isset($localization) && $localization)
+			{
+				$check = array('locale', 'currency', 'timezone');
+				$newLocalization = null;
+
+				foreach ($check as $attribute)
 				{
-					$localization = new Localization();
-					$localization->initialize($this->location->timezone, $this->location->country_code, $this->context->locale, $this->context->localeFallback);
+					if (is_null($localization->$attribute))
+					{
+						if (!$newLocalization) // fetch new if not already
+						{
+							$newLocalization = $this->getNewLocalization();
+						}
+						// fill in
+						$localization->$attribute = $newLocalization->$attribute;
+					}
+				}
+				// changes were made so save it
+				if ($newLocalization)
+				{
 					$localization->save();
 				}
+			}
+			// make new and save
+			else
+			{
+				$localization = $this->getNewLocalization();
+				$localization->save();
 			}
 
 			// and set to visitor
@@ -220,6 +244,17 @@ class Visitor extends BaseStructure
 		}
 
 		return $this->visitorLocalization;
+	}
+
+	/**
+	 * Fetch a new initialized instance of Localization
+	 * @return Localization
+	 */
+	protected function getNewLocalization()
+	{
+		$localization = new Localization();
+		$localization->initialize($this->location->timezone, $this->location->country_code, $this->context->locale, $this->context->localeFallback);
+		return $localization;
 	}
 
 	/**
@@ -235,7 +270,7 @@ class Visitor extends BaseStructure
 			// update method for session
 			Location::saving(function ($location) use ($idKey)
 			{
-				$locationJson = $location->toJson();
+				$locationJson = json_encode($location->getAttributes());
 
 				Request::getInstance()->session->set($idKey, $locationJson);
 			});
@@ -265,8 +300,7 @@ class Visitor extends BaseStructure
 				// make new and save
 				else
 				{
-					$location = new Location();
-					$location->initialize($this->request->ip);
+					$location = $this->getNewLocation();
 					$location->save();
 				}
 			}
@@ -276,6 +310,17 @@ class Visitor extends BaseStructure
 		}
 
 		return $this->visitorLocation;
+	}
+
+	/**
+	 * Fetch a new initialized instance of Location
+	 * @return Location
+	 */
+	protected function getNewLocation()
+	{
+		$location = new Location();
+		$location->initialize($this->request->ip);
+		return $location;
 	}
 
 }
