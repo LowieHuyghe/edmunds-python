@@ -223,7 +223,7 @@ class Visitor extends BaseStructure
 							$newLocalization = $this->getNewLocalization();
 						}
 						// fill in
-						$localization->$attribute = $newLocalization->$attribute;
+						$localization->$attribute = $newLocalization->getAttributes()[$attribute];
 					}
 				}
 				// changes were made so save it
