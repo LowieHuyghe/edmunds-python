@@ -412,6 +412,8 @@ class Validator extends \Illuminate\Validation\Validator
 		// generate messages
 		if (!$this->messages)
 		{
+			$this->messages = new MessageBag;
+
 			foreach ($this->failedRules as $attribute => $rules)
 			{
 				foreach ($rules as $rule => $parameters)
