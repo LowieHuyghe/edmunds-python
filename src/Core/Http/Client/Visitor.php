@@ -179,39 +179,23 @@ class Visitor extends BaseStructure
 				if (!$localization->user) return false;
 			});
 
-
 			// from user
 			if ($user = $this->user)
 			{
 				$localization = $user->localization;
 			}
+			// recover from session or cookie
 			else
 			{
-				// from session
-				$localizationJson = $this->request->session->get($idKey);
-				if (!$localizationJson)
-				{
-					// from cookie
-					$localizationJson = $this->request->getCookie($idKey);
-					if ($localizationJson)
-					{
-						$this->request->session->set($idKey, $localizationJson);
-					}
-				}
-				elseif (!$this->request->getCookie($idKey))
-				{
-					$this->response->cookie($idKey, $localizationJson);
-				}
-
-				// recover
-				if ($localizationJson)
+				if (($localizationJson = $this->request->session->get($idKey))
+					|| ($localizationJson = $this->request->getCookie($idKey)))
 				{
 					$localization = Localization::recover(json_decode($localizationJson, true));
 				}
 			}
 
 			// check for error
-			if (isset($localization) && $localization)
+			if (isset($localization))
 			{
 				$check = array('locale', 'currency', 'timezone');
 				$newLocalization = null;
@@ -220,17 +204,22 @@ class Visitor extends BaseStructure
 				{
 					if (is_null($localization->$attribute))
 					{
-						if (!$newLocalization) // fetch new if not already
-						{
-							$newLocalization = $this->getNewLocalization();
-						}
+						if (!$newLocalization) $newLocalization = $this->getNewLocalization();
+
 						// fill in
 						$localization->$attribute = $newLocalization->getAttributes()[$attribute];
 					}
 				}
+
 				// changes were made so save it
 				if ($newLocalization)
 				{
+					$localization->save();
+				}
+				// if not in session or cookie, save it
+				elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
+				{
+					$localization->user()->detach();
 					$localization->save();
 				}
 			}
@@ -283,30 +272,21 @@ class Visitor extends BaseStructure
 			if ($user = $this->user)
 			{
 				$location = $user->location;
-
-				// check if needs to update
-				if ($location->ip != $this->request->ip)
-				{
-					$location->initialize($this->request->ip);
-					$location->save();
-				}
 			}
 			else
 			{
-				// from session
-				$locationJson = $this->request->session->get($idKey);
-
-				// recover
-				if ($locationJson)
+				// recover from session
+				if (($locationJson = $this->request->session->get($idKey)))
 				{
 					$location = Location::recover(json_decode($locationJson, true));
 				}
-				// make new and save
-				else
-				{
-					$location = $this->getNewLocation();
-					$location->save();
-				}
+			}
+
+			// no location or ip not matching
+			if (!isset($location) || $location->ip != $this->request->ip)
+			{
+				$location = $this->getNewLocation();
+				$location->save();
 			}
 
 			// and set to visitor
