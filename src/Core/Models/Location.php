@@ -125,7 +125,6 @@ class Location extends BaseModel
 		}
 		catch(\InvalidArgumentException $e)
 		{
-			Registry::pm()->error('GeoIP Error!', 'There is no city-geo-db.');
 			return false;
 		}
 	}
