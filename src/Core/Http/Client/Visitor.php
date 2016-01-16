@@ -175,6 +175,8 @@ class Visitor extends BaseStructure
 
 				Request::getInstance()->session->set($idKey, $localizationJson);
 				Response::getInstance()->cookie($idKey, $localizationJson);
+
+				if (!$localization->user) return false;
 			});
 
 
@@ -273,6 +275,8 @@ class Visitor extends BaseStructure
 				$locationJson = json_encode($location->getAttributes());
 
 				Request::getInstance()->session->set($idKey, $locationJson);
+
+				if (!$location->user) return false;
 			});
 
 			// from user
