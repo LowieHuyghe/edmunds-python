@@ -25,6 +25,7 @@ use Illuminate\Support\Str;
  */
 class Validator extends \Illuminate\Validation\Validator
 {
+
 	/**
 	 * Get the validation message for an attribute and rule.
 	 * @param string $attribute
@@ -373,4 +374,122 @@ class Validator extends \Illuminate\Validation\Validator
 	{
 		return $this->replaceBefore($message, $attribute, $rule, $parameters);
 	}
+
+
+	/** Following code makes sure no messages are translated when not necessary */
+
+
+
+	/**
+	 * The failed validation rules.
+	 * @var array
+	 */
+	protected $failedRules;
+
+	/**
+	 * Add a failed rule and error message to the collection.
+	 * @param  string  $attribute
+	 * @param  string  $rule
+	 * @param  array   $parameters
+	 * @return void
+	 */
+	protected function addFailure($attribute, $rule, $parameters)
+	{
+		$this->failedRules[$attribute][$rule] = $parameters;
+	}
+
+	/**
+	 * Get the message container for the validator.
+	 *
+	 * @return \Illuminate\Support\MessageBag
+	 */
+	public function messages()
+	{
+		if (!isset($this->failedRules))
+		{
+			$this->passes();
+		}
+		// generate messages
+		if (!$this->messages)
+		{
+			foreach ($this->failedRules as $attribute => $rules)
+			{
+				foreach ($rules as $rule => $parameters)
+				{
+					$this->addError($attribute, $rule, $parameters);
+				}
+			}
+		}
+
+		return $this->messages;
+	}
+
+	/**
+	 * Returns the data which was valid.
+	 * @return array
+	 */
+	public function valid()
+	{
+		if (!isset($this->failedRules))
+		{
+			$this->passes();
+		}
+
+		return array_diff_key($this->data, $this->failedRules);
+	}
+
+	/**
+	 * Returns the data which was invalid.
+	 * @return array
+	 */
+	public function invalid()
+	{
+		if (!isset($this->failedRules))
+		{
+			$this->passes();
+		}
+
+		return array_intersect_key($this->data, $this->failedRules);
+	}
+
+	/**
+	 * Determine if it's a necessary presence validation.
+	 * This is to avoid possible database type comparison errors.
+	 * @param  string  $rule
+	 * @param  string  $attribute
+	 * @return bool
+	 */
+	protected function hasNotFailedPreviousRuleIfPresenceRule($rule, $attribute)
+	{
+		return in_array($rule, ['Unique', 'Exists'])
+						? !array_key_exists($attribute, $this->failedRules) : true;
+	}
+
+	/**
+	 * Determine if the data passes the validation rules.
+	 * @return bool
+	 */
+	public function passes()
+	{
+		$this->failedRules = [];
+
+		// We'll spin through each rule, validating the attributes attached to that
+		// rule. Any error messages will be added to the containers with each of
+		// the other error messages, returning true if we don't have messages.
+		foreach ($this->rules as $attribute => $rules) {
+			foreach ($rules as $rule) {
+				$this->validate($attribute, $rule);
+			}
+		}
+
+		// Here we will spin through all of the "after" hooks on this validator and
+		// fire them off. This gives the callbacks a chance to perform all kinds
+		// of other validation that needs to get wrapped up in this operation.
+		foreach ($this->after as $after) {
+			call_user_func($after);
+		}
+
+		return count($this->failedRules) === 0;
+	}
+
 }
