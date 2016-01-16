@@ -14,7 +14,6 @@
 namespace Core\Models;
 use Core\Bases\Models\BaseModel;
 use Core\Http\Client\Visitor;
-use Core\Localization\DateTime;
 use Core\Models\Location;
 use Core\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +30,7 @@ use Locale;
  *
  * @property User $user
  * @property string $locale The default locale
+ * @property-read string $rawLocale The raw default locale
  * @property-read string $fallback The fallback locale
  * @property-read bool $rtl Is language rtl
  * @property-read bool $fallbackRtl Is fallback rtl
@@ -94,18 +94,16 @@ class Localization extends BaseModel
 		$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
 		$currency = self::normalizeCurrency($formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE));
 
-		if ($this->getAcceptedCurrency($currency)
-			|| ($currency = self::normalizeCurrency(config('app.localization.currency.default')))
-			|| ($currency = self::normalizeCurrency(config('core.localization.currency.default'))))
+		if ($currency && $this->getAcceptedCurrency($currency)
+			|| ($currency = $this->getCurrencyFallback()))
 		{
 			$this->attributes['currency'] = $currency;
 		}
 
 
 		// check timezone
-		if ($timezone // given timezone
-			|| ($timezone = config('app.localization.timezone.default')) // app default
-			|| ($timezone = config('core.localization.timezone.default'))) // core default
+		if ($timezone
+			|| ($timezone = $this->getTimezoneFallback()))
 		{
 			$this->timezone = $timezone;
 		}
@@ -117,21 +115,30 @@ class Localization extends BaseModel
 	 */
 	protected function getLocaleAttribute()
 	{
-		return $this->getAcceptedLocale($this->attributes['locale']);
+		return isset($this->attributes['locale']) ? $this->getAcceptedLocale($this->attributes['locale']) : null;
 	}
 
 	/**
-	 * Set the default locale
+	 * Set the locale
 	 * @property string $locale
 	 */
 	protected function setLocaleAttribute($locale)
 	{
 		$locale = self::normalizeLocale($locale);
 
-		if ($this->getAcceptedLocale($locale))
+		if (!$this->getAcceptedLocale($locale))
 		{
 			$this->attributes['locale'] = $locale;
 		}
+	}
+
+	/**
+	 * Get the raw locale
+	 * @return string
+	 */
+	protected function getRawLocaleAttribute()
+	{
+		return $this->attributes['locale'] ?? null;
 	}
 
 	/**
@@ -165,28 +172,6 @@ class Localization extends BaseModel
 	}
 
 	/**
-	 * Check if locale is rtl
-	 * @param  string  $locale
-	 * @return bool
-	 */
-	protected function isRtl($locale)
-	{
-		return (
-			config('core.localization.locale.direction.languages.' . Locale::getPrimaryLanguage($locale)) == 'rtl'
-			|| config('core.localization.locale.direction.default') == 'rtl'
-		);
-	}
-
-	/**
-	 * Get the default currency
-	 * @return string
-	 */
-	protected function getCurrencyAttribute()
-	{
-		return $this->attributes['currency'];
-	}
-
-	/**
 	 * Set the default currency
 	 * @property string $currency
 	 */
@@ -194,7 +179,7 @@ class Localization extends BaseModel
 	{
 		$currency = self::normalizeCurrency($currency);
 
-		if ($this->getAcceptedCurrency($currency))
+		if (!$this->getAcceptedCurrency($currency))
 		{
 			$this->attributes['currency'] = $currency;
 		}
@@ -236,6 +221,43 @@ class Localization extends BaseModel
 		}
 
 		return null;
+	}
+
+	/**
+	 * Check if locale is rtl
+	 * @param  string  $locale
+	 * @return bool
+	 */
+	protected function isRtl($locale)
+	{
+		return (
+			config('core.localization.locale.direction.languages.' . Locale::getPrimaryLanguage($locale)) == 'rtl'
+			|| config('core.localization.locale.direction.default') == 'rtl'
+		);
+	}
+
+	/**
+	 * Get the currency fallback
+	 * @return string
+	 */
+	protected function getCurrencyFallback()
+	{
+		return self::normalizeCurrency(
+			config('app.localization.currency.default')
+			?: config('core.localization.currency.default')
+		);
+	}
+
+	/**
+	 * Get the timezone fallback
+	 * @return string
+	 */
+	protected function getTimezoneFallback()
+	{
+		return (
+			config('app.localization.timezone.default')
+			?: config('core.localization.timezone.default')
+		);
 	}
 
 	/**
