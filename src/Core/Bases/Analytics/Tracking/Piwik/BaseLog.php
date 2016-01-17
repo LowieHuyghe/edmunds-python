@@ -191,8 +191,8 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 		parent::__construct();
 
 		//Set the version and tracking info
-		$this->version = config('app.analytics.piwik.version');
-		$this->siteId = config('app.analytics.piwik.siteid');
+		$this->version = config('analytics.piwik.version');
+		$this->siteId = config('analytics.piwik.siteid');
 		$this->cacheBuster = rand(0, 2000000000);
 		$this->record = true;
 
@@ -249,7 +249,7 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 		// fetch data
 		$data = array(
 			'requests' => self::$requests,
-			'token_auth' => config('app.analytics.piwik.token'),
+			'token_auth' => config('analytics.piwik.token'),
 		);
 
 		Registry::queue()->dispatch(array(get_called_class(), 'send'), array(
