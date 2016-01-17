@@ -12,16 +12,18 @@ if (!defined('CORE_BASE_PATH'))
 require_once CORE_BASE_PATH . '/helpers.php';
 require_once REAL_BASE_PATH .'/vendor/autoload.php';
 
+
 /*
 |--------------------------------------------------------------------------
 | Configuration
 |--------------------------------------------------------------------------
 |
-| Load the .env files
+| Load the .env files.
 |
 */
 
 Dotenv::load(REAL_BASE_PATH);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,34 +38,6 @@ Dotenv::load(REAL_BASE_PATH);
 
 $app = new \Core\Application(REAL_BASE_PATH);
 
-$app['path.config'] = base_path('config');
-//load core-config
-$app->make('config')->set('core', require(__DIR__ . '/../config/core.php'));
-//load other config
-foreach (scandir($app['path.config']) as $file)
-{
-	if (!in_array($file, array('.', '..')))
-	{
-		$app->configure(pathinfo($file, PATHINFO_FILENAME));
-	}
-}
-//load env-vars in config
-foreach ($_ENV as $key => $value)
-{
-	if (preg_match("/^[a-zA-Z_]+$/", $key))
-	{
-		$configKey = strtolower(str_replace('_', '.', $key));
-		if (!$app->make('config')->has($configKey))
-		{
-			$app->make('config')->set($configKey, env($key));
-		}
-	}
-}
-
-//Set New Relic config
-\Core\Analytics\NewRelic::initialize(config('analytics.newrelic.appname'), config('analytics.newrelic.license'));
-
-$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -76,31 +50,31 @@ $app->withEloquent();
 |
 */
 
-if (!$exceptionHandler = config('app.exceptions.handler'))
-{
-	$exceptionHandler = Core\Exceptions\Handler::class;
-}
 $app->singleton(
 	Illuminate\Contracts\Debug\ExceptionHandler::class,
-	$exceptionHandler
+	config('app.exceptions.handler', Core\Exceptions\Handler::class)
 );
-if (!$consoleKernel = config('app.console.kernel'))
-{
-	$consoleKernel = Core\Console\Kernel::class;
-}
+
 $app->singleton(
 	Illuminate\Contracts\Console\Kernel::class,
-	$consoleKernel
+	config('app.console.kernel', Core\Console\Kernel::class)
 );
+
 
 /*
 |--------------------------------------------------------------------------
 | Configuration
 |--------------------------------------------------------------------------
 |
-| Check if all required configuration is supplied
+| Load configuration of core and app. Futhermore check if all required
+| configuration is supplied.
 |
 */
+
+$app['path.config'] = base_path('config');
+
+$app->configure('app');
+$app->make('config')->set('core', require(__DIR__ . '/../config/core.php'));
 
 $missingConfig = array();
 foreach (config('core.config.required') as $line)
@@ -115,6 +89,31 @@ if (!empty($missingConfig))
 	dd(new Exception("The following config-values are required:\n" . implode("\n", $missingConfig)));
 	die;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| Analytics
+|--------------------------------------------------------------------------
+|
+| Initialize some configuration for tracking and logging.
+|
+*/
+
+\Core\Analytics\NewRelic::initialize(config('app.analytics.newrelic.appname'), config('app.analytics.newrelic.license'));
+
+
+/*
+|--------------------------------------------------------------------------
+| Eloquent
+|--------------------------------------------------------------------------
+|
+| Enable eloquent for models in the application.
+|
+*/
+
+$app->withEloquent();
+
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +134,7 @@ $app->middleware([
 	Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
 ]);
 
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -153,5 +153,6 @@ if ($providers = config('app.providers'))
 		$app->register($provider);
 	}
 }
+
 
 return $app;

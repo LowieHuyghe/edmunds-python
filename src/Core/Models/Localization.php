@@ -148,7 +148,7 @@ class Localization extends BaseModel
 	protected function getFallbackAttribute()
 	{
 		return self::normalizeLocale(
-			config('localization.locale.fallback')
+			config('app.localization.locale.fallback')
 			?: config('core.localization.locale.fallback')
 		);
 	}
@@ -192,7 +192,7 @@ class Localization extends BaseModel
 	 */
 	protected function getAcceptedLocale($locale)
 	{
-		$acceptedLocales = config('localization.locale.accepted', array());
+		$acceptedLocales = config('app.localization.locale.accepted', array());
 
 		if (in_array($locale, $acceptedLocales))
 		{
@@ -215,7 +215,7 @@ class Localization extends BaseModel
 	 */
 	protected function getAcceptedCurrency($currency)
 	{
-		if (in_array($currency, config('localization.currency.accepted', array())))
+		if (in_array($currency, config('app.localization.currency.accepted', array())))
 		{
 			return $currency;
 		}
@@ -243,7 +243,7 @@ class Localization extends BaseModel
 	protected function getCurrencyFallback()
 	{
 		return self::normalizeCurrency(
-			config('localization.currency.default')
+			config('app.localization.currency.default')
 			?: config('core.localization.currency.default')
 		);
 	}
@@ -255,7 +255,7 @@ class Localization extends BaseModel
 	protected function getTimezoneFallback()
 	{
 		return (
-			config('localization.timezone.default')
+			config('app.localization.timezone.default')
 			?: config('core.localization.timezone.default')
 		);
 	}
