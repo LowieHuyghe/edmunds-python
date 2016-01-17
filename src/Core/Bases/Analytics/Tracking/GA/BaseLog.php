@@ -271,8 +271,8 @@ class BaseLog extends \Core\Bases\Analytics\Tracking\BaseLog
 		parent::__construct();
 
 		//Set the version and tracking info
-		$this->version = config('app.analytics.ga.version');
-		$this->trackingId = config('app.analytics.ga.trackingid');
+		$this->version = config('analytics.ga.version');
+		$this->trackingId = config('analytics.ga.trackingid');
 		$this->cacheBuster = rand(0, 2000000000);
 
 		//Only if request is set
