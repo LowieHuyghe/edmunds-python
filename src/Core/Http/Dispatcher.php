@@ -122,13 +122,13 @@ class Dispatcher implements \FastRoute\Dispatcher
 		$request = Request::getInstance();
 
 		//Fetch namespace
-		$namespace = config('routing.namespace');
+		$namespace = config('app.routing.namespace');
 		$namespace = trim($namespace, '\\');
 		//Fetch defaultController
-		$defaultController = config('routing.defaultcontroller');
+		$defaultController = config('app.routing.defaultcontroller');
 		$defaultController = $namespace . '\\' . $defaultController;
 		//Fetch homeController
-		$homeController = config('routing.homecontroller');
+		$homeController = config('app.routing.homecontroller');
 		$homeController = $namespace . '\\' . $homeController;
 
 		//Get the call-method
