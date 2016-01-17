@@ -3,19 +3,49 @@
 return array
 (
 
+    /*
+    |--------------------------------------------------------------------------
+    | Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here is chosen which configuration is required in order to run the
+    | application.
+    |
+    */
+
 	'config' => array(
 		'required' => array(
 			'app.name',
 			'app.key',
 			'app.cipher',
-			'routing.namespace',
-			'routing.defaultcontroller',
-			'routing.namespace',
-			'routing.loginroute',
-			'analytics.ga.version',
-			'analytics.ga.trackingid',
+
+			'app.routing.namespace',
+			'app.routing.defaultcontroller',
+			'app.routing.namespace',
+			'app.routing.loginroute',
+
+			'app.analytics.piwik.version',
+			'app.analytics.piwik.siteid',
+			'app.analytics.piwik.token',
+
+			'app.analytics.newrelic.appname',
+			'app.analytics.newrelic.license',
+
+			'app.localization.locale.accepted',
+			'app.localization.currency.accepted',
 		),
 	),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin
+    |--------------------------------------------------------------------------
+    |
+    | Set configuration to use when contacting the admin through slack
+    | or similar channels.
+    |
+    */
 
 	'admin' => array(
 		'pm' => array(
@@ -33,6 +63,17 @@ return array
 		),
 	),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication
+    |--------------------------------------------------------------------------
+    |
+    | Set configuration to use for authentication. The Time-To-Live for
+    | password-reset or authentication-tokens can be set.
+    |
+    */
+
 	'auth' => array(
 		'ttl' => array(
 			'passwordreset' => 15,
@@ -40,7 +81,18 @@ return array
 		),
 	),
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Localization
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for localization can be set and customized here.
+    |
+    */
+
 	'localization' => array(
+
 		'locale' => array(
 			'default' => 'en',
 			'fallback' => 'en',
@@ -67,12 +119,15 @@ return array
 				),
 			),
 		),
+
 		'currency' => array(
 			'default' => 'EUR',
 		),
+
 		'timezone' => array(
 			'default' => 'Europe/Brussels',
 		),
+
 	),
 
 );
