@@ -48,7 +48,7 @@ class AuthMiddleware extends BaseMiddleware
 			}
 			else
 			{
-				$response->redirect(config('routing.loginroute'), null, true);
+				$response->redirect(config('app.routing.loginroute'), null, true);
 			}
 		}
 

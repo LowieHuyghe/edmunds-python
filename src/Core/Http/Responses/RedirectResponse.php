@@ -63,7 +63,7 @@ class RedirectResponse extends BaseResponse
 		}
 
 		//For debugging purposes show the redirect-page
-		if (app()->isLocal() && config('routing.redirecthalt', false))
+		if (app()->isLocal() && config('app.routing.redirecthalt', false))
 		{
 			//Fetch the debugtrace
 			ob_start();
