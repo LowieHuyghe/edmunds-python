@@ -55,18 +55,13 @@ class Queue extends BaseStructure
 	 */
 	public function dispatch($callable, $args, $queue = self::QUEUE_DEFAULT, $attempts = 1)
 	{
-		if (config('queue.immediately', false))
-		{
-			return call_user_func_array($callable, $args);
+		$job = new QueueJob($callable, $args, $attempts);
+
+		if ($queue) {
+			$job = $job->onQueue($queue);
 		}
-		else
-		{
-			$job = new QueueJob($callable, $args, $attempts);
-			if ($queue) {
-				$job = $job->onQueue($queue);
-			}
-			return app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
-		}
+
+		return app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
 	}
 
 }
