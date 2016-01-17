@@ -47,7 +47,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isLocal()
 	{
-		return $this->environment() == 'local';
+		return $this->environment('local');
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isProduction()
 	{
-		return app()->environment() == 'production';
+		return app()->environment('production');
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isTesting()
 	{
-		return app()->environment() == 'testing';
+		return app()->environment('testing');
 	}
 
 	/**
