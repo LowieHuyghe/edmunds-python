@@ -61,7 +61,7 @@ foreach ($_ENV as $key => $value)
 }
 
 //Set New Relic config
-\Core\Analytics\NewRelic::initialize(config('localization.newrelic.appname'), config('localization.newrelic.license'));
+\Core\Analytics\NewRelic::initialize(config('analytics.newrelic.appname'), config('analytics.newrelic.license'));
 
 $app->withEloquent();
 
