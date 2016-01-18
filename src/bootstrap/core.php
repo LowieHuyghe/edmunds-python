@@ -18,11 +18,12 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 | Configuration
 |--------------------------------------------------------------------------
 |
-| Load the .env files.
+| Load the .env files. For testing there is a seperate .env file.
 |
 */
 
-Dotenv::load(REAL_BASE_PATH);
+$dotEnvFile = (env('APP_ENV') != 'testing') ? '.env' : '.env.testing';
+Dotenv::load(REAL_BASE_PATH, $dotEnvFile);
 
 
 /*

@@ -31,7 +31,10 @@ return array
 			'app.analytics.newrelic.appname',
 			'app.analytics.newrelic.license',
 
+			'app.localization.locale.default',
+			'app.localization.locale.fallback',
 			'app.localization.locale.accepted',
+			'app.localization.currency.default',
 			'app.localization.currency.accepted',
 		),
 	),
