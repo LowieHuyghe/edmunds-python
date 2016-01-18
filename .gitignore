@@ -1,8 +1,9 @@
 /vendor
 /node_modules
 .env*
+!.env.example
 .idea
-.sublime
+*.sublime-*
 
 /app
 /bootstrap
