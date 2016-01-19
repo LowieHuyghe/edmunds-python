@@ -14,7 +14,7 @@
 		"php": ">=5.5.9",
 		"laravel/lumen-framework": "5.1.*",
 		"vlucas/phpdotenv": "~1.0",
-		"cbschuld/browser.php": "dev-master",
+		"piwik/device-detector": "3.5.*",
 		"geoip2/geoip2": "~2.0",
 		"pda/pheanstalk": "~3.0",
 		"maknz/slack": "~1.7",
