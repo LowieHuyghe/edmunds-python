@@ -15,6 +15,7 @@ namespace Core\Http\Client;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
 use Core\Models\Localization;
+use DeviceDetector\DeviceDetector;
 
 /**
  * The helper for the browser
@@ -24,25 +25,25 @@ use Core\Models\Localization;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property string $userAgent
- * @property bool $chrome
- * @property bool $firefox
- * @property bool $safari
- * @property bool $IE
- * @property bool $opera
- * @property bool $windows
- * @property bool $apple
- * @property bool $mac
- * @property bool $linux
- * @property bool $android
- * @property bool $iOS
- * @property bool $nokia
- * @property bool $blackberry
- * @property bool $mobile
- * @property bool $tablet
- * @property bool $robot
- * @property string $language
- * @property string $languageFallback
+ * // Type
+ * @property boolean $typeDesktop
+ * @property boolean $typeMobile
+ * @property boolean $typeBot
+ * // OS
+ * @property boolean $osOSX
+ * @property boolean $osWindows
+ * @property boolean $osLinux
+ * @property boolean $osAndroid
+ * @property boolean $osIOS
+ * @property string $osVersion
+ * // Browser
+ * @property boolean $browserChrome
+ * @property boolean $browserFirefox
+ * @property boolean $browserIE
+ * @property boolean $browserSafari
+ * @property boolean $browserOpera
+ * @property string $browserVersion
+ * // Localization
  * @property string $locale
  * @property string $localeFallback
  * @property string $acceptLanguage
@@ -50,9 +51,9 @@ use Core\Models\Localization;
 class Context extends BaseStructure
 {
 	/**
-	 * @var \Browser
+	 * @var DeviceDetector
 	 */
-	private $details;
+	protected $detector;
 
 	/**
 	 * Constructor
@@ -66,251 +67,78 @@ class Context extends BaseStructure
 	}
 
 	/**
-	 * Return the browser details
-	 * @return \Browser
+	 * Return the browser detector
+	 * @return DeviceDetector
 	 */
-	private function getDetails()
+	protected function getDetector()
 	{
-		if (!isset($this->details))
+		if (!isset($this->detector))
 		{
-			$this->details = new \Browser($this->userAgent);
+			$this->detector = new DeviceDetector($this->userAgent);
+			$this->detector->parse();
 		}
-		return $this->details;
+		return $this->detector;
 	}
 
-	/**
-	 * Check if it is browser
-	 * @param string|array $browsers
-	 * @return bool
-	 */
-	public function isBrowser($browsers)
+	protected function getTypeDesktopAttribute()
 	{
-		//Make array of string
-		if (!is_array($browsers))
-		{
-			$browsers = array($browsers);
-		}
-
-		//Fetch current browser
-		$details = $this->getDetails();
-
-		//When match, return true
-		foreach ($browsers as $browser)
-		{
-			if ($details->isBrowser($browser))
-			{
-				return true;
-			}
-		}
-
-		//No match
-		return false;
+		return $this->getDetector()->isDesktop();
 	}
-
-	/**
-	 * Check if it is platform
-	 * @param string|array $platforms
-	 * @return bool
-	 */
-	public function isPlatform($platforms)
+	protected function getTypeMobileAttribute()
 	{
-		//Make array of string
-		if (!is_array($platforms))
-		{
-			$platforms = array($platforms);
-		}
-
-		//Fetch current browser
-		$currentPlatform = $this->getDetails()->getPlatform();
-
-		//When match, return true
-		foreach ($platforms as $platform)
-		{
-			if (0 == strcasecmp($currentPlatform, trim($platform)))
-			{
-				return true;
-			}
-		}
-
-		//No match
-		return false;
+		return $this->getDetector()->isMobile();
 	}
-
-	/**
-	 * Check if Chrome
-	 * @return bool
-	 */
-	protected function getChromeAttribute()
+	protected function getTypeBotAttribute()
 	{
-		return $this->isBrowser(\Browser::BROWSER_CHROME);
+		return $this->getDetector()->isBot();
 	}
-
-	/**
-	 * Check if Firefox
-	 * @return bool
-	 */
-	protected function getFirefoxAttribute()
+	protected function getOsOSXAttribute()
 	{
-		return $this->isBrowser(\Browser::BROWSER_FIREFOX);
+		return $this->getDetector()->getOs('name') == 'Mac';
 	}
-
-	/**
-	 * Check if Safari
-	 * @return bool
-	 */
-	protected function getSafariAttribute()
+	protected function getOsWindowsAttribute()
 	{
-		return $this->isBrowser(\Browser::BROWSER_SAFARI);
+		return $this->getDetector()->getOs('name') == 'Windows';
 	}
-
-	/**
-	 * Check if IE
-	 * @return bool
-	 */
-	protected function getIEAttribute()
+	protected function getOsLinuxAttribute()
 	{
-		return $this->isBrowser(\Browser::BROWSER_IE);
+		return $this->getDetector()->getOs('name') == 'GNU/Linux';
 	}
-
-	/**
-	 * Check if Opera
-	 * @return bool
-	 */
-	protected function getOperaAttribute()
+	protected function getOsAndroidAttribute()
 	{
-		return $this->isBrowser(array(\Browser::BROWSER_OPERA, \Browser::BROWSER_OPERA_MINI));
+		return $this->getDetector()->getOs('name') == 'Android';
 	}
-
-	/**
-	 * Check if Windows
-	 * @return bool
-	 */
-	protected function getWindowsAttribute()
+	protected function getOsIOSAttribute()
 	{
-		return $this->isPlatform(array(\Browser::PLATFORM_WINDOWS, \Browser::PLATFORM_WINDOWS_CE));
+		return $this->getDetector()->getOs('name') == 'iOS';
 	}
-
-	/**
-	 * Check if Apple
-	 * @return bool
-	 */
-	protected function getAppleAttribute()
+	protected function getOsVersionAttribute()
 	{
-		return $this->isPlatform(\Browser::PLATFORM_APPLE);
+		return $this->getDetector()->getOs('version');
 	}
-
-	/**
-	 * Check if Mac
-	 * @return bool
-	 */
-	protected function getMacAttribute()
+	protected function getBrowserChromeAttribute()
 	{
-		return $this->apple
-			&& !$this->mobile
-			&& !$this->tablet
-			&& !$this->iOS;
+		return $this->getDetector()->getClient('name') == 'Chrome';
 	}
-
-	/**
-	 * Check if Linux
-	 * @return bool
-	 */
-	protected function getLinuxAttribute()
+	protected function getBrowserFirefoxAttribute()
 	{
-		return $this->isPlatform(\Browser::PLATFORM_LINUX);
+		return $this->getDetector()->getClient('name') == 'Firefox';
 	}
-
-	/**
-	 * Check if Android
-	 * @return bool
-	 */
-	protected function getAndroidAttribute()
+	protected function getBrowserIEAttribute()
 	{
-		return $this->isPlatform(\Browser::PLATFORM_ANDROID)
-			|| $this->isBrowser(\Browser::BROWSER_ANDROID);
+		return $this->getDetector()->getClient('name') == 'Internet Explorer';
 	}
-
-	/**
-	 * Check if iOS
-	 * @return bool
-	 */
-	protected function getIOSAttribute()
+	protected function getBrowserSafariAttribute()
 	{
-		return $this->isPlatform(array(\Browser::PLATFORM_IPHONE, \Browser::PLATFORM_IPAD, \Browser::PLATFORM_IPOD))
-		|| $this->isBrowser(array(\Browser::BROWSER_IPHONE, \Browser::BROWSER_IPAD, \Browser::BROWSER_IPOD));
+		return $this->getDetector()->getClient('name') == 'Safari';
 	}
-
-	/**
-	 * Check if Nokia
-	 * @return bool
-	 */
-	protected function getNokiaAttribute()
+	protected function getBrowserOperaAttribute()
 	{
-		return $this->isPlatform(\Browser::PLATFORM_NOKIA)
-		|| $this->isBrowser(array(\Browser::BROWSER_NOKIA, \Browser::BROWSER_NOKIA_S60));
+		return $this->getDetector()->getClient('name') == 'Opera';
 	}
-
-	/**
-	 * Check if BlackBerry
-	 * @return bool
-	 */
-	protected function getBlackBerryAttribute()
+	protected function getBrowserVersionAttribute()
 	{
-		return $this->isPlatform(\Browser::PLATFORM_BLACKBERRY)
-		|| $this->isBrowser(\Browser::BROWSER_BLACKBERRY);
-	}
-
-	/**
-	 * Check if mobile
-	 * @return bool
-	 */
-	protected function getMobileAttribute()
-	{
-		return $this->getDetails()->isMobile();
-	}
-
-	/**
-	 * Check if mobile
-	 * @return bool
-	 */
-	protected function getTabletAttribute()
-	{
-		return $this->getDetails()->isTablet();
-	}
-
-	/**
-	 * Check if robot
-	 * @return bool
-	 */
-	protected function getRobotAttribute()
-	{
-		return $this->getDetails()->isRobot();
-	}
-
-	/**
-	 * Get the browser language
-	 * @return string
-	 */
-	protected function getLanguageAttribute()
-	{
-		if ($locale = $this->locale)
-		{
-			return locale_get_primary_language($locale);
-		}
-		return null;
-	}
-
-	/**
-	 * Get the browser language fallback
-	 * @return string
-	 */
-	protected function getLanguageFallbackAttribute()
-	{
-		if ($locale = $this->localeFallback)
-		{
-			return locale_get_primary_language($locale);
-		}
-		return null;
+		return $this->getDetector()->getClient('version');
 	}
 
 	/**
@@ -336,7 +164,7 @@ class Context extends BaseStructure
 	 * @param int $index
 	 * @return string
 	 */
-	private function getMostAcceptedLanguage($index = 0)
+	protected function getMostAcceptedLanguage($index = 0)
 	{
 		if ($browserLanguage = $this->acceptLanguage)
 		{
