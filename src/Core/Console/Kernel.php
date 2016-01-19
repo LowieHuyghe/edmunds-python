@@ -36,11 +36,28 @@ class Kernel extends ConsoleKernel
 	 * @var array
 	 */
 	protected $commands = [
-		UpdateGeoIPCommand::class,
-		DownCommand::class,
-		UpCommand::class,
-		SyncCommand::class,
+		//
 	];
+
+    /**
+     * Create a new console kernel instance.
+     *
+     * @param  \Laravel\Lumen\Application  $app
+     * @return void
+     */
+    public function __construct(Application $app)
+    {
+    	$this->commands = array_merge($this->commands, array(
+
+			UpdateGeoIPCommand::class,
+			DownCommand::class,
+			UpCommand::class,
+			SyncCommand::class,
+
+    	));
+
+    	parent::__construct($app);
+    }
 
 	/**
 	 * Define the application's command schedule.

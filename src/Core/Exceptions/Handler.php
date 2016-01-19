@@ -21,8 +21,18 @@ class Handler extends ExceptionHandler
 	 * @var array
 	 */
 	protected $dontReport = [
-		HttpException::class,
+		//
 	];
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->dontReport = array_merge($this->dontReport, array(
+			HttpException::class,
+		));
+	}
 
 	/**
 	 * Report or log an exception.
@@ -36,7 +46,7 @@ class Handler extends ExceptionHandler
 	{
 		$this->logException($e);
 
-		return parent::report($e);
+		parent::report($e);
 	}
 
 	/**
