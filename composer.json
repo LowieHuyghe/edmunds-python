@@ -14,11 +14,11 @@
 		"php": ">=5.5.9",
 		"laravel/lumen-framework": "5.1.*",
 		"vlucas/phpdotenv": "~1.0",
-		"cbschuld/browser.php": "*@dev",
+		"cbschuld/browser.php": "dev-master",
 		"geoip2/geoip2": "~2.0",
 		"pda/pheanstalk": "~3.0",
 		"maknz/slack": "~1.7",
-		"anahkiasen/former": "4.0.*@dev",
+		"anahkiasen/former": "4.0.*",
 		"SobanVuex/php-newrelic": "~2@rc"
 	},
 	"require-dev": {
@@ -38,8 +38,5 @@
 			"tests/",
 			"database/"
 		]
-	},
-	"config": {
-		"preferred-install": "dist"
 	}
 }
