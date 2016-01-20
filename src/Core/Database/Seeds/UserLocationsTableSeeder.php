@@ -13,18 +13,19 @@
 
 namespace Core\Database\Seeds;
 
+use Core\Models\Location;
 use Core\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * Seeder for the users-table
+ * Seeder for the user_locations-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class UsersTableSeeder extends Seeder
+class UserLocationsTableSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.
@@ -32,10 +33,13 @@ class UsersTableSeeder extends Seeder
 	 */
 	public function run()
 	{
-		for ($i=0; $i < 1000; $i++)
+		$users = User::all();
+
+		foreach ($users as $user)
 		{
-			$user = User::dummy();
-			$user->save();
+			$location = Location::dummy();
+			$location->user()->associate($user);
+			$location->save();
 		}
 	}
 }
