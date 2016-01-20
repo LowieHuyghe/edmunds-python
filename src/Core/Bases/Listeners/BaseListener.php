@@ -11,56 +11,28 @@
  * @since		Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Listeners;
 
-use Core\Bases\Jobs\BaseJob;
+use Core\Bases\Events\BaseEvent;
 
 /**
- * Queue to use
+ * Listener base to extend from
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class QueueJob extends BaseJob
+class BaseListener
 {
 	/**
-	 * @var callable
+	 * Handle the event.
+	 *
+	 * @param  BaseEvent  $event
+	 * @return void
 	 */
-	private $callable;
-
-	/**
-	 * @var array
-	 */
-	private $args;
-
-	/**
-	 * @var int
-	 */
-	private $attempts;
-
-	/**
-	 * Constructor
-	 * @param callable $callable
-	 * @param array $args
-	 * @param int $attempts
-	 */
-	public function __construct($callable, $args = array(), $attempts = 1)
+	public function handle(BaseEvent $event)
 	{
-		$this->callable = $callable;
-		$this->args = $args;
-		$this->attempts = $attempts;
-	}
-
-	/**
-	 * Execute the job.
-	 */
-	public function handle()
-	{
-		if ($this->attempts() <= $this->attempts)
-		{
-			call_user_func_array($this->callable, $this->args);
-		}
+		//
 	}
 }

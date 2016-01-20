@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-use Illuminate\Database\Migrations\Migration;
+use Core\Bases\Database\Migrations\BaseMigration;
 use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
 
 /**
@@ -22,7 +22,7 @@ use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateRoleRightsTable extends Migration
+class CreateRoleRightsTable extends BaseMigration
 {
 	use CreateEnumsPivotTable;
 
