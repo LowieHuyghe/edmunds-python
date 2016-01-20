@@ -14,6 +14,7 @@
 namespace Core\Analytics;
 
 use Core\Bases\Structures\BaseStructure;
+use Exception;
 
 /**
  * The New Relic helper (original: SobanVuex\NewRelic)

@@ -13,7 +13,7 @@
 
 namespace Core\Http\Middleware;
 
-use Core\Bases\Middleware\BaseMiddleware;
+use Core\Bases\Http\Middleware\BaseMiddleware;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Http\Response;

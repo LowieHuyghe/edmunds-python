@@ -11,56 +11,19 @@
  * @since		Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Events;
 
-use Core\Bases\Jobs\BaseJob;
+use Illuminate\Queue\SerializesModels;
 
 /**
- * Queue to use
+ * Event base to extend from
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class QueueJob extends BaseJob
+class BaseEvent
 {
-	/**
-	 * @var callable
-	 */
-	private $callable;
-
-	/**
-	 * @var array
-	 */
-	private $args;
-
-	/**
-	 * @var int
-	 */
-	private $attempts;
-
-	/**
-	 * Constructor
-	 * @param callable $callable
-	 * @param array $args
-	 * @param int $attempts
-	 */
-	public function __construct($callable, $args = array(), $attempts = 1)
-	{
-		$this->callable = $callable;
-		$this->args = $args;
-		$this->attempts = $attempts;
-	}
-
-	/**
-	 * Execute the job.
-	 */
-	public function handle()
-	{
-		if ($this->attempts() <= $this->attempts)
-		{
-			call_user_func_array($this->callable, $this->args);
-		}
-	}
+    use SerializesModels;
 }

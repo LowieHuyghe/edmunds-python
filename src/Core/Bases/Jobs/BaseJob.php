@@ -14,6 +14,10 @@
 namespace Core\Bases\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 /**
  * Job base to extend from
@@ -23,7 +27,16 @@ use Illuminate\Bus\Queueable;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class BaseJob
+class BaseJob implements SelfHandling, ShouldQueue
 {
-	use Queueable;
+	use Queueable, InteractsWithQueue, SerializesModels;
+
+	/**
+	 * Execute the job.
+	 * @return void
+	 */
+	public function handle()
+	{
+		//
+	}
 }
