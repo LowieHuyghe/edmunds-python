@@ -11,37 +11,49 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
+namespace Core\Database\Migrations\Traits;
 
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for file_entries-table
+ * Migration for enums-pivot-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0004_CreateFileEntriesTable
+trait CreateEnumsPivotTable
 {
+	/**
+	 * The table used for pivot
+	 * @var string
+	 */
+	//protected $table;
+
+	/**
+	 * The name for id of model
+	 * @var string
+	 */
+	//protected $idModel;
+
+	/**
+	 * The name for id of enum
+	 * @var string
+	 */
+	//protected $idEnum;
+
 	/**
 	 * Run the migrations.
 	 * @return void
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create($this->table, function (Blueprint $table)
 		{
-			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('type');
-			$table->integer('size');
-			$table->timestamps();
+			$table->integer($this->idModel)->unsigned();
+			$table->integer($this->idEnum)->unsigned();
+			$table->primary(array($this->idModel, $this->idEnum));
 		});
 	}
 
@@ -51,6 +63,6 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
+		app('db')->connection()->getSchemaBuilder()->drop($this->table);
 	}
 }

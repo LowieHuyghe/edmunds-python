@@ -11,58 +11,36 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
 
 /**
- * Migration for enums-pivot-table
+ * Migration for roleRights-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0000_CreateEnumsPivotTable
+class CreateRoleRightsTable extends Migration
 {
+	use CreateEnumsPivotTable;
+
 	/**
 	 * The table used for pivot
 	 * @var string
 	 */
-	//protected $table;
+	protected $table = 'role_rights';
 
 	/**
 	 * The name for id of model
 	 * @var string
 	 */
-	//protected $idModel;
+	protected $idModel = 'role_id';
 
 	/**
 	 * The name for id of enum
 	 * @var string
 	 */
-	//protected $idEnum;
-
-	/**
-	 * Run the migrations.
-	 * @return void
-	 */
-	public function up()
-	{
-		app('db')->connection()->getSchemaBuilder()->create($this->table, function (Blueprint $table)
-		{
-			$table->integer($this->idModel)->unsigned();
-			$table->integer($this->idEnum)->unsigned();
-			$table->primary(array($this->idModel, $this->idEnum));
-		});
-	}
-
-	/**
-	 * Reverse the migrations.
-	 * @return void
-	 */
-	public function down()
-	{
-		app('db')->connection()->getSchemaBuilder()->drop($this->table);
-	}
+	protected $idEnum = 'right_id';
 }

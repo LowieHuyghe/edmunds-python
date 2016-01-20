@@ -14,6 +14,7 @@
 namespace Core;
 use Core\Analytics\Tracking\Piwik\PageviewLog;
 use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Database\Migrations\Migrator;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
 use Core\Http\Client\Session;
@@ -161,6 +162,22 @@ class Application extends \Laravel\Lumen\Application
 	protected function createDispatcher()
 	{
 		return $this->dispatcher ?: new Dispatcher();
+	}
+
+	/**
+	 * Prepare the application to execute a console command.
+	 * @return void
+	 */
+	public function prepareForConsoleCommand()
+	{
+		parent::prepareForConsoleCommand();
+
+		// Overwrite the migrator to use the core mirgrationfiles
+		$this->app->singleton('migrator', function ($app) {
+			$repository = $app['migration.repository'];
+
+			return new Migrator($repository, $app['db'], $app['files']);
+		});
 	}
 
 	/**
