@@ -11,45 +11,45 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for users-table
+ * Migration for roleRights-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0001_CreateUsersTable
+class CreateJobsTable extends Migration
 {
 	/**
 	 * Run the migrations.
+	 *
 	 * @return void
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('users', function (Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('email')->unique();
-			$table->string('password', 60);
-			$table->string('locale', 10);
-			$table->integer('gender_id')->unsigned();
-			$table->rememberToken();
-			$table->timestamps();
-			$table->softDeletes();
+		app('db')->connection()->getSchemaBuilder()->create('jobs', function (Blueprint $table) {
+			$table->bigIncrements('id');
+			$table->string('queue');
+			$table->longText('payload');
+			$table->tinyInteger('attempts')->unsigned();
+			$table->tinyInteger('reserved')->unsigned();
+			$table->unsignedInteger('reserved_at')->nullable();
+			$table->unsignedInteger('available_at');
+			$table->unsignedInteger('created_at');
+			$table->index(['queue', 'reserved', 'reserved_at']);
 		});
 	}
 
 	/**
 	 * Reverse the migrations.
+	 *
 	 * @return void
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('users');
+		app('db')->connection()->getSchemaBuilder()->drop('jobs');
 	}
 }

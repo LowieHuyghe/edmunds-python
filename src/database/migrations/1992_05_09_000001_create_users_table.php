@@ -11,35 +11,43 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for roleRights-table
+ * Migration for users-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0006_CreateRoleRightsTable
+class CreateUsersTable extends Migration
 {
-	use _0000_CreateEnumsPivotTable;
+	/**
+	 * Run the migrations.
+	 * @return void
+	 */
+	public function up()
+	{
+		app('db')->connection()->getSchemaBuilder()->create('users', function (Blueprint $table)
+		{
+			$table->increments('id');
+			$table->string('email')->unique();
+			$table->string('password', 60);
+			$table->string('locale', 10);
+			$table->integer('gender_id')->unsigned();
+			$table->rememberToken();
+			$table->timestamps();
+			$table->softDeletes();
+		});
+	}
 
 	/**
-	 * The table used for pivot
-	 * @var string
+	 * Reverse the migrations.
+	 * @return void
 	 */
-	protected $table = 'role_rights';
-
-	/**
-	 * The name for id of model
-	 * @var string
-	 */
-	protected $idModel = 'role_id';
-
-	/**
-	 * The name for id of enum
-	 * @var string
-	 */
-	protected $idEnum = 'right_id';
+	public function down()
+	{
+		app('db')->connection()->getSchemaBuilder()->drop('users');
+	}
 }

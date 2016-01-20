@@ -11,35 +11,40 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for user-roles-table
+ * Migration for password_resets-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0003_CreateUserRolesTable
+class CreatePasswordResetsTable extends Migration
 {
-	use _0000_CreateEnumsPivotTable;
+	/**
+	 * Run the migrations.
+	 * @return void
+	 */
+	public function up()
+	{
+		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
+		{
+			$table->increments('id');
+			$table->string('email')->index();
+			$table->integer('user_id')->unsigned();
+			$table->string('token')->unique();
+			$table->timestamps();
+		});
+	}
 
 	/**
-	 * The table used for pivot
-	 * @var string
+	 * Reverse the migrations.
+	 * @return void
 	 */
-	protected $table = 'user_roles';
-
-	/**
-	 * The name for id of model
-	 * @var string
-	 */
-	protected $idModel = 'user_id';
-
-	/**
-	 * The name for id of enum
-	 * @var string
-	 */
-	protected $idEnum = 'role_id';
+	public function down()
+	{
+		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
+	}
 }
