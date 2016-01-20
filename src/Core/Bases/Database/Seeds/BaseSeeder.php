@@ -11,56 +11,27 @@
  * @since		Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Database\Seeds;
 
-use Core\Bases\Jobs\BaseJob;
+use Illuminate\Database\Seeder;
 
 /**
- * Queue to use
+ * Seeder base to extend from
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class QueueJob extends BaseJob
+class BaseSeeder extends Seeder
 {
 	/**
-	 * @var callable
+	 * Run the database seeds.
+	 *
+	 * @return void
 	 */
-	private $callable;
-
-	/**
-	 * @var array
-	 */
-	private $args;
-
-	/**
-	 * @var int
-	 */
-	private $attempts;
-
-	/**
-	 * Constructor
-	 * @param callable $callable
-	 * @param array $args
-	 * @param int $attempts
-	 */
-	public function __construct($callable, $args = array(), $attempts = 1)
+	public function run()
 	{
-		$this->callable = $callable;
-		$this->args = $args;
-		$this->attempts = $attempts;
-	}
-
-	/**
-	 * Execute the job.
-	 */
-	public function handle()
-	{
-		if ($this->attempts() <= $this->attempts)
-		{
-			call_user_func_array($this->callable, $this->args);
-		}
+		//
 	}
 }

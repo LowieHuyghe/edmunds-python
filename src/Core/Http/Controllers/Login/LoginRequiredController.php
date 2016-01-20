@@ -12,7 +12,7 @@
  */
 
 namespace Core\Http\Controllers\Login;
-use Core\Bases\Controllers\BaseController;
+use Core\Bases\Http\Controllers\BaseController;
 use Core\Http\Client\Auth;
 
 /**

@@ -13,7 +13,7 @@
 
 namespace Core\Http\Controllers;
 
-use Core\Bases\Controllers\BaseController;
+use Core\Bases\Http\Controllers\BaseController;
 use Core\Http\Response;
 use Core\Http\Route;
 use Illuminate\Http\JsonResponse;

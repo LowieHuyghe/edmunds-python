@@ -13,9 +13,9 @@
 
 namespace Core\Database\Seeds;
 
+use Core\Bases\Database\Seeds\BaseSeeder;
 use Core\Models\Location;
 use Core\Models\User;
-use Illuminate\Database\Seeder;
 
 /**
  * Seeder for the user_locations-table
@@ -25,7 +25,7 @@ use Illuminate\Database\Seeder;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class UserLocationsTableSeeder extends Seeder
+class UserLocationsTableSeeder extends BaseSeeder
 {
 	/**
 	 * Run the database seeds.

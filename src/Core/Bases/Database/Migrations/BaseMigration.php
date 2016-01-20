@@ -11,56 +11,35 @@
  * @since		Version 0.1
  */
 
-namespace Core\Jobs;
+namespace Core\Bases\Database\Migrations;
 
-use Core\Bases\Jobs\BaseJob;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Queue to use
+ * Migration base to extend from
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class QueueJob extends BaseJob
+class BaseMigration extends Migration
 {
 	/**
-	 * @var callable
+	 * Run the migrations.
+	 * @return void
 	 */
-	private $callable;
-
-	/**
-	 * @var array
-	 */
-	private $args;
-
-	/**
-	 * @var int
-	 */
-	private $attempts;
-
-	/**
-	 * Constructor
-	 * @param callable $callable
-	 * @param array $args
-	 * @param int $attempts
-	 */
-	public function __construct($callable, $args = array(), $attempts = 1)
+	public function up()
 	{
-		$this->callable = $callable;
-		$this->args = $args;
-		$this->attempts = $attempts;
+		//
 	}
 
 	/**
-	 * Execute the job.
+	 * Reverse the migrations.
+	 * @return void
 	 */
-	public function handle()
+	public function down()
 	{
-		if ($this->attempts() <= $this->attempts)
-		{
-			call_user_func_array($this->callable, $this->args);
-		}
+		//
 	}
 }

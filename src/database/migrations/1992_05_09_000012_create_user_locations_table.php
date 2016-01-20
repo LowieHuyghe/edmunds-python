@@ -11,7 +11,8 @@
  * @since       Version 0.1
  */
 
-use Illuminate\Database\Migrations\Migration;
+use Core\Bases\Database\Migrations\BaseMigration;
+use Illuminate\Database\Schema\Blueprint;
 
 /**
  * Migration for userLocations-table
@@ -21,7 +22,7 @@ use Illuminate\Database\Migrations\Migration;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateUserLocationsTable extends Migration
+class CreateUserLocationsTable extends BaseMigration
 {
 	/**
 	 * Run the migrations.
