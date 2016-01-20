@@ -179,7 +179,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	{
 		return array(
 			'email' => $faker->email,
-			'password' => str_random(32),
+			'password' => bcrypt('secret'),
 			'remember_token' => str_random(32),
 			'gender_id' => Gender::all()->random()->id,
 		);
