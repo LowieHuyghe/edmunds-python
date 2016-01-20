@@ -11,35 +11,44 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for user-roles-table
+ * Migration for users-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0003_CreateUserRolesTable
+class CreateFileEntriesTable extends Migration
 {
-	use _0000_CreateEnumsPivotTable;
+	/**
+	 * Run the migrations.
+	 * @return void
+	 */
+	public function up()
+	{
+		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
+		{
+			$table->increments('id');
+			$table->string('name', 20)->unique();
+			$table->string('md5', 32);
+			$table->string('sha1', 40);
+			$table->string('original_name');
+			$table->string('mime', 20);
+			$table->integer('type');
+			$table->integer('size');
+			$table->timestamps();
+		});
+	}
 
 	/**
-	 * The table used for pivot
-	 * @var string
+	 * Reverse the migrations.
+	 * @return void
 	 */
-	protected $table = 'user_roles';
-
-	/**
-	 * The name for id of model
-	 * @var string
-	 */
-	protected $idModel = 'user_id';
-
-	/**
-	 * The name for id of enum
-	 * @var string
-	 */
-	protected $idEnum = 'role_id';
+	public function down()
+	{
+		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
+	}
 }

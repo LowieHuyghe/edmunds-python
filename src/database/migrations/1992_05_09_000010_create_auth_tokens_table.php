@@ -11,19 +11,17 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for password_resets-table
+ * Migration for roleRights-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0002_CreatePasswordResetsTable
+class CreateAuthTokensTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -31,12 +29,11 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('auth_tokens', function (Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('email')->index();
-			$table->integer('user_id')->unsigned();
 			$table->string('token')->unique();
+			$table->integer('user_id')->unsigned();
 			$table->timestamps();
 		});
 	}
@@ -47,6 +44,6 @@ trait _0002_CreatePasswordResetsTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
+		app('db')->connection()->getSchemaBuilder()->drop('auth_tokens');
 	}
 }

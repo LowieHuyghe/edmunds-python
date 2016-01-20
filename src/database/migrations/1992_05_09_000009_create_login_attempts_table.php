@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
+use Illuminate\Database\Migrations\Migration;
 
 /**
  * Migration for roleRights-table
@@ -21,25 +21,37 @@ namespace Core\Database\Migrations;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0006_CreateRoleRightsTable
+class CreateLoginAttemptsTable extends Migration
 {
-	use _0000_CreateEnumsPivotTable;
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		app('db')->connection()->getSchemaBuilder()->create('login_attempts', function (Blueprint $table) {
+			$table->bigIncrements('id');
+			$table->string('ip');
+			$table->string('type');
+
+			$table->integer('user_id')->unsigned()->nullable();
+			$table->string('email')->nullable();
+			$table->string('pass')->nullable();
+
+			$table->timestamps();
+
+			$table->index(array('ip', 'created_at'));
+		});
+	}
 
 	/**
-	 * The table used for pivot
-	 * @var string
+	 * Reverse the migrations.
+	 *
+	 * @return void
 	 */
-	protected $table = 'role_rights';
-
-	/**
-	 * The name for id of model
-	 * @var string
-	 */
-	protected $idModel = 'role_id';
-
-	/**
-	 * The name for id of enum
-	 * @var string
-	 */
-	protected $idEnum = 'right_id';
+	public function down()
+	{
+		app('db')->connection()->getSchemaBuilder()->drop('login_attempts');
+	}
 }

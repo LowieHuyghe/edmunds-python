@@ -11,19 +11,17 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for file_entries-table
+ * Migration for password_resets-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0004_CreateFileEntriesTable
+class CreatePasswordResetsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -31,16 +29,12 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('type');
-			$table->integer('size');
+			$table->string('email')->index();
+			$table->integer('user_id')->unsigned();
+			$table->string('token')->unique();
 			$table->timestamps();
 		});
 	}
@@ -51,6 +45,6 @@ trait _0004_CreateFileEntriesTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
+		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
 	}
 }

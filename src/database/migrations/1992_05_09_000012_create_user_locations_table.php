@@ -11,19 +11,17 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
- * Migration for user_localizations-table
+ * Migration for userLocations-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0011_CreateUserLocalizationsTable
+class CreateUserLocationsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -31,13 +29,28 @@ trait _0011_CreateUserLocalizationsTable
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('user_localizations', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('user_locations', function (Blueprint $table)
 		{
 			$table->integer('user_id')->unsigned();
 			$table->primary('user_id');
-			$table->string('locale', 10)->nullable();
-			$table->string('currency', 10)->nullable();
+			$table->string('ip');
+
+			$table->string('continent_code', 10)->nullable();
+			$table->string('continent_name')->nullable();
+
+			$table->string('country_code', 10)->nullable();
+			$table->string('country_name')->nullable();
+
+			$table->string('region_code', 10)->nullable();
+			$table->string('region_name')->nullable();
+
+			$table->string('city_name')->nullable();
+			$table->string('postal_code', 32)->nullable();
+
+			$table->float('latitude')->nullable();
+			$table->float('longitude')->nullable();
 			$table->string('timezone')->nullable();
+
 			$table->timestamps();
 		});
 	}
@@ -48,6 +61,6 @@ trait _0011_CreateUserLocalizationsTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('user_localizations');
+		app('db')->connection()->getSchemaBuilder()->drop('user_locations');
 	}
 }

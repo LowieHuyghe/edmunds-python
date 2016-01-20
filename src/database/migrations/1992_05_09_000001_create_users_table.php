@@ -11,9 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace Core\Database\Migrations;
-
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 /**
  * Migration for users-table
@@ -23,7 +21,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _0001_CreateUsersTable
+class CreateUsersTable extends Migration
 {
 	/**
 	 * Run the migrations.
