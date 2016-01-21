@@ -77,28 +77,25 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Exception $e)
 	{
-		if (!config('app.debug', false))
-		{
-			if ($e instanceof UnauthorizedHttpException
+		if (($e instanceof UnauthorizedHttpException
 				|| $e instanceof AccessDeniedHttpException
 				|| $e instanceof NotFoundHttpException
 				|| $e instanceof ServiceUnavailableHttpException)
+			&& view()->exists($viewName = 'errors.' . $e->getStatusCode()))
+		{
+			$response = Response::getInstance();
+
+			$response->header($e->getHeaders());
+			$response->render(null, $viewName);
+			$response->assign('message', $e->getMessage());
+			$response->statusCode = $e->getStatusCode();
+
+			if ($e instanceof ServiceUnavailableHttpException)
 			{
-				$response = Response::getInstance();
-
-				$response->header($e->getHeaders());
-				$response->render(null, 'errors.' . $e->getStatusCode());
-				$response->assign('message', $e->getMessage());
-				$response->statusCode = $e->getStatusCode();
-				$response->setType(Response::TYPE_VIEW);
-
-				if ($e instanceof ServiceUnavailableHttpException)
-				{
-					$response->assign('maintenance', app()->isDownForMaintenance());
-				}
-
-				return $response->getResponse();
+				$response->assign('maintenance', app()->isDownForMaintenance());
 			}
+
+			return $response->getResponse();
 		}
 
 		return parent::render($request, $e);
