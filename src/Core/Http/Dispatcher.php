@@ -227,22 +227,25 @@ class Dispatcher implements \FastRoute\Dispatcher
 			}
 			return array(null, null);
 		}
-		elseif ($keys = $routes->where('name', 'getIndex')->keys())
+		else
 		{
-			foreach ($keys as $key) $routes->forget($key);
+			foreach ($routes->where('name', 'getIndex') as $key => $route)
+			{
+				$routes->forget($key);
+			}
 		}
 
 		//If root methods are enabled, fetch them but give priority to other methods
 		$rootRoute = null;
 		foreach (array('get', 'post', 'put', 'delete') as $name)
 		{
-			if ($keys = $routes->where('name', $name)->keys())
+			foreach ($routes->where('name', $name) as $key => $route)
 			{
 				if ($requestMethod == $name)
 				{
-					$rootRoute = $routes->get($keys[0]);
+					$rootRoute = $route;
 				}
-				foreach ($keys as $key) $routes->forget($key);
+				$routes->forget($key);
 			}
 		}
 
@@ -256,7 +259,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 				continue;
 			}
 
-			$routesForPosition->each(function (Route $route) use ($requestMethod, &$remainingSegments, $namePosition, &$currentRoute)
+			foreach ($routesForPosition as $key => $route)
 			{
 				if (strtolower($route->name) == strtolower($requestMethod . $remainingSegments[$namePosition]))
 				{
@@ -265,13 +268,21 @@ class Dispatcher implements \FastRoute\Dispatcher
 					array_splice($remainingSegments, $namePosition, 1);
 					return false;
 				}
-			});
+			}
 		}
 
-		//Check rootMethod option
-		if (!$currentRoute && $rootRoute)
+		if (!$currentRoute)
 		{
-			$currentRoute = $rootRoute;
+			//Check rootMethod option
+			if ($rootRoute)
+			{
+				$currentRoute = $rootRoute;
+			}
+			//Or just missing route
+			else
+			{
+				return array(null, null);
+			}
 		}
 
 		//Check if parameter-count is right
