@@ -187,7 +187,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	protected function logPageView($response, $exception = null)
 	{
-		if (!app()->runningInConsole())
+		if (!app()->runningInConsole() && !app()->isDownForMaintenance())
 		{
 			$pageview = new PageviewLog();
 
