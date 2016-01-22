@@ -13,6 +13,7 @@
 
 namespace Core\Console;
 
+use Core\Application;
 use Core\Console\Commands\Maintenance\DownCommand;
 use Core\Console\Commands\Maintenance\UpCommand;
 use Core\Console\Commands\Translation\SyncCommand;
@@ -42,7 +43,7 @@ class Kernel extends ConsoleKernel
     /**
      * Create a new console kernel instance.
      *
-     * @param  \Laravel\Lumen\Application  $app
+     * @param  Application  $app
      * @return void
      */
     public function __construct(Application $app)
