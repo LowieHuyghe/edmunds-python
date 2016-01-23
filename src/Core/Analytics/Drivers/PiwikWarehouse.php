@@ -228,14 +228,12 @@ class PiwikWarehouse extends BaseWarehouse
 		// send request
 		$ch = curl_init();
 
-		dd($data);
-
 		curl_setopt($ch, CURLOPT_URL, static::$apiUrl);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_POST, count($data));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		dd(curl_exec($ch));
+		curl_exec($ch);
 
 		curl_close ($ch);
 	}
