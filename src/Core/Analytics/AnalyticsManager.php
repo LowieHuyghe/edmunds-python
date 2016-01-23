@@ -121,8 +121,8 @@ class AnalyticsManager extends BaseStructure
 	{
 		if (!isset($this->warehouses[$name]))
 		{
-			$this->warehouses[$name] = call_user_func(array($this, 'get' . ucfirst($name) . 'Driver'));
+			$this->warehouses[$name] = call_user_func(array($this, 'create' . ucfirst($name) . 'Driver'));
 		}
-		return $this->warehouses[$nama];
+		return $this->warehouses[$name];
 	}
 }

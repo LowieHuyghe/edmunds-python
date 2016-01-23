@@ -13,7 +13,7 @@
 
 namespace Core\Analytics\Drivers;
 
-use Core\Analytics\Drivers\BaseWarehouse;
+use Core\Bases\Analytics\BaseWarehouse;
 
 /**
  * The piwik warehouse driver
@@ -114,6 +114,8 @@ class GaWarehouse extends BaseWarehouse
 	{
 		return array(array(
 			't' => 'pageview',
+
+			'dt' => $log->title,
 		));
 	}
 

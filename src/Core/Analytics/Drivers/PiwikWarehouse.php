@@ -13,7 +13,7 @@
 
 namespace Core\Analytics\Drivers;
 
-use Core\Analytics\Drivers\BaseWarehouse;
+use Core\Bases\Analytics\BaseWarehouse;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Analytics\Tracking\EcommerceLog;
@@ -137,7 +137,7 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processPageviewLog($log)
 	{
 		return array(
-			'action_name' => 'pageview',
+			'action_name' => $log->title,
 		);
 	}
 
@@ -149,8 +149,6 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processEventLog($log)
 	{
 		return array(
-			'action_name' => 'event',
-
 			'e_c' => $log->category,
 			'e_a' => $log->action,
 			'e_n' => $log->name,
@@ -166,8 +164,6 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processErrorLog($log)
 	{
 		return array(
-			'action_name' => 'error',
-
 			'e_c' => 'errors',
 			'e_a' => $log->type,
 			'e_n' => $log->exception->getMessage(),
@@ -196,8 +192,7 @@ class PiwikWarehouse extends BaseWarehouse
 		}
 
 		return array(
-			'action_name' => 'ecommerce',
-
+			'idgoal' => 0,
 			'ec_id' => $log->id,
 			'ec_st' => $log->subtotal,
 			'ec_sh' => $log->shipping,
@@ -217,8 +212,6 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processGenericLog($log)
 	{
 		return array(
-			'action_name' => 'generic',
-
 			'custom' => $log->toArray(),
 		);
 	}
@@ -235,12 +228,14 @@ class PiwikWarehouse extends BaseWarehouse
 		// send request
 		$ch = curl_init();
 
+		dd($data);
+
 		curl_setopt($ch, CURLOPT_URL, static::$apiUrl);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_POST, count($data));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_exec($ch);
+		dd(curl_exec($ch));
 
 		curl_close ($ch);
 	}

@@ -2,8 +2,7 @@
 
 namespace Core\Exceptions;
 
-use Core\Analytics\Tracking\GA\ExceptionLog;
-use Core\Analytics\NewRelic;
+use Core\Analytics\Tracking\ErrorLog;
 use Core\Http\Response;
 use Exception;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
@@ -55,17 +54,7 @@ class Handler extends ExceptionHandler
 	 */
 	protected function logException(Exception $e)
 	{
-		$message = $e->getMessage() ?: last(explode('\\', get_class($e)));
-		// $file = str_replace(base_path(), '', $e->getFile());
-		// $line = $e->getLine();
-		// $trace = $e->getTrace();
-
-		NewRelic::getInstance()->noticeError($message, $e);
-
-		// $log = new ExceptionLog();
-		// $log->exceptionDescription = "'$message' in $file:$line";
-		// $log->exceptionFatal = true;
-		// $log->log();
+		(new ErrorLog())->log(config('app.analytics.errordefault', null));
 	}
 
 	/**

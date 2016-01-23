@@ -12,8 +12,7 @@
  */
 
 namespace Core;
-use Core\Analytics\Tracking\Piwik\PageviewLog;
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Analytics\Tracking\PageviewLog;
 use Core\Database\Migrations\Migrator;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
@@ -23,6 +22,7 @@ use Core\Http\Dispatcher;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Providers\HttpServiceProvider;
+use Core\Registry\Registry;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -121,7 +121,7 @@ class Application extends \Laravel\Lumen\Application
 
 		$this->logPageView($response, isset($exception) ? $exception : null);
 		// and send them all
-		BaseLog::flushLogs();
+		Registry::warehouse()->flush();
 
 		return $response;
 	}
@@ -196,7 +196,7 @@ class Application extends \Laravel\Lumen\Application
 			$matches = array();
 			if (preg_match($regex, $response->getContent(), $matches))
 			{
-				$pageview->actionName = trim($matches[1]);
+				$pageview->title = trim($matches[1]);
 			}
 
 			$pageview->log();

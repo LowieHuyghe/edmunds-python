@@ -22,6 +22,8 @@ use Core\Bases\Analytics\Tracking\BaseLog;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property  string $title
  */
 class PageviewLog extends BaseLog
 {

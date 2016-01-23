@@ -101,7 +101,7 @@ if (!empty($missingConfig))
 |
 */
 
-\Core\Analytics\NewRelic::initialize(config('app.analytics.newrelic.appname'), config('app.analytics.newrelic.license'));
+\Core\Registry\Registry::warehouse('newrelic');
 
 
 /*

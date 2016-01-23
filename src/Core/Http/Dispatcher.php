@@ -13,7 +13,6 @@
 
 namespace Core\Http;
 
-use Core\Analytics\NewRelic;
 use Core\Http\Client\Input;
 use Core\Http\Client\Session;
 use Core\Http\Client\Visitor;
@@ -23,6 +22,7 @@ use Core\Http\Middleware\RightsMiddleware;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Route;
+use Core\Registry\Registry;
 use Illuminate\View\View;
 
 /**
@@ -64,7 +64,7 @@ class Dispatcher implements \FastRoute\Dispatcher
 			{
 				//Set transaction name
 				$transactionName = str_replace('\\', '/', substr($controllerName, strlen($namespace), -strlen('Controller'))) . '@' . $route->name;
-				NewRelic::getInstance()->nameTransaction($transactionName);
+				Registry::warehouse('newrelic')->setTransactionName($transactionName);
 
 				//Prepare result
 				$routeResults = array(

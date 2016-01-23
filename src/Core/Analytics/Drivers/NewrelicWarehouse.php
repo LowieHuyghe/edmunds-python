@@ -13,7 +13,7 @@
 
 namespace Core\Analytics\Drivers;
 
-use Core\Analytics\Drivers\BaseWarehouse;
+use Core\Bases\Analytics\BaseWarehouse;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\Tracking\ErrorLog;
 
@@ -38,10 +38,29 @@ class NewrelicWarehouse extends BaseWarehouse
 	{
 		parent::__construct();
 
-		$this->appname = config('app.analytics.newrelic.appname');
+		$this->appName = config('app.analytics.newrelic.appname');
 		$this->license = config('app.analytics.newrelic.license') ?: ini_get('newrelic.license');
 
 		$this->loaded = $this->license && extension_loaded('newrelic');
+
+		// set the app name
+		if ($this->loaded)
+		{
+			newrelic_set_appname($this->appName, $this->license);
+		}
+	}
+
+	/**
+	 * Set the name of the transaction
+	 * (This is a not so beautiful fix)
+	 * @param string $name
+	 */
+	public function setTransactionName($name)
+	{
+		if ($this->loaded)
+		{
+			newrelic_name_transaction($name);
+		}
 	}
 
 	/**
@@ -60,11 +79,7 @@ class NewrelicWarehouse extends BaseWarehouse
 		$logAttributes = $log->getAttributes();
 
 		// process the log
-		if ($log instanceof PageviewLog)
-		{
-			$this->processPageviewLog($log);
-		}
-		elseif ($log instanceof ErrorLog)
+		if ($log instanceof ErrorLog)
 		{
 			$this->processErrorLog($log);
 		}
@@ -72,15 +87,6 @@ class NewrelicWarehouse extends BaseWarehouse
 		{
 			throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
 		}
-	}
-
-	/**
-	 * Process the PageviewLog log
-	 * @param  PageviewLog $log
-	 */
-	protected function processPageviewLog($log)
-	{
-		newrelic_set_appname($this->appName, $$this->license);
 	}
 
 	/**
