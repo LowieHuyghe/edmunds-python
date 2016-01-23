@@ -11,19 +11,31 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking\Piwik;
+namespace Core\Bases\Analytics\Tracking;
 
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Bases\Analytics\Tracking\BaseLog;
+use Core\Bases\Analytics\Tracking\EcommerceItem;
+use Core\Localization\DateTime;
 
 /**
- * The structure for pageview reports
+ * An ecommerce log
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property string $id
+ * @property float $subtotal
+ * @property float $shipping Subtotal excluding shipping
+ * @property float $tax
+ * @property float $discount
+ * @property float $revenue The grand total
+ * @property string $currencyCode
+ * @property EcommerceItem[] $items
+ * @property DateTime $previous Previous buy
  */
-class PageviewLog extends BaseLog
+class EcommerceLog extends BaseLog
 {
 	//
 }

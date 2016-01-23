@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
 		// $log = new ExceptionLog();
 		// $log->exceptionDescription = "'$message' in $file:$line";
 		// $log->exceptionFatal = true;
-		// $log->report();
+		// $log->log();
 	}
 
 	/**
