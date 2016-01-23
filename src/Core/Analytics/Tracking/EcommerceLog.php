@@ -26,6 +26,7 @@ use Core\Localization\DateTime;
  * @since		Version 0.1
  *
  * @property string $id
+ * @property string $category
  * @property float $subtotal
  * @property float $shipping Subtotal excluding shipping
  * @property float $tax

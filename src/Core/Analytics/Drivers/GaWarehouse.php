@@ -32,151 +32,178 @@ class GaWarehouse extends BaseWarehouse
 	protected static $apiUrl = 'https://ssl.google-analytics.com/collect';
 
 	/**
-	 * Parameter mapping
-	 * @var array
-	 */
-	protected $parameterMapping = array(
-		//General
-		'version' => 'v',
-		'trackingId' => 'tid',
-		'anonymizeIp' => 'aip',
-		'dataSource' => 'ds',
-		'queueTime' => 'qt',
-		'cacheBuster' => 'z',
-		//User
-		'clientId' => 'cid',
-		'userId'=> 'uid',
-		//Session
-		'sessionControl' => 'sc',
-		'ipOverride' => 'uip',
-		'userAgentOverride'=> 'ua',
-		'geographicalOverride' => 'geoid',
-		//Traffic Sources
-		'documentReferrer' => 'dr',
-		'campaignName' => 'cn',
-		'campaignSource' => 'cs',
-		'campaignMedium' => 'cm',
-		'campaignKeyword' => 'ck',
-		'campaignContent' => 'cc',
-		'campaignId' => 'ci',
-		'googleAdWordsId' => 'gclid',
-		'googleDisplayAdsId' => 'dclid',
-		//System Info
-		'screenResolution' => 'sr',
-		'viewportSize' => 'vp',
-		'documentEncoding' => 'de',
-		'screenColors' => 'sd',
-		'userLanguage' => 'ul',
-		'javaEnabled' => 'je',
-		'flashVersion' => 'fl',
-		//Hit
-		'hitType' => 't',
-		'nonInteractionHit' => 'ni',
-		//Content Information
-		'documentLocationUrl' => 'dl',
-		'documentHostName' => 'dh',
-		'documentPath' => 'dp',
-		'documentTitle' => 'dt',
-		'screenName' => 'cd',
-		'linkId' => 'linkid',
-		//App Tracking
-		'applicationName' => 'an',
-		'applicationId' => 'aid',
-		'applicationVersion' => 'av',
-		'applicationInstallerId' => 'aiid',
-		//Event Tracking
-		'eventCategory' => 'ec',
-		'eventAction' => 'ea',
-		'eventLabel' => 'el',
-		'eventValue' => 'ev',
-		//E-Commerce
-		'transactionId' => 'ti',
-		'transactionAffiliation' => 'ta',
-		'transactionRevenue' => 'tr',
-		'transactionShipping' => 'ts',
-		'transactionTax' => 'tt',
-		'itemName' => 'in',
-		'itemPrice' => 'ip',
-		'itemQuantity' => 'iq',
-		'itemCode' => 'ic',
-		'itemCategory' => 'iv',
-		'currencyCode' => 'cu',
-		//Enhanced E-Commerce
-		'productSku' => 'pr{0}id',
-		'productName' => 'pr{0}nm',
-		'productBrand' => 'pr{0}br',
-		'productCategory' => 'pr{0}ca',
-		'productVariant' => 'pr{0}va',
-		'productPrice' => 'pr{0}pr',
-		'productQuantity' => 'pr{0}qt',
-		'productCouponCode' => 'pr{0}cc',
-		'productPosition' => 'pr{0}ps',
-		'productCustomDimension' => 'pr{0}cd{1}',
-		'productCustomMetric' => 'pr{0}cm{1}',
-		'productAction' => 'pa',
-		'affiliation' => 'ta',
-		'revenue' => 'tr',
-		'tax' => 'tt',
-		'shipping' => 'ts',
-		'couponCode' => 'tcc',
-		'productActionList' => 'pal',
-		'checkoutStep' => 'cos',
-		'checkoutStepOption' => 'col',
-		'productImpressionListName' => 'il{0}nm',
-		'productImpressionSku' => 'il{0}pi{1}id',
-		'productImpressionName' => 'il{0}pi{1}nm',
-		'productImpressionBrand' => 'il{0}pi{1}br',
-		'productImpressionCategory' => 'il{0}pi{1}ca',
-		'productImpressionVariant' => 'il{0}pi{1}va',
-		'productImpressionPosition' => 'il{0}pi{1}ps',
-		'productImpressionPrice' => 'il{0}pi{1}pr',
-		'productImpressionCustomDimension' => 'il{0}pi{1}cd{2}',
-		'productImpressionCustomMetric' => 'il{0}pi{1}cm{2}',
-		'promotionId' => 'promo{0}id',
-		'promotionName' => 'promo{0}nm',
-		'promotionCreative' => 'promo{0}cr',
-		'promotionPosition' => 'promo{0}ps',
-		'promotionAction' => 'promoa',
-		//Social Interactions
-		'socialNetwork' => 'sn',
-		'socialAction' => 'sa',
-		'socialActionTarget' => 'st',
-		//Timing
-		'userTimingCategory' => 'utc',
-		'userTimingVariableName' => 'utv',
-		'userTimingTime' => 'utt',
-		'userTimingLabel' => 'utl',
-		'pageLoadTime' => 'plt',
-		'dnsTime' => 'dns',
-		'pageDownloadTime' => 'pdt',
-		'redirectResponseTime' => 'rrt',
-		'tcpConnectTime' => 'tcp',
-		'serverResponseTime' => 'srt',
-		'domInteractiveTime' => 'dit',
-		'contentLoadTime' => 'clt',
-		//Exceptions
-		'exceptionDescription' => 'exd',
-		'exceptionFatal' => 'exf',
-		//Custom Dimensions/Metrics
-		'customDimension' => 'cd{0}',
-		'customMetric' => 'cm{0}',
-		//ContentExperiments
-		'experimentId' => 'xid',
-		'experimentVariant' => 'xvar',
-	);
-
-	/**
 	 * Flush all the saved up logs
 	 */
 	public function flush()
 	{
-		// queue each log
+		// fetch the requests
+		$requests = array();
 		foreach ($this->logs as $log)
 		{
-			$data = $this->getAttributesFromLog($log);
+			// fetch the base stuff
+			$attributes = $this->processBaseLog($log);
 
-			$this->queue(array(get_called_class(), 'send'), array($data, microtime(true)));
+			// process event specific
+			if ($log instanceof PageviewLog)
+			{
+				$additionalAttributes = $this->processPageviewLog($log);
+			}
+			elseif ($log instanceof EventLog)
+			{
+				$additionalAttributes = $this->processEventLog($log);
+			}
+			elseif ($log instanceof ErrorLog)
+			{
+				$additionalAttributes = $this->processErrorLog($log);
+			}
+			elseif ($log instanceof EcommerceLog)
+			{
+				$additionalAttributes = $this->processEcommerceLog($log);
+			}
+			elseif ($log instanceof GenericLog)
+			{
+				$additionalAttributes = $this->processGenericLog($log);
+			}
+			else
+			{
+				throw new Exception('Ga-warehouse does not support log: ' . get_class($log));
+			}
+
+			// log each one
+			foreach ($additionalAttributes as $additionalAttribute)
+			{
+				// queue it
+				$this->queue(array(get_called_class(), 'send'), array($attributes + $additionalAttribute, microtime(true)));
+			}
 		}
+	}
+
+	/**
+	 * Process the BaseLog log
+	 * @param  BaseLog $log
+	 * @return array
+	 */
+	protected function processBaseLog($log)
+	{
+		return array(
+			'tid' => config('app.analytics.ga.trackignid'),
+			'v' => config('app.analytics.ga.version'),
+			'z' => rand(0, 2000000000),
+
+			'cid' => $log->visitorId,
+			'uid' => $log->userId,
+			'ul' => $log->locale,
+			'uip' => $log->ip,
+			'dl' => $log->url,
+			'dh' => $log->host,
+			'dp' => $log->path,
+			'dr' => $log->referrer,
+			'ua' => $log->userAgent,
+
+			'de' => $log->charset,
+			'cdenvironment' => $log->environment,
+		);
+	}
+
+	/**
+	 * Process the PageviewLog log
+	 * @param  PageviewLog $log
+	 * @return array
+	 */
+	protected function processPageviewLog($log)
+	{
+		return array(array(
+			't' => 'pageview',
+		));
+	}
+
+	/**
+	 * Process the EventLog log
+	 * @param  EventLog $log
+	 * @return array
+	 */
+	protected function processEventLog($log)
+	{
+		return array(array(
+			't' => 'event',
+
+			'ec' => $log->category,
+			'ea' => $log->action,
+			'el' => $log->name,
+			'ev' => $log->value,
+		));
+	}
+
+	/**
+	 * Process the ErrorLog log
+	 * @param  ErrorLog $log
+	 * @return array
+	 */
+	protected function processErrorLog($log)
+	{
+		return array(array(
+			't' => 'exception',
+
+			'exd' => $log->exception->getMessage(),
+			//'exf' => true,
+		));
+	}
+
+	/**
+	 * Process the EcommerceLog log
+	 * @param  EcommerceLog $log
+	 * @return array
+	 */
+	protected function processEcommerceLog($log)
+	{
+		$logs = array(array(
+			't' => 'transaction',
+
+			'ti' => $log->id,
+			'ta' => $log->category,
+			'ts' => $log->shipping,
+			'tt' => $log->tax,
+			'tr' => $log->revenue,
+			'cu' => $log->currencyCode,
+		));
+
+		// add items
+		$items = array();
+		foreach ($log->items as $item)
+		{
+			$logs[] = array(
+				't' => 'item',
+
+				'ic' => $item->id,
+				'in' => $item->name,
+				'iv' => $item->category,
+				'ip' => $item->price,
+				'iq' => $item->quantity,
+				'cu' => $log->currencyCode,
+			);
+		}
+
+		return $logs;
+	}
+
+	/**
+	 * Process the GenericLog log
+	 * @param  GenericLog $log
+	 * @return array
+	 */
+	protected function processGenericLog($log)
+	{
+		$log = array(
+			't' => 'generic',
+		);
+
+		// add each item
+		foreach ($log->toArray() as $key => $value)
+		{
+			$log['cm' . $key] = $value;
+		}
+
+		return array($log);
 	}
 
 	/**

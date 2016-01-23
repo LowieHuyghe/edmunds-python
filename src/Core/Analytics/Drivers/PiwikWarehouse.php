@@ -52,34 +52,34 @@ class PiwikWarehouse extends BaseWarehouse
 			// process event specific
 			if ($log instanceof PageviewLog)
 			{
-				$aditionalAttributes = $this->processPageviewLog($log);
+				$additionalAttributes = $this->processPageviewLog($log);
 			}
 			elseif ($log instanceof EventLog)
 			{
-				$aditionalAttributes = $this->processEventLog($log);
+				$additionalAttributes = $this->processEventLog($log);
 			}
 			elseif ($log instanceof ErrorLog)
 			{
-				$aditionalAttributes = $this->processErrorLog($log);
+				$additionalAttributes = $this->processErrorLog($log);
 			}
 			elseif ($log instanceof EcommerceLog)
 			{
-				$aditionalAttributes = $this->processEcommerceLog($log);
+				$additionalAttributes = $this->processEcommerceLog($log);
 			}
 			elseif ($log instanceof GenericLog)
 			{
-				$aditionalAttributes = $this->processGenericLog($log);
+				$additionalAttributes = $this->processGenericLog($log);
 			}
 			else
 			{
-				throw new Exception('Could not process log: ' . get_class($log));
+				throw new Exception('Piwik-warehouse does not support log: ' . get_class($log));
 			}
 
 			// process the custom values
-			$customValues = ($attributes['custom'] ?? array()) + ($aditionalAttributes['custom'] ?? array());
+			$customValues = ($attributes['custom'] ?? array()) + ($additionalAttributes['custom'] ?? array());
 			unset($attributes['custom']);
-			unset($aditionalAttributes['custom']);
-			$attributes = $attributes + $aditionalAttributes;
+			unset($additionalAttributes['custom']);
+			$attributes = $attributes + $additionalAttributes;
 			$attributes['_cvar'] = $customValues ? json_encode($customValues) : null;
 
 			// add to requests
@@ -105,7 +105,7 @@ class PiwikWarehouse extends BaseWarehouse
 	{
 		return array(
 			'idsite' => config('app.analytics.piwik.siteid'),
-			'version' => config('app.analytics.piwik.version'),
+			'apiv' => config('app.analytics.piwik.version'),
 			'rand' => rand(0, 2000000000),
 			'rec' => 1,
 
@@ -137,7 +137,7 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processPageviewLog($log)
 	{
 		return array(
-			//'action_name' => 'pageview',
+			'action_name' => 'pageview',
 		);
 	}
 
@@ -149,6 +149,8 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processEventLog($log)
 	{
 		return array(
+			'action_name' => 'event',
+
 			'e_c' => $log->category,
 			'e_a' => $log->action,
 			'e_n' => $log->name,
@@ -164,6 +166,8 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processErrorLog($log)
 	{
 		return array(
+			'action_name' => 'error',
+
 			'e_c' => 'errors',
 			'e_a' => $log->type,
 			'e_n' => $log->exception->getMessage(),
@@ -192,6 +196,8 @@ class PiwikWarehouse extends BaseWarehouse
 		}
 
 		return array(
+			'action_name' => 'ecommerce',
+
 			'ec_id' => $log->id,
 			'ec_st' => $log->subtotal,
 			'ec_sh' => $log->shipping,
@@ -211,6 +217,8 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processGenericLog($log)
 	{
 		return array(
+			'action_name' => 'generic',
+
 			'custom' => $log->toArray(),
 		);
 	}
