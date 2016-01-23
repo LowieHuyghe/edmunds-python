@@ -15,6 +15,8 @@ namespace Core\Bases\Analytics;
 
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Structures\BaseStructure;
+use Core\Registry\Queue;
+use Core\Registry\Registry;
 
 /**
  * The warehouse base to extend from

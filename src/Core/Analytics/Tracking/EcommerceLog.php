@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Bases\Analytics\Tracking;
+namespace Core\Analytics\Tracking;
 
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Analytics\Tracking\EcommerceItem;
