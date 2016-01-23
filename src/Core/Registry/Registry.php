@@ -13,6 +13,8 @@
 
 namespace Core\Registry;
 
+use Core\Analytics\AnalyticsManager;
+use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Structures\BaseStructure;
 use Core\Registry\Admin\Pm;
 
@@ -92,4 +94,18 @@ class Registry extends BaseStructure
 		return self::$registry['adminPm'][$driver ?: 0];
 	}
 
+	/**
+	 * Get a instance of a warehouse
+	 * @param string $driver
+	 * @return BaseWarehouse
+	 */
+	public static function warehouse($driver = null)
+	{
+		if (!isset(self::$registry['warehouse'][$driver ?: 0]))
+		{
+			self::$registry['warehouse'][$driver ?: 0] = (new AnalyticsManager($driver))->warehouse();
+		}
+
+		return self::$registry['warehouse'][$driver ?: 0];
+	}
 }

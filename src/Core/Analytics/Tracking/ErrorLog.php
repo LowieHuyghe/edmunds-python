@@ -11,29 +11,23 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking\Piwik;
+namespace Core\Bases\Analytics\Tracking;
 
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Bases\Analytics\Tracking\BaseLog;
+use Exception;
 
 /**
- * The structure for ecommerce logs
+ * An error log
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	// optional ecommerce info
- * @property string $ecommerceId
- * @property EcommerceLogItems[] $ecommerceItems
- * @property double $ecommerceRevenue
- * @property double $ecommerceSubtotal
- * @property double $ecommerceTax
- * @property double $ecommerceShippingCost
- * @property double $ecommerceDiscount
- * @property integer $ecommercePreviousTime
+ * @property string $type
+ * @property Exception $exception
  */
-class EcommerceLog extends BaseLog
+class ErrorLog extends BaseLog
 {
-	//
+
 }

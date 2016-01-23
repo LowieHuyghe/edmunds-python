@@ -121,7 +121,7 @@ class Application extends \Laravel\Lumen\Application
 
 		$this->logPageView($response, isset($exception) ? $exception : null);
 		// and send them all
-		BaseLog::flushReports();
+		BaseLog::flushLogs();
 
 		return $response;
 	}
@@ -199,7 +199,7 @@ class Application extends \Laravel\Lumen\Application
 				$pageview->actionName = trim($matches[1]);
 			}
 
-			$pageview->report();
+			$pageview->log();
 		}
 	}
 
