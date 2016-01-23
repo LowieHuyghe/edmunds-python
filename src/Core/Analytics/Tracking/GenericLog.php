@@ -11,25 +11,19 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking\Piwik;
+namespace Core\Bases\Analytics\Tracking;
 
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Bases\Analytics\Tracking\BaseLog;
 
 /**
- * The structure for event reports
+ * A generic log
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
- *
-	// optional event info
- * @property string $eventCategory
- * @property string $eventAction
- * @property string $eventName
- * @property mixed $eventValue
  */
-class EventLog extends BaseLog
+class GenericLog extends BaseLog
 {
-	//
+
 }

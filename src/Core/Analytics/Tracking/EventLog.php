@@ -11,19 +11,24 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking\Piwik;
+namespace Core\Bases\Analytics\Tracking;
 
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Bases\Analytics\Tracking\BaseLog;
 
 /**
- * The structure for pageview reports
+ * An event log
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property string $category
+ * @property string $action
+ * @property string $name
+ * @property mixed $value
  */
-class PageviewLog extends BaseLog
+class EventLog extends BaseLog
 {
-	//
+
 }

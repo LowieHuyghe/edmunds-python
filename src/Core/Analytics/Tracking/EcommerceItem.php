@@ -11,29 +11,25 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking\Piwik;
+namespace Core\Bases\Analytics\Tracking;
 
-use Core\Bases\Analytics\Tracking\Piwik\BaseLog;
+use Core\Bases\Structures\BaseStructure;
 
 /**
- * The structure for ecommerce logs
+ * An ecommerce item
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
-	// optional ecommerce info
- * @property string $ecommerceId
- * @property EcommerceLogItems[] $ecommerceItems
- * @property double $ecommerceRevenue
- * @property double $ecommerceSubtotal
- * @property double $ecommerceTax
- * @property double $ecommerceShippingCost
- * @property double $ecommerceDiscount
- * @property integer $ecommercePreviousTime
+ * @property string $id
+ * @property string $name
+ * @property string $category
+ * @property float $price
+ * @property int $quantity
  */
-class EcommerceLog extends BaseLog
+class EcommerceItem extends BaseStructure
 {
 	//
 }
