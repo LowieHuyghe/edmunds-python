@@ -82,9 +82,10 @@ class BaseLog extends BaseStructure
 
 	/**
 	 * Log the damn thing
+	 * @param string $driver
 	 */
-	public function log()
+	public function log($driver = null)
 	{
-		Registry::warehouse()->log($this);
+		Registry::warehouse($driver)->log($this);
 	}
 }
