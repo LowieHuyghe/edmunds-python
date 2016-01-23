@@ -14,6 +14,7 @@
 namespace Core\Analytics\Drivers;
 
 use Core\Analytics\Drivers\BaseWarehouse;
+use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\Tracking\ErrorLog;
 
 /**
@@ -59,12 +60,35 @@ class NewrelicWarehouse extends BaseWarehouse
 		$logAttributes = $log->getAttributes();
 
 		// process the log
-		if ($log instanceof ErrorLog)
+		if ($log instanceof PageviewLog)
 		{
-			$message = $log->message->getValue();
-			$exception = $log->exception->getValue();
-
-			newrelic_notice_error($message, $exception);
+			$this->processPageviewLog($log);
 		}
+		elseif ($log instanceof ErrorLog)
+		{
+			$this->processErrorLog($log);
+		}
+		else
+		{
+			throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
+		}
+	}
+
+	/**
+	 * Process the PageviewLog log
+	 * @param  PageviewLog $log
+	 */
+	protected function processPageviewLog($log)
+	{
+		newrelic_set_appname($this->appName, $$this->license);
+	}
+
+	/**
+	 * Process the ErrorLog log
+	 * @param  ErrorLog $log
+	 */
+	protected function processErrorLog($log)
+	{
+		newrelic_notice_error($log->exception->getMessage(), $log->exception);
 	}
 }
