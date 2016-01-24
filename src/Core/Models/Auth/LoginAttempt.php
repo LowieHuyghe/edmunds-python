@@ -81,9 +81,11 @@ class LoginAttempt extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->validator->value('id')->integer()->required();
-		$this->validator->value('ip')->ip()->max(255)->required();
-		$this->validator->value('type')->max(255)->required();
+		$this->required = array_merge($this->required, array('id', 'ip', 'type'));
+
+		$this->validator->value('id')->integer();
+		$this->validator->value('ip')->ip()->max(255);
+		$this->validator->value('type')->max(255);
 
 		$this->validator->value('email')->email()->max(255);
 		$this->validator->value('pass')->max(255);
