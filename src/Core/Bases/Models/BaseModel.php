@@ -53,7 +53,7 @@ class BaseModel extends Model
 	 * The required fields of this model
 	 * @var array
 	 */
-	public $required = [];
+	protected $required = [];
 
 	/**
 	 * The attributes that should be mutated to dates.
@@ -328,6 +328,15 @@ class BaseModel extends Model
 		}
 
 		return $model;
+	}
+
+	/**
+	 * Get the required fields of a model
+	 * @return array
+	 */
+	public static function getRequired()
+	{
+		return (new static())->required;
 	}
 
 }
