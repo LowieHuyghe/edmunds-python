@@ -47,20 +47,11 @@ class Queue extends BaseStructure
 
 	/**
 	 * Dispatch a job to its appropriate handler.
-	 * @param callable $callable
-	 * @param array $args
-	 * @param string $queue
-	 * @param int $attempts
+	 * @param QueueJob $job
 	 * @return \Illuminate\Http\Response
 	 */
-	public function dispatch($callable, $args, $queue = self::QUEUE_DEFAULT, $attempts = 1)
+	public function dispatch($job)
 	{
-		$job = new QueueJob($callable, $args, $attempts);
-
-		if ($queue) {
-			$job = $job->onQueue($queue);
-		}
-
 		return app('Illuminate\Contracts\Bus\Dispatcher')->dispatch($job);
 	}
 

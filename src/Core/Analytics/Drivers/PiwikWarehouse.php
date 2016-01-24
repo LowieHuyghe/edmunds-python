@@ -103,14 +103,16 @@ class PiwikWarehouse extends BaseWarehouse
 	 */
 	protected function processBaseLog($log)
 	{
+		$visitorId = substr(str_replace('-', '', $log->visitorId), 0, 16);
+
 		return array(
 			'idsite' => config('app.analytics.piwik.siteid'),
 			'apiv' => config('app.analytics.piwik.version'),
 			'rand' => rand(0, 2000000000),
 			'rec' => 1,
 
-			'_id' => $log->visitorId,
-			'cid' => $log->visitorId,
+			'_id' => $visitorId,
+			'cid' => $visitorId,
 			'uid' => $log->userId,
 			'lang' => $log->locale,
 			'cip' => $log->ip,
@@ -231,7 +233,7 @@ class PiwikWarehouse extends BaseWarehouse
 		curl_setopt($ch, CURLOPT_URL, static::$apiUrl);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_POST, count($data));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
 
