@@ -70,9 +70,11 @@ class PasswordReset extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->validator->value('email')->max(255)->email()->required();
-		$this->validator->value('user_id')->integer()->required();
-		$this->validator->value('token')->max(255)->required();
+		$this->required = array_merge($this->required, array('email', 'user_id', 'token'));
+
+		$this->validator->value('email')->max(255)->email();
+		$this->validator->value('user_id')->integer();
+		$this->validator->value('token')->max(255);
 	}
 
 	/**

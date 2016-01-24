@@ -142,8 +142,10 @@ class BaseEnumModel extends BaseModel
 	{
 		parent::addValidationRules();
 
+		$this->required = array_merge($this->required, array('name'));
+
 		$this->validator->value('id')->integer();
-		$this->validator->value('name')->required()->max(32);
+		$this->validator->value('name')->max(32);
 	}
 
 	/**

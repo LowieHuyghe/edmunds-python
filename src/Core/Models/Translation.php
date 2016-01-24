@@ -231,9 +231,11 @@ class Translation extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->validator->value('hash')->max(32)->unique('translations', $this->getKeyName())->required();
-		$this->validator->value('original')->max(21800)->required();
-		$this->validator->value('used')->integer()->required();
+		$this->required = array_merge($this->required, array('hash', 'original', 'used'));
+
+		$this->validator->value('hash')->max(32);
+		$this->validator->value('original')->max(21800);
+		$this->validator->value('used')->integer();
 
 		$this->validator->value('aa')->max(21800);
 		$this->validator->value('ab')->max(21800);
