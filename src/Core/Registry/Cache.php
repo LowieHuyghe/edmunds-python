@@ -39,7 +39,10 @@ class Cache extends BaseStructure
 	{
 		parent::__construct();
 
-		$this->store = $driver;
+		$manager = app('cache');
+		$store = $manager->store($driver ?: config('cache.default', 'file'));
+
+		$this->store = $store;
 	}
 
 	/**
@@ -50,17 +53,17 @@ class Cache extends BaseStructure
 	 */
 	public function get($key, $default = null)
 	{
-		return app('cache')->store($this->store)->get($key, $default);
+		return $this->store->get($key, $default);
 	}
 
 	/**
 	 * Check if value exists
 	 * @param string $key
-	 * @return mixed
+	 * @return bool
 	 */
 	public function has($key)
 	{
-		return app('cache')->store($this->store)->has($key);
+		return $this->store->has($key);
 	}
 
 	/**
@@ -69,25 +72,26 @@ class Cache extends BaseStructure
 	 * @param mixed $value
 	 * @param int $minutes 0 = Forever
 	 */
-	public function save($key, $value, $minutes = 7200)
+	public function set($key, $value, $minutes = 7200)
 	{
 		if ($minutes)
 		{
-			app('cache')->store($this->store)->put($key, $value, $minutes);
+			$this->store->put($key, $value, $minutes);
 		}
 		else
 		{
-			app('cache')->store($this->store)->forever($key, $value);
+			$this->store->forever($key, $value);
 		}
 	}
 
 	/**
 	 * Delete from cache
 	 * @param string $key
+	 * @return bool Success
 	 */
 	public function delete($key)
 	{
-		app('cache')->store($this->store)->forget($key);
+		return $this->store->forget($key);
 	}
 
 }
