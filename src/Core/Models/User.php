@@ -161,8 +161,10 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	{
 		parent::addValidationRules();
 
+		$this->required = array_merge($this->required, array('email'));
+
 		$this->validator->value('id')->integer();
-		$this->validator->value('email')->max(255)->unique('users', $this->getKeyName())->required();
+		$this->validator->value('email')->max(255)->unique('users', $this->getKeyName());
 		$this->validator->value('gender_id')->integer();
 		$this->validator->value('password')->max(60);
 		$this->validator->value('remember_token')->max(100);

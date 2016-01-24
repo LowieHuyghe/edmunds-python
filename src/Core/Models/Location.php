@@ -136,9 +136,11 @@ class Location extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->validator->value('user_id')->integer()->required();
+		$this->required = array_merge($this->required, array('user_id', 'ip'));
 
-		$this->validator->value('ip')->ip()->max(255)->required();
+		$this->validator->value('user_id')->integer();
+
+		$this->validator->value('ip')->ip()->max(255);
 
 		$this->validator->value('continent_code')->max(10);
 		$this->validator->value('continent_name')->max(255);

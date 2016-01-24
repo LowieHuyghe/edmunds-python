@@ -50,6 +50,12 @@ class BaseModel extends Model
 	protected $recoverObjects = [];
 
 	/**
+	 * The required fields of this model
+	 * @var array
+	 */
+	public $required = [];
+
+	/**
 	 * The attributes that should be mutated to dates.
 	 * @var array
 	 */
@@ -67,6 +73,7 @@ class BaseModel extends Model
 		{
 			$this->validator = new Validation();
 			$this->addValidationRules();
+			$this->addRequiredValidationRules();
 		}
 	}
 
@@ -258,6 +265,17 @@ class BaseModel extends Model
 		$this->validator->value('created_at')->date();
 		$this->validator->value('updated_at')->date();
 		$this->validator->value('deleted_at')->date();
+	}
+
+	/**
+	 * Apply the required fields to validation
+	 */
+	protected function addRequiredValidationRules()
+	{
+		foreach ($this->required as $field)
+		{
+			$this->validator->value($field)->required();
+		}
 	}
 
 	/**

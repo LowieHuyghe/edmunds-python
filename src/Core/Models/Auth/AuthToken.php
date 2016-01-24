@@ -66,9 +66,11 @@ class AuthToken extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->validator->value('token')->max(255)->required();
-		$this->validator->value('user_id')->integer()->required();
-		$this->validator->value('session_id')->max(255)->required();
+		$this->required = array_merge($this->required, array('token', 'user_id', 'session_id'));
+
+		$this->validator->value('token')->max(255);
+		$this->validator->value('user_id')->integer();
+		$this->validator->value('session_id')->max(255);
 	}
 
 }
