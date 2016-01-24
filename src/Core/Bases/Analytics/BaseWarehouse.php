@@ -15,6 +15,7 @@ namespace Core\Bases\Analytics;
 
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Structures\BaseStructure;
+use Core\Jobs\QueueJob;
 use Core\Registry\Queue;
 use Core\Registry\Registry;
 
@@ -64,7 +65,6 @@ class BaseWarehouse extends BaseStructure
 	 */
 	protected function queue($callable, $argumentsArray)
 	{
-		Registry::queue()->dispatch($callable, $argumentsArray, Queue::QUEUE_LOG);
+		(new QueueJob($callable, $argumentsArray, Queue::QUEUE_LOG, 1))->dispatch();
 	}
-
 }

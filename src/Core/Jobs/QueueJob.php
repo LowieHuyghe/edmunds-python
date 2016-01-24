@@ -14,6 +14,8 @@
 namespace Core\Jobs;
 
 use Core\Bases\Jobs\BaseJob;
+use Core\Registry\Queue;
+use Core\Registry\Registry;
 
 /**
  * Queue to use
@@ -46,11 +48,13 @@ class QueueJob extends BaseJob
 	 * @param array $args
 	 * @param int $attempts
 	 */
-	public function __construct($callable, $args = array(), $attempts = 1)
+	public function __construct($callable, $args = array(), $queue = Queue::QUEUE_DEFAULT, $attempts = 1)
 	{
 		$this->callable = $callable;
 		$this->args = $args;
 		$this->attempts = $attempts;
+
+		$this->onQueue($queue);
 	}
 
 	/**
@@ -62,5 +66,14 @@ class QueueJob extends BaseJob
 		{
 			call_user_func_array($this->callable, $this->args);
 		}
+	}
+
+	/**
+	 * Queue this job
+	 * @return \Illuminate\Http\Response
+	 */
+	public function dispatch()
+	{
+		return Registry::queue()->dispatch($this);
 	}
 }
