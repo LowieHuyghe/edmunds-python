@@ -14,8 +14,7 @@
 namespace CoreTest\Registry\Admin;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Registry\Cache;
-use Core\Registry\Registry;
+use Core\Cache\Cache;
 
 /**
  * Testing Cache-class

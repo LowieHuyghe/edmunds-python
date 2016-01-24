@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Registry;
+namespace Core\Database;
 
 use Core\Bases\Structures\BaseStructure;
 use Illuminate\Database\Query\Builder;
@@ -24,7 +24,7 @@ use Illuminate\Database\Query\Builder;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Db extends BaseStructure
+class Database extends BaseStructure
 {
 	/**
 	 * The default store to load from cache

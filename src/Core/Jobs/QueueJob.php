@@ -14,7 +14,7 @@
 namespace Core\Jobs;
 
 use Core\Bases\Jobs\BaseJob;
-use Core\Registry\Queue;
+use Core\Jobs\Queue;
 use Core\Registry\Registry;
 
 /**
