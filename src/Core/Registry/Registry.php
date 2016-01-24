@@ -16,6 +16,9 @@ namespace Core\Registry;
 use Core\Analytics\AnalyticsManager;
 use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Structures\BaseStructure;
+use Core\Cache\Cache;
+use Core\Database\Database;
+use Core\Jobs\Queue;
 use Core\Registry\Admin\Pm;
 
 /**
@@ -58,7 +61,7 @@ class Registry extends BaseStructure
 	{
 		if (!isset(self::$registry['db'][$connection ?: 0]))
 		{
-			self::$registry['db'][$connection ?: 0] = new Db($connection);
+			self::$registry['db'][$connection ?: 0] = new Database($connection);
 		}
 
 		return self::$registry['db'][$connection ?: 0];

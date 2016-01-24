@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Registry;
+namespace Core\Cache;
 
 use Core\Bases\Structures\BaseStructure;
 
