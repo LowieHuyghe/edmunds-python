@@ -51,7 +51,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function has($name)
 	{
-		return $this->session->has($name);
+		return $this->session ? $this->session->has($name) : false;
 	}
 
 	/**
@@ -61,7 +61,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function set($name, $value)
 	{
-		$this->session->set($name, $value);
+		if ($this->session)
+		{
+			$this->session->set($name, $value);
+		}
 	}
 
 	/**
@@ -72,7 +75,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function get($name, $default = null)
 	{
-		return $this->session->get($name, $default);
+		return $this->session ? $this->session->get($name, $default) : null;
 	}
 
 	/**
@@ -82,8 +85,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function remove($name)
 	{
-		$value = $this->session->remove($name);
-		return $value;
+		return $this->session ? $this->session->remove($name) : null;
 	}
 
 	/**
@@ -94,7 +96,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function start()
 	{
-		return $this->session->start();
+		return $this->session ? $this->session->start() : false;
 	}
 
 	/**
@@ -104,7 +106,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function getId()
 	{
-		return $this->session->getId();
+		return $this->session ? $this->session->getId() : null;
 	}
 
 	/**
@@ -114,7 +116,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function setId($id)
 	{
-		$this->session->setId($id);
+		if ($this->session)
+		{
+			$this->session->setId($id);
+		}
 	}
 
 	/**
@@ -124,7 +129,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function getName()
 	{
-		return $this->session->getName();
+		return $this->session ? $this->session->getName() : null;
 	}
 
 	/**
@@ -134,7 +139,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function setName($name)
 	{
-		$this->session->setName($name);
+		if ($this->session)
+		{
+			$this->session->setName($name);
+		}
 	}
 
 	/**
@@ -151,7 +159,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function invalidate($lifetime = null)
 	{
-		return $this->session->invalidate($lifetime);
+		return $this->session ? $this->session->invalidate($lifetime) : false;
 	}
 
 	/**
@@ -167,7 +175,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function migrate($destroy = false, $lifetime = null)
 	{
-		return $this->session->migrate($destroy, $lifetime);
+		return $this->session ? $this->session->migrate($destroy, $lifetime) : false;
 	}
 
 	/**
@@ -178,7 +186,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function save()
 	{
-		$this->session->save();
+		if ($this->session)
+		{
+			$this->session->save();
+		}
 	}
 
 	/**
@@ -188,7 +199,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function all()
 	{
-		return $this->session->all();
+		return $this->session ? $this->session->all() : array();
 	}
 
 	/**
@@ -197,7 +208,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function replace(array $attributes)
 	{
-		$this->session->replace($attributes);
+		if ($this->session)
+		{
+			$this->session->replace($attributes);
+		}
 	}
 
 	/**
@@ -206,7 +220,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function clear()
 	{
-		$this->session->clear();
+		if ($this->session)
+		{
+			$this->session->clear();
+		}
 	}
 
 	/**
@@ -215,7 +232,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function isStarted()
 	{
-		return $this->session->isStarted();
+		return $this->session ? $this->session->isStarted() : null;
 	}
 
 	/**
@@ -224,7 +241,10 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function registerBag(SessionBagInterface $bag)
 	{
-		$this->session->registerBag($bag);
+		if ($this->session)
+		{
+			$this->session->registerBag($bag);
+		}
 	}
 
 	/**
@@ -234,7 +254,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function getBag($name)
 	{
-		return $this->session->getBag($name);
+		return $this->session ? $this->session->getBag($name) : null;
 	}
 
 	/**
@@ -243,7 +263,7 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function getMetadataBag()
 	{
-		return $this->session->getMetadataBag();
+		return $this->session ? $this->session->getMetadataBag() : null;
 	}
 
 	/**
@@ -252,6 +272,6 @@ class Session extends BaseStructure implements SessionInterface
 	 */
 	public function token()
 	{
-		return $this->session->token();
+		return $this->session ? $this->session->token() : null;
 	}
 }
