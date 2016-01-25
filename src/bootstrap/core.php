@@ -101,7 +101,7 @@ if (!empty($missingConfig))
 |
 */
 
-\Core\Registry\Registry::warehouse('newrelic');
+\Core\Registry::warehouse('newrelic');
 
 
 /*

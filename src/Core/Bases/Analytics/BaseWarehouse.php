@@ -17,7 +17,7 @@ use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Structures\BaseStructure;
 use Core\Jobs\QueueJob;
 use Core\Jobs\Queue;
-use Core\Registry\Registry;
+use Core\Registry;
 
 /**
  * The warehouse base to extend from

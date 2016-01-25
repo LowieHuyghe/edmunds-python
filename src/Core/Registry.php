@@ -11,15 +11,15 @@
  * @since		Version 0.1
  */
 
-namespace Core\Registry;
+namespace Core;
 
 use Core\Analytics\AnalyticsManager;
 use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Structures\BaseStructure;
 use Core\Cache\Cache;
 use Core\Database\Database;
+use Core\Io\Admin\PmManager;
 use Core\Jobs\Queue;
-use Core\Registry\Admin\Pm;
 
 /**
  * A base for the structures to extend from
@@ -91,7 +91,7 @@ class Registry extends BaseStructure
 	{
 		if (!isset(self::$registry['adminPm'][$driver ?: 0]))
 		{
-			self::$registry['adminPm'][$driver ?: 0] = new Pm($driver);
+			self::$registry['adminPm'][$driver ?: 0] = (new PmManager($driver))->channel();
 		}
 
 		return self::$registry['adminPm'][$driver ?: 0];
