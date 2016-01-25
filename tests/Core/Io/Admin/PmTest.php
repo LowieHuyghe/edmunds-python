@@ -11,49 +11,50 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Registry\Admin;
+namespace CoreTest\Io\Admin;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Cache\Cache;
+use Core\Registry;
 
 /**
- * Testing Cache-class
+ * Testing Pm-class
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class CacheTest extends BaseTest
+class PmTest extends BaseTest
 {
 
 	/**
-	 * Test Constructor
+	 * Test Info
 	 */
-	public function testConstructor()
+	public function testInfo()
 	{
-		$success = new Cache() != null;
+		$success = Registry::pm()->info('Info-Title', "The body of the info");
 
 		$this->assertTrue($success);
 	}
 
 	/**
-	 * Test Actions
+	 * Test Warning
 	 */
-	public function testActions()
+	public function testWarning()
 	{
-		$cache = new Cache();
-		$cacheKey = get_called_class() . '_test';
+		$success = Registry::pm()->warning('Warning-Title', "The body of the warning");
 
-		// test save
-		$cache->set($cacheKey, 'test');
-		$this->assertTrue($cache->has($cacheKey));
-
-		//test get
-		$this->assertTrue($cache->get($cacheKey) == 'test');
-
-		// test delete
-		$this->assertTrue($cache->delete($cacheKey));
-		$this->assertTrue($cache->has($cacheKey) == false);
+		$this->assertTrue($success);
 	}
+
+	/**
+	 * Test Error
+	 */
+	public function testError()
+	{
+		$success = Registry::pm()->error('Error-Title', "The body of the error");
+
+		$this->assertTrue($success);
+	}
+
 }

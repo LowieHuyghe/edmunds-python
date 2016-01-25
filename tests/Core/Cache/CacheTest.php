@@ -11,70 +11,49 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Registry\Admin;
+namespace CoreTest\Registry\Cache;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Registry;
+use Core\Cache\Cache;
 
 /**
- * Testing Registry-class
+ * Testing Cache-class
  *
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class RegistryTest extends BaseTest
+class CacheTest extends BaseTest
 {
 
 	/**
-	 * Test Db default
+	 * Test Constructor
 	 */
-	public function testDb()
+	public function testConstructor()
 	{
-		$success = Registry::db() != null;
+		$success = new Cache() != null;
 
 		$this->assertTrue($success);
 	}
 
 	/**
-	 * Test Cache default
+	 * Test Actions
 	 */
-	public function testCache()
+	public function testActions()
 	{
-		$success = Registry::cache() != null;
+		$cache = new Cache();
+		$cacheKey = get_called_class() . '_test';
 
-		$this->assertTrue($success);
+		// test save
+		$cache->set($cacheKey, 'test');
+		$this->assertTrue($cache->has($cacheKey));
+
+		//test get
+		$this->assertTrue($cache->get($cacheKey) == 'test');
+
+		// test delete
+		$this->assertTrue($cache->delete($cacheKey));
+		$this->assertTrue($cache->has($cacheKey) == false);
 	}
-
-	/**
-	 * Test Queue default
-	 */
-	public function testQueue()
-	{
-		$success = Registry::queue() != null;
-
-		$this->assertTrue($success);
-	}
-
-	/**
-	 * Test Pm default
-	 */
-	public function testPm()
-	{
-		$success = Registry::pm() != null;
-
-		$this->assertTrue($success);
-	}
-
-	/**
-	 * Test Warehouse default
-	 */
-	public function testWarehouse()
-	{
-		$success = Registry::warehouse() != null;
-
-		$this->assertTrue($success);
-	}
-
 }
