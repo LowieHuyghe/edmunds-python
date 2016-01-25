@@ -13,7 +13,7 @@
 
 namespace Core\Bases\Commands;
 
-use Core\Registry\Registry;
+use Core\Registry;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

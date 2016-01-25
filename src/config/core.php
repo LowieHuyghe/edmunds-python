@@ -52,7 +52,7 @@ return array
 
 	'admin' => array(
 		'pm' => array(
-			'driver' => 'slack',
+			'default' => 'slack',
 
 			'slack' => array(
 				'hook' => 'https://hooks.slack.com/services/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',

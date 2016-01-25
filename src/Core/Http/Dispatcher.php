@@ -22,7 +22,7 @@ use Core\Http\Middleware\RightsMiddleware;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Route;
-use Core\Registry\Registry;
+use Core\Registry;
 use Illuminate\View\View;
 
 /**

@@ -15,7 +15,7 @@ namespace Core\Console\Commands\Translation;
 use Core\Bases\Commands\BaseCommand;
 use Core\Io\Translator;
 use Core\Models\Translation;
-use Core\Registry\Registry;
+use Core\Registry;
 
 /**
  * The command syncing all the translations in the project.

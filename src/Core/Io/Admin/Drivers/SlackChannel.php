@@ -11,40 +11,20 @@
  * @since		Version 0.1
  */
 
-namespace Core\Registry\Admin\Pm;
+namespace Core\Io\Admin\Drivers;
 
-use Core\Bases\Structures\BaseStructure;
-use Core\Registry\Admin\PmInterface;
+use Core\Bases\Io\Admin\BaseChannel;
 
 /**
- * The helper for pm'ing someone directly and fast with Slack
+ * The driver for the slack channel
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Slack extends BaseStructure implements PmInterface
+class SlackChannel extends BaseChannel
 {
-	/**
-	 * Instance of the slack-helper
-	 * @var Slack
-	 */
-	private static $instance;
-
-	/**
-	 * Fetch instance of the slack-helper
-	 * @return Response
-	 */
-	public static function getInstance()
-	{
-		if (!isset(self::$instance))
-		{
-			self::$instance = new Slack();
-		}
-		return self::$instance;
-	}
-
 	/**
 	 * Client of Slack
 	 * @var \Maknz\Slack\Client
@@ -118,24 +98,26 @@ class Slack extends BaseStructure implements PmInterface
 	 */
 	protected function send($title, $bodyTitle, $body, $color, $channel = null)
 	{
-		$client = $this->client;
-
-		if ($channel)
+		if ($this->hasBeenLongEnough($bodyTitle, $title, $body))
 		{
-			$client = $client->to($channel);
-		}
-		if ($body)
-		{
-			$client = $client->attach(array(
-				'fallback' => $body,
-				'text' => $body,
-				'color' => $color,
-			));
-		}
+			$client = $this->client;
 
-		$client->send($title);
+			if ($channel)
+			{
+				$client = $client->to($channel);
+			}
+			if ($body)
+			{
+				$client = $client->attach(array(
+					'fallback' => $body,
+					'text' => $body,
+					'color' => $color,
+				));
+			}
+
+			$client->send($title);
+		}
 
 		return true;
 	}
-
 }

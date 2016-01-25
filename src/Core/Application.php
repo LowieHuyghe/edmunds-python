@@ -22,7 +22,7 @@ use Core\Http\Dispatcher;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Providers\HttpServiceProvider;
-use Core\Registry\Registry;
+use Core\Registry;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;

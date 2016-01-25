@@ -17,7 +17,7 @@ use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Localization\DateTime;
-use Core\Registry\Registry;
+use Core\Registry;
 
 /**
  * The log base to extend from

@@ -16,7 +16,7 @@ namespace Core\Console\Commands;
 use Core\Bases\Commands\BaseCommand;
 use Core\Models\Location;
 use Core\Registry\Admin\Pm;
-use Core\Registry\Registry;
+use Core\Registry;
 
 /**
  * The command for updating the geoip-databases. Please shedule for every week.
