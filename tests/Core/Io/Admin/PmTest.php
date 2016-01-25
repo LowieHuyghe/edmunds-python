@@ -11,68 +11,48 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Registry\Admin;
+namespace CoreTest\Io\Admin;
 
 use Core\Bases\Tests\BaseTest;
 use Core\Registry;
 
 /**
- * Testing Registry-class
+ * Testing Pm-class
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class RegistryTest extends BaseTest
+class PmTest extends BaseTest
 {
 
 	/**
-	 * Test Db default
+	 * Test Info
 	 */
-	public function testDb()
+	public function testInfo()
 	{
-		$success = Registry::db() != null;
+		$success = Registry::pm()->info('Info-Title', "The body of the info");
 
 		$this->assertTrue($success);
 	}
 
 	/**
-	 * Test Cache default
+	 * Test Warning
 	 */
-	public function testCache()
+	public function testWarning()
 	{
-		$success = Registry::cache() != null;
+		$success = Registry::pm()->warning('Warning-Title', "The body of the warning");
 
 		$this->assertTrue($success);
 	}
 
 	/**
-	 * Test Queue default
+	 * Test Error
 	 */
-	public function testQueue()
+	public function testError()
 	{
-		$success = Registry::queue() != null;
-
-		$this->assertTrue($success);
-	}
-
-	/**
-	 * Test Pm default
-	 */
-	public function testPm()
-	{
-		$success = Registry::pm() != null;
-
-		$this->assertTrue($success);
-	}
-
-	/**
-	 * Test Warehouse default
-	 */
-	public function testWarehouse()
-	{
-		$success = Registry::warehouse() != null;
+		$success = Registry::pm()->error('Error-Title', "The body of the error");
 
 		$this->assertTrue($success);
 	}
