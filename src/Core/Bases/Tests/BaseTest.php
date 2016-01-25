@@ -14,6 +14,7 @@
 namespace Core\Bases\Tests;
 
 use Laravel\Lumen\Testing\TestCase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 /**
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
@@ -26,6 +27,8 @@ use Laravel\Lumen\Testing\TestCase;
  */
 class BaseTest extends TestCase
 {
+	use DatabaseTransactions;
+
 	/**
 	 * Creates the application.
 	 */

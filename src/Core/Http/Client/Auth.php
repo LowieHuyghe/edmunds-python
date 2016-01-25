@@ -291,14 +291,10 @@ class Auth extends BaseStructure
 	 */
 	public function logout()
 	{
-		if (app('auth')->logout())
-		{
-			$this->loggedInUser = null;
+		app('auth')->logout();
+		$this->loggedInUser = null;
 
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	/**
