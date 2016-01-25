@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest\Registry\Admin;
+namespace CoreTest\Registry\Cache;
 
 use Core\Bases\Tests\BaseTest;
 use Core\Cache\Cache;
