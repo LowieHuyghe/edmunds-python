@@ -14,7 +14,7 @@
 namespace CoreTest\Registry\Admin;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Registry\Registry;
+use Core\Registry;
 
 /**
  * Testing Pm-class
