@@ -16,6 +16,8 @@ use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
 use Core\Models\Localization;
 use DeviceDetector\DeviceDetector;
+use DeviceDetector\Parser\Client\Browser;
+use DeviceDetector\Parser\OperatingSystem;
 
 /**
  * The helper for the browser
@@ -31,10 +33,11 @@ use DeviceDetector\DeviceDetector;
  * @property boolean $typeBot
  * // OS
  * @property boolean $osOSX
+ * @property boolean $osIOS
  * @property boolean $osWindows
+ * @property boolean $osWindowsMobile
  * @property boolean $osLinux
  * @property boolean $osAndroid
- * @property boolean $osIOS
  * @property string $osVersion
  * // Browser
  * @property boolean $browserChrome
@@ -94,23 +97,27 @@ class Context extends BaseStructure
 	}
 	protected function getOsOSXAttribute()
 	{
-		return $this->getDetector()->getOs('name') == 'Mac';
-	}
-	protected function getOsWindowsAttribute()
-	{
-		return $this->getDetector()->getOs('name') == 'Windows';
-	}
-	protected function getOsLinuxAttribute()
-	{
-		return $this->getDetector()->getOs('name') == 'GNU/Linux';
-	}
-	protected function getOsAndroidAttribute()
-	{
-		return $this->getDetector()->getOs('name') == 'Android';
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'Mac';
 	}
 	protected function getOsIOSAttribute()
 	{
-		return $this->getDetector()->getOs('name') == 'iOS';
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'iOS';
+	}
+	protected function getOsWindowsAttribute()
+	{
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'Windows';
+	}
+	protected function getOsWindowsMobileAttribute()
+	{
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'Windows Mobile';
+	}
+	protected function getOsLinuxAttribute()
+	{
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'GNU/Linux';
+	}
+	protected function getOsAndroidAttribute()
+	{
+		return OperatingSystem::getOsFamily($this->getDetector()->getOs('short_name')) == 'Android';
 	}
 	protected function getOsVersionAttribute()
 	{
@@ -118,23 +125,23 @@ class Context extends BaseStructure
 	}
 	protected function getBrowserChromeAttribute()
 	{
-		return $this->getDetector()->getClient('name') == 'Chrome';
+		return Browser::getBrowserFamily($this->getDetector()->getClient('short_name')) == 'Chrome';
 	}
 	protected function getBrowserFirefoxAttribute()
 	{
-		return $this->getDetector()->getClient('name') == 'Firefox';
+		return Browser::getBrowserFamily($this->getDetector()->getClient('short_name')) == 'Firefox';
 	}
 	protected function getBrowserIEAttribute()
 	{
-		return $this->getDetector()->getClient('name') == 'Internet Explorer';
+		return Browser::getBrowserFamily($this->getDetector()->getClient('short_name')) == 'Internet Explorer';
 	}
 	protected function getBrowserSafariAttribute()
 	{
-		return $this->getDetector()->getClient('name') == 'Safari';
+		return Browser::getBrowserFamily($this->getDetector()->getClient('short_name')) == 'Safari';
 	}
 	protected function getBrowserOperaAttribute()
 	{
-		return $this->getDetector()->getClient('name') == 'Opera';
+		return Browser::getBrowserFamily($this->getDetector()->getClient('short_name')) == 'Opera';
 	}
 	protected function getBrowserVersionAttribute()
 	{
