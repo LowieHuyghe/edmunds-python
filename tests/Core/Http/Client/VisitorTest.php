@@ -107,5 +107,4 @@ class VisitorTest extends BaseTest
 	{
 		$this->assertTrue(Visitor::getInstance()->location != null);
 	}
-
 }
