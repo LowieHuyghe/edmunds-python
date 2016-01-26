@@ -11,7 +11,8 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -22,7 +23,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateFileEntriesTable extends BaseMigration
+trait _000001CreateUsersTable
 {
 	/**
 	 * Run the migrations.
@@ -30,17 +31,16 @@ class CreateFileEntriesTable extends BaseMigration
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('users', function (Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('type');
-			$table->integer('size');
+			$table->string('email')->unique();
+			$table->string('password', 60);
+			$table->string('locale', 10);
+			$table->integer('gender_id')->unsigned();
+			$table->rememberToken();
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 
@@ -50,6 +50,6 @@ class CreateFileEntriesTable extends BaseMigration
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
+		app('db')->connection()->getSchemaBuilder()->drop('users');
 	}
 }

@@ -11,18 +11,19 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for userLocations-table
+ * Migration for password_resets-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateUserLocationsTable extends BaseMigration
+trait _000002CreatePasswordResetsTable
 {
 	/**
 	 * Run the migrations.
@@ -30,28 +31,12 @@ class CreateUserLocationsTable extends BaseMigration
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('user_locations', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
 		{
+			$table->increments('id');
+			$table->string('email')->index();
 			$table->integer('user_id')->unsigned();
-			$table->primary('user_id');
-			$table->string('ip');
-
-			$table->string('continent_code', 10)->nullable();
-			$table->string('continent_name')->nullable();
-
-			$table->string('country_code', 10)->nullable();
-			$table->string('country_name')->nullable();
-
-			$table->string('region_code', 10)->nullable();
-			$table->string('region_name')->nullable();
-
-			$table->string('city_name')->nullable();
-			$table->string('postal_code', 32)->nullable();
-
-			$table->float('latitude')->nullable();
-			$table->float('longitude')->nullable();
-			$table->string('timezone')->nullable();
-
+			$table->string('token')->unique();
 			$table->timestamps();
 		});
 	}
@@ -62,6 +47,6 @@ class CreateUserLocationsTable extends BaseMigration
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('user_locations');
+		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
 	}
 }

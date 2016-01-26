@@ -11,7 +11,8 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -22,7 +23,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateJobsTable extends BaseMigration
+trait _000009CreateLoginAttemptsTable
 {
 	/**
 	 * Run the migrations.
@@ -31,16 +32,19 @@ class CreateJobsTable extends BaseMigration
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('jobs', function (Blueprint $table) {
+		app('db')->connection()->getSchemaBuilder()->create('login_attempts', function (Blueprint $table) {
 			$table->bigIncrements('id');
-			$table->string('queue');
-			$table->longText('payload');
-			$table->tinyInteger('attempts')->unsigned();
-			$table->tinyInteger('reserved')->unsigned();
-			$table->unsignedInteger('reserved_at')->nullable();
-			$table->unsignedInteger('available_at');
-			$table->unsignedInteger('created_at');
-			$table->index(['queue', 'reserved', 'reserved_at']);
+			$table->string('ip');
+			$table->string('type');
+
+			$table->integer('user_id')->unsigned()->nullable();
+			$table->string('email')->nullable();
+			$table->string('pass')->nullable();
+			$table->string('token')->nullable();
+
+			$table->timestamps();
+
+			$table->index(array('ip', 'created_at'));
 		});
 	}
 
@@ -51,6 +55,6 @@ class CreateJobsTable extends BaseMigration
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('jobs');
+		app('db')->connection()->getSchemaBuilder()->drop('login_attempts');
 	}
 }
