@@ -190,7 +190,10 @@ class Visitor extends BaseStructure
 				if (($localizationJson = $this->request->session->get($idKey))
 					|| ($localizationJson = $this->request->getCookie($idKey)))
 				{
-					$localization = Localization::recover(json_decode($localizationJson, true));
+					if ($localizationJson = json_decode($localizationJson, true))
+					{
+						$localization = Localization::recover($localizationJson);
+					}
 				}
 			}
 
@@ -278,7 +281,10 @@ class Visitor extends BaseStructure
 				// recover from session
 				if (($locationJson = $this->request->session->get($idKey)))
 				{
-					$location = Location::recover(json_decode($locationJson, true));
+					if ($locationJson = json_decode($locationJson, true))
+					{
+						$location = Location::recover($locationJson);
+					}
 				}
 			}
 
