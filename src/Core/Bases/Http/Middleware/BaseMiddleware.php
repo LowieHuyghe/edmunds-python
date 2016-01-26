@@ -14,6 +14,9 @@
 namespace Core\Bases\Http\Middleware;
 
 use Closure;
+use Core\Http\Client\Visitor;
+use Core\Http\Request;
+use Core\Http\Response;
 
 /**
  * Middleware base to extend from
@@ -25,14 +28,44 @@ use Closure;
  */
 class BaseMiddleware
 {
-    /**
-     * Handle an incoming request.
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
-    {
-        return $next($request);
-    }
+
+	/**
+	 * The current request
+	 * @var Request
+	 */
+	protected $request;
+
+	/**
+	 * The current request
+	 * @var Response
+	 */
+	protected $response;
+
+	/**
+	 * The visitor
+	 * @var Visitor
+	 */
+	protected $visitor;
+
+
+	/**
+	 * The constructor for the BaseMiddleware
+	 */
+	function __construct()
+	{
+		$this->request = Request::getInstance();
+		$this->response = Response::getInstance();
+		$this->visitor = Visitor::getInstance();
+	}
+
+	/**
+	 * Handle an incoming request.
+	 * @param  \Illuminate\Http\Request  $r
+	 * @param  \Closure  $next
+	 * @return mixed
+	 */
+	public function handle($r, Closure $next)
+	{
+		return $next($r);
+	}
 }

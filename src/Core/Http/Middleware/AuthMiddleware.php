@@ -36,22 +36,18 @@ class AuthMiddleware extends BaseMiddleware
 	 */
 	public function handle($r, \Closure $next)
 	{
-		$visitor = Visitor::getInstance();
-		$request = Request::getInstance();
-		$response = Response::getInstance();
-
-		if (!$visitor->loggedIn)
+		if (!$this->visitor->loggedIn)
 		{
-			if ($request->ajax)
+			if ($this->request->ajax)
 			{
 				abort(403);
 			}
 			else
 			{
-				$response->redirect(config('app.routing.loginroute'), null, true);
+				$this->response->redirect(config('app.routing.loginroute'), null, true);
 			}
 		}
 
-		return $next($request);
+		return $next($r);
 	}
 }

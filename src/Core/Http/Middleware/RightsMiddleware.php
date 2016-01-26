@@ -37,18 +37,14 @@ class RightsMiddleware extends BaseMiddleware
 	 */
 	public function handle($r, \Closure $next)
 	{
-		$visitor = Visitor::getInstance();
-		$request = Request::getInstance();
-		$response = Response::getInstance();
-
 		//Check if logged in
-		$allowed = $visitor->loggedIn;
+		$allowed = $this->visitor->loggedIn;
 		//Check if has all rights
 		if ($allowed)
 		{
 			foreach (Visitor::$requiredRights as $rightId)
 			{
-				if (!$visitor->user->hasRight($rightId))
+				if (!$this->visitor->user->hasRight($rightId))
 				{
 					$allowed = false;
 					break;
@@ -61,6 +57,6 @@ class RightsMiddleware extends BaseMiddleware
 			abort(403);
 		}
 
-		return $next($request);
+		return $next($r);
 	}
 }
