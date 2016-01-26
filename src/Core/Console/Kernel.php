@@ -68,7 +68,6 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('updategeoip')
-			->weeklyOn(4, '20:42');
+		$schedule->command('updategeoip')->weekly();
 	}
 }
