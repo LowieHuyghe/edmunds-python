@@ -15,6 +15,7 @@ namespace Core\Localization;
 
 use Core\Http\Client\Visitor;
 use IntlDateFormatter;
+use DateTimeZone;
 
 /**
  * The helper for localized DateTime
@@ -33,26 +34,29 @@ class DateTime extends \Carbon\Carbon
 	 */
 	protected $locale;
 
-	/**
-     * Create a new Carbon instance.
-     *
-     * Please see the testing aids section (specifically static::setTestNow())
-     * for more on the possibility of this constructor returning a test instance.
-     *
-     * @param string|null              $time
-     * @param DateTimeZone|string|null $tz
+    /**
+     * The output timezone
+     * @var DateTimeZone
      */
-    public function __construct($time = null, $tz = null)
+    protected $outputTimezone;
+
+    /**
+     * Constructor
+     * @param string|null $time
+     * @param string|null $outputTimezone
+     */
+    public function __construct($time = null, $outputTimezone = null)
     {
         $localization = Visitor::getInstance()->localization;
 
-    	if (is_null($tz))
+    	if (is_null($outputTimezone))
     	{
-    		$tz = $localization->timezone;
+    		$outputTimezone = $localization->timezone;
     	}
+        $this->outputTimezone = $this->safeCreateDateTimeZone($outputTimezone);
         $this->locale = $localization->locale;
 
-    	parent::__construct($time, $tz);
+    	parent::__construct($time, config('core.system.timezone'));
     }
 
     /**
@@ -61,11 +65,7 @@ class DateTime extends \Carbon\Carbon
      */
     public function toDateString()
     {
-        $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::SHORT, IntlDateFormatter::NONE, $this->tz);
-        return (
-            $formatter->format($this)
-            ?: parent::toDateString()
-        );
+        return $this->toFormattedString(IntlDateFormatter::SHORT, IntlDateFormatter::NONE, array($this, 'parent::toDateString'));
     }
 
     /**
@@ -74,11 +74,7 @@ class DateTime extends \Carbon\Carbon
      */
     public function toFormattedDateString()
     {
-        $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, $this->tz);
-        return (
-            $formatter->format($this)
-            ?: parent::toFormattedDateString()
-        );
+        return $this->toFormattedString(IntlDateFormatter::MEDIUM, IntlDateFormatter::NONE, array($this, 'parent::toFormattedDateString'));
     }
 
     /**
@@ -87,11 +83,7 @@ class DateTime extends \Carbon\Carbon
      */
     public function toTimeString()
     {
-        $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM, $this->tz);
-        return (
-            $formatter->format($this)
-            ?: parent::toTimeString()
-        );
+        return $this->toFormattedString(IntlDateFormatter::NONE, IntlDateFormatter::MEDIUM, array($this, 'parent::toTimeString'));
     }
 
     /**
@@ -100,11 +92,7 @@ class DateTime extends \Carbon\Carbon
      */
     public function toDateTimeString()
     {
-        $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::SHORT, IntlDateFormatter::MEDIUM, $this->tz);
-        return (
-            $formatter->format($this)
-            ?: parent::toDateTimeString()
-        );
+        return $this->toFormattedString(IntlDateFormatter::SHORT, IntlDateFormatter::MEDIUM, array($this, 'parent::toDateTimeString'));
     }
 
     /**
@@ -113,11 +101,34 @@ class DateTime extends \Carbon\Carbon
      */
     public function toDayDateTimeString()
     {
-        $formatter = new IntlDateFormatter($this->locale, IntlDateFormatter::LONG, IntlDateFormatter::SHORT, $this->tz);
-        return (
+        return $this->toFormattedString(IntlDateFormatter::LONG, IntlDateFormatter::SHORT, array($this, 'parent::toDayDateTimeString'));
+    }
+
+    /**
+     * Format the datetime to a specific string
+     * @param  int $dateFormat
+     * @param  int $timeFormat
+     * @param  callable $backupCallable
+     * @return string
+     */
+    protected function toFormattedString($dateFormat, $timeFormat, $backupCallable)
+    {
+        // set output timezone
+        $backedupTimezone = $this->tz;
+        $this->setTimezone($this->outputTimezone);
+
+        // format date time
+        $formatter = new IntlDateFormatter($this->locale, $dateFormat, $timeFormat, $this->tz);
+        $string = (
             $formatter->format($this)
-            ?: parent::toDayDateTimeString()
+            ?: call_user_func($backupCallable)
         );
+
+        // set original timezone back
+        $this->setTimezone($backedupTimezone);
+
+        // return output
+        return $string;
     }
 
 }
