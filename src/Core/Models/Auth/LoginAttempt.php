@@ -30,6 +30,7 @@ use Core\Io\Validation\Validation;
  * @property string $type
  * @property string $email
  * @property string $password
+ * @property string $token
  * @property User $user
  * @property DateTime created_at
  * @property DateTime updated_at
@@ -81,7 +82,7 @@ class LoginAttempt extends BaseModel
 	{
 		parent::addValidationRules();
 
-		$this->required = array_merge($this->required, array('id', 'ip', 'type'));
+		$this->required = array_merge($this->required, array('ip', 'type'));
 
 		$this->validator->value('id')->integer();
 		$this->validator->value('ip')->ip()->max(255);
@@ -89,6 +90,7 @@ class LoginAttempt extends BaseModel
 
 		$this->validator->value('email')->email()->max(255);
 		$this->validator->value('pass')->max(255);
+		$this->validator->value('token')->max(255);
 	}
 
 }

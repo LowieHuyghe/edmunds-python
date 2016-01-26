@@ -11,8 +11,9 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
-use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
+namespace Core\Database\Migrations;
+
+use Illuminate\Database\Schema\Blueprint;
 
 /**
  * Migration for roleRights-table
@@ -22,25 +23,31 @@ use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateRoleRightsTable extends BaseMigration
+trait _000008CreateFailedJobsTable
 {
-	use CreateEnumsPivotTable;
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		app('db')->connection()->getSchemaBuilder()->create('failed_jobs', function (Blueprint $table) {
+			$table->increments('id');
+			$table->text('connection');
+			$table->text('queue');
+			$table->longText('payload');
+			$table->timestamp('failed_at');
+		});
+	}
 
 	/**
-	 * The table used for pivot
-	 * @var string
+	 * Reverse the migrations.
+	 *
+	 * @return void
 	 */
-	protected $table = 'role_rights';
-
-	/**
-	 * The name for id of model
-	 * @var string
-	 */
-	protected $idModel = 'role_id';
-
-	/**
-	 * The name for id of enum
-	 * @var string
-	 */
-	protected $idEnum = 'right_id';
+	public function down()
+	{
+		app('db')->connection()->getSchemaBuilder()->drop('failed_jobs');
+	}
 }

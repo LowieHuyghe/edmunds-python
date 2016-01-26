@@ -11,40 +11,37 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
-use Illuminate\Database\Schema\Blueprint;
+namespace Core\Database\Migrations;
+
+use Core\Database\Migrations\Traits\CreateEnumsPivotTable;
 
 /**
- * Migration for roleRights-table
+ * Migration for user-roles-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateAuthTokensTable extends BaseMigration
+trait _000003CreateUserRolesTable
 {
-	/**
-	 * Run the migrations.
-	 * @return void
-	 */
-	public function up()
-	{
-		app('db')->connection()->getSchemaBuilder()->create('auth_tokens', function (Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('token')->unique();
-			$table->integer('user_id')->unsigned();
-			$table->timestamps();
-		});
-	}
+	use CreateEnumsPivotTable;
 
 	/**
-	 * Reverse the migrations.
-	 * @return void
+	 * The table used for pivot
+	 * @var string
 	 */
-	public function down()
-	{
-		app('db')->connection()->getSchemaBuilder()->drop('auth_tokens');
-	}
+	protected $table = 'user_roles';
+
+	/**
+	 * The name for id of model
+	 * @var string
+	 */
+	protected $idModel = 'user_id';
+
+	/**
+	 * The name for id of enum
+	 * @var string
+	 */
+	protected $idEnum = 'role_id';
 }

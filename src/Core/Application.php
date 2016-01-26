@@ -165,22 +165,6 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-	 * Prepare the application to execute a console command.
-	 * @return void
-	 */
-	public function prepareForConsoleCommand()
-	{
-		parent::prepareForConsoleCommand();
-
-		// Overwrite the migrator to use the core mirgrationfiles
-		$this->app->singleton('migrator', function ($app) {
-			$repository = $app['migration.repository'];
-
-			return new Migrator($repository, $app['db'], $app['files']);
-		});
-	}
-
-	/**
 	 * Log the pageview
 	 * @param Response $response
 	 * @param Exception $exception
