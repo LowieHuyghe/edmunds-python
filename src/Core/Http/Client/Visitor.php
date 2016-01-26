@@ -171,10 +171,8 @@ class Visitor extends BaseStructure
 			// update method for session and cookies
 			Localization::saving(function ($localization) use ($idKey)
 			{
-				$localizationJson = json_encode($localization->getAttributes());
-
-				Request::getInstance()->session->set($idKey, $localizationJson);
-				Response::getInstance()->cookie($idKey, $localizationJson);
+				Request::getInstance()->session->set($idKey, $localization);
+				Response::getInstance()->cookie($idKey, json_encode($localization->getAttributes()));
 
 				if (!$localization->user) return false;
 			});
@@ -184,21 +182,22 @@ class Visitor extends BaseStructure
 			{
 				$localization = $user->localization;
 			}
-			// recover from session or cookie
-			else
+			// recover from session
+			elseif ($this->request->session->has($idKey))
 			{
-				if (($localizationJson = $this->request->session->get($idKey))
-					|| ($localizationJson = $this->request->getCookie($idKey)))
+				$localization = $this->request->session->get($idKey);
+			}
+			// recover from cookie
+			elseif ($localizationJson = $this->request->getCookie($idKey))
+			{
+				if ($localizationJson = json_decode($localizationJson, true))
 				{
-					if ($localizationJson = json_decode($localizationJson, true))
-					{
-						$localization = Localization::recover($localizationJson);
-					}
+					$localization = Localization::recover($localizationJson);
 				}
 			}
 
 			// check for error
-			if (isset($localization))
+			if (isset($localization) && $localization)
 			{
 				$check = array('locale', 'currency', 'timezone');
 				$newLocalization = null;
@@ -222,7 +221,7 @@ class Visitor extends BaseStructure
 				// if not in session or cookie, save it
 				elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
 				{
-					$localization->user()->detach();
+					unset($localization->user_id);
 					$localization->save();
 				}
 			}
@@ -264,9 +263,7 @@ class Visitor extends BaseStructure
 			// update method for session
 			Location::saving(function ($location) use ($idKey)
 			{
-				$locationJson = json_encode($location->getAttributes());
-
-				Request::getInstance()->session->set($idKey, $locationJson);
+				Request::getInstance()->session->set($idKey, $location);
 
 				if (!$location->user) return false;
 			});
@@ -276,20 +273,14 @@ class Visitor extends BaseStructure
 			{
 				$location = $user->location;
 			}
-			else
+			// recover from session
+			elseif ($this->request->session->has($idKey))
 			{
-				// recover from session
-				if (($locationJson = $this->request->session->get($idKey)))
-				{
-					if ($locationJson = json_decode($locationJson, true))
-					{
-						$location = Location::recover($locationJson);
-					}
-				}
+				$location = $this->request->session->get($idKey);
 			}
 
 			// no location or ip not matching
-			if (!isset($location) || $location->ip != $this->request->ip)
+			if (!isset($location) || !$location || $location->ip != $this->request->ip)
 			{
 				$location = $this->getNewLocation();
 				$location->save();
