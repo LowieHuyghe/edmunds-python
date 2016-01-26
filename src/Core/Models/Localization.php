@@ -126,7 +126,7 @@ class Localization extends BaseModel
 	{
 		$locale = self::normalizeLocale($locale);
 
-		if (!$this->getAcceptedLocale($locale))
+		if ($this->getAcceptedLocale($locale))
 		{
 			$this->attributes['locale'] = $locale;
 		}
@@ -179,7 +179,7 @@ class Localization extends BaseModel
 	{
 		$currency = self::normalizeCurrency($currency);
 
-		if (!$this->getAcceptedCurrency($currency))
+		if ($this->getAcceptedCurrency($currency))
 		{
 			$this->attributes['currency'] = $currency;
 		}
