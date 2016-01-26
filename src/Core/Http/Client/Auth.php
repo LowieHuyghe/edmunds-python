@@ -121,7 +121,7 @@ class Auth extends BaseStructure
 	protected function getLoginAttemptsAttribute()
 	{
 		$ip = $this->request->ip;
-		$dateTimeFrom = DateTime::now()->addHours(-7)->toDateTimeString();
+		$dateTimeFrom = DateTime::now()->addHours(-7)->__toString();
 
 		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
 	}
@@ -225,7 +225,7 @@ class Auth extends BaseStructure
 			if ($loggedIn = $this->loginWithUser($authToken->user, $once))
 			{
 				//Check if session-id is still valid
-				if ($validUntil->gt(DateTime::now()))
+				if ($authToken->session_id && $validUntil->gt(DateTime::now()))
 				{
 					$authToken->touch();
 					$this->request->session->save();
@@ -240,6 +240,9 @@ class Auth extends BaseStructure
 				}
 			}
 		}
+
+		//Log attempt
+		$this->saveLoginAttempt('token', null, null, $token);
 
 		//Return result
 		return $loggedIn;
@@ -269,7 +272,7 @@ class Auth extends BaseStructure
 	 * @param string $email
 	 * @param string $password
 	 */
-	protected function saveLoginAttempt($type, $email = null, $password = null)
+	protected function saveLoginAttempt($type, $email = null, $password = null, $token = null)
 	{
 		$loginAttempt = new LoginAttempt();
 
@@ -277,6 +280,7 @@ class Auth extends BaseStructure
 		$loginAttempt->type = $type;
 		$loginAttempt->email = $email;
 		$loginAttempt->password = $password;
+		$loginAttempt->token = $token;
 		if ($this->loggedInUser)
 		{
 			$loginAttempt->user()->associate($this->loggedInUser);

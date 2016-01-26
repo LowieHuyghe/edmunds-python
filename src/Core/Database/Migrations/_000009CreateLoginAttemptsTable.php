@@ -11,7 +11,8 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -22,7 +23,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateLoginAttemptsTable extends BaseMigration
+trait _000009CreateLoginAttemptsTable
 {
 	/**
 	 * Run the migrations.
@@ -39,6 +40,7 @@ class CreateLoginAttemptsTable extends BaseMigration
 			$table->integer('user_id')->unsigned()->nullable();
 			$table->string('email')->nullable();
 			$table->string('pass')->nullable();
+			$table->string('token')->nullable();
 
 			$table->timestamps();
 

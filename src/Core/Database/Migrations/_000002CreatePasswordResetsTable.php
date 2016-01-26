@@ -11,46 +11,42 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for roleRights-table
+ * Migration for password_resets-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateJobsTable extends BaseMigration
+trait _000002CreatePasswordResetsTable
 {
 	/**
 	 * Run the migrations.
-	 *
 	 * @return void
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('jobs', function (Blueprint $table) {
-			$table->bigIncrements('id');
-			$table->string('queue');
-			$table->longText('payload');
-			$table->tinyInteger('attempts')->unsigned();
-			$table->tinyInteger('reserved')->unsigned();
-			$table->unsignedInteger('reserved_at')->nullable();
-			$table->unsignedInteger('available_at');
-			$table->unsignedInteger('created_at');
-			$table->index(['queue', 'reserved', 'reserved_at']);
+		app('db')->connection()->getSchemaBuilder()->create('password_resets', function (Blueprint $table)
+		{
+			$table->increments('id');
+			$table->string('email')->index();
+			$table->integer('user_id')->unsigned();
+			$table->string('token')->unique();
+			$table->timestamps();
 		});
 	}
 
 	/**
 	 * Reverse the migrations.
-	 *
 	 * @return void
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('jobs');
+		app('db')->connection()->getSchemaBuilder()->drop('password_resets');
 	}
 }

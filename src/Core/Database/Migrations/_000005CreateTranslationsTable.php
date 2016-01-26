@@ -11,7 +11,8 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -22,7 +23,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateTranslationsTable extends BaseMigration
+trait _000005CreateTranslationsTable
 {
 	/**
 	 * Run the migrations.

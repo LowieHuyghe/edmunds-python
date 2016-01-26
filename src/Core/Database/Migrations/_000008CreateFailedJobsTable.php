@@ -11,45 +11,43 @@
  * @since       Version 0.1
  */
 
-use Core\Bases\Database\Migrations\BaseMigration;
+namespace Core\Database\Migrations;
+
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for users-table
+ * Migration for roleRights-table
  *
  * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class CreateFileEntriesTable extends BaseMigration
+trait _000008CreateFailedJobsTable
 {
 	/**
 	 * Run the migrations.
+	 *
 	 * @return void
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('file_entries', function (Blueprint $table)
-		{
+		app('db')->connection()->getSchemaBuilder()->create('failed_jobs', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('name', 20)->unique();
-			$table->string('md5', 32);
-			$table->string('sha1', 40);
-			$table->string('original_name');
-			$table->string('mime', 20);
-			$table->integer('type');
-			$table->integer('size');
-			$table->timestamps();
+			$table->text('connection');
+			$table->text('queue');
+			$table->longText('payload');
+			$table->timestamp('failed_at');
 		});
 	}
 
 	/**
 	 * Reverse the migrations.
+	 *
 	 * @return void
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('file_entries');
+		app('db')->connection()->getSchemaBuilder()->drop('failed_jobs');
 	}
 }
