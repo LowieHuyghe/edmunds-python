@@ -13,9 +13,10 @@
 
 namespace Core\Analytics\Drivers;
 
-use Core\Bases\Analytics\BaseWarehouse;
+use Core\Analytics\Tracking\ErrorLog;
 use Core\Analytics\Tracking\PageviewLog;
-use Core\Bases\Analytics\Tracking\ErrorLog;
+use Core\Bases\Analytics\BaseWarehouse;
+use Exception;
 
 /**
  * The piwik warehouse driver
