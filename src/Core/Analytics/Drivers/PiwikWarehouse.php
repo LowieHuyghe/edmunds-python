@@ -118,9 +118,9 @@ class PiwikWarehouse extends BaseWarehouse
 			'cip' => $log->ip,
 			'url' => $log->url,
 			'urlref' => $log->referrer,
-			'h' => $log->time->hour,
-			'm' => $log->time->minute,
-			's' => $log->time->second,
+			'h' => $log->time->format('H'),
+			'm' => $log->time->format('i'),
+			's' => $log->time->format('s'),
 			'ua' => $log->userAgent,
 
 			'cs' => $log->charset,
