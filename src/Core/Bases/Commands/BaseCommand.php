@@ -42,25 +42,29 @@ class BaseCommand extends Command
 	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$title = 'Command Execute: ' . $this->name;
+
 		try
 		{
-			$title = 'Command Execute: ' . $this->name;
-			$body = 'Succesful';
-
 			$response = parent::execute($input, $output);
 
-			$this->logPm ? Registry::pm()->info($title, $body) : null;
+			$this->logPm ? Registry::pm()->info($title, 'Succesful') : null;
 
 			return $response;
 		}
 		catch (\Exception $e)
 		{
-			$body = 'Failed';
-
-			$this->logPm ? Registry::pm()->info($title, $body) : null;
+			$this->logPm ? Registry::pm()->info($title, 'Failed') : null;
 
 			throw $e;
 		}
+		catch (\Throwable $e)
+		{
+			$this->logPm ? Registry::pm()->info($title, 'Failed') : null;
+
+			throw $e;
+		}
+
 	}
 
 }
