@@ -13,13 +13,14 @@
 
 namespace Core\Analytics\Drivers;
 
-use Core\Bases\Analytics\BaseWarehouse;
+use Core\Analytics\Tracking\EcommerceLog;
+use Core\Analytics\Tracking\ErrorLog;
+use Core\Analytics\Tracking\EventLog;
+use Core\Analytics\Tracking\GenericLog;
 use Core\Analytics\Tracking\PageviewLog;
+use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Analytics\Tracking\BaseLog;
-use Core\Bases\Analytics\Tracking\EcommerceLog;
-use Core\Bases\Analytics\Tracking\ErrorLog;
-use Core\Bases\Analytics\Tracking\EventLog;
-use Core\Bases\Analytics\Tracking\GenericLog;
+use Exception;
 
 /**
  * The piwik warehouse driver
@@ -166,7 +167,7 @@ class PiwikWarehouse extends BaseWarehouse
 	protected function processErrorLog($log)
 	{
 		return array(
-			'e_c' => 'errors',
+			'e_c' => 'Errors',
 			'e_a' => $log->type,
 			'e_n' => $log->exception->getMessage(),
 			'e_v' => $log->exception->getTraceAsString(),
