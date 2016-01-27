@@ -13,8 +13,8 @@
 
 namespace Core\Analytics\Tracking;
 
+use Core\Analytics\Tracking\EcommerceItem;
 use Core\Bases\Analytics\Tracking\BaseLog;
-use Core\Bases\Analytics\Tracking\EcommerceItem;
 use Core\Localization\DateTime;
 
 /**
@@ -27,8 +27,8 @@ use Core\Localization\DateTime;
  *
  * @property string $id
  * @property string $category
- * @property float $subtotal
- * @property float $shipping Subtotal excluding shipping
+ * @property float $subtotal Subtotal excluding shipping
+ * @property float $shipping
  * @property float $tax
  * @property float $discount
  * @property float $revenue The grand total
