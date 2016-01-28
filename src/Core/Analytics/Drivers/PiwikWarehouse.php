@@ -78,10 +78,19 @@ class PiwikWarehouse extends BaseWarehouse
 
 			// process the custom values
 			$customValues = ($attributes['custom'] ?? array()) + ($additionalAttributes['custom'] ?? array());
+			$customValuesParam = array();
+			$i = 1;
+			foreach ($customValues as $key => $value)
+			{
+				$customValuesParam["$i"] = array($key, $value);
+				++$i;
+			}
+			$attributes['_cvar'] = $customValuesParam ? json_encode($customValuesParam) : null;
+
+			// assign everything
 			unset($attributes['custom']);
 			unset($additionalAttributes['custom']);
 			$attributes = $attributes + $additionalAttributes;
-			$attributes['_cvar'] = $customValues ? json_encode($customValues) : null;
 
 			// add to requests
 			$requests[] = '?' . http_build_query(array_filter($attributes));
@@ -95,6 +104,9 @@ class PiwikWarehouse extends BaseWarehouse
 
 		// queue that shit
 		$this->queue(array(get_called_class(), 'send'), array($data));
+
+		// empty the logs
+		parent::flush();
 	}
 
 	/**
@@ -127,7 +139,7 @@ class PiwikWarehouse extends BaseWarehouse
 			'cs' => $log->charset,
 			'otherAuthTime' => $log->time->timestamp,
 			'custom' => array(
-				'environment' => $log->environment
+				'environment' => $log->environment,
 			),
 		);
 	}
@@ -186,11 +198,11 @@ class PiwikWarehouse extends BaseWarehouse
 		foreach ($log->items as $item)
 		{
 			$items[] = array(
-				'_pks' => $item->id,
-				'_pkn' => $item->name,
-				'_pkc' => $item->category,
-				'_pkp' => $item->price,
-				'_pkq' => $item->quantity,
+				$item->id ?: '',
+				$item->name ?: '',
+				$item->category ?: '',
+				$item->price ?: 0,
+				$item->quantity ?: 0,
 			);
 		}
 
@@ -200,9 +212,9 @@ class PiwikWarehouse extends BaseWarehouse
 			'ec_st' => $log->subtotal,
 			'ec_sh' => $log->shipping,
 			'ec_tx' => $log->tax,
-			'ec_dt' => $log->discount,
+			'ec_dt' => $log->discount ? 1 : 0,
 			'revenue' => $log->revenue,
-			'_ects' => $log->previous->timestamp,
+			'_ects' => $log->previous ? $log->previous->timestamp : null,
 			'ec_items' => json_encode($items),
 		);
 	}

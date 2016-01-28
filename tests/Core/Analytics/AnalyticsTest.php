@@ -86,10 +86,10 @@ class AnalyticsTest extends BaseTest
 	public function testEcommerceLog()
 	{
 		$items = array();
-		for ($i=0; $i < 2; $i++)
+		for ($i=1; $i <= 2; $i++)
 		{
 			$item = new EcommerceItem();
-			$item->id = "EcommerceItemId$i";
+			$item->id = "777-$i";
 			$item->name = "EcommerceItemName$i";
 			$item->category = "EcommerceItemCategory$i";
 			$item->price = 7.1 * $i;
@@ -99,7 +99,7 @@ class AnalyticsTest extends BaseTest
 		}
 
 		$log = new EcommerceLog();
-		$log->id = 'EcommerceLogId';
+		$log->id = 'TestOrder' . time();
 		$log->category = 'EcommerceLogId';
 		$log->subtotal = 35.5;
 		$log->shipping = 5.3;
