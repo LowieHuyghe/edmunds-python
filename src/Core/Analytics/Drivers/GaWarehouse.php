@@ -16,7 +16,6 @@ namespace Core\Analytics\Drivers;
 use Core\Analytics\Tracking\EcommerceLog;
 use Core\Analytics\Tracking\ErrorLog;
 use Core\Analytics\Tracking\EventLog;
-use Core\Analytics\Tracking\GenericLog;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Analytics\Tracking\BaseLog;
@@ -66,10 +65,6 @@ class GaWarehouse extends BaseWarehouse
 			elseif ($log instanceof EcommerceLog)
 			{
 				$additionalAttributes = $this->processEcommerceLog($log);
-			}
-			elseif ($log instanceof GenericLog)
-			{
-				$additionalAttributes = $this->processGenericLog($log);
 			}
 			else
 			{
@@ -196,26 +191,6 @@ class GaWarehouse extends BaseWarehouse
 		}
 
 		return $logs;
-	}
-
-	/**
-	 * Process the GenericLog log
-	 * @param  GenericLog $log
-	 * @return array
-	 */
-	protected function processGenericLog($log)
-	{
-		$log = array(
-			't' => 'generic',
-		);
-
-		// add each item
-		foreach ($log->toArray() as $key => $value)
-		{
-			$log['cm' . $key] = $value;
-		}
-
-		return array($log);
 	}
 
 	/**

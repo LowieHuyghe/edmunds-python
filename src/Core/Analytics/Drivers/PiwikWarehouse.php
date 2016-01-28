@@ -16,7 +16,6 @@ namespace Core\Analytics\Drivers;
 use Core\Analytics\Tracking\EcommerceLog;
 use Core\Analytics\Tracking\ErrorLog;
 use Core\Analytics\Tracking\EventLog;
-use Core\Analytics\Tracking\GenericLog;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Analytics\Tracking\BaseLog;
@@ -67,10 +66,6 @@ class PiwikWarehouse extends BaseWarehouse
 			{
 				$additionalAttributes = $this->processEcommerceLog($log);
 			}
-			elseif ($log instanceof GenericLog)
-			{
-				$additionalAttributes = $this->processGenericLog($log);
-			}
 			else
 			{
 				throw new Exception('Piwik-warehouse does not support log: ' . get_class($log));
@@ -78,14 +73,7 @@ class PiwikWarehouse extends BaseWarehouse
 
 			// process the custom values
 			$customValues = ($attributes['custom'] ?? array()) + ($additionalAttributes['custom'] ?? array());
-			$customValuesParam = array();
-			$i = 1;
-			foreach ($customValues as $key => $value)
-			{
-				$customValuesParam["$i"] = array($key, $value);
-				++$i;
-			}
-			$attributes['_cvar'] = $customValuesParam ? json_encode($customValuesParam) : null;
+			$attributes['_cvar'] = $customValues ? json_encode($customValues) : null;
 
 			// assign everything
 			unset($attributes['custom']);
@@ -139,7 +127,7 @@ class PiwikWarehouse extends BaseWarehouse
 			'cs' => $log->charset,
 			'otherAuthTime' => $log->time->timestamp,
 			'custom' => array(
-				'environment' => $log->environment,
+				'1' => array('environment' => $log->environment),
 			),
 		);
 	}
@@ -216,18 +204,6 @@ class PiwikWarehouse extends BaseWarehouse
 			'revenue' => $log->revenue,
 			'_ects' => $log->previous ? $log->previous->timestamp : null,
 			'ec_items' => json_encode($items),
-		);
-	}
-
-	/**
-	 * Process the GenericLog log
-	 * @param  GenericLog $log
-	 * @return array
-	 */
-	protected function processGenericLog($log)
-	{
-		return array(
-			'custom' => $log->toArray(),
 		);
 	}
 
