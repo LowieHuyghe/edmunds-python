@@ -83,6 +83,9 @@ class GaWarehouse extends BaseWarehouse
 				$this->queue(array(get_called_class(), 'send'), array($attributes + $additionalAttribute, microtime(true)));
 			}
 		}
+
+		// empty the logs
+		parent::flush();
 	}
 
 	/**

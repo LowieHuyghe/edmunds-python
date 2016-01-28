@@ -56,7 +56,7 @@ class BaseWarehouse extends BaseStructure
 	 */
 	public function flush()
 	{
-		//
+		$this->logs = array();
 	}
 
 	/**
