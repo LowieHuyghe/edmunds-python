@@ -41,7 +41,6 @@ use Throwable;
  * @property string $referrer
  * @property string $userAgent
  *
- * @property string $charset
  * @property string $environment
  */
 class BaseLog extends BaseStructure
@@ -57,7 +56,6 @@ class BaseLog extends BaseStructure
 		$this->setVisitorParameters();
 
 		// set environment info
-		$this->charset = 'utf-8';
 		$this->environment = app()->environment();
 	}
 
