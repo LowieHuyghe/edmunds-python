@@ -105,7 +105,6 @@ class GaWarehouse extends BaseWarehouse
 			'dr' => $log->referrer,
 			'ua' => $log->userAgent,
 
-			'de' => $log->charset,
 			'cdenvironment' => $log->environment,
 		);
 	}
