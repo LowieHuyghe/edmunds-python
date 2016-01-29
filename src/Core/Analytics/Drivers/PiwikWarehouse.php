@@ -16,6 +16,7 @@ namespace Core\Analytics\Drivers;
 use Core\Analytics\Tracking\EcommerceLog;
 use Core\Analytics\Tracking\ErrorLog;
 use Core\Analytics\Tracking\EventLog;
+use Core\Analytics\Tracking\GenericLog;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Analytics\Tracking\BaseLog;
@@ -73,7 +74,14 @@ class PiwikWarehouse extends BaseWarehouse
 
 			// process the custom values
 			$customValues = ($attributes['custom'] ?? array()) + ($additionalAttributes['custom'] ?? array());
-			$attributes['_cvar'] = $customValues ? json_encode($customValues) : null;
+			$customValuesParam = array();
+			$i = 1;
+			foreach ($customValues as $key => $value)
+			{
+				$customValuesParam["$i"] = array($key, $value);
+				++$i;
+			}
+			$attributes['_cvar'] = $customValuesParam ? json_encode($customValuesParam) : null;
 
 			// assign everything
 			unset($attributes['custom']);
@@ -124,10 +132,9 @@ class PiwikWarehouse extends BaseWarehouse
 			's' => $log->time->format('s'),
 			'ua' => $log->userAgent,
 
-			'cs' => $log->charset,
 			'otherAuthTime' => $log->time->timestamp,
 			'custom' => array(
-				'1' => array('environment' => $log->environment),
+				'environment' => $log->environment,
 			),
 		);
 	}
