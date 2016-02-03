@@ -133,10 +133,11 @@ $app->withEloquent();
 
 //TODO check for sess and cook stuff and csrf
 
-// $app->middleware([
+$app->middleware([
+	Core\Http\Middleware\DispatcherMiddleware::class,
 	//Illuminate\Auth\AuthServiceProvider::class,
   // App\Http\Middleware\ExampleMiddleware::class
-// ]);
+]);
 
 // $app->routeMiddleware([
 //     'auth' => App\Http\Middleware\Authenticate::class,
@@ -161,6 +162,23 @@ if ($providers = config('app.providers'))
 		$app->register($provider);
 	}
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| Load The Application Routes
+|--------------------------------------------------------------------------
+|
+| Next we will include the routes file so that they can all be added to
+| the application. This will provide all of the URLs the application
+| can respond to, as well as the controllers that may handle them.
+|
+*/
+
+$app->group(['namespace' => config('app.routing.namespace')], function ($app)
+{
+    require REAL_BASE_PATH . '/' . config('app.routing.routes');
+});
 
 
 return $app;

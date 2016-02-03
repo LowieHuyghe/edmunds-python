@@ -17,7 +17,6 @@ use Core\Database\Migrations\Migrator;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
 use Core\Http\Client\Visitor;
-use Core\Http\Dispatcher;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Providers\HttpServiceProvider;
@@ -76,8 +75,6 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function dispatch($request = null)
 	{
-		list($method, $pathInfo) = $this->parseIncomingRequest($request);
-
 		try
 		{
 			if (app()->isDownForMaintenance())
@@ -85,24 +82,11 @@ class Application extends \Laravel\Lumen\Application
 				abort(503);
 			}
 
-			$response = $this->sendThroughPipeline($this->middleware, function () use ($method, $pathInfo)
-			{
-				return $this->handleDispatcherResponse(
-					$this->createDispatcher()->dispatch($method, $pathInfo)
-				);
-			});
+			$response = parent::dispatch($request);
 		}
 		catch (AbortHttpException $e)
 		{
 			$response = Response::getInstance()->getResponse();
-		}
-		catch (Exception $exception)
-		{
-			$response = $this->sendExceptionToHandler($exception);
-		}
-		catch (Throwable $exception)
-		{
-			$response = $this->sendExceptionToHandler($exception);
 		}
 
 		$this->logPageView($response, isset($exception) ? $exception : null);
@@ -110,6 +94,28 @@ class Application extends \Laravel\Lumen\Application
 		Registry::warehouse()->flush();
 
 		return $response;
+	}
+
+	/**
+	 * Handle a route found by the dispatcher.
+	 *
+	 * @param  array  $routeInfo
+	 * @return mixed
+	 */
+	protected function handleFoundRoute($routeInfo)
+	{
+		if (isset($routeInfo[1]['uses']))
+		{
+			list($controller, $method) = explode('@', $routeInfo[1]['uses']);
+
+			// change method
+			$routeInfo[1]['uses'] = implode('@', array($controller, 'responseFlow'));
+
+			// change parameters
+			$routeInfo[2] = array($method, $routeInfo[2]);
+		}
+
+		return parent::handleFoundRoute($routeInfo);
 	}
 
 	/**
@@ -139,15 +145,6 @@ class Application extends \Laravel\Lumen\Application
 			default:
 				throw new HttpException($code, $message, null, $headers);
 		}
-	}
-
-	/**
-	 * Create a core Dispatcher instance for the application.
-	 * @return Dispatcher
-	 */
-	protected function createDispatcher()
-	{
-		return $this->dispatcher ?: new Dispatcher();
 	}
 
 	/**

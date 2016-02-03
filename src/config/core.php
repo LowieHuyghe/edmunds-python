@@ -32,8 +32,7 @@ return array
 			'app.cipher',
 
 			'app.routing.namespace',
-			'app.routing.defaultcontroller',
-			'app.routing.namespace',
+			'app.routing.routes',
 			'app.routing.loginroute',
 
 			'app.analytics.piwik.version',
