@@ -23,7 +23,6 @@ use Core\Http\Responses\JsonResponse;
 use Core\Http\Responses\RedirectResponse;
 use Core\Http\Responses\ViewResponse;
 use Core\Http\Responses\XmlResponse;
-use Symfony\Component\HttpFoundation\Cookie;
 
 /**
  * The helper responsible for the response
@@ -70,8 +69,6 @@ class Response extends BaseStructure
 
 	/** @var array Assigned data for response */
 	protected $assignments = array();
-	/** @var Cookie[] Assigned cookies for response */
-	protected $cookies = array();
 	/** @var array Assigned headers for response */
 	protected $headers = array();
 
@@ -176,24 +173,6 @@ class Response extends BaseStructure
 	}
 
 	/**
-	 * Assign cookies to response
-	 * @param string $key
-	 * @param mixed $value
-	 * @param int $minutes
-	 */
-	public function cookie($key, $value, $minutes = 0)
-	{
-		if ($minutes)
-		{
-			$this->cookies[] = cookie($key, $value, $minutes);
-		}
-		else
-		{
-			$this->cookies[] = cookie()->forever($key, $value);
-		}
-	}
-
-	/**
 	 * Assign headers to response
 	 * @param string|array $key
 	 * @param mixed $value
@@ -225,16 +204,12 @@ class Response extends BaseStructure
 		//Go to the intended route that was saved
 		if ($gotoIntendedRoute)
 		{
-			if ($this->request->session->has('intended_route'))
-			{
-				$uri = $this->request->session->get('intended_route');
-				$this->request->session->remove('intended_route');
-			}
+			//TODO: get intended route
 		}
 		//Save the route the user intended to go
 		if ($saveIntendedRoute)
 		{
-			$this->request->session->set('intended_route', $this->request->path);
+			//TODO: save intended route
 		}
 
 		$this->redirectResponse = new RedirectResponse($uri, $input);
@@ -309,12 +284,6 @@ class Response extends BaseStructure
 		foreach ($this->headers as $key => $value)
 		{
 			$response->header($key, $value);
-		}
-
-		//Assign cookie
-		foreach ($this->cookies as $cookie)
-		{
-			$response->withCookie($cookie);
 		}
 
 		//Set status code

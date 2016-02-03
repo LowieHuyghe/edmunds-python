@@ -23,7 +23,11 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 */
 
 $dotEnvFile = (env('APP_ENV') != 'testing') ? '.env' : '.env.testing';
-Dotenv::load(REAL_BASE_PATH, $dotEnvFile);
+try {
+    (new Dotenv\Dotenv(REAL_BASE_PATH, $dotEnvFile))->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {
+    //
+}
 
 
 /*
@@ -127,13 +131,16 @@ $app->withEloquent();
 |
 */
 
-$app->middleware([
-	Illuminate\Cookie\Middleware\EncryptCookies::class,
-	Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-	Illuminate\Session\Middleware\StartSession::class,
-	Illuminate\View\Middleware\ShareErrorsFromSession::class,
-	Laravel\Lumen\Http\Middleware\VerifyCsrfToken::class,
-]);
+//TODO check for sess and cook stuff and csrf
+
+// $app->middleware([
+	//Illuminate\Auth\AuthServiceProvider::class,
+  // App\Http\Middleware\ExampleMiddleware::class
+// ]);
+
+// $app->routeMiddleware([
+//     'auth' => App\Http\Middleware\Authenticate::class,
+// ]);
 
 
 /*
