@@ -18,7 +18,6 @@ use Core\Http\Client\Input;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Client\Visitor;
-use Core\Http\Route;
 use Core\Io\Validation\Validation;
 use Laravel\Lumen\Routing\Controller;
 
@@ -32,15 +31,6 @@ use Laravel\Lumen\Routing\Controller;
  */
 class BaseController extends Controller
 {
-	/**
-	 * Get the accepted methods for routing
-	 * @return Route[]
-	 */
-	public static function getRoutes()
-	{
-		return array();
-	}
-
 	/**
 	 * The default output type of the response, only used when set
 	 * @var int
@@ -95,32 +85,24 @@ class BaseController extends Controller
 	}
 
 	/**
-	 * [responseFlow description]
-	 * @param string $defaultControllerName
-	 * @param Route $route
+	 * The response flow of the controller
+	 * @param string $method
 	 * @param array $parameters
 	 * @return Illuminate\Http\Response
 	 */
-	public function responseFlow($defaultControllerName, $route, $parameters)
+	public function responseFlow($method, $parameters)
 	{
 		//Assign default values
 		$this->assignDefaults();
 
-		//Make default controller
-		$defaultController = app($defaultControllerName);
-
-		//Initialize default controller
-		$defaultController->initialize();
-
 		//Initialiaz this controller
 		$this->initialize();
+
 		//Call the tight method
-		$response = call_user_func_array(array($this, $route->name), $parameters);
+		$response = call_user_func_array(array($this, $method), $parameters);
+
 		//Finalize this controller
 		$this->finalize();
-
-		//Finalize default controller
-		$defaultController->finalize();
 
 		//set the status of the response
 		if ($response === true || $response === false)
