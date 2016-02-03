@@ -91,7 +91,19 @@ class Response extends BaseStructure
 		$this->request = $request;
 
 		$this->statusCode = 200;
-		$this->outputType = self::TYPE_VIEW;
+
+		if ($request->json || $request->ajax)
+		{
+			$this->outputType = self::TYPE_JSON;
+		}
+		elseif ($request->xml)
+		{
+			$this->outputType = self::TYPE_XML;
+		}
+		else
+		{
+			$this->outputType = self::TYPE_VIEW;
+		}
 	}
 
 	/**
@@ -199,7 +211,7 @@ class Response extends BaseStructure
 	 * @param bool $saveIntendedRoute
 	 * @param bool $gotoIntendedRoute
 	 */
-	public function redirect($uri, $input = null, $saveIntendedRoute = false, $gotoIntendedRoute = false)
+	public function redirect($uri, $saveIntendedRoute = false, $gotoIntendedRoute = false)
 	{
 		//Go to the intended route that was saved
 		if ($gotoIntendedRoute)
@@ -212,7 +224,7 @@ class Response extends BaseStructure
 			//TODO: save intended route
 		}
 
-		$this->redirectResponse = new RedirectResponse($uri, $input);
+		$this->redirectResponse = new RedirectResponse($uri);
 
 		$this->send();
 	}
@@ -281,10 +293,7 @@ class Response extends BaseStructure
 	protected function attachExtras(&$response)
 	{
 		//Assign headers
-		foreach ($this->headers as $key => $value)
-		{
-			$response->header($key, $value);
-		}
+		$response->withHeaders($this->headers);
 
 		//Set status code
 		$response->setStatusCode($this->statusCode);

@@ -25,21 +25,18 @@ use Core\Http\Responses\ViewResponse;
  * @since		Version 0.1
  *
  * @property string $uri
- * @property mixed $input
  */
 class RedirectResponse extends BaseResponse
 {
 	/**
 	 * Constructor
 	 * @param string $uri
-	 * @param mixed $input
 	 */
-	public function __construct($uri, $input = null)
+	public function __construct($uri)
 	{
 		parent::__construct();
 
 		$this->uri = $uri;
-		$this->input = $input;
 	}
 
 	/**
@@ -51,16 +48,6 @@ class RedirectResponse extends BaseResponse
 	{
 		//Make the redirect-response
 		$response = redirect($this->uri);
-
-		//Assign input
-		if ($this->input === true)
-		{
-			$response = $response->withInput();
-		}
-		else
-		{
-			$response = $response->withInput($this->input);
-		}
 
 		//For debugging purposes show the redirect-page
 		if (app()->isLocal() && config('app.routing.redirecthalt', false))
