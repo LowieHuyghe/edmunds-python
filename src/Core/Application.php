@@ -55,7 +55,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isProduction()
 	{
-		return app()->environment('production');
+		return $this->environment('production');
 	}
 
 	/**
@@ -64,7 +64,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isTesting()
 	{
-		return app()->environment('testing');
+		return $this->environment('testing');
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Application extends \Laravel\Lumen\Application
 	{
 		try
 		{
-			if (app()->isDownForMaintenance())
+			if ($this->isDownForMaintenance())
 			{
 				abort(503);
 			}
@@ -154,7 +154,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	protected function logPageView($response, $exception = null)
 	{
-		if (!app()->runningInConsole() && !app()->isDownForMaintenance())
+		if (!$this->runningInConsole() && !$this->isDownForMaintenance())
 		{
 			$pageview = new PageviewLog();
 
