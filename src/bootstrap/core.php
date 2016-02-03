@@ -133,15 +133,16 @@ $app->withEloquent();
 
 //TODO check for sess and cook stuff and csrf
 
-$app->middleware([
-	Core\Http\Middleware\DispatcherMiddleware::class,
+$middleware = config('app.middleware', array());
+$app->middleware(array_merge($middleware, array(
 	//Illuminate\Auth\AuthServiceProvider::class,
   // App\Http\Middleware\ExampleMiddleware::class
-]);
+)));
 
-// $app->routeMiddleware([
+$routeMiddleware = config('app.routemiddleware', array());
+$app->routeMiddleware($routeMiddleware + array(
 //     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+));
 
 
 /*
