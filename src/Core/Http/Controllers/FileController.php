@@ -15,7 +15,6 @@ namespace Core\Http\Controllers;
 
 use Core\Bases\Http\Controllers\BaseController;
 use Core\Http\Response;
-use Core\Http\Route;
 use Illuminate\Http\JsonResponse;
 use Core\Models\FileEntry;
 
@@ -31,20 +30,6 @@ class FileController extends BaseController
 {
 	const	SIZE_MAX_PICTURE = 3 * 1024,
 			SIZE_MAX_DOCUMENT = 3 * 1024 * 1024;
-
-	/**
-	 * Get the accepted methods for routing
-	 * @return Route[]
-	 */
-	public static function getRoutes()
-	{
-		return array(
-			new Route('get', array('\d+')),
-			new Route('postPicture'),
-			new Route('postDocument'),
-			new Route('postDelete', array('\d+')),
-		);
-	}
 
 	/**
 	 * Upload a picture
