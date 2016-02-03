@@ -55,7 +55,7 @@ class Input extends BaseStructure
 
 	/**
 	 * Constructor
-	 * @param SessionInterface $session
+	 * @param Request $request
 	 */
 	public function __construct($request)
 	{
@@ -73,7 +73,7 @@ class Input extends BaseStructure
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->request ->input($key, $default);
+		return $this->request->input($key, $default);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Input extends BaseStructure
 	 */
 	public function has($key)
 	{
-		return $this->request ->hasInput($key);
+		return $this->request->hasInput($key);
 	}
 
 	/**

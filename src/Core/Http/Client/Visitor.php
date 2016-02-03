@@ -119,20 +119,9 @@ class Visitor extends BaseStructure
 		{
 			$idKey = 'visitor_id';
 
-			//First check session
-			$clientId = $this->request->session->get($idKey);
-			if (!$clientId)
-			{
-				//Then check cookie
-				$clientId = $this->request->getCookie($idKey);
-				if (!$clientId)
-				{
-					//Otherwise generate and save
-					$clientId = MiscHelper::generate_uuid();
-					$this->response->cookie($idKey, $clientId);
-				}
-				$this->request->session->set($idKey, $clientId);
-			}
+			//TODO: store visitorId somewhere
+
+			$clientId = MiscHelper::generate_uuid();
 
 			$this->visitorId = $clientId;
 		}
@@ -168,11 +157,10 @@ class Visitor extends BaseStructure
 		{
 			$idKey = 'visitor_localization';
 
-			// update method for session and cookies
+			// update method
 			Localization::saving(function ($localization) use ($idKey)
 			{
-				Request::getInstance()->session->set($idKey, $localization);
-				Response::getInstance()->cookie($idKey, json_encode($localization->getAttributes()));
+				//TODO: store it somewhere
 
 				if (!$localization->user) return false;
 			});
@@ -182,19 +170,7 @@ class Visitor extends BaseStructure
 			{
 				$localization = $user->localization;
 			}
-			// recover from session
-			elseif ($this->request->session->has($idKey))
-			{
-				$localization = $this->request->session->get($idKey);
-			}
-			// recover from cookie
-			elseif ($localizationJson = $this->request->getCookie($idKey))
-			{
-				if ($localizationJson = json_decode($localizationJson, true))
-				{
-					$localization = Localization::recover($localizationJson);
-				}
-			}
+			//TODO: recover from somewhere
 
 			// check for error
 			if (isset($localization) && $localization)
@@ -218,12 +194,7 @@ class Visitor extends BaseStructure
 				{
 					$localization->save();
 				}
-				// if not in session or cookie, save it
-				elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
-				{
-					unset($localization->user_id);
-					$localization->save();
-				}
+				//TODO: save it somewhere if not set
 			}
 			// make new and save
 			else
@@ -260,10 +231,10 @@ class Visitor extends BaseStructure
 		{
 			$idKey = 'visitor_location';
 
-			// update method for session
+			// update method
 			Location::saving(function ($location) use ($idKey)
 			{
-				Request::getInstance()->session->set($idKey, $location);
+				//TODO save it somewhere
 
 				if (!$location->user) return false;
 			});
@@ -273,11 +244,7 @@ class Visitor extends BaseStructure
 			{
 				$location = $user->location;
 			}
-			// recover from session
-			elseif ($this->request->session->has($idKey))
-			{
-				$location = $this->request->session->get($idKey);
-			}
+			//TODO: recover it from somewhere
 
 			// no location or ip not matching
 			if (!isset($location) || !$location || $location->ip != $this->request->ip)

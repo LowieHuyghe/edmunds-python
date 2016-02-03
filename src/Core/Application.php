@@ -16,7 +16,6 @@ use Core\Analytics\Tracking\PageviewLog;
 use Core\Database\Migrations\Migrator;
 use Core\Exceptions\AbortHttpException;
 use Core\Http\Client\Auth;
-use Core\Http\Client\Session;
 use Core\Http\Client\Visitor;
 use Core\Http\Dispatcher;
 use Core\Http\Request;
@@ -77,19 +76,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function dispatch($request = null)
 	{
-		if ($request)
-		{
-			$this->instance('Illuminate\Http\Request', $request);
-			$this->ranServiceBinders['registerRequestBindings'] = true;
-
-			$method = $request->getMethod();
-			$pathInfo = $request->getPathInfo();
-		}
-		else
-		{
-			$method = $this->getMethod();
-			$pathInfo = $this->getPathInfo();
-		}
+		list($method, $pathInfo) = $this->parseIncomingRequest($request);
 
 		try
 		{
@@ -100,10 +87,9 @@ class Application extends \Laravel\Lumen\Application
 
 			$response = $this->sendThroughPipeline($this->middleware, function () use ($method, $pathInfo)
 			{
-				$result = $this->handleDispatcherResponse(
+				return $this->handleDispatcherResponse(
 					$this->createDispatcher()->dispatch($method, $pathInfo)
 				);
-				return $result;
 			});
 		}
 		catch (AbortHttpException $e)

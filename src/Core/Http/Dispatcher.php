@@ -14,7 +14,6 @@
 namespace Core\Http;
 
 use Core\Http\Client\Input;
-use Core\Http\Client\Session;
 use Core\Http\Client\Visitor;
 use Core\Http\Controllers\Login\LoginRequiredController;
 use Core\Http\Middleware\AuthMiddleware;
