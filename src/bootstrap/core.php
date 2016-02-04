@@ -79,7 +79,7 @@ $app->singleton(
 $app['path.config'] = base_path('config');
 
 $app->configure('app');
-$app->make('config')->set('core', require(__DIR__ . '/../config/core.php'));
+$app->configure('core');
 
 $missingConfig = array();
 foreach (config('core.config.required') as $line)
@@ -135,8 +135,10 @@ $app->withEloquent();
 
 $middleware = config('app.middleware', array());
 $app->middleware(array_merge($middleware, array(
-	//Illuminate\Auth\AuthServiceProvider::class,
-  // App\Http\Middleware\ExampleMiddleware::class
+	Illuminate\Cookie\Middleware\EncryptCookies::class,
+	Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+	Illuminate\Session\Middleware\StartSession::class,
+	Illuminate\View\Middleware\ShareErrorsFromSession::class,
 )));
 
 $routeMiddleware = config('app.routemiddleware', array());
