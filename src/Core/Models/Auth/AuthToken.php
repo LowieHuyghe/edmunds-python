@@ -27,6 +27,7 @@ use Core\Io\Validation\Validation;
  *
  * @property string $token
  * @property User $user
+ * @property string $session_id
  * @property DateTime $created_at
  * @property DateTime $updated_at
  */
@@ -68,6 +69,7 @@ class AuthToken extends BaseModel
 
 		$this->validator->value('token')->max(255);
 		$this->validator->value('user_id')->integer();
+		$this->validator->value('session_id')->max(255);
 	}
 
 }

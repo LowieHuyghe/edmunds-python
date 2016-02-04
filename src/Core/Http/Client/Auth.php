@@ -160,6 +160,7 @@ class Auth extends BaseStructure
 			//Create auth-token
 			$authToken = new AuthToken();
 			$authToken->user()->associate($this->loggedInUser);
+			$authToken->session_id = $this->request->session->getId();
 
 			//Save and return
 			if ($authToken->save())
@@ -218,9 +219,26 @@ class Auth extends BaseStructure
 		//Fetch the token
 		if ($authToken = AuthToken::where('token', '=', $token)->first())
 		{
-			$loggedIn = $this->loginWithUser($authToken->user, $once);
+			$validUntil = $authToken->updated_at->addMinutes(config('core.auth.ttl.authtoken'));
 
-			$authToken->touch();
+			//Log user in
+			if ($loggedIn = $this->loginWithUser($authToken->user, $once))
+			{
+				//Check if session-id is still valid
+				if ($authToken->session_id && $validUntil->gt(DateTime::now()))
+				{
+					$authToken->touch();
+					$this->request->session->save();
+					$this->request->session->setId($authToken->session_id);
+					$this->request->session->start();
+				}
+				//Otherwise save new session-id
+				else
+				{
+					$authToken->session_id = $this->request->session->getId();
+					$authToken->save();
+				}
+			}
 		}
 
 		//Log attempt

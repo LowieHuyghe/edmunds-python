@@ -130,8 +130,7 @@ class BaseLog extends BaseStructure
 		}
 		else
 		{
-			//TODO: check visitorId
-			$visitorId = null;
+			$visitorId = app('request')->cookie('visitor_id', null);
 			$userId = app('auth')->check() ? app('auth')->user()->id : null;
 
 			$time = new \DateTime('now', new \DateTimeZone(config('core.system.timezone')));

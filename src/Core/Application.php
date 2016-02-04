@@ -148,6 +148,102 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
+	 * Get the path to the given configuration file.
+	 *
+	 * If no name is provided, then we'll return the path to the config folder.
+	 *
+	 * @param  string|null  $name
+	 * @return string
+	 */
+	public function getConfigurationPath($name = null)
+	{
+		if (!$name)
+		{
+			$appConfigDir = $this->basePath('config').'/';
+
+			if (file_exists($appConfigDir))
+			{
+				return $appConfigDir;
+			}
+			elseif (file_exists($ath = CORE_BASE_PATH . '/config/'))
+			{
+				return $path;
+			}
+			elseif ($path = parent::getConfigurationPath($name))
+			{
+				return $path;
+			}
+		}
+		else
+		{
+			$appConfigPath = $this->basePath('config').'/'.$name.'.php';
+
+			if (file_exists($appConfigPath))
+			{
+				return $appConfigPath;
+			}
+			elseif (file_exists($path = CORE_BASE_PATH . "/config/$name.php"))
+			{
+				return $path;
+			}
+			elseif ($path = parent::getConfigurationPath($name))
+			{
+				return $path;
+			}
+		}
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerCookieBindings()
+	{
+		$this->singleton('cookie', function () {
+			return $this->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
+		});
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerSessionBindings()
+	{
+		$this->singleton('session', function () {
+			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider');
+		});
+		$this->singleton('session.store', function () {
+			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider', 'session.store');
+		});
+	}
+
+	/**
+	 * Bootstrap the application container.
+	 *
+	 * @return void
+	 */
+	protected function bootstrapContainer()
+	{
+		parent::bootstrapContainer();
+
+		// session
+		$this->aliases['Illuminate\Session\SessionManager'] = 'session';
+		$this->availableBindings['session'] = 'registerSessionBindings';
+		$this->availableBindings['session.store'] = 'registerSessionBindings';
+		$this->availableBindings['Illuminate\Session\SessionManager'] = 'registerSessionBindings';
+
+		// cookie
+		$this->aliases['Illuminate\Contracts\Cookie\Factory'] = 'cookie';
+		$this->aliases['Illuminate\Contracts\Cookie\QueueingFactory'] = 'cookie';
+		$this->availableBindings['cookie'] = 'registerCookieBindings';
+		$this->availableBindings['Illuminate\Contracts\Cookie\Factory'] = 'registerCookieBindings';
+		$this->availableBindings['Illuminate\Contracts\Cookie\QueueingFactory'] = 'registerCookieBindings';
+	}
+
+	/**
 	 * Log the pageview
 	 * @param Response $response
 	 * @param Exception $exception

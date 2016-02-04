@@ -14,6 +14,7 @@
 namespace Core\Http;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Input;
+use Core\Http\Client\Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -30,6 +31,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property string $fullUrl Return the full url
  * @property string $root Return the root of the application
  * @property string $userAgent Return the user agent
+ * @property Session $session Return the session
  * @property string $path Return the path of the request
  * @property bool $ajax Check if call was ajax
  * @property bool $secure Check if call was over https
@@ -69,6 +71,9 @@ class Request extends BaseStructure
 	public function __construct($request)
 	{
 		parent::__construct();
+
+		$session = $request->getSession();
+		$request->setSession(new Session($session));
 
 		$this->request = $request;
 	}
@@ -132,6 +137,26 @@ class Request extends BaseStructure
 	protected function getUserAgentAttribute()
 	{
 		return $this->getServer('HTTP_USER_AGENT');
+	}
+
+	/**
+	 * Return the session
+	 * @return Session
+	 */
+	protected function getSessionAttribute()
+	{
+		return $this->request->session();
+	}
+
+	/**
+	 * Return the value of a cookie
+	 * @param string $key
+	 * @param string $default
+	 * @return array|string
+	 */
+	public function getCookie($key = null, $default = null)
+	{
+		return $this->request->cookie($key, $default);
 	}
 
 	/**

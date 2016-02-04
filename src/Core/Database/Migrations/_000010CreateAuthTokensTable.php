@@ -36,6 +36,7 @@ trait _000010CreateAuthTokensTable
 			$table->increments('id');
 			$table->string('token')->unique();
 			$table->integer('user_id')->unsigned();
+			$table->string('session_id')->nullable();
 			$table->timestamps();
 		});
 	}

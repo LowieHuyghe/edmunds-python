@@ -91,6 +91,7 @@ return array
 	'auth' => array(
 		'ttl' => array(
 			'passwordreset' => 15,
+			'authtoken' => 24,
 		),
 	),
 
