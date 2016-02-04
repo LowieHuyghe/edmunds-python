@@ -13,7 +13,6 @@
 
 namespace Core\Models\Auth;
 use Core\Localization\DateTime;
-use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
 use Core\Io\Validation\Validation;
@@ -52,7 +51,7 @@ class AuthToken extends BaseModel
 		//Set token if not set
 		if (!$this->token)
 		{
-			$this->token = EncryptionHelper::encrypt(time() . '_' . $this->user->id);
+			$this->token = encrypt(time() . '_' . $this->user->id);
 		}
 
 		return parent::save($options);

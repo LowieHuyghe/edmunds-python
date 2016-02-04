@@ -13,7 +13,6 @@
 
 namespace Core\Models\Auth;
 use Core\Localization\DateTime;
-use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
 use Core\Io\Validation\Validation;
@@ -51,7 +50,7 @@ class PasswordReset extends BaseModel
 	public function save(array $options = [])
 	{
 		//Set token
-		$this->token = EncryptionHelper::encrypt(time() . '_' . $this->email);
+		$this->token = encrypt(time() . '_' . $this->email);
 
 		//Set user, if one
 		$user = User::where('email', '=', $this->email)->first();

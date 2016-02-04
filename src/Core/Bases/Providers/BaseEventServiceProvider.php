@@ -13,7 +13,7 @@
 
 namespace Core\Bases\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider;
+use Laravel\Lumen\Providers\EventServiceProvider;
 
 /**
  * Event Service Provider base to extend from
