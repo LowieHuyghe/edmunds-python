@@ -29,13 +29,37 @@ use Core\Http\Response;
 class AuthMiddleware extends BaseMiddleware
 {
 	/**
+	 * The authentication guard factory instance.
+	 *
+	 * @var \Illuminate\Contracts\Auth\Factory
+	 */
+	protected $auth;
+
+	/**
+	 * Create a new middleware instance.
+	 *
+	 * @param  \Illuminate\Contracts\Auth\Factory  $auth
+	 * @return void
+	 */
+	public function __construct(\Illuminate\Contracts\Auth\Factory $auth)
+	{
+		$this->auth = $auth;
+	}
+
+	/**
 	 * Handle an incoming request.
 	 * @param  \Illuminate\Http\Request $r
 	 * @param  \Closure  $next
+     * @param  string|null  $guard
 	 * @return mixed
 	 */
-	public function handle($r, \Closure $next)
+	public function handle($r, \Closure $next, $guard = null)
 	{
+		if ($this->auth->guard($guard)->guest())
+		{
+			abort(401);
+		}
+
 		if (!$this->visitor->loggedIn)
 		{
 			if ($this->request->ajax)

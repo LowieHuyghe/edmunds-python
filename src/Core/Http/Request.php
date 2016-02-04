@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @property array $segments Return method of route
  * @property string $route Return the route
  * @property string $host Return the host
+ * @property User $user Return the user
  */
 class Request extends BaseStructure
 {
@@ -223,6 +224,15 @@ class Request extends BaseStructure
 	protected function getHostAttribute()
 	{
 		return $this->request->getHttpHost();
+	}
+
+	/**
+	 * Return the user
+	 * @return user
+	 */
+	protected function getUserAttribute()
+	{
+		return $this->request->user();
 	}
 
 	/**

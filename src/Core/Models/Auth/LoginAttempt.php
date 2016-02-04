@@ -12,7 +12,6 @@
  */
 
 namespace Core\Models\Auth;
-use Core\Helpers\EncryptionHelper;
 use Core\Bases\Models\BaseModel;
 use Core\Models\User;
 use Core\Io\Validation\Validation;
@@ -54,7 +53,7 @@ class LoginAttempt extends BaseModel
 	{
 		if ($this->pass)
 		{
-			return EncryptionHelper::decrypt($this->pass);
+			return decrypt($this->pass);
 		}
 		return null;
 	}
@@ -67,7 +66,7 @@ class LoginAttempt extends BaseModel
 	{
 		if ($password)
 		{
-			$this->pass = EncryptionHelper::encrypt($password);
+			$this->pass = encrypt($password);
 		}
 		else
 		{

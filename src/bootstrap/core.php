@@ -141,7 +141,7 @@ $app->middleware(array_merge($middleware, array(
 
 $routeMiddleware = config('app.routemiddleware', array());
 $app->routeMiddleware($routeMiddleware + array(
-//     'auth' => App\Http\Middleware\Authenticate::class,
+	'auth' => Core\Http\Middleware\AuthMiddleware::class,
 ));
 
 
@@ -156,12 +156,14 @@ $app->routeMiddleware($routeMiddleware + array(
 |
 */
 
-if ($providers = config('app.providers'))
+$providers = config('app.providers', array());
+$providers = array_merge($providers, array(
+	Core\Providers\AuthServiceProvider::class,
+));
+
+foreach ($providers as $provider)
 {
-	foreach ($providers as $provider)
-	{
-		$app->register($provider);
-	}
+	$app->register($provider);
 }
 
 

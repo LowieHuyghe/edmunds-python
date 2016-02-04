@@ -14,7 +14,6 @@
 namespace Core\Bases\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -27,7 +26,7 @@ use Illuminate\Queue\SerializesModels;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class BaseJob implements SelfHandling, ShouldQueue
+class BaseJob implements ShouldQueue
 {
 	use Queueable, InteractsWithQueue, SerializesModels;
 

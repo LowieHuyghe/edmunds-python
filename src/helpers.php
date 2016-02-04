@@ -79,3 +79,13 @@
 
 		return app('former');
 	}
+
+	/**
+	 * Encrypt user password
+	 * @param  string $value
+	 * @return string
+	 */
+	function bcrypt($value)
+	{
+		return (new Illuminate\Hashing\BcryptHasher())->make($value);
+	}

@@ -82,7 +82,6 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
-		return null;
 		return app('auth')->check();
 	}
 
@@ -92,7 +91,6 @@ class Auth extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		return null;
 		if (!isset($this->loggedInUser))
 		{
 			if ($authUser = app('auth')->user()) //Get user

@@ -14,7 +14,7 @@
 namespace Core\Bases\Tests;
 
 use Laravel\Lumen\Testing\TestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 /**
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
