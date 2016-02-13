@@ -40,6 +40,15 @@ use Throwable;
 class Application extends \Laravel\Lumen\Application
 {
 	/**
+	 * Get the name of the app
+	 * @return bool
+	 */
+	public function getName()
+	{
+		return config('app.name');
+	}
+
+	/**
 	 * Check if stateless
 	 * @return bool
 	 */
@@ -262,7 +271,7 @@ class Application extends \Laravel\Lumen\Application
 		if (!$this->runningInConsole())
 		{
 			$pageview = new PageviewLog();
-			$pageview->title = config('app.name');
+			$pageview->title = $this->getName();
 
 			$pageview->log();
 		}

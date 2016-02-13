@@ -116,7 +116,7 @@ class BaseController extends Controller
 	protected function assignDefaults()
 	{
 		$this->response->assign('__root', $this->request->root);
-		$this->response->assign('__siteName', config('app.name'));
+		$this->response->assign('__siteName', app()->getName());
 
 		$this->response->assign('__local', app()->isLocal());
 

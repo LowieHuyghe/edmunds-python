@@ -40,7 +40,7 @@ class SlackChannel extends BaseChannel
 
 		$hook = config('core.admin.pm.slack.hook');
 		$settings = array(
-			'username' => config('app.name'),
+			'username' => app()->getName(),
 		);
 
 		if ($channel = config('core.admin.pm.slack.channel'))
