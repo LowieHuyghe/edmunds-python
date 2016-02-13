@@ -39,6 +39,14 @@ use Throwable;
  */
 class Application extends \Laravel\Lumen\Application
 {
+	/**
+	 * Check if stateless
+	 * @return bool
+	 */
+	public function isStateless()
+	{
+		return config('app.stateless', false);
+	}
 
 	/**
 	 * Check if local environment
@@ -82,18 +90,18 @@ class Application extends \Laravel\Lumen\Application
 				abort(503);
 			}
 
-			$response = parent::dispatch($request);
+			parent::dispatch($request);
 		}
-		catch (AbortHttpException $e)
+		catch (AbortHttpException $exception)
 		{
-			$response = Response::getInstance()->getResponse();
+			//
 		}
 
-		$this->logPageView($response, isset($exception) ? $exception : null);
+		$this->logPageView(isset($exception) ? $exception : null);
 		// and send them all
 		Registry::warehouse()->flush();
 
-		return $response;
+		return Response::getInstance()->getResponse();
 	}
 
 	/**
@@ -221,46 +229,40 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-	 * Bootstrap the application container.
+	 * Post bootstrap the application container.
 	 *
 	 * @return void
 	 */
-	protected function bootstrapContainer()
+	public function postBootstrap()
 	{
-		parent::bootstrapContainer();
+		// setup only if non stateless
+		if (!config('app.stateless', false))
+		{
+			// session
+			$this->aliases['Illuminate\Session\SessionManager'] = 'session';
+			$this->availableBindings['session'] = 'registerSessionBindings';
+			$this->availableBindings['session.store'] = 'registerSessionBindings';
+			$this->availableBindings['Illuminate\Session\SessionManager'] = 'registerSessionBindings';
 
-		// session
-		$this->aliases['Illuminate\Session\SessionManager'] = 'session';
-		$this->availableBindings['session'] = 'registerSessionBindings';
-		$this->availableBindings['session.store'] = 'registerSessionBindings';
-		$this->availableBindings['Illuminate\Session\SessionManager'] = 'registerSessionBindings';
-
-		// cookie
-		$this->aliases['Illuminate\Contracts\Cookie\Factory'] = 'cookie';
-		$this->aliases['Illuminate\Contracts\Cookie\QueueingFactory'] = 'cookie';
-		$this->availableBindings['cookie'] = 'registerCookieBindings';
-		$this->availableBindings['Illuminate\Contracts\Cookie\Factory'] = 'registerCookieBindings';
-		$this->availableBindings['Illuminate\Contracts\Cookie\QueueingFactory'] = 'registerCookieBindings';
+			// cookie
+			$this->aliases['Illuminate\Contracts\Cookie\Factory'] = 'cookie';
+			$this->aliases['Illuminate\Contracts\Cookie\QueueingFactory'] = 'cookie';
+			$this->availableBindings['cookie'] = 'registerCookieBindings';
+			$this->availableBindings['Illuminate\Contracts\Cookie\Factory'] = 'registerCookieBindings';
+			$this->availableBindings['Illuminate\Contracts\Cookie\QueueingFactory'] = 'registerCookieBindings';
+		}
 	}
 
 	/**
 	 * Log the pageview
-	 * @param Response $response
 	 * @param Exception $exception
 	 */
-	protected function logPageView($response, $exception = null)
+	protected function logPageView($exception = null)
 	{
-		if (!$this->runningInConsole() && !$this->isDownForMaintenance())
+		if (!$this->runningInConsole())
 		{
 			$pageview = new PageviewLog();
-
-			//Fetch title
-			$regex = "/<title>((.|\n)*?)<\/title>/i";
-			$matches = array();
-			if (preg_match($regex, $response->getContent(), $matches))
-			{
-				$pageview->title = trim($matches[1]);
-			}
+			$pageview->title = config('app.name');
 
 			$pageview->log();
 		}

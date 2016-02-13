@@ -21,6 +21,7 @@ use Core\Http\Response;
 use Core\Models\Localization;
 use Core\Models\Location;
 use Core\Models\User;
+use Core\Registry;
 
 /**
  * The helper for the visitor
@@ -117,21 +118,37 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorId))
 		{
-			$idKey = 'visitor_id';
-
-			//First check session
-			$clientId = $this->request->session->get($idKey);
-			if (!$clientId)
+			if (!app()->isStateless())
 			{
-				//Then check cookie
-				$clientId = $this->request->getCookie($idKey);
+				$idKey = config('core.keys.visitor.id.key');
+
+				//First check session
+				$clientId = $this->request->session->get($idKey);
 				if (!$clientId)
 				{
-					//Otherwise generate and save
-					$clientId = MiscHelper::generate_uuid();
-					$this->response->cookie($idKey, $clientId);
+					//Then check cookie
+					$clientId = $this->request->getCookie($idKey);
+					if (!$clientId)
+					{
+						//Otherwise generate and save
+						$clientId = MiscHelper::generate_uuid();
+						$this->response->cookie($idKey, $clientId);
+					}
+					$this->request->session->set($idKey, $clientId);
 				}
-				$this->request->session->set($idKey, $clientId);
+			}
+			else
+			{
+				$headerId = config('core.keys.visitor.id.header');
+
+				// check header
+				$clientId = $this->request->getHeader($headerId);
+				if (!$clientId)
+				{
+					// generate and save
+					$clientId = MiscHelper::generate_uuid();
+					$this->response->header($headerId, $clientId);
+				}
 			}
 
 			$this->visitorId = $clientId;
@@ -166,13 +183,29 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorLocalization))
 		{
-			$idKey = 'visitor_localization';
+			$idKey = config('core.keys.visitor.localization.general');
+			$headerLocale = config('core.keys.visitor.localization.locale');
+			$headerCurrency = config('core.keys.visitor.localization.currency');
+			$headerTimezone = config('core.keys.visitor.localization.timezone');
 
 			// update method
-			Localization::saving(function ($localization) use ($idKey)
+			Localization::saving(function ($localization) use ($idKey, $headerLocale, $headerCurrency, $headerTimezone)
 			{
-				Request::getInstance()->session->set($idKey, $localization);
-				Response::getInstance()->cookie($idKey, json_encode($localization->getAttributes()));
+				$response = Response::getInstance();
+
+				// when not stateless
+				if (!app()->isStateless())
+				{
+					Request::getInstance()->session->set($idKey, $localization);
+					$response->cookie($idKey, json_encode($localization->getAttributes()));
+				}
+				// when stateless
+				else
+				{
+					$response->header($headerLocale, $localization->locale);
+					$response->header($headerCurrency, $localization->currency);
+					$response->header($headerTimezone, $localization->timezone);
+				}
 
 				if (!$localization->user) return false;
 			});
@@ -182,18 +215,30 @@ class Visitor extends BaseStructure
 			{
 				$localization = $user->localization;
 			}
-			// recover from session
-			elseif ($this->request->session->has($idKey))
+			// when not stateless
+			elseif (!app()->isStateless())
 			{
-				$localization = $this->request->session->get($idKey);
-			}
-			// recover from cookie
-			elseif ($localizationJson = $this->request->getCookie($idKey))
-			{
-				if ($localizationJson = json_decode($localizationJson, true))
+				// recover from session
+				if ($this->request->session->has($idKey))
 				{
-					$localization = Localization::recover($localizationJson);
+					$localization = $this->request->session->get($idKey);
 				}
+				// recover from cookie
+				elseif ($localizationJson = $this->request->getCookie($idKey))
+				{
+					if ($localizationJson = json_decode($localizationJson, true))
+					{
+						$localization = Localization::recover($localizationJson);
+					}
+				}
+			}
+			// when stateless
+			else
+			{
+				$localization = new Localization();
+				$localization->locale = $this->request->getHeader($headerLocale);
+				$localization->currency = $this->request->getHeader($headerCurrency);
+				$localization->timezone = $this->request->getHeader($headerTimezone);
 			}
 
 			// check for error
@@ -258,12 +303,22 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorLocation))
 		{
-			$idKey = 'visitor_location';
+			$idKey = config('core.keys.visitor.location.general');
+			$cacheKey = $idKey . '_' . $this->request->ip;
 
 			// update method
-			Location::saving(function ($location) use ($idKey)
+			Location::saving(function ($location) use ($idKey, $cacheKey)
 			{
-				Request::getInstance()->session->set($idKey, $location);
+				// save in session when not stateless
+				if (!app()->isStateless())
+				{
+					Request::getInstance()->session->set($idKey, $location);
+				}
+				// save in cache when stateless
+				else
+				{
+					Registry::cache()->set($cacheKey, $location, 60 * 24 * 4); // 4 days because of default lifecycle of DHCP
+				}
 
 				if (!$location->user) return false;
 			});
@@ -273,10 +328,21 @@ class Visitor extends BaseStructure
 			{
 				$location = $user->location;
 			}
-			// recover from session
-			elseif ($this->request->session->has($idKey))
+			// recover from session when not stateless
+			elseif (!app()->isStateless())
 			{
-				$location = $this->request->session->get($idKey);
+				if ($this->request->session->has($idKey))
+				{
+					$location = $this->request->session->get($idKey);
+				}
+			}
+			// use cache when stateless
+			else
+			{
+				if (Registry::cache()->has($cacheKey))
+				{
+					$location = Registry::cache()->get($cacheKey);
+				}
 			}
 
 			// no location or ip not matching

@@ -2,28 +2,28 @@
 
 return array
 (
-    /*
-    |--------------------------------------------------------------------------
-    | System
-    |--------------------------------------------------------------------------
-    |
-    | Set the configuration for the server.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| System
+	|--------------------------------------------------------------------------
+	|
+	| Set the configuration for the server.
+	|
+	*/
 
 	'system' => array(
 		'timezone' => 'UTC',
 	),
 
-    /*
-    |--------------------------------------------------------------------------
-    | Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here is chosen which configuration is required in order to run the
-    | application.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Configuration
+	|--------------------------------------------------------------------------
+	|
+	| Here is chosen which configuration is required in order to run the
+	| application.
+	|
+	*/
 
 	'config' => array(
 		'required' => array(
@@ -35,13 +35,6 @@ return array
 			'app.routing.routes',
 			'app.routing.loginroute',
 
-			'app.analytics.piwik.version',
-			'app.analytics.piwik.siteid',
-			'app.analytics.piwik.token',
-
-			'app.analytics.newrelic.appname',
-			'app.analytics.newrelic.license',
-
 			'app.localization.locale.default',
 			'app.localization.locale.fallback',
 			'app.localization.locale.accepted',
@@ -51,15 +44,15 @@ return array
 	),
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin
-    |--------------------------------------------------------------------------
-    |
-    | Set configuration to use when contacting the admin through slack
-    | or similar channels.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Admin
+	|--------------------------------------------------------------------------
+	|
+	| Set configuration to use when contacting the admin through slack
+	| or similar channels.
+	|
+	*/
 
 	'admin' => array(
 		'pm' => array(
@@ -78,15 +71,15 @@ return array
 	),
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication
-    |--------------------------------------------------------------------------
-    |
-    | Set configuration to use for authentication. The Time-To-Live for
-    | password-reset or authentication-tokens can be set.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Authentication
+	|--------------------------------------------------------------------------
+	|
+	| Set configuration to use for authentication. The Time-To-Live for
+	| password-reset or authentication-tokens can be set.
+	|
+	*/
 
 	'auth' => array(
 		'ttl' => array(
@@ -96,14 +89,14 @@ return array
 	),
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Localization
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for localization can be set and customized here.
-    |
-    */
+	/*
+	|--------------------------------------------------------------------------
+	| Localization
+	|--------------------------------------------------------------------------
+	|
+	| Configuration for localization can be set and customized here.
+	|
+	*/
 
 	'localization' => array(
 
@@ -142,6 +135,35 @@ return array
 			'default' => 'Europe/Brussels',
 		),
 
+	),
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Keys
+	|--------------------------------------------------------------------------
+	|
+	| The keys used when saving information client-side
+	|
+	*/
+
+	'keys' => array(
+		'visitor' => array(
+			'id' => array(
+				'key' => 'visitor_id',
+				'header' => 'X-Visitor-Id',
+			),
+			'localization' => array(
+				'general' => 'visitor_localization',
+
+				'locale' => 'X-Localization-Locale',
+				'currency' => 'X-Localization-Currency',
+				'timezone' => 'X-Localization-Timezone',
+			),
+			'location' => array(
+				'general' => 'visitor_location',
+			),
+		),
 	),
 
 );

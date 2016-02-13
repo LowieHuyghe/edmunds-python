@@ -14,7 +14,7 @@ return [
 	*/
 
 	'defaults' => [
-		'guard' => config('app.auth.guard.default'),
+		'guard' => (!app()->isStateless()) ? 'web' : 'api',
 		'passwords' => 'users',
 	],
 
