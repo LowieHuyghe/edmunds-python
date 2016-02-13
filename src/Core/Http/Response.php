@@ -195,13 +195,16 @@ class Response extends BaseStructure
 	 */
 	public function cookie($key, $value, $minutes = 0)
 	{
-		if ($minutes)
+		if (!app()->isStateless())
 		{
-			$this->cookies[] = app('cookie')->make($key, $value, $minutes);
-		}
-		else
-		{
-			$this->cookies[] = app('cookie')->forever($key, $value);
+			if ($minutes)
+			{
+				$this->cookies[] = app('cookie')->make($key, $value, $minutes);
+			}
+			else
+			{
+				$this->cookies[] = app('cookie')->forever($key, $value);
+			}
 		}
 	}
 
@@ -235,7 +238,7 @@ class Response extends BaseStructure
 	public function redirect($uri, $saveIntendedRoute = false, $gotoIntendedRoute = false)
 	{
 		//Go to the intended route that was saved
-		if ($gotoIntendedRoute)
+		if ($gotoIntendedRoute && !app()->isStateless())
 		{
 			if ($this->request->session->has('intended_route'))
 			{
@@ -244,7 +247,7 @@ class Response extends BaseStructure
 			}
 		}
 		//Save the route the user intended to go
-		if ($saveIntendedRoute)
+		if ($saveIntendedRoute && !app()->isStateless())
 		{
 			$this->request->session->set('intended_route', $this->request->path);
 		}

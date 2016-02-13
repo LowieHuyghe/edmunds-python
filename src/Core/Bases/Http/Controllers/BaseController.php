@@ -88,7 +88,6 @@ class BaseController extends Controller
 	 * The response flow of the controller
 	 * @param string $method
 	 * @param array $parameters
-	 * @return Illuminate\Http\Response
 	 */
 	public function responseFlow($method, $parameters)
 	{
@@ -109,9 +108,6 @@ class BaseController extends Controller
 		{
 			$this->response->assign('success', $response);
 		}
-
-		//Return response
-		return $this->response->getResponse();
 	}
 
 	/**
