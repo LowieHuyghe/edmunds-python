@@ -14,7 +14,7 @@ return [
 	*/
 
 	'defaults' => [
-		'guard' => 'web',
+		'guard' => config('app.auth.guard.default'),
 		'passwords' => 'users',
 	],
 
@@ -66,8 +66,9 @@ return [
 
 	'providers' => [
 		'users' => [
-			'driver' => 'eloquent',
-			'model' => App\User::class,
+			'driver' => config('app.auth.provider.driver'),
+			'model' => config('app.auth.provider.model'),
+			'table' => config('app.auth.provider.table'),
 		],
 
 		// 'users' => [
@@ -99,8 +100,8 @@ return [
 		'users' => [
 			'provider' => 'users',
 			'email' => 'auth.emails.password',
-			'table' => 'password_resets',
-			'expire' => 60,
+			'table' => config('app.auth.passwords.table'),
+			'expire' => config('app.auth.passwords.expire'),
 		],
 	],
 
