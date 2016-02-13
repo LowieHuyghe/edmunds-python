@@ -98,6 +98,18 @@ if (!empty($missingConfig))
 
 /*
 |--------------------------------------------------------------------------
+| Post Bootstrap
+|--------------------------------------------------------------------------
+|
+| Do some further boostrapping after loading the necessary things.
+|
+*/
+
+$app->postBootstrap();
+
+
+/*
+|--------------------------------------------------------------------------
 | Analytics
 |--------------------------------------------------------------------------
 |
@@ -133,18 +145,20 @@ $app->withEloquent();
 
 //TODO check for sess and cook stuff and csrf
 
-$middleware = config('app.middleware', array());
-$app->middleware(array_merge($middleware, array(
-	Illuminate\Cookie\Middleware\EncryptCookies::class,
-	Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-	Illuminate\Session\Middleware\StartSession::class,
-	Illuminate\View\Middleware\ShareErrorsFromSession::class,
-)));
+$appMiddleware = config('app.middleware', array());
+$coreMiddleware = array();
+if (!$app->isStateless())
+{
+	$coreMiddleware[] = Illuminate\Cookie\Middleware\EncryptCookies::class;
+	$coreMiddleware[] = Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class;
+	$coreMiddleware[] = Illuminate\Session\Middleware\StartSession::class;
+	$coreMiddleware[] = Illuminate\View\Middleware\ShareErrorsFromSession::class;
+}
+$app->middleware(array_merge($appMiddleware, $coreMiddleware));
 
-$routeMiddleware = config('app.routemiddleware', array());
-$app->routeMiddleware($routeMiddleware + array(
-	//
-));
+$appRouteMiddleware = config('app.routemiddleware', array());
+$coreRouteMiddleware = array();
+$app->routeMiddleware($appRouteMiddleware + $coreRouteMiddleware);
 
 
 /*

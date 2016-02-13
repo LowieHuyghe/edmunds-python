@@ -179,6 +179,16 @@ class Request extends BaseStructure
 	}
 
 	/**
+	 * Return a variable from header
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function getHeader($key)
+	{
+		return $this->request->header($key);
+	}
+
+	/**
 	 * Check if call was ajax
 	 * @return bool
 	 */
