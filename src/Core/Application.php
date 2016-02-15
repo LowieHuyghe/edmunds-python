@@ -238,28 +238,17 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-	 * Post bootstrap the application container.
-	 *
-	 * @return void
+     * Register an available binding with the application.
+     *
+     * @param  string  $abstract
+     * @param  \Closure|string  $concrete
 	 */
-	public function postBootstrap()
+	public function bindAvailable($abstract, $concrete)
 	{
-		// setup only if non stateless
-		if (!config('app.stateless', false))
-		{
-			// session
-			$this->aliases['Illuminate\Session\SessionManager'] = 'session';
-			$this->availableBindings['session'] = 'registerSessionBindings';
-			$this->availableBindings['session.store'] = 'registerSessionBindings';
-			$this->availableBindings['Illuminate\Session\SessionManager'] = 'registerSessionBindings';
+        $abstract = $this->normalize($abstract);
+        $concrete = $this->normalize($concrete);
 
-			// cookie
-			$this->aliases['Illuminate\Contracts\Cookie\Factory'] = 'cookie';
-			$this->aliases['Illuminate\Contracts\Cookie\QueueingFactory'] = 'cookie';
-			$this->availableBindings['cookie'] = 'registerCookieBindings';
-			$this->availableBindings['Illuminate\Contracts\Cookie\Factory'] = 'registerCookieBindings';
-			$this->availableBindings['Illuminate\Contracts\Cookie\QueueingFactory'] = 'registerCookieBindings';
-		}
+        $this->availableBindings[$abstract] = $concrete;
 	}
 
 	/**
