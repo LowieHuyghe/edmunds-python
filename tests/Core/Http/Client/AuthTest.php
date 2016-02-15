@@ -45,15 +45,15 @@ class AuthTest extends BaseTest
 	/**
 	 * Test Login Credentials
 	 */
-	public function testLoginCredentials()
+	public function testLogin()
 	{
 		$auth = Auth::getInstance();
 		$user = $this->createUser();
 
 		// login
-		$this->assertTrue($auth->loginWithCredentials($this->email, $this->password));
-		$this->asserttrue($auth->loggedIn);
-		$this->asserttrue($auth->user->email == $this->email);
+		$this->assertTrue(!!$auth->login($this->email, $this->password));
+		$this->assertTrue($auth->loggedIn);
+		$this->assertTrue($auth->user->email == $this->email);
 
 		// logout
 		$auth->logout();
@@ -62,42 +62,16 @@ class AuthTest extends BaseTest
 	}
 
 	/**
-	 * Test Login Credentials with token
+	 * Test set user
 	 */
-	public function testLoginCredentialsForToken()
+	public function testSetUser()
 	{
 		$auth = Auth::getInstance();
 		$user = $this->createUser();
 
 		// login, fetch token
-		$token = $auth->loginWithCredentialsForToken($this->email, $this->password);
-		$this->assertTrue($token != null);
-		$this->asserttrue($auth->loggedIn);
-
-		// logout
-		$auth->logout();
-		$this->assertTrue(!$auth->loggedIn);
-
-		// login token
-		$this->assertTrue($auth->loginWithToken($token));
+		$auth->setUser($user);
 		$this->assertTrue($auth->loggedIn);
-
-		// logout
-		$auth->logout();
-		$this->assertTrue(!$auth->loggedIn);
-	}
-
-	/**
-	 * Test Login with user
-	 */
-	public function testLoginWithUser()
-	{
-		$auth = Auth::getInstance();
-		$user = $this->createUser();
-
-		// login, fetch token
-		$this->assertTrue($auth->loginWithUser($user));
-		$this->asserttrue($auth->loggedIn);
 
 		// logout
 		$auth->logout();
@@ -112,15 +86,15 @@ class AuthTest extends BaseTest
 		$auth = Auth::getInstance();
 		$user = $this->createUser();
 
-		$this->asserttrue($auth->loginAttempts === 0);
+		$this->assertTrue($auth->loginAttempts === 0);
 
 		// try login
-		$this->assertTrue(!$auth->loginWithCredentials($this->email, 'notthepassword'));
+		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
 		$this->assertTrue(!$auth->loggedIn);
 		$this->assertTrue($auth->loginAttempts === 1);
 
-		// try login with token
-		$this->assertTrue(!$auth->loginWithToken('somerandomtokenthatdoesnotexist'));
+		// try login
+		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
 		$this->assertTrue(!$auth->loggedIn);
 		$this->assertTrue($auth->loginAttempts === 2);
 	}
@@ -146,7 +120,7 @@ class AuthTest extends BaseTest
 	 */
 	protected function createUser()
 	{
-		$user = User::dummy();
+		$user = call_user_func(config('app.auth.provider.model') . '::dummy');
 
 		$user->id = null;
 		$user->email = $this->email;

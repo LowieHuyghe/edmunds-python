@@ -12,13 +12,15 @@
  */
 
 namespace Core\Http\Client;
-use Core\Localization\DateTime;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
+use Core\Localization\DateTime;
 use Core\Models\Auth\AuthToken;
 use Core\Models\Auth\LoginAttempt;
 use Core\Models\Auth\PasswordReset;
 use Core\Models\User;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\UserProvider;
 
 /**
  * The structure for authentication
@@ -55,15 +57,22 @@ class Auth extends BaseStructure
 	}
 
 	/**
-	 * @var User
-	 */
-	private $loggedInUser;
-
-	/**
 	 * The current request
 	 * @var Request
 	 */
 	private $request;
+
+	/**
+	 * The user provider
+	 * @var UserProvider
+	 */
+	private $provider;
+
+	/**
+	 * Logged out
+	 * @var boolean
+	 */
+	protected $loggedOut = false;
 
 	/**
 	 * Constructor
@@ -82,6 +91,11 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
+		if ($this->loggedOut)
+		{
+			return false;
+		}
+
 		return app('auth')->check();
 	}
 
@@ -91,27 +105,12 @@ class Auth extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		if (!isset($this->loggedInUser))
+		if ($this->loggedOut)
 		{
-			if ($authUser = app('auth')->user()) //Get user
-			{
-				if ($user = User::find($authUser->id)) //Find user
-				{
-					$this->loggedInUser = $user;
-				}
-				else
-				{
-					$this->loggedInUser = null;
-					$this->logout();
-				}
-			}
-			else
-			{
-				$this->loggedInUser = null;
-			}
+			return null;
 		}
 
-		return $this->loggedInUser;
+		return app('auth')->user();
 	}
 
 	/**
@@ -131,18 +130,31 @@ class Auth extends BaseStructure
 	 * @param string $email
 	 * @param string $password
 	 * @param bool $once
-	 * @return bool
+	 * @return bool|string
 	 */
-	public function loginWithCredentials($email, $password, $once = false)
+	public function login($email, $password, $once = false)
 	{
-		//Login
-		$loggedIn = $this->loginWithCredentialsGeneric($email, $password, $once);
+		switch(app('auth')->getDefaultDriver())
+		{
+			case 'api':
+				$response = $this->loginApi($email, $password);
+				break;
+			default:
+				$response = $this->loginWeb($email, $password, $once);
+				break;
+		}
+
+		// if response was true, set not logged out
+		if ($response)
+		{
+			$this->loggedOut = false;
+		}
 
 		//Log attempt
 		$this->saveLoginAttempt('credentials', $email, $password);
 
 		//Return result
-		return $loggedIn;
+		return $response;
 	}
 
 	/**
@@ -152,27 +164,23 @@ class Auth extends BaseStructure
 	 * @param bool $once
 	 * @return string
 	 */
-	public function loginWithCredentialsForToken($email, $password, $once = false)
+	protected function loginApi($email, $password)
 	{
-		//Login with credentials
-		if ($this->loginWithCredentialsGeneric($email, $password, $once))
-		{
-			//Create auth-token
-			$authToken = new AuthToken();
-			$authToken->user()->associate($this->loggedInUser);
-			$authToken->session_id = $this->request->session->getId();
+		$credentials = array('email' => $email, 'password' => $password);
+		$user = $this->getUserProvider()->retrieveByCredentials($credentials);
 
-			//Save and return
-			if ($authToken->save())
-			{
-				return $authToken->token;
-			}
+		$token = null;
+
+		//Login with credentials
+		if ($user && $this->getUserProvider()->validateCredentials($user, $credentials))
+		{
+			$this->setUser($user);
+
+			$this->user->api_token = $token = encrypt(time() . '_' . $this->user->id);
+			$this->user->save();
 		}
 
-		//Log attempt
-		$this->saveLoginAttempt('credentials_for_token', $email, $password);
-
-		return null;
+		return $token;
 	}
 
 	/**
@@ -182,88 +190,42 @@ class Auth extends BaseStructure
 	 * @param bool $once
 	 * @return bool
 	 */
-	protected function loginWithCredentialsGeneric($email, $password, $once = false)
+	protected function loginWeb($email, $password, $once = false)
 	{
 		$credentials = array('email' => $email, 'password' => $password);
 
 		if ($once)
 		{
-			$loggedIn = app('auth')->once($credentials);
+			return app('auth')->once($credentials);
 		}
 		else
 		{
-			$loggedIn = app('auth')->attempt($credentials);
+			return app('auth')->attempt($credentials);
 		}
-
-		if ($loggedIn)
-		{
-			$user = User::where('email', '=', $email)->first();
-
-			$this->loggedInUser = $user;
-		}
-
-		//Return result
-		return $loggedIn;
 	}
 
 	/**
-	 * Log a user in with token
-	 * @param string $token
-	 * @param bool $once
-	 * @return bool
+	 * Get the user provider
+	 * @return UserProvider
 	 */
-	public function loginWithToken($token, $once = false)
+	protected function getUserProvider()
 	{
-		$loggedIn = false;
-
-		//Fetch the token
-		if ($authToken = AuthToken::where('token', '=', $token)->first())
+		if (!isset($this->provider))
 		{
-			$validUntil = $authToken->updated_at->addMinutes(config('core.auth.ttl.authtoken'));
-
-			//Log user in
-			if ($loggedIn = $this->loginWithUser($authToken->user, $once))
-			{
-				//Check if session-id is still valid
-				if ($authToken->session_id && $validUntil->gt(DateTime::now()))
-				{
-					$authToken->touch();
-					$this->request->session->save();
-					$this->request->session->setId($authToken->session_id);
-					$this->request->session->start();
-				}
-				//Otherwise save new session-id
-				else
-				{
-					$authToken->session_id = $this->request->session->getId();
-					$authToken->save();
-				}
-			}
+			$this->provider = app('auth')->createUserProvider(config('auth.guards.' . app('auth')->getDefaultDriver() . '.provider'));
 		}
-
-		//Log attempt
-		$this->saveLoginAttempt('token', null, null, $token);
-
-		//Return result
-		return $loggedIn;
+		return $this->provider;
 	}
 
 	/**
 	 * Log a user in
 	 * @param User $user
-	 * @param bool $once
-	 * @return bool
 	 */
-	public function loginWithUser($user, $once = false)
+	public function setUser($user)
 	{
-		if (!$once)
-		{
-			app('auth')->login($user);
-		}
+		app('auth')->setUser($user);
 
-		$this->loggedInUser = $user;
-
-		return true;
+		$this->loggedOut = false;
 	}
 
 	/**
@@ -272,7 +234,7 @@ class Auth extends BaseStructure
 	 * @param string $email
 	 * @param string $password
 	 */
-	protected function saveLoginAttempt($type, $email = null, $password = null, $token = null)
+	protected function saveLoginAttempt($type, $email = null, $password = null)
 	{
 		$loginAttempt = new LoginAttempt();
 
@@ -280,10 +242,9 @@ class Auth extends BaseStructure
 		$loginAttempt->type = $type;
 		$loginAttempt->email = $email;
 		$loginAttempt->password = $password;
-		$loginAttempt->token = $token;
-		if ($this->loggedInUser)
+		if ($user = $this->user)
 		{
-			$loginAttempt->user()->associate($this->loggedInUser);
+			$loginAttempt->user()->associate($user);
 		}
 
 		$loginAttempt->save();
@@ -291,14 +252,26 @@ class Auth extends BaseStructure
 
 	/**
 	 * Log the current user out
-	 * @return bool
 	 */
 	public function logout()
 	{
-		app('auth')->logout();
-		$this->loggedInUser = null;
+		if ($this->loggedIn)
+		{
+			switch(app('auth')->getDefaultDriver())
+			{
+				case 'web':
+					app('auth')->logout();
+					break;
+				case 'api':
+					$user = $this->user;
 
-		return true;
+					$user->api_token = null;
+					$user->save();
+					break;
+			}
+		}
+
+		$this->loggedOut = true;
 	}
 
 	/**

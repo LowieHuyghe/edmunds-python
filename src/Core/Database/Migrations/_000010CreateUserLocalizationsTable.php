@@ -16,14 +16,14 @@ namespace Core\Database\Migrations;
 use Illuminate\Database\Schema\Blueprint;
 
 /**
- * Migration for roleRights-table
+ * Migration for userLocalization-table
  *
  * @author      Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _000010CreateAuthTokensTable
+trait _000010CreateUserLocalizationsTable
 {
 	/**
 	 * Run the migrations.
@@ -31,12 +31,13 @@ trait _000010CreateAuthTokensTable
 	 */
 	public function up()
 	{
-		app('db')->connection()->getSchemaBuilder()->create('auth_tokens', function (Blueprint $table)
+		app('db')->connection()->getSchemaBuilder()->create('user_localizations', function (Blueprint $table)
 		{
-			$table->increments('id');
-			$table->string('token')->unique();
 			$table->integer('user_id')->unsigned();
-			$table->string('session_id')->nullable();
+			$table->primary('user_id');
+			$table->string('locale', 10)->nullable();
+			$table->string('currency', 10)->nullable();
+			$table->string('timezone')->nullable();
 			$table->timestamps();
 		});
 	}
@@ -47,6 +48,6 @@ trait _000010CreateAuthTokensTable
 	 */
 	public function down()
 	{
-		app('db')->connection()->getSchemaBuilder()->drop('auth_tokens');
+		app('db')->connection()->getSchemaBuilder()->drop('user_localizations');
 	}
 }
