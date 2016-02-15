@@ -195,16 +195,13 @@ class Response extends BaseStructure
 	 */
 	public function cookie($key, $value, $minutes = 0)
 	{
-		if (!app()->isStateless())
+		if ($minutes)
 		{
-			if ($minutes)
-			{
-				$this->cookies[] = app('cookie')->make($key, $value, $minutes);
-			}
-			else
-			{
-				$this->cookies[] = app('cookie')->forever($key, $value);
-			}
+			$this->cookies[] = app('cookie')->make($key, $value, $minutes);
+		}
+		else
+		{
+			$this->cookies[] = app('cookie')->forever($key, $value);
 		}
 	}
 
@@ -237,19 +234,23 @@ class Response extends BaseStructure
 	 */
 	public function redirect($uri, $saveIntendedRoute = false, $gotoIntendedRoute = false)
 	{
-		//Go to the intended route that was saved
-		if ($gotoIntendedRoute && !app()->isStateless())
+		// not when stateless
+		if (!app()->isStateless())
 		{
-			if ($this->request->session->has('intended_route'))
+			// go to the intended route that was saved
+			if ($gotoIntendedRoute)
 			{
-				$uri = $this->request->session->get('intended_route');
-				$this->request->session->remove('intended_route');
+				if ($this->request->session->has('intended_route'))
+				{
+					$uri = $this->request->session->get('intended_route');
+					$this->request->session->remove('intended_route');
+				}
 			}
-		}
-		//Save the route the user intended to go
-		if ($saveIntendedRoute && !app()->isStateless())
-		{
-			$this->request->session->set('intended_route', $this->request->path);
+			// save the route the user intended to go
+			if ($saveIntendedRoute)
+			{
+				$this->request->session->set('intended_route', $this->request->path);
+			}
 		}
 
 		$this->redirectResponse = new RedirectResponse($uri);
@@ -308,7 +309,6 @@ class Response extends BaseStructure
 
 		//Convert to Http-response
 		$response = $response->getResponse($this->assignments);
-		$this->attachExtras($response);
 
 		//Return the http-response
 		return $response;
@@ -318,16 +318,18 @@ class Response extends BaseStructure
 	 * Fetch the build response
 	 * @param \Illuminate\Http\Response $response
 	 */
-	protected function attachExtras(&$response)
+	public function attachExtras(&$response)
 	{
 		//Assign headers
 		$response->withHeaders($this->headers);
+		$this->headers = array();
 
 		//Assign cookie
 		foreach ($this->cookies as $cookie)
 		{
 			$response->withCookie($cookie);
 		}
+		$this->cookies = array();
 
 		//Set status code
 		$response->setStatusCode($this->statusCode);

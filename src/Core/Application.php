@@ -99,7 +99,7 @@ class Application extends \Laravel\Lumen\Application
 				abort(503);
 			}
 
-			parent::dispatch($request);
+			$response = parent::dispatch($request);
 		}
 		catch (AbortHttpException $exception)
 		{
@@ -110,7 +110,10 @@ class Application extends \Laravel\Lumen\Application
 		// and send them all
 		Registry::warehouse()->flush();
 
-		return Response::getInstance()->getResponse();
+		// attach extra's to response
+		Response::getInstance()->attachExtras($response);
+
+		return $response;;
 	}
 
 	/**

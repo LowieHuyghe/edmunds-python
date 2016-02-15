@@ -108,6 +108,8 @@ class BaseController extends Controller
 		{
 			$this->response->assign('success', $response);
 		}
+
+		return $this->response->getResponse();
 	}
 
 	/**
