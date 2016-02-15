@@ -55,7 +55,7 @@ class LoginRequiredController extends BaseController
 			{
 				if ($email = $this->request->getServer('PHP_AUTH_USER') && $password = $this->request->getServer('PHP_AUTH_PW'))
 				{
-					Auth::getInstance()->loginWithCredentials($email, $password);
+					Auth::getInstance()->login($email, $password);
 				}
 				if (!$this->visitor->loggedIn)
 				{

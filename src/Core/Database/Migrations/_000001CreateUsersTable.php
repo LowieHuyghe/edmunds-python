@@ -38,6 +38,7 @@ trait _000001CreateUsersTable
 			$table->string('password', 60);
 			$table->string('locale', 10);
 			$table->integer('gender_id')->unsigned();
+			$table->string('api_token', 100)->nullable()->unique();
 			$table->rememberToken();
 			$table->timestamps();
 			$table->softDeletes();

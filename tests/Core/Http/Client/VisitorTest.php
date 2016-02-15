@@ -48,12 +48,10 @@ class VisitorTest extends BaseTest
 		$this->assertTrue(Visitor::getInstance()->user == null);
 
 		// make user
-		$user = User::dummy();
-		$user->id = null;
-		$user->save();
+		$user = $this->createUser();
 
 		// logged in
-		Auth::getInstance()->loginWithUser($user);
+		Auth::getInstance()->setUser($user);
 		$this->assertTrue(Visitor::getInstance()->user != null);
 
 		// logged out
@@ -71,12 +69,10 @@ class VisitorTest extends BaseTest
 		$this->assertTrue(!Visitor::getInstance()->loggedIn);
 
 		// make user
-		$user = User::dummy();
-		$user->id = null;
-		$user->save();
+		$user = $this->createUser();
 
 		// logged in
-		Auth::getInstance()->loginWithUser($user);
+		Auth::getInstance()->setUser($user);
 		$this->assertTrue(Visitor::getInstance()->loggedIn);
 
 		// logged out
@@ -106,5 +102,20 @@ class VisitorTest extends BaseTest
 	public function testLocation()
 	{
 		$this->assertTrue(Visitor::getInstance()->location != null);
+	}
+
+	/**
+	 * Create a new fresh user to work with
+	 * @return User
+	 */
+	protected function createUser()
+	{
+		$user = call_user_func(config('app.auth.provider.model') . '::dummy');
+
+		$user->id = null;
+
+		$user->save();
+
+		return $user;
 	}
 }
