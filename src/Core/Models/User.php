@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Gender $gender Gender of the user
  * @property Localization $localization
  * @property Location $location
+ * @property string $api_token
  * @property string $remember_token
  * @property DateTime created_at
  * @property DateTime updated_at
@@ -167,6 +168,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		$this->validator->value('email')->max(255)->unique('users', $this->getKeyName());
 		$this->validator->value('gender_id')->integer();
 		$this->validator->value('password')->max(60);
+		$this->validator->value('api_token')->max(100);
 		$this->validator->value('remember_token')->max(100);
 
 		$this->validator->value('deleted_at')->date();
@@ -182,6 +184,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		return array(
 			'email' => $faker->email,
 			'password' => bcrypt('secret'),
+			'api_token' => str_random(32),
 			'remember_token' => str_random(32),
 			'gender_id' => Gender::all()->random()->id,
 		);

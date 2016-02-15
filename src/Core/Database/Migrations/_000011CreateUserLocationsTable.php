@@ -23,7 +23,7 @@ use Illuminate\Database\Schema\Blueprint;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-trait _000012CreateUserLocationsTable
+trait _000011CreateUserLocationsTable
 {
 	/**
 	 * Run the migrations.
