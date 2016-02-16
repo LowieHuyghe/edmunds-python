@@ -31,14 +31,16 @@ class Number extends BaseStructure
     /**
      * Constructor
      * @param mixed $number
+     * @param string|null $locale
+     * @param string|null $currency
      */
-    public function __construct($number)
+    public function __construct($number, $locale = null, $currency = null)
     {
         $this->number = $number;
 
         $localization = Visitor::getInstance()->localization;
-        $this->locale = $localization->locale;
-        $this->currency = $localization->currency;
+        $this->locale = $locale ?: $localization->locale;
+        $this->currency = $currency ?: $localization->currency;
     }
 
     /**
