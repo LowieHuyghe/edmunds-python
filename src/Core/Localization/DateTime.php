@@ -44,17 +44,16 @@ class DateTime extends \Carbon\Carbon
 	 * Constructor
 	 * @param string|null $time
 	 * @param string|null $outputTimezone
+	 * @param string|null $locale
 	 */
-	public function __construct($time = null, $outputTimezone = null)
+	public function __construct($time = null, $outputTimezone = null, $locale = null)
 	{
 		$localization = Visitor::getInstance()->localization;
 
-		if (is_null($outputTimezone))
-		{
-			$outputTimezone = $localization->timezone;
-		}
+		$outputTimezone = $outputTimezone ?: $localization->timezone;
 		$this->outputTimezone = $this->safeCreateDateTimeZone($outputTimezone);
-		$this->locale = $localization->locale;
+
+		$this->locale = $locale ?: $localization->locale;
 
 		parent::__construct($time, config('core.system.timezone'));
 	}
