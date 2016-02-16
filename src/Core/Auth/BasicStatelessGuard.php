@@ -16,6 +16,9 @@ namespace Core\Auth;
 use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Events\Dispatcher;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * The basic guard
@@ -220,7 +223,7 @@ class BasicStatelessGuard implements Guard
 	{
 		if (isset($this->events))
 		{
-			$this->events->fire(new Events\Attempting(
+			$this->events->fire(new \Illuminate\Auth\Events\Attempting(
 				$credentials, $remember, $login
 			));
 		}
