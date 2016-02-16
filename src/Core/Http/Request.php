@@ -72,9 +72,6 @@ class Request extends BaseStructure
 	{
 		parent::__construct();
 
-		$session = $request->getSession();
-		$request->setSession(new Session($session));
-
 		$this->request = $request;
 	}
 
@@ -145,7 +142,7 @@ class Request extends BaseStructure
 	 */
 	protected function getSessionAttribute()
 	{
-		return $this->request->session();
+		return Session::getInstance();
 	}
 
 	/**

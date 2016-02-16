@@ -157,6 +157,7 @@ $app->routeMiddleware(array(
 
 $providers = array(
 	Core\Providers\StatefullServiceProvider::class,
+	Core\Providers\AuthServiceProvider::class,
 );
 $providers = array_merge($providers, config('app.providers', array()));
 

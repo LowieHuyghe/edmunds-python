@@ -13,7 +13,7 @@
 
 namespace Core\Http\Controllers\Login;
 use Core\Bases\Http\Controllers\BaseController;
-use Core\Http\Client\Auth;
+use Core\Auth\Auth;
 
 /**
  * Controller to extend from which requires the user to log in

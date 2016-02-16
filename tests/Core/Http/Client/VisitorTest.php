@@ -14,7 +14,7 @@
 namespace CoreTest;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Http\Client\Auth;
+use Core\Auth\Auth;
 use Core\Http\Client\Visitor;
 use Core\Models\User;
 

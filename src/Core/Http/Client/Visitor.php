@@ -15,7 +15,7 @@ namespace Core\Http\Client;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Helpers\MiscHelper;
-use Core\Http\Client\Auth;
+use Core\Auth\Auth;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Models\Localization;
