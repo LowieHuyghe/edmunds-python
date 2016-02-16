@@ -243,7 +243,7 @@ class Response extends BaseStructure
 				if ($this->request->session->has('intended_route'))
 				{
 					$uri = $this->request->session->get('intended_route');
-					$this->request->session->remove('intended_route');
+					$this->request->session->delete('intended_route');
 				}
 			}
 			// save the route the user intended to go

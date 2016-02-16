@@ -100,7 +100,7 @@ class Session extends BaseStructure implements SessionInterface
 	 * @param string $name
 	 * @return mixed The removed value or null when it does not exist
 	 */
-	public function remove($name)
+	public function delete($name)
 	{
 		return $this->session->remove($name);
 	}
