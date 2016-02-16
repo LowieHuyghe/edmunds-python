@@ -29,6 +29,26 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 class Session extends BaseStructure implements SessionInterface
 {
 	/**
+	 * Instance of the Session-structure
+	 * @var Request
+	 */
+	private static $instance;
+
+	/**
+	 * Fetch instance of the Session-structure
+	 * @return Request
+	 */
+	public static function getInstance()
+	{
+		if (!isset(self::$instance))
+		{
+			self::$instance = new Session(app('session.store'));
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * @var SessionInterface
 	 */
 	private $session;
@@ -37,7 +57,7 @@ class Session extends BaseStructure implements SessionInterface
 	 * Constructor
 	 * @param SessionInterface $session
 	 */
-	public function __construct(&$session)
+	public function __construct($session)
 	{
 		parent::__construct();
 

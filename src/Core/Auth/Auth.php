@@ -11,7 +11,8 @@
  * @since		Version 0.1
  */
 
-namespace Core\Http\Client;
+namespace Core\Auth;
+
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
 use Core\Localization\DateTime;
@@ -69,12 +70,6 @@ class Auth extends BaseStructure
 	private $provider;
 
 	/**
-	 * Logged out
-	 * @var boolean
-	 */
-	protected $loggedOut = false;
-
-	/**
 	 * Constructor
 	 * @param Request $request
 	 */
@@ -91,11 +86,6 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
-		if ($this->loggedOut)
-		{
-			return false;
-		}
-
 		return app('auth')->check();
 	}
 
@@ -105,11 +95,6 @@ class Auth extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		if ($this->loggedOut)
-		{
-			return null;
-		}
-
 		return app('auth')->user();
 	}
 
@@ -134,20 +119,15 @@ class Auth extends BaseStructure
 	 */
 	public function login($email, $password, $once = false)
 	{
-		switch(app('auth')->getDefaultDriver())
-		{
-			case 'api':
-				$response = $this->loginApi($email, $password);
-				break;
-			default:
-				$response = $this->loginWeb($email, $password, $once);
-				break;
-		}
+		$credentials = array('email' => $email, 'password' => $password);
 
-		// if response was true, set not logged out
-		if ($response)
+		if ($once)
 		{
-			$this->loggedOut = false;
+			$response = app('auth')->once($credentials);
+		}
+		else
+		{
+			$response = app('auth')->attempt($credentials);
 		}
 
 		//Log attempt
@@ -155,32 +135,6 @@ class Auth extends BaseStructure
 
 		//Return result
 		return $response;
-	}
-
-	/**
-	 * Login with credentials and retrieve a token on success
-	 * @param string $email
-	 * @param string $password
-	 * @param bool $once
-	 * @return string
-	 */
-	protected function loginApi($email, $password)
-	{
-		$credentials = array('email' => $email, 'password' => $password);
-		$user = $this->getUserProvider()->retrieveByCredentials($credentials);
-
-		$token = null;
-
-		//Login with credentials
-		if ($user && $this->getUserProvider()->validateCredentials($user, $credentials))
-		{
-			$this->setUser($user);
-
-			$this->user->api_token = $token = encrypt(time() . '_' . $this->user->id);
-			$this->user->save();
-		}
-
-		return $token;
 	}
 
 	/**
@@ -192,16 +146,6 @@ class Auth extends BaseStructure
 	 */
 	protected function loginWeb($email, $password, $once = false)
 	{
-		$credentials = array('email' => $email, 'password' => $password);
-
-		if ($once)
-		{
-			return app('auth')->once($credentials);
-		}
-		else
-		{
-			return app('auth')->attempt($credentials);
-		}
 	}
 
 	/**
@@ -224,8 +168,6 @@ class Auth extends BaseStructure
 	public function setUser($user)
 	{
 		app('auth')->setUser($user);
-
-		$this->loggedOut = false;
 	}
 
 	/**
@@ -255,23 +197,7 @@ class Auth extends BaseStructure
 	 */
 	public function logout()
 	{
-		if ($this->loggedIn)
-		{
-			switch(app('auth')->getDefaultDriver())
-			{
-				case 'web':
-					app('auth')->logout();
-					break;
-				case 'api':
-					$user = $this->user;
-
-					$user->api_token = null;
-					$user->save();
-					break;
-			}
-		}
-
-		$this->loggedOut = true;
+		app('auth')->logout();
 	}
 
 	/**

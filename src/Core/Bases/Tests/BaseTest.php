@@ -13,8 +13,9 @@
 
 namespace Core\Bases\Tests;
 
-use Laravel\Lumen\Testing\TestCase;
+use Core\Http\Client\Session;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Laravel\Lumen\Testing\TestCase;
 
 /**
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
@@ -35,5 +36,20 @@ class BaseTest extends TestCase
 	public function createApplication()
 	{
 		return require __DIR__ . '/../../../bootstrap/core.php';
+	}
+
+	/**
+	 * Setup the test environment.
+	 *
+	 * @return void
+	 */
+	public function setUp()
+	{
+		parent::setUp();
+
+		if (!$this->app->isStateless())
+		{
+			Session::getInstance()->start();
+		}
 	}
 }

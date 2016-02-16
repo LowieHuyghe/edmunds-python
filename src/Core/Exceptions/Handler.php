@@ -5,6 +5,7 @@ namespace Core\Exceptions;
 use Core\Analytics\Tracking\ErrorLog;
 use Core\Http\Response;
 use Exception;
+use Throwable;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -54,7 +55,12 @@ class Handler extends ExceptionHandler
 	 */
 	protected function logException(Exception $e)
 	{
-		(new ErrorLog())->log(config('app.analytics.errordefault', null));
+		try
+		{
+			(new ErrorLog())->log(config('app.analytics.errordefault', null));
+		}
+		catch(Exception $e){}
+		catch(Throwable $e){}
 	}
 
 	/**
@@ -66,26 +72,31 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Exception $e)
 	{
-		if (($e instanceof UnauthorizedHttpException
-				|| $e instanceof AccessDeniedHttpException
-				|| $e instanceof NotFoundHttpException
-				|| $e instanceof ServiceUnavailableHttpException)
-			&& view()->exists($viewName = 'errors.' . $e->getStatusCode()))
+		try
 		{
-			$response = Response::getInstance();
-
-			$response->header($e->getHeaders());
-			$response->render(null, $viewName);
-			$response->assign('message', $e->getMessage());
-			$response->statusCode = $e->getStatusCode();
-
-			if ($e instanceof ServiceUnavailableHttpException)
+			if (($e instanceof UnauthorizedHttpException
+					|| $e instanceof AccessDeniedHttpException
+					|| $e instanceof NotFoundHttpException
+					|| $e instanceof ServiceUnavailableHttpException)
+				&& view()->exists($viewName = 'errors.' . $e->getStatusCode()))
 			{
-				$response->assign('maintenance', app()->isDownForMaintenance());
-			}
+				$response = Response::getInstance();
 
-			return $response->getResponse();
+				$response->header($e->getHeaders());
+				$response->render(null, $viewName);
+				$response->assign('message', $e->getMessage());
+				$response->statusCode = $e->getStatusCode();
+
+				if ($e instanceof ServiceUnavailableHttpException)
+				{
+					$response->assign('maintenance', app()->isDownForMaintenance());
+				}
+
+				return $response->getResponse();
+			}
 		}
+		catch(Exception $e){}
+		catch(Throwable $e){}
 
 		return parent::render($request, $e);
 	}
