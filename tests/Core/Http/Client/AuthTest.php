@@ -14,7 +14,7 @@
 namespace CoreTest;
 
 use Core\Bases\Tests\BaseTest;
-use Core\Http\Client\Auth;
+use Core\Auth\Auth;
 use Core\Http\Request;
 use Core\Models\Auth\LoginAttempt;
 use Core\Models\Auth\PasswordReset;
@@ -86,17 +86,17 @@ class AuthTest extends BaseTest
 		$auth = Auth::getInstance();
 		$user = $this->createUser();
 
-		$this->assertTrue($auth->loginAttempts === 0);
+		$currentLoginAttempts = $auth->loginAttempts;
 
 		// try login
 		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
 		$this->assertTrue(!$auth->loggedIn);
-		$this->assertTrue($auth->loginAttempts === 1);
+		$this->assertTrue($auth->loginAttempts === $currentLoginAttempts + 1);
 
 		// try login
 		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
 		$this->assertTrue(!$auth->loggedIn);
-		$this->assertTrue($auth->loginAttempts === 2);
+		$this->assertTrue($auth->loginAttempts === $currentLoginAttempts + 2);
 	}
 
 	/**
