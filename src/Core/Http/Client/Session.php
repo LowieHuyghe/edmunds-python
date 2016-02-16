@@ -15,7 +15,6 @@ namespace Core\Http\Client;
 
 use Core\Bases\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
 
 /**
@@ -26,7 +25,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Session extends BaseStructure implements SessionInterface
+class Session extends BaseStructure
 {
 	/**
 	 * Instance of the Session-structure
