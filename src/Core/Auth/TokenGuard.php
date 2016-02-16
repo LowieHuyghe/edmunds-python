@@ -14,6 +14,7 @@
 namespace Core\Auth;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Str;
 
 /**
@@ -163,7 +164,7 @@ class TokenGuard extends \Illuminate\Auth\TokenGuard
 	{
 		if (isset($this->events))
 		{
-			$this->events->fire(new Events\Attempting(
+			$this->events->fire(new \Illuminate\Auth\Events\Attempting(
 				$credentials, $remember, $login
 			));
 		}

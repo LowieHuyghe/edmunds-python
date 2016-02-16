@@ -14,7 +14,7 @@ return [
 	*/
 
 	'defaults' => [
-		'guard' => (!app()->isStateless()) ? config('app.auth.guard.default') : 'api',
+		'guard' => 'default',
 		'passwords' => 'users',
 	],
 
@@ -36,18 +36,8 @@ return [
 	*/
 
 	'guards' => [
-		'web' => [
-			'driver' => 'session',
-			'provider' => 'users',
-		],
-
-		'api' => [
-			'driver' => 'token',
-			'provider' => 'users',
-		],
-
-		'basic' => [
-			'driver' => 'basic',
+		'default' => [
+			'driver' => config('app.auth.driver'),
 			'provider' => 'users',
 		],
 	],
@@ -72,7 +62,7 @@ return [
 	'providers' => [
 		'users' => [
 			'driver' => 'eloquent',
-			'model' => config('app.auth.provider.model'),
+			'model' => config('app.auth.model'),
 		],
 
 		// 'users' => [

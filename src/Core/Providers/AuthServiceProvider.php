@@ -17,6 +17,7 @@ use Core\Auth\BasicStatefulGuard;
 use Core\Auth\BasicStatelessGuard;
 use Core\Auth\TokenGuard;
 use Core\Bases\Providers\BaseServiceProvider;
+use Exception;
 
 /**
  * The auth service provider
@@ -35,8 +36,25 @@ class AuthServiceProvider extends BaseServiceProvider
 	 */
 	public function register()
 	{
+		$this->registerSessionGuard();
 		$this->registerTokenGuard();
 		$this->registerBasicGuard();
+	}
+
+	/**
+	 * Register the session guard
+	 */
+	protected function registerSessionGuard()
+	{
+		$this->app['auth']->extend('session', function($app, $name, array $config)
+		{
+			if ($app->isStateless())
+			{
+				throw new Exception('Cannot use SessionGuard for authentication in a stateless application.');
+			}
+
+			return $app['auth']->createSessionDriver($name, $config);
+		});
 	}
 
 	/**

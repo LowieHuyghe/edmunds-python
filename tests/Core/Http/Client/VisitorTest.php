@@ -110,7 +110,7 @@ class VisitorTest extends BaseTest
 	 */
 	protected function createUser()
 	{
-		$user = call_user_func(config('app.auth.provider.model') . '::dummy');
+		$user = call_user_func(config('app.auth.model') . '::dummy');
 
 		$user->id = null;
 
