@@ -13,6 +13,8 @@
 
 namespace Core\Providers;
 
+use Core\Auth\BasicStatefulGuard;
+use Core\Auth\BasicStatelessGuard;
 use Core\Auth\TokenGuard;
 use Core\Bases\Providers\BaseServiceProvider;
 
@@ -33,12 +35,47 @@ class AuthServiceProvider extends BaseServiceProvider
 	 */
 	public function register()
 	{
+		$this->registerTokenGuard();
+		$this->registerBasicGuard();
+	}
+
+	/**
+	 * Register the token guard
+	 */
+	protected function registerTokenGuard()
+	{
 		$this->app['auth']->extend('token', function($app, $name, array $config)
 		{
 			return new TokenGuard(
-	            $this->app['auth']->createUserProvider($config['provider']),
-	            $this->app['request']
-            );
+				$app['auth']->createUserProvider($config['provider']),
+				$app['request']
+			);
+		});
+	}
+
+	/**
+	 * Register the basic guard
+	 */
+	protected function registerBasicGuard()
+	{
+		$this->app['auth']->extend('basic', function($app, $name, array $config)
+		{
+			if ($app->isStateless())
+			{
+				return new BasicStatelessGuard(
+					$app['auth']->createUserProvider($config['provider']),
+					$app['request']
+				);
+			}
+			else
+			{
+				return new BasicStatefulGuard(
+					$name,
+					$app['auth']->createUserProvider($config['provider']),
+					$app['session.store'],
+					$app['request']
+				);
+			}
 		});
 	}
 }
