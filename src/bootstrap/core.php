@@ -141,6 +141,8 @@ $app->middleware(array(
 $app->routeMiddleware(config('app.routemiddleware', array()));
 $app->routeMiddleware(array(
 	'auth' => Core\Auth\Middleware\Authenticate::class,
+	'rights' => Core\Auth\Middleware\RightsMiddleware::class,
+	'roles' => Core\Auth\Middleware\RolesMiddleware::class,
 ));
 
 
