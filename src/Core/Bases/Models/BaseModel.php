@@ -14,8 +14,8 @@
 namespace Core\Bases\Models;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Io\Validation\Validation;
-use Core\Localization\DateTime;
+use Core\Validation\Validation;
+use Core\Localization\Format\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Validator;

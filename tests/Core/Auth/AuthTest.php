@@ -16,9 +16,9 @@ namespace CoreTest\Auth;
 use Core\Bases\Tests\BaseTest;
 use Core\Auth\Auth;
 use Core\Http\Request;
-use Core\Models\Auth\LoginAttempt;
-use Core\Models\Auth\PasswordReset;
-use Core\Models\User;
+use Core\Auth\Models\LoginAttempt;
+use Core\Auth\Models\PasswordReset;
+use Core\Auth\Models\User;
 
 /**
  * Testing Auth-class

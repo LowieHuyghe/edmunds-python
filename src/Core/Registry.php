@@ -19,7 +19,7 @@ use Core\Bases\Structures\BaseStructure;
 use Core\Cache\Cache;
 use Core\Database\Database;
 use Core\Io\Admin\PmManager;
-use Core\Jobs\Queue;
+use Core\Queue\Queue;
 
 /**
  * A base for the structures to extend from

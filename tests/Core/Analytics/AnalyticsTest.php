@@ -20,7 +20,7 @@ use Core\Analytics\Tracking\EventLog;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Bases\Tests\BaseTest;
 use Core\Http\Client\Visitor;
-use Core\Localization\DateTime;
+use Core\Localization\Format\DateTime;
 use Core\Registry;
 use Exception;
 

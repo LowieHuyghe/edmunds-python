@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Models\Observers;
+namespace Core\Auth\Models\Observers;
 
 use Core\Bases\Models\BaseModel;
 

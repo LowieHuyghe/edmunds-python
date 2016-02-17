@@ -16,7 +16,7 @@ namespace CoreTest;
 use Core\Bases\Tests\BaseTest;
 use Core\Auth\Auth;
 use Core\Http\Client\Visitor;
-use Core\Models\User;
+use Core\Auth\Models\User;
 
 /**
  * Testing Visitor-class

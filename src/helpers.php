@@ -26,7 +26,7 @@
 	 */
 	function trans($message, $parameters = array(), $locale = null, $onlyReplacements = false)
 	{
-		return \Core\Io\Translator::getInstance()->trans($message, $parameters, null, $locale, $onlyReplacements);
+		return \Core\Localization\Translator::getInstance()->trans($message, $parameters, null, $locale, $onlyReplacements);
 	}
 
 	/**

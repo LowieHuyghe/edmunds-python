@@ -15,11 +15,10 @@ namespace Core\Auth;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
-use Core\Localization\DateTime;
-use Core\Models\Auth\AuthToken;
-use Core\Models\Auth\LoginAttempt;
-use Core\Models\Auth\PasswordReset;
-use Core\Models\User;
+use Core\Localization\Format\DateTime;
+use Core\Auth\Models\LoginAttempt;
+use Core\Auth\Models\PasswordReset;
+use Core\Auth\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;

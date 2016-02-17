@@ -14,7 +14,7 @@
 namespace Core\Http\Client;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
-use Core\Models\Localization;
+use Core\Localization\Models\Localization;
 use DeviceDetector\DeviceDetector;
 use DeviceDetector\Parser\Client\Browser;
 use DeviceDetector\Parser\OperatingSystem;

@@ -13,12 +13,11 @@
 
 namespace Core\Bases\Http\Controllers;
 
-use Core\Http\Controllers\Login\LoginRequiredController;
 use Core\Http\Client\Input;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Client\Visitor;
-use Core\Io\Validation\Validation;
+use Core\Validation\Validation;
 use Laravel\Lumen\Routing\Controller;
 
 /**

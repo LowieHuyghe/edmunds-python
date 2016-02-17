@@ -14,13 +14,13 @@
 namespace Core\Http\Client;
 
 use Core\Bases\Structures\BaseStructure;
-use Core\Helpers\MiscHelper;
+use Core\Foundation\Helpers\MiscHelper;
 use Core\Auth\Auth;
 use Core\Http\Request;
 use Core\Http\Response;
-use Core\Models\Localization;
-use Core\Models\Location;
-use Core\Models\User;
+use Core\Localization\Models\Localization;
+use Core\Localization\Models\Location;
+use Core\Auth\Models\User;
 use Core\Registry;
 
 /**

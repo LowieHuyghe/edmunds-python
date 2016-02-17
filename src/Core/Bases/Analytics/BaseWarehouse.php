@@ -15,8 +15,8 @@ namespace Core\Bases\Analytics;
 
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Structures\BaseStructure;
-use Core\Jobs\QueueJob;
-use Core\Jobs\Queue;
+use Core\Queue\QueueJob;
+use Core\Queue\Queue;
 use Core\Registry;
 
 /**

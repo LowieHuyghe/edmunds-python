@@ -14,7 +14,7 @@
 namespace Core\Bases\Models;
 
 use Core\Bases\Models\BaseModel;
-use Core\Io\Validation\Validation;
+use Core\Validation\Validation;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Collection;
 

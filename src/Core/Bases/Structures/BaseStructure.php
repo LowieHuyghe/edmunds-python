@@ -15,7 +15,7 @@ namespace Core\Bases\Structures;
 
 use Core\Bases\Models\BaseModel;
 use ArrayAccess;
-use Core\Localization\DateTime;
+use Core\Localization\Format\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Collection;
@@ -25,7 +25,7 @@ use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Core\Io\Validation\Validation;
+use Core\Validation\Validation;
 
 /**
  * A base for the structures to extend from

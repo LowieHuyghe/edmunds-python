@@ -14,8 +14,8 @@
 namespace Core\Database\Seeds;
 
 use Core\Bases\Database\Seeds\BaseSeeder;
-use Core\Models\Localization;
-use Core\Models\User;
+use Core\Localization\Models\Localization;
+use Core\Auth\Models\User;
 
 /**
  * Seeder for the user_localizations-table
