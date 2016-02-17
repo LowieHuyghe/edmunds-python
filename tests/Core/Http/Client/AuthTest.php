@@ -51,7 +51,7 @@ class AuthTest extends BaseTest
 		$user = $this->createUser();
 
 		// login
-		$this->assertTrue(!!$auth->login($this->email, $this->password));
+		$this->assertTrue($auth->login($this->email, $this->password));
 		$this->assertTrue($auth->loggedIn);
 		$this->assertTrue($auth->user->email == $this->email);
 

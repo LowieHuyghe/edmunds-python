@@ -11,8 +11,11 @@
  * @since       Version 0.1
  */
 
-namespace Core\Http\Middleware;
+namespace Core\Auth\Middleware;
 
+use Core\Auth\Auth;
+use Core\Auth\Guards\BasicStatefulGuard;
+use Core\Auth\Guards\BasicStatelessGuard;
 use Core\Bases\Http\Middleware\BaseMiddleware;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
@@ -26,26 +29,8 @@ use Core\Http\Response;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class AuthMiddleware extends BaseMiddleware
+class Authenticate extends BaseMiddleware
 {
-	/**
-	 * The authentication guard factory instance.
-	 *
-	 * @var \Illuminate\Contracts\Auth\Factory
-	 */
-	protected $auth;
-
-	/**
-	 * Create a new middleware instance.
-	 *
-	 * @param  \Illuminate\Contracts\Auth\Factory  $auth
-	 * @return void
-	 */
-	public function __construct(\Illuminate\Contracts\Auth\Factory $auth)
-	{
-		$this->auth = $auth;
-	}
-
 	/**
 	 * Handle an incoming request.
 	 * @param  \Illuminate\Http\Request $r
@@ -55,14 +40,21 @@ class AuthMiddleware extends BaseMiddleware
 	 */
 	public function handle($r, \Closure $next, $guard = null)
 	{
-		if ($this->auth->guard($guard)->guest())
-		{
-			abort(401);
-		}
+		$auth = Auth::getInstance();
 
-		if (!$this->visitor->loggedIn)
+		// check if guest
+		if (!$auth->loggedIn)
 		{
-			if ($this->request->ajax)
+			if ($this->request->ajax
+				|| $this->request->json
+				|| $this->request->xml)
+			{
+				abort(401);
+			}
+
+			$guard = $auth->getGuard();
+			if ($guard instanceof BasicStatefulGuard
+				|| $guard instanceof BasicStatelessGuard)
 			{
 				abort(403);
 			}
