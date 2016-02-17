@@ -16,7 +16,7 @@ namespace Core\Bases\Analytics\Tracking;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
-use Core\Localization\DateTime;
+use Core\Localization\Format\DateTime;
 use Core\Registry;
 use Exception;
 use Throwable;

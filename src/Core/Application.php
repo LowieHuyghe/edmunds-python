@@ -14,7 +14,7 @@
 namespace Core;
 use Core\Analytics\Tracking\PageviewLog;
 use Core\Database\Migrations\Migrator;
-use Core\Exceptions\AbortHttpException;
+use Core\Http\Exceptions\AbortHttpException;
 use Core\Auth\Auth;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;

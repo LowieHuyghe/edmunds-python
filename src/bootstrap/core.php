@@ -57,12 +57,12 @@ $app = new \Core\Application(REAL_BASE_PATH);
 
 $app->singleton(
 	Illuminate\Contracts\Debug\ExceptionHandler::class,
-	config('app.exceptions.handler', Core\Exceptions\Handler::class)
+	config('app.exceptions.handler', Core\Foundation\Exceptions\Handler::class)
 );
 
 $app->singleton(
 	Illuminate\Contracts\Console\Kernel::class,
-	config('app.console.kernel', Core\Console\Kernel::class)
+	config('app.console.kernel', Core\Foundation\Console\Kernel::class)
 );
 
 
@@ -158,8 +158,8 @@ $app->routeMiddleware(array(
 */
 
 $providers = array(
-	Core\Providers\StatefullServiceProvider::class,
-	Core\Providers\AuthServiceProvider::class,
+	Core\Foundation\Providers\StatefullServiceProvider::class,
+	Core\Auth\Providers\AuthServiceProvider::class,
 );
 $providers = array_merge($providers, config('app.providers', array()));
 
