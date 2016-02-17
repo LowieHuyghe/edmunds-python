@@ -28,36 +28,6 @@ use Core\Http\Response;
  */
 class BaseMiddleware
 {
-
-	/**
-	 * The current request
-	 * @var Request
-	 */
-	protected $request;
-
-	/**
-	 * The current request
-	 * @var Response
-	 */
-	protected $response;
-
-	/**
-	 * The visitor
-	 * @var Visitor
-	 */
-	protected $visitor;
-
-
-	/**
-	 * The constructor for the BaseMiddleware
-	 */
-	function __construct()
-	{
-		$this->request = Request::getInstance();
-		$this->response = Response::getInstance();
-		$this->visitor = Visitor::getInstance();
-	}
-
 	/**
 	 * Handle an incoming request.
 	 * @param  \Illuminate\Http\Request  $r
