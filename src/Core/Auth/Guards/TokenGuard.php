@@ -5,37 +5,32 @@
  *
  * The core of any web-project by Lowie Huyghe
  *
- * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
- * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
- * @license     http://LicenseUrl
- * @since       Version 0.1
+ * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
+ * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
+ * @license		http://LicenseUrl
+ * @since		Version 0.1
  */
 
-namespace Core\Auth;
+namespace Core\Auth\Guards;
 
-use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Events\Dispatcher;
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Support\Str;
 
 /**
- * The basic guard
+ * The token guard
  *
- * @author      Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
- * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
- * @license     http://LicenseUrl
- * @since       Version 0.
+ * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
+ * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
+ * @license		http://LicenseUrl
+ * @since		Version 0.
  *
  * @property bool $loggedIn
  * @property User $user
  * @property int $loginAttempts
  */
-class BasicStatelessGuard implements Guard
+class TokenGuard extends \Illuminate\Auth\TokenGuard
 {
-	use GuardHelpers;
-
 	/**
 	 * The user we last attempted to retrieve.
 	 *
@@ -51,31 +46,11 @@ class BasicStatelessGuard implements Guard
 	protected $events;
 
 	/**
-	 * The request instance.
-	 *
-	 * @var \Symfony\Component\HttpFoundation\Request
-	 */
-	protected $request;
-
-	/**
 	 * Indicates if the logout method has been called.
 	 *
 	 * @var bool
 	 */
 	protected $loggedOut = false;
-
-	/**
-	 * Create a new authentication guard.
-	 *
-	 * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
-	 * @param  \Symfony\Component\HttpFoundation\Request  $request
-	 * @return void
-	 */
-	public function __construct(UserProvider $provider, Request $request = null)
-	{
-		$this->request = $request;
-		$this->provider = $provider;
-	}
 
 	/**
 	 * Get the currently authenticated user.
@@ -88,32 +63,7 @@ class BasicStatelessGuard implements Guard
 		{
 			return;
 		}
-
-		// If we've already retrieved the user for the current request we can just
-		// return it back immediately. We do not want to fetch the user data on
-		// every call to this method because that would be tremendously slow.
-		if (! is_null($this->user))
-		{
-			return $this->user;
-		}
-
-		if ($this->attempt($this->getBasicCredentials(), false, false))
-		{
-			$user = $this->lastAttempted;
-		}
-
-		return $this->user = $user;
-	}
-
-	/**
-	 * Get the credential array for a HTTP Basic request.
-	 *
-	 * @return array
-	 */
-	protected function getBasicCredentials()
-	{
-		$request = $this->getRequest();
-		return ['email' => $request->getUser(), 'password' => $request->getPassword()];
+		return parent::user();
 	}
 
 	/**
@@ -127,11 +77,7 @@ class BasicStatelessGuard implements Guard
 		{
 			return;
 		}
-
-		if ($this->user())
-		{
-			return $this->user()->getAuthIdentifier();
-		}
+		return parent::id();
 	}
 
 	/**
@@ -142,7 +88,7 @@ class BasicStatelessGuard implements Guard
 	 */
 	public function setUser(AuthenticatableContract $user)
 	{
-		$this->user = $user;
+		parent::setUser($user);
 
 		$this->loggedOut = false;
 	}
@@ -184,13 +130,8 @@ class BasicStatelessGuard implements Guard
 	 * @param  bool   $login
 	 * @return bool
 	 */
-	public function attempt(array $credentials = [], $remember = false, $login = true)
+	public function attempt(array $credentials = [], $remember = true, $login = true)
 	{
-		if (! $this->getRequest()->getUser())
-		{
-			return false;
-		}
-
 		$this->fireAttemptEvent($credentials, $remember, $login);
 
 		$this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
@@ -265,9 +206,9 @@ class BasicStatelessGuard implements Guard
 		// If the user should be permanently "remembered" by the application we will
 		// queue a permanent cookie that contains the encrypted copy of the user
 		// identifier. We will then decrypt this later to retrieve the users.
-		if ($remember)
+		if ($remember && !$user->api_token)
 		{
-			//
+			$this->refreshApiToken($user);
 		}
 
 		// If we have an event dispatcher instance set we will fire an event so that
@@ -314,6 +255,11 @@ class BasicStatelessGuard implements Guard
 	{
 		$user = $this->user();
 
+		if (!is_null($this->user))
+		{
+			$this->refreshApiToken($this->user);
+		}
+
 		if (isset($this->events))
 		{
 			$this->events->fire(new \Illuminate\Auth\Events\Logout($user));
@@ -325,6 +271,18 @@ class BasicStatelessGuard implements Guard
 		$this->user = null;
 
 		$this->loggedOut = true;
+	}
+
+	/**
+	 * Refresh the "api" token for the user.
+	 *
+	 * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+	 * @return void
+	 */
+	protected function refreshApiToken(AuthenticatableContract $user)
+	{
+		$user->api_token = $token = Str::random(60);
+		$user->save();
 	}
 
 	/**
@@ -346,28 +304,5 @@ class BasicStatelessGuard implements Guard
 	public function setDispatcher(Dispatcher $events)
 	{
 		$this->events = $events;
-	}
-
-	/**
-	 * Get the current request instance.
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Request
-	 */
-	public function getRequest()
-	{
-		return $this->request ?: Request::createFromGlobals();
-	}
-
-	/**
-	 * Set the current request instance.
-	 *
-	 * @param  \Symfony\Component\HttpFoundation\Request  $request
-	 * @return $this
-	 */
-	public function setRequest(Request $request)
-	{
-		$this->request = $request;
-
-		return $this;
 	}
 }
