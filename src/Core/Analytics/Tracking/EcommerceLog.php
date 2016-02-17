@@ -15,7 +15,7 @@ namespace Core\Analytics\Tracking;
 
 use Core\Analytics\Tracking\EcommerceItem;
 use Core\Bases\Analytics\Tracking\BaseLog;
-use Core\Localization\DateTime;
+use Core\Localization\Format\DateTime;
 
 /**
  * An ecommerce log
