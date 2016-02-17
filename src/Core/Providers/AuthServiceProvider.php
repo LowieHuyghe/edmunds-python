@@ -13,9 +13,9 @@
 
 namespace Core\Providers;
 
-use Core\Auth\BasicStatefulGuard;
-use Core\Auth\BasicStatelessGuard;
-use Core\Auth\TokenGuard;
+use Core\Auth\Guards\BasicStatefulGuard;
+use Core\Auth\Guards\BasicStatelessGuard;
+use Core\Auth\Guards\TokenGuard;
 use Core\Bases\Providers\BaseServiceProvider;
 use Exception;
 

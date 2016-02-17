@@ -21,6 +21,7 @@ use Core\Models\Auth\LoginAttempt;
 use Core\Models\Auth\PasswordReset;
 use Core\Models\User;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 
 /**
@@ -86,7 +87,7 @@ class Auth extends BaseStructure
 	 */
 	protected function getLoggedInAttribute()
 	{
-		return app('auth')->check();
+		return $this->getGuard()->check();
 	}
 
 	/**
@@ -95,7 +96,7 @@ class Auth extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		return app('auth')->user();
+		return $this->getGuard()->user();
 	}
 
 	/**
@@ -123,11 +124,11 @@ class Auth extends BaseStructure
 
 		if ($once)
 		{
-			$response = app('auth')->once($credentials);
+			$response = $this->getGuard()->once($credentials);
 		}
 		else
 		{
-			$response = app('auth')->attempt($credentials);
+			$response = $this->getGuard()->attempt($credentials);
 		}
 
 		//Log attempt
@@ -138,36 +139,12 @@ class Auth extends BaseStructure
 	}
 
 	/**
-	 * Log the user in with credentials
-	 * @param string $email
-	 * @param string $password
-	 * @param bool $once
-	 * @return bool
-	 */
-	protected function loginWeb($email, $password, $once = false)
-	{
-	}
-
-	/**
-	 * Get the user provider
-	 * @return UserProvider
-	 */
-	protected function getUserProvider()
-	{
-		if (!isset($this->provider))
-		{
-			$this->provider = app('auth')->createUserProvider(config('auth.guards.' . app('auth')->getDefaultDriver() . '.provider'));
-		}
-		return $this->provider;
-	}
-
-	/**
 	 * Log a user in
 	 * @param User $user
 	 */
 	public function setUser($user)
 	{
-		app('auth')->setUser($user);
+		$this->getGuard()->setUser($user);
 	}
 
 	/**
@@ -197,7 +174,7 @@ class Auth extends BaseStructure
 	 */
 	public function logout()
 	{
-		app('auth')->logout();
+		$this->getGuard()->logout();
 	}
 
 	/**
@@ -215,6 +192,15 @@ class Auth extends BaseStructure
 			return $passwordReset->token;
 		}
 		return null;
+	}
+
+	/**
+	 * Get the guard
+	 * @return Guard
+	 */
+	public function getGuard()
+	{
+		return app('auth')->guard(null);
 	}
 
 }

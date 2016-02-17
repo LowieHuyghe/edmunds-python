@@ -11,7 +11,7 @@
  * @since       Version 0.1
  */
 
-namespace Core\Auth;
+namespace Core\Auth\Guards;
 
 use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -97,7 +97,9 @@ class BasicStatelessGuard implements Guard
 			return $this->user;
 		}
 
-		if ($this->attempt($this->getBasicCredentials(), false, false))
+		$user = null;
+
+		if ($this->attemptBasic($this->getRequest(), 'email', false, false))
 		{
 			$user = $this->lastAttempted;
 		}
@@ -105,16 +107,36 @@ class BasicStatelessGuard implements Guard
 		return $this->user = $user;
 	}
 
-	/**
-	 * Get the credential array for a HTTP Basic request.
-	 *
-	 * @return array
-	 */
-	protected function getBasicCredentials()
-	{
-		$request = $this->getRequest();
-		return ['email' => $request->getUser(), 'password' => $request->getPassword()];
-	}
+    /**
+     * Attempt to authenticate using basic authentication.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @param  string  $field
+	 * @param  bool   $remember
+	 * @param  bool   $login
+     * @return bool
+     */
+    protected function attemptBasic(Request $request, $field, $remember = false, $login = true)
+    {
+        if (! $request->getUser())
+        {
+            return false;
+        }
+
+        return $this->attempt($this->getBasicCredentials($request, $field), $remember, $login);
+    }
+
+    /**
+     * Get the credential array for a HTTP Basic request.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @param  string  $field
+     * @return array
+     */
+    protected function getBasicCredentials(Request $request, $field)
+    {
+        return [$field => $request->getUser(), 'password' => $request->getPassword()];
+    }
 
 	/**
 	 * Get the ID for the currently authenticated user.
@@ -186,11 +208,6 @@ class BasicStatelessGuard implements Guard
 	 */
 	public function attempt(array $credentials = [], $remember = false, $login = true)
 	{
-		if (! $this->getRequest()->getUser())
-		{
-			return false;
-		}
-
 		$this->fireAttemptEvent($credentials, $remember, $login);
 
 		$this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);

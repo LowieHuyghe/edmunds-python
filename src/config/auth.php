@@ -37,7 +37,7 @@ return [
 
 	'guards' => [
 		'default' => [
-			'driver' => config('app.auth.driver'),
+			'driver' => config('app.auth.guard'),
 			'provider' => 'users',
 		],
 	],

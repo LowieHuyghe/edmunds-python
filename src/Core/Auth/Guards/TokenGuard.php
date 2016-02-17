@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Auth;
+namespace Core\Auth\Guards;
 
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Events\Dispatcher;
