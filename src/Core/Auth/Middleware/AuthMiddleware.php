@@ -17,7 +17,6 @@ use Core\Auth\Auth;
 use Core\Auth\Guards\BasicStatefulGuard;
 use Core\Auth\Guards\BasicStatelessGuard;
 use Core\Bases\Http\Middleware\BaseMiddleware;
-use Core\Http\Client\Visitor;
 use Core\Http\Request;
 use Core\Http\Response;
 
@@ -29,7 +28,7 @@ use Core\Http\Response;
  * @license     http://LicenseUrl
  * @since       Version 0.1
  */
-class Authenticate extends BaseMiddleware
+class AuthMiddleware extends BaseMiddleware
 {
 	/**
 	 * Handle an incoming request.
@@ -41,26 +40,27 @@ class Authenticate extends BaseMiddleware
 	public function handle($r, \Closure $next, $guard = null)
 	{
 		$auth = Auth::getInstance();
+		$request = Request::getInstance();
+		$response = Response::getInstance();
 
 		// check if guest
 		if (!$auth->loggedIn)
 		{
-			if ($this->request->ajax
-				|| $this->request->json
-				|| $this->request->xml)
-			{
-				abort(403);
-			}
-
 			$guard = $auth->getGuard();
 			if ($guard instanceof BasicStatefulGuard
 				|| $guard instanceof BasicStatelessGuard)
 			{
 				abort(401);
 			}
+			elseif ($request->ajax
+				|| $request->json
+				|| $request->xml)
+			{
+				abort(403);
+			}
 			else
 			{
-				$this->response->redirect(config('app.routing.loginroute'), true);
+				$response->redirect(config('app.routing.loginroute'), true);
 			}
 		}
 

@@ -11,12 +11,10 @@
  * @since       Version 0.1
  */
 
-namespace Core\Http\Middleware;
+namespace Core\Auth\Middleware;
 
+use Core\Auth\Auth;
 use Core\Bases\Http\Middleware\BaseMiddleware;
-use Core\Http\Client\Visitor;
-use Core\Http\Request;
-use Core\Http\Response;
 
 /**
  * Middleware for required rights
