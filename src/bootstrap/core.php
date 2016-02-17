@@ -131,7 +131,7 @@ $app->withEloquent();
 |
 */
 
-//TODO check for sess and cook stuff and csrf
+//TODO check csrf
 
 $app->middleware(config('app.middleware', array()));
 $app->middleware(array(

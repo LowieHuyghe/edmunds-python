@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace CoreTest;
+namespace CoreTest\Auth;
 
 use Core\Bases\Tests\BaseTest;
 use Core\Auth\Auth;
