@@ -37,14 +37,18 @@ class RightsMiddleware extends BaseMiddleware
 	 */
 	public function handle($r, \Closure $next)
 	{
-		//Check if logged in
-		$allowed = $this->visitor->loggedIn;
-		//Check if has all rights
+		$auth = Auth::getInstance();
+
+		// check if logeed in
+		$allowed = $auth->loggedIn;
+
 		if ($allowed)
 		{
-			foreach (Visitor::$requiredRights as $rightId)
+			$rightIds = array_slice(func_get_args(), 2);
+
+			foreach ($rightIds as $rightId)
 			{
-				if (!$this->visitor->user->hasRight($rightId))
+				if (!$auth->user->hasRight($rightId))
 				{
 					$allowed = false;
 					break;
