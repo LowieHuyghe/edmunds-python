@@ -118,7 +118,7 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorId))
 		{
-			if (!app()->isStateless())
+			if (app()->isStateful())
 			{
 				$idKey = config('core.keys.visitor.id.key');
 
@@ -193,8 +193,8 @@ class Visitor extends BaseStructure
 			{
 				$response = Response::getInstance();
 
-				// when not stateless
-				if (!app()->isStateless())
+				// when stateful
+				if (app()->isStateful())
 				{
 					Request::getInstance()->session->set($idKey, $localization);
 					$response->cookie($idKey, json_encode($localization->getAttributes()));
@@ -215,8 +215,8 @@ class Visitor extends BaseStructure
 			{
 				$localization = $user->localization;
 			}
-			// when not stateless
-			elseif (!app()->isStateless())
+			// when stateful
+			elseif (app()->isStateful())
 			{
 				// recover from session
 				if ($this->request->session->has($idKey))
@@ -309,8 +309,8 @@ class Visitor extends BaseStructure
 			// update method
 			Location::saving(function ($location) use ($idKey, $cacheKey)
 			{
-				// save in session when not stateless
-				if (!app()->isStateless())
+				// save in session when stateful
+				if (app()->isStateful())
 				{
 					Request::getInstance()->session->set($idKey, $location);
 				}
@@ -328,8 +328,8 @@ class Visitor extends BaseStructure
 			{
 				$location = $user->location;
 			}
-			// recover from session when not stateless
-			elseif (!app()->isStateless())
+			// recover from session when stateful
+			elseif (app()->isStateful())
 			{
 				if ($this->request->session->has($idKey))
 				{

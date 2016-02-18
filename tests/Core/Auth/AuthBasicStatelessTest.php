@@ -30,7 +30,7 @@ class AuthBasicStatelessTest extends AuthTest
 	 */
 	public function createApplication()
 	{
-		$_ENV['APP_STATELESS'] = true;
+		$_ENV['APP_STATEFUL'] = false;
 		$_ENV['APP_AUTH_GUARD'] = 'basic';
 
 		return parent::createApplication();

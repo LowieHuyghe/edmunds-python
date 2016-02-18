@@ -47,7 +47,7 @@ class BaseTest extends TestCase
 	{
 		parent::setUp();
 
-		if (!$this->app->isStateless())
+		if ($this->app->isStateful())
 		{
 			Session::getInstance()->start();
 		}
