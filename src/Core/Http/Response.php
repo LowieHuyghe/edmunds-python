@@ -235,7 +235,7 @@ class Response extends BaseStructure
 	public function redirect($uri, $saveIntendedRoute = false, $gotoIntendedRoute = false)
 	{
 		// not when stateless
-		if (!app()->isStateless())
+		if (app()->isStateful())
 		{
 			// go to the intended route that was saved
 			if ($gotoIntendedRoute)

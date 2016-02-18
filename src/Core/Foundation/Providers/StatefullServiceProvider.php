@@ -36,8 +36,8 @@ class StatefullServiceProvider extends BaseServiceProvider
 	 */
 	public function register()
 	{
-		// register if not stateless
-		if (!$this->app->isStateless())
+		// register if stateful
+		if ($this->app->isStateful())
 		{
 			$this->registerCookies();
 			$this->registerSessions();

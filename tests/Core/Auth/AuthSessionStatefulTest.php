@@ -30,7 +30,7 @@ class AuthSessionStatefulTest extends AuthTest
 	 */
 	public function createApplication()
 	{
-		$_ENV['APP_STATELESS'] = false;
+		$_ENV['APP_STATEFUL'] = true;
 		$_ENV['APP_AUTH_GUARD'] = 'session';
 
 		return parent::createApplication();

@@ -30,7 +30,7 @@ class AuthTokenStatefulTest extends AuthTest
 	 */
 	public function createApplication()
 	{
-		$_ENV['APP_STATELESS'] = false;
+		$_ENV['APP_STATEFUL'] = true;
 		$_ENV['APP_AUTH_GUARD'] = 'token';
 
 		return parent::createApplication();
