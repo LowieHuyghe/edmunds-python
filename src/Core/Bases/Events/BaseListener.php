@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Bases\Listeners;
+namespace Core\Bases\Events;
 
 use Core\Bases\Events\BaseEvent;
 
