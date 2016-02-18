@@ -49,12 +49,12 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-	 * Check if stateless
+	 * Check if stateful
 	 * @return bool
 	 */
-	public function isStateless()
+	public function isStateful()
 	{
-		return config('app.stateless', false);
+		return config('app.features.stateful', true);
 	}
 
 	/**
