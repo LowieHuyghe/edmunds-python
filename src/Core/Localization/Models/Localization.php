@@ -284,16 +284,16 @@ class Localization extends BaseModel
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
 		parent::addValidationRules();
 
 		$this->required = array_merge($this->required, array('user_id'));
 
-		$this->validator->value('user_id')->integer();
-		$this->validator->value('locale')->max(32);
-		$this->validator->value('currency')->max(10);
-		$this->validator->value('timezone')->max(255);
+		$validator->value('user_id')->integer();
+		$validator->value('locale')->max(32);
+		$validator->value('currency')->max(10);
+		$validator->value('timezone')->max(255);
 	}
 
 	/**

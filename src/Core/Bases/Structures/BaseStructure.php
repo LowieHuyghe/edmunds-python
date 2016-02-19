@@ -34,6 +34,8 @@ use Core\Validation\Validation;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property Validation $validator The validator
  */
 abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {
@@ -196,7 +198,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 * The validator
 	 * @var Validation
 	 */
-	protected $validator;
+	protected $validatorInstance;
 
 	/**
 	 * Create a new Structure model instance.
@@ -208,12 +210,24 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		$this->bootIfNotBooted();
 
 		$this->fill($attributes);
+	}
 
-		if (!isset($this->validator))
+	/**
+	 * Fetch the validator
+	 * @return Validation
+	 */
+	protected function getValidatorAttribute()
+	{
+		if (!isset($this->validatorInstance))
 		{
-			$this->validator = new Validation();
-			$this->addValidationRules();
+			$validator = new Validation();
+
+			$this->addValidationRules($validator);
+
+			$this->validatorInstance = $validator;
 		}
+
+		return $this->validatorInstance;
 	}
 
 	/**
@@ -1612,12 +1626,12 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
-		$this->validator->value('created_at')->date();
-		$this->validator->value('updated_at')->date();
+		$validator->value('created_at')->date();
+		$validator->value('updated_at')->date();
 
-		$this->validator->value('deleted_at')->date();
+		$validator->value('deleted_at')->date();
 	}
 
 	/**
