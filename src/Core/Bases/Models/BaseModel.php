@@ -27,6 +27,8 @@ use Illuminate\Validation\Validator;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property Validation $validator The validator
  */
 class BaseModel extends Model
 {
@@ -34,7 +36,7 @@ class BaseModel extends Model
 	 * The validator
 	 * @var Validation
 	 */
-	protected $validator;
+	protected $validatorInstance;
 
 	/**
 	 * Enable or disable timestamps by default
@@ -62,19 +64,22 @@ class BaseModel extends Model
 	protected $dates = ['created_at', 'updated_at', 'deleted_at'];
 
 	/**
-	 * Constructor
-	 * @param array $attributes
+	 * Fetch the validator
+	 * @return Validation
 	 */
-	public function __construct($attributes = array())
+	protected function getValidatorAttribute()
 	{
-		parent::__construct($attributes);
-
-		if (!isset($this->validator))
+		if (!isset($this->validatorInstance))
 		{
-			$this->validator = new Validation();
-			$this->addValidationRules();
-			$this->addRequiredValidationRules();
+			$validator = new Validation();
+
+			$this->addValidationRules($validator);
+			$this->addRequiredValidationRules($validator);
+
+			$this->validatorInstance = $validator;
 		}
+
+		return $this->validatorInstance;
 	}
 
 	/**
@@ -260,11 +265,11 @@ class BaseModel extends Model
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
-		$this->validator->value('created_at')->date();
-		$this->validator->value('updated_at')->date();
-		$this->validator->value('deleted_at')->date();
+		$validator->value('created_at')->date();
+		$validator->value('updated_at')->date();
+		$validator->value('deleted_at')->date();
 	}
 
 	/**
@@ -274,7 +279,7 @@ class BaseModel extends Model
 	{
 		foreach ($this->required as $field)
 		{
-			$this->validator->value($field)->required();
+			$validator->value($field)->required();
 		}
 	}
 
