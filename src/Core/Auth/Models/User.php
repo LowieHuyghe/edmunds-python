@@ -158,20 +158,20 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
 		parent::addValidationRules();
 
 		$this->required = array_merge($this->required, array('email'));
 
-		$this->validator->value('id')->integer();
-		$this->validator->value('email')->max(255)->unique('users', $this->getKeyName());
-		$this->validator->value('gender_id')->integer();
-		$this->validator->value('password')->max(60);
-		$this->validator->value('api_token')->max(100);
-		$this->validator->value('remember_token')->max(100);
+		$validator->value('id')->integer();
+		$validator->value('email')->max(255)->unique('users', $this->getKeyName());
+		$validator->value('gender_id')->integer();
+		$validator->value('password')->max(60);
+		$validator->value('api_token')->max(100);
+		$validator->value('remember_token')->max(100);
 
-		$this->validator->value('deleted_at')->date();
+		$validator->value('deleted_at')->date();
 	}
 
 	/**

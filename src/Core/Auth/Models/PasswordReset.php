@@ -65,15 +65,15 @@ class PasswordReset extends BaseModel
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
 		parent::addValidationRules();
 
 		$this->required = array_merge($this->required, array('email', 'user_id', 'token'));
 
-		$this->validator->value('email')->max(255)->email();
-		$this->validator->value('user_id')->integer();
-		$this->validator->value('token')->max(255);
+		$validator->value('email')->max(255)->email();
+		$validator->value('user_id')->integer();
+		$validator->value('token')->max(255);
 	}
 
 	/**

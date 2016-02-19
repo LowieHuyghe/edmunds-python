@@ -133,31 +133,31 @@ class Location extends BaseModel
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
 		parent::addValidationRules();
 
 		$this->required = array_merge($this->required, array('user_id', 'ip'));
 
-		$this->validator->value('user_id')->integer();
+		$validator->value('user_id')->integer();
 
-		$this->validator->value('ip')->ip()->max(255);
+		$validator->value('ip')->ip()->max(255);
 
-		$this->validator->value('continent_code')->max(10);
-		$this->validator->value('continent_name')->max(255);
+		$validator->value('continent_code')->max(10);
+		$validator->value('continent_name')->max(255);
 
-		$this->validator->value('country_code')->max(10);
-		$this->validator->value('country_name')->max(255);
+		$validator->value('country_code')->max(10);
+		$validator->value('country_name')->max(255);
 
-		$this->validator->value('region_code')->max(10);
-		$this->validator->value('region_name')->max(255);
+		$validator->value('region_code')->max(10);
+		$validator->value('region_name')->max(255);
 
-		$this->validator->value('city_name')->max(255);
-		$this->validator->value('postal_code')->max(32);
+		$validator->value('city_name')->max(255);
+		$validator->value('postal_code')->max(32);
 
-		$this->validator->value('latitude')->numeric();
-		$this->validator->value('longitude')->numeric();
-		$this->validator->value('timezone')->max(255);
+		$validator->value('latitude')->numeric();
+		$validator->value('longitude')->numeric();
+		$validator->value('timezone')->max(255);
 	}
 
 	/**

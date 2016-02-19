@@ -138,14 +138,14 @@ class BaseEnumModel extends BaseModel
 	/**
 	 * Add the validation of the model
 	 */
-	protected function addValidationRules()
+	protected function addValidationRules(&$validator)
 	{
 		parent::addValidationRules();
 
 		$this->required = array_merge($this->required, array('name'));
 
-		$this->validator->value('id')->integer();
-		$this->validator->value('name')->max(32);
+		$validator->value('id')->integer();
+		$validator->value('name')->max(32);
 	}
 
 	/**
