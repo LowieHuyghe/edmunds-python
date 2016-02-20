@@ -167,7 +167,7 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 		$key = self::getKey($message);
 		$group = self::getGroup($key);
 
-		if (!$onlyReplacements)
+		if (self::isEnabled() && !$onlyReplacements)
 		{
 			$locales = $this->getLocales($locale);
 			foreach ($locales as $potLocale)
@@ -353,5 +353,14 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
      * @deprecated
      */
     public function getLocale() {}
+
+	/**
+	 * Check if translations is enabled
+	 * @return boolean
+	 */
+	public static function isEnabled()
+	{
+		return config('app.translations.enabled', true);
+	}
 
 }
