@@ -13,10 +13,11 @@
 
 namespace Core\Bases\Analytics;
 
+use Core\Analytics\AnalyticsManager;
 use Core\Bases\Analytics\Tracking\BaseLog;
 use Core\Bases\Structures\BaseStructure;
-use Core\Queue\QueueJob;
 use Core\Queue\Queue;
+use Core\Queue\QueueJob;
 use Core\Registry;
 
 /**
@@ -48,7 +49,10 @@ class BaseWarehouse extends BaseStructure
 	 */
 	public function log($log)
 	{
-		$this->logs[] = $log;
+		if (AnalyticsManager::isEnabled())
+		{
+			$this->logs[] = $log;
+		}
 	}
 
 	/**
