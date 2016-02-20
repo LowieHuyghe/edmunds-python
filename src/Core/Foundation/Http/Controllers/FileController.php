@@ -38,9 +38,9 @@ class FileController extends BaseController
 	 * @param  string $prefix
 	 * @param  array  $middleware
 	 */
-	public static function registerRoutes(&$app, $prefix ='/file', $middleware = array())
+	public static function registerRoutes(&$app, $prefix ='file', $middleware = array())
 	{
-		// fethc file
+		// fetch file
 		$app->get($prefix . '/{id}', array(
 			'uses' => get_called_class() . '@get',
 			'middleware' => $middleware,
@@ -62,12 +62,6 @@ class FileController extends BaseController
 			'middleware' => $middleware,
 		));
 	}
-
-	/**
-	 * The default output type of the response, only used when set
-	 * @var int
-	 */
-	protected $outputType = Response::TYPE_JSON;
 
 	/**
 	 * Upload a picture
