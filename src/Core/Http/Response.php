@@ -110,15 +110,6 @@ class Response extends BaseStructure
 	}
 
 	/**
-	 * Set the output type of the response
-	 * @param string $outputType
-	 */
-	public function setOutputType($outputType)
-	{
-		$this->outputType = $outputType;
-	}
-
-	/**
 	 * Assign data to response
 	 * @param string|array $key
 	 * @param mixed $value
