@@ -37,6 +37,7 @@ use Locale;
  * @property-read bool $fallbackRtl Is fallback rtl
  * @property string $currency The currency
  * @property string $timezone The timezone
+ * @property string $measurement The measurement system
  * @readonl
  */
 class Localization extends BaseModel
@@ -116,6 +117,14 @@ class Localization extends BaseModel
 				|| ($timezone = $this->getTimezoneFallback()))
 			{
 				$this->timezone = $timezone;
+			}
+
+
+			// check measurement system
+			if ($countryCode && ($measurement = in_array(strtoupper($countryCode), config('core.localization.measurement.imperial.countries')) ? 'imperial' : 'metric')
+				|| $measurement = $this->getMeasurementFallback())
+			{
+				$this->measurement = $measurement;
 			}
 		}
 	}
@@ -268,6 +277,18 @@ class Localization extends BaseModel
 		return (
 			config('app.localization.timezone.default')
 			?: config('core.localization.timezone.default')
+		);
+	}
+
+	/**
+	 * Get the measurement fallback
+	 * @return string
+	 */
+	protected function getMeasurementFallback()
+	{
+		return (
+			config('app.localization.measurement.default')
+			?: config('core.localization.measurement.default')
 		);
 	}
 
