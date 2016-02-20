@@ -89,3 +89,23 @@
 	{
 		return (new Illuminate\Hashing\BcryptHasher())->make($value);
 	}
+
+	/**
+     * Generate a CSRF token form field.
+     *
+     * @return string
+     */
+    function csrf_field()
+    {
+        return new \Illuminate\Support\HtmlString('<input type="hidden" name="_token" value="'.csrf_token().'">');
+    }
+
+    /**
+     * Get the CSRF token value.
+     *
+     * @return string
+     */
+    function csrf_token()
+    {
+    	return \Core\Http\Client\Session::getInstance()->token();
+    }
