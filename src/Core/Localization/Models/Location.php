@@ -75,27 +75,30 @@ class Location extends BaseModel
 	 */
 	public function initialize($ip)
 	{
-		$cityDetails = $this->getDetailsCity($ip);
-
-		if ($cityDetails)
+		if (self::isEnabled())
 		{
-			$this->ip = $ip;
+			$cityDetails = $this->getDetailsCity($ip);
 
-			$this->continent_code = $cityDetails->continent->code;
-			$this->continent_name = $cityDetails->continent->name;
+			if ($cityDetails)
+			{
+				$this->ip = $ip;
 
-			$this->country_code = $cityDetails->country->isoCode;
-			$this->country_name = $cityDetails->country->name;
+				$this->continent_code = $cityDetails->continent->code;
+				$this->continent_name = $cityDetails->continent->name;
 
-			$this->region_code = $cityDetails->mostSpecificSubdivision->isoCode;
-			$this->region_name = $cityDetails->mostSpecificSubdivision->name;
+				$this->country_code = $cityDetails->country->isoCode;
+				$this->country_name = $cityDetails->country->name;
 
-			$this->city_name = $cityDetails->city->name;
-			$this->postal_code = $cityDetails->postal->code;
+				$this->region_code = $cityDetails->mostSpecificSubdivision->isoCode;
+				$this->region_name = $cityDetails->mostSpecificSubdivision->name;
 
-			$this->latitude = $cityDetails->location->latitude;
-			$this->longitude = $cityDetails->location->longitude;
-			$this->timezone = $cityDetails->location->timeZone;
+				$this->city_name = $cityDetails->city->name;
+				$this->postal_code = $cityDetails->postal->code;
+
+				$this->latitude = $cityDetails->location->latitude;
+				$this->longitude = $cityDetails->location->longitude;
+				$this->timezone = $cityDetails->location->timeZone;
+			}
 		}
 	}
 
@@ -188,5 +191,14 @@ class Location extends BaseModel
 			'longitude' => $faker->longitude,
 			'timezone' => $faker->timezone,
 		);
+	}
+
+	/**
+	 * Check if location is enabled
+	 * @return boolean
+	 */
+	public static function isEnabled()
+	{
+		return config('app.location.enabled', true);
 	}
 }
