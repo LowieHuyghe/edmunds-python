@@ -345,7 +345,7 @@ class FileEntry extends BaseModel
 	 */
 	protected function addValidationRules(&$validator)
 	{
-		parent::addValidationRules();
+		parent::addValidationRules($validator);
 
 		$this->required = array_merge($this->required, array('name', 'md5', 'sha1', 'original_name', 'mime', 'type', 'size'));
 

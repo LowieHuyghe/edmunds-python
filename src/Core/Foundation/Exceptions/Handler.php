@@ -3,15 +3,16 @@
 namespace Core\Foundation\Exceptions;
 
 use Core\Analytics\Tracking\ErrorLog;
+use Core\Http\Exceptions\AbortHttpException;
 use Core\Http\Response;
 use Exception;
-use Throwable;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -31,6 +32,7 @@ class Handler extends ExceptionHandler
 	{
 		$this->dontReport = array_merge($this->dontReport, array(
 			HttpException::class,
+			AbortHttpException::class,
 		));
 	}
 
@@ -74,7 +76,11 @@ class Handler extends ExceptionHandler
 	{
 		try
 		{
-			if (($e instanceof UnauthorizedHttpException
+			if ($e instanceof AbortHttpException)
+			{
+				return Response::getInstance()->getResponse();
+			}
+			else if (($e instanceof UnauthorizedHttpException
 					|| $e instanceof AccessDeniedHttpException
 					|| $e instanceof NotFoundHttpException
 					|| $e instanceof ServiceUnavailableHttpException)

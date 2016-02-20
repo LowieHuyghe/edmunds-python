@@ -16,6 +16,7 @@ namespace Core\Http\Client;
 use Core\Bases\Structures\BaseStructure;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Symfony\Component\HttpFoundation\Session\Storage\MetadataBag;
+use Symfony\Component\HttpFoundation\Session\Storage\SessionStorageInterface;
 
 /**
  * The helper for the session
@@ -41,26 +42,19 @@ class Session extends BaseStructure
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Session(app('session.store'));
+			self::$instance = new Session();
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * @var SessionInterface
+	 * Get the current session store
+	 * @return SessionStorageInterface
 	 */
-	private $session;
-
-	/**
-	 * Constructor
-	 * @param SessionInterface $session
-	 */
-	public function __construct($session)
+	protected function getSessionStore()
 	{
-		parent::__construct();
-
-		$this->session = $session;
+		return app('session.store');
 	}
 
 	/**
@@ -70,7 +64,7 @@ class Session extends BaseStructure
 	 */
 	public function has($name)
 	{
-		return $this->session->has($name);
+		return $this->getSessionStore()->has($name);
 	}
 
 	/**
@@ -80,7 +74,7 @@ class Session extends BaseStructure
 	 */
 	public function set($name, $value)
 	{
-		$this->session->set($name, $value);
+		$this->getSessionStore()->set($name, $value);
 	}
 
 	/**
@@ -91,7 +85,7 @@ class Session extends BaseStructure
 	 */
 	public function get($name, $default = null)
 	{
-		return $this->session->get($name, $default);
+		return $this->getSessionStore()->get($name, $default);
 	}
 
 	/**
@@ -101,7 +95,7 @@ class Session extends BaseStructure
 	 */
 	public function delete($name)
 	{
-		return $this->session->remove($name);
+		return $this->getSessionStore()->remove($name);
 	}
 
 	/**
@@ -112,7 +106,7 @@ class Session extends BaseStructure
 	 */
 	public function start()
 	{
-		return $this->session->start();
+		return $this->getSessionStore()->start();
 	}
 
 	/**
@@ -122,7 +116,7 @@ class Session extends BaseStructure
 	 */
 	public function getId()
 	{
-		return $this->session->getId();
+		return $this->getSessionStore()->getId();
 	}
 
 	/**
@@ -132,7 +126,7 @@ class Session extends BaseStructure
 	 */
 	public function setId($id)
 	{
-		$this->session->setId($id);
+		$this->getSessionStore()->setId($id);
 	}
 
 	/**
@@ -142,7 +136,7 @@ class Session extends BaseStructure
 	 */
 	public function getName()
 	{
-		return $this->session->getName();
+		return $this->getSessionStore()->getName();
 	}
 
 	/**
@@ -152,7 +146,7 @@ class Session extends BaseStructure
 	 */
 	public function setName($name)
 	{
-		$this->session->setName($name);
+		$this->getSessionStore()->setName($name);
 	}
 
 	/**
@@ -169,7 +163,7 @@ class Session extends BaseStructure
 	 */
 	public function invalidate($lifetime = null)
 	{
-		return $this->session->invalidate($lifetime);
+		return $this->getSessionStore()->invalidate($lifetime);
 	}
 
 	/**
@@ -185,7 +179,7 @@ class Session extends BaseStructure
 	 */
 	public function migrate($destroy = false, $lifetime = null)
 	{
-		return $this->session->migrate($destroy, $lifetime);
+		return $this->getSessionStore()->migrate($destroy, $lifetime);
 	}
 
 	/**
@@ -196,7 +190,7 @@ class Session extends BaseStructure
 	 */
 	public function save()
 	{
-		$this->session->save();
+		$this->getSessionStore()->save();
 	}
 
 	/**
@@ -206,7 +200,7 @@ class Session extends BaseStructure
 	 */
 	public function all()
 	{
-		return $this->session->all();
+		return $this->getSessionStore()->all();
 	}
 
 	/**
@@ -215,7 +209,7 @@ class Session extends BaseStructure
 	 */
 	public function replace(array $attributes)
 	{
-		$this->session->replace($attributes);
+		$this->getSessionStore()->replace($attributes);
 	}
 
 	/**
@@ -224,7 +218,7 @@ class Session extends BaseStructure
 	 */
 	public function clear()
 	{
-		$this->session->clear();
+		$this->getSessionStore()->clear();
 	}
 
 	/**
@@ -233,7 +227,7 @@ class Session extends BaseStructure
 	 */
 	public function isStarted()
 	{
-		return $this->session->isStarted();
+		return $this->getSessionStore()->isStarted();
 	}
 
 	/**
@@ -242,7 +236,7 @@ class Session extends BaseStructure
 	 */
 	public function registerBag(SessionBagInterface $bag)
 	{
-		$this->session->registerBag($bag);
+		$this->getSessionStore()->registerBag($bag);
 	}
 
 	/**
@@ -252,7 +246,7 @@ class Session extends BaseStructure
 	 */
 	public function getBag($name)
 	{
-		return $this->session->getBag($name);
+		return $this->getSessionStore()->getBag($name);
 	}
 
 	/**
@@ -261,7 +255,7 @@ class Session extends BaseStructure
 	 */
 	public function getMetadataBag()
 	{
-		return $this->session->getMetadataBag();
+		return $this->getSessionStore()->getMetadataBag();
 	}
 
 	/**
@@ -270,6 +264,6 @@ class Session extends BaseStructure
 	 */
 	public function token()
 	{
-		return $this->session->token();
+		return $this->getSessionStore()->token();
 	}
 }
