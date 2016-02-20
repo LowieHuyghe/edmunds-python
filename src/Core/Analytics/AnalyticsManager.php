@@ -125,4 +125,13 @@ class AnalyticsManager extends BaseStructure
 		}
 		return $this->warehouses[$name];
 	}
+
+	/**
+	 * Check if analytics are enabled
+	 * @return boolean
+	 */
+	public static function isEnabled()
+	{
+		return config('app.analytics.enabled', true);
+	}
 }

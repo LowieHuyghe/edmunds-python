@@ -13,6 +13,7 @@
 
 namespace Core\Bases\Analytics\Tracking;
 
+use Core\Analytics\AnalyticsManager;
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Client\Visitor;
 use Core\Http\Request;
@@ -52,11 +53,14 @@ class BaseLog extends BaseStructure
 	{
 		parent::__construct();
 
-		$this->setRequestParameters();
-		$this->setVisitorParameters();
+		if (AnalyticsManager::isEnabled())
+		{
+			$this->setRequestParameters();
+			$this->setVisitorParameters();
 
-		// set environment info
-		$this->environment = app()->environment();
+			// set environment info
+			$this->environment = app()->environment();
+		}
 	}
 
 	/**
