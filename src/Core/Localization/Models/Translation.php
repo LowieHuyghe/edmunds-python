@@ -230,7 +230,7 @@ class Translation extends BaseModel
 	 */
 	protected function addValidationRules(&$validator)
 	{
-		parent::addValidationRules();
+		parent::addValidationRules($validator);
 
 		$this->required = array_merge($this->required, array('hash', 'original', 'used'));
 

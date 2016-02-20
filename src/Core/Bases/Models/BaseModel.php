@@ -275,7 +275,7 @@ class BaseModel extends Model
 	/**
 	 * Apply the required fields to validation
 	 */
-	protected function addRequiredValidationRules()
+	protected function addRequiredValidationRules($validator)
 	{
 		foreach ($this->required as $field)
 		{
