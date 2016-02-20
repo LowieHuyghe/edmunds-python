@@ -311,53 +311,60 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorLocation))
 		{
-			$idKey = config('core.keys.visitor.location.general');
-			$cacheKey = $idKey . '_' . $this->request->ip;
-
-			// update method
-			Location::saving(function ($location) use ($idKey, $cacheKey)
-			{
-				// save in session when stateful
-				if (app()->isStateful())
-				{
-					Request::getInstance()->session->set($idKey, $location);
-				}
-				// save in cache when stateless
-				else
-				{
-					Registry::cache()->set($cacheKey, $location, 60 * 24 * 4); // 4 days because of default lifecycle of DHCP
-				}
-
-				if (!$location->user) return false;
-			});
-
-			// from user
-			if ($user = $this->user)
-			{
-				$location = $user->location;
-			}
-			// recover from session when stateful
-			elseif (app()->isStateful())
-			{
-				if ($this->request->session->has($idKey))
-				{
-					$location = $this->request->session->get($idKey);
-				}
-			}
-			// use cache when stateless
-			else
-			{
-				if (Registry::cache()->has($cacheKey))
-				{
-					$location = Registry::cache()->get($cacheKey);
-				}
-			}
-
-			// no location or ip not matching
-			if (!isset($location) || !$location || $location->ip != $this->request->ip)
+			if (! Location::isEnabled())
 			{
 				$location = $this->getNewLocation();
-				$location->save();
+			}
+			else
+			{
+				$idKey = config('core.keys.visitor.location.general');
+				$cacheKey = $idKey . '_' . $this->request->ip;
+
+				// update method
+				Location::saving(function ($location) use ($idKey, $cacheKey)
+				{
+					// save in session when stateful
+					if (app()->isStateful())
+					{
+						Request::getInstance()->session->set($idKey, $location);
+					}
+					// save in cache when stateless
+					else
+					{
+						Registry::cache()->set($cacheKey, $location, 60 * 24 * 4); // 4 days because of default lifecycle of DHCP
+					}
+
+					if (!$location->user) return false;
+				});
+
+				// from user
+				if ($user = $this->user)
+				{
+					$location = $user->location;
+				}
+				// recover from session when stateful
+				elseif (app()->isStateful())
+				{
+					if ($this->request->session->has($idKey))
+					{
+						$location = $this->request->session->get($idKey);
+					}
+				}
+				// use cache when stateless
+				else
+				{
+					if (Registry::cache()->has($cacheKey))
+					{
+						$location = Registry::cache()->get($cacheKey);
+					}
+				}
+
+				// no location or ip not matching
+				if (!isset($location) || !$location || $location->ip != $this->request->ip)
+				{
+					$location = $this->getNewLocation();
+					$location->save();
+				}
 			}
 
 			// and set to visitor
