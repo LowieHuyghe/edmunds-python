@@ -251,7 +251,7 @@ class Visitor extends BaseStructure
 				// check for error
 				if (isset($localization) && $localization)
 				{
-					$check = array('locale', 'currency', 'timezone');
+					$check = array('locale', 'currency', 'timezone', 'measurement');
 					$newLocalization = null;
 
 					foreach ($check as $attribute)

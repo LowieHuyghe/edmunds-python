@@ -135,6 +135,17 @@ return array
 			'default' => 'Europe/Brussels',
 		),
 
+		'measurement' => array(
+			'default' => 'metric',
+			'imperial' => array(
+				'countries' => array(
+					'LR',	// Liberia
+					'US',	// America
+					'MM', 	// Myanmar
+				),
+			),
+		),
+
 	),
 
 

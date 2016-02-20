@@ -38,6 +38,7 @@ trait _000010CreateUserLocalizationsTable
 			$table->string('locale', 10)->nullable();
 			$table->string('currency', 10)->nullable();
 			$table->string('timezone')->nullable();
+			$table->string('measurement')->nullable();
 			$table->timestamps();
 		});
 	}
