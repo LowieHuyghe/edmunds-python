@@ -71,42 +71,52 @@ class Localization extends BaseModel
 	 */
 	public function initialize($timezone, $countryCode, $locale, $fallback = null)
 	{
-		// check locale
-		$locale = $locale ? self::normalizeLocale($locale) : null;
-		$fallback = $fallback ? self::normalizeLocale($fallback) : null;
-
-		if (($locale && $this->getAcceptedLocale($locale)) // given locale
-			|| (($locale = $fallback) && $this->getAcceptedLocale($fallback)) // given fallback
-			|| ($locale = $this->fallback))
+		if (! self::isEnabled())
 		{
-			$locale = Locale::parseLocale($locale);
+			// not enabled, so set defaults
+			$this->attributes['locale'] = $this->fallback;
+			$this->attributes['currency'] = $this->getCurrencyFallback();
+			$this->timezone = $this->getTimezoneFallback();
+		}
+		else
+		{
+			// check locale
+			$locale = $locale ? self::normalizeLocale($locale) : null;
+			$fallback = $fallback ? self::normalizeLocale($fallback) : null;
 
-			// add currency when possible
-			if ($countryCode && (!isset($locale['region']) || !$locale['region']))
+			if (($locale && $this->getAcceptedLocale($locale)) // given locale
+				|| (($locale = $fallback) && $this->getAcceptedLocale($fallback)) // given fallback
+				|| ($locale = $this->fallback))
 			{
-				$locale['region'] = strtoupper($countryCode);
+				$locale = Locale::parseLocale($locale);
+
+				// add currency when possible
+				if ($countryCode && (!isset($locale['region']) || !$locale['region']))
+				{
+					$locale['region'] = strtoupper($countryCode);
+				}
+
+				$this->attributes['locale'] = Locale::composeLocale($locale);
 			}
 
-			$this->attributes['locale'] = Locale::composeLocale($locale);
-		}
+
+			// check currency
+			$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
+			$currency = self::normalizeCurrency($formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE));
+
+			if ($currency && $this->getAcceptedCurrency($currency)
+				|| ($currency = $this->getCurrencyFallback()))
+			{
+				$this->attributes['currency'] = $currency;
+			}
 
 
-		// check currency
-		$formatter = new NumberFormatter($this->locale, NumberFormatter::CURRENCY);
-		$currency = self::normalizeCurrency($formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE));
-
-		if ($currency && $this->getAcceptedCurrency($currency)
-			|| ($currency = $this->getCurrencyFallback()))
-		{
-			$this->attributes['currency'] = $currency;
-		}
-
-
-		// check timezone
-		if ($timezone
-			|| ($timezone = $this->getTimezoneFallback()))
-		{
-			$this->timezone = $timezone;
+			// check timezone
+			if ($timezone
+				|| ($timezone = $this->getTimezoneFallback()))
+			{
+				$this->timezone = $timezone;
+			}
 		}
 	}
 
@@ -311,4 +321,12 @@ class Localization extends BaseModel
 		);
 	}
 
+	/**
+	 * Check if localization is enabled
+	 * @return boolean
+	 */
+	public static function isEnabled()
+	{
+		return config('app.localization.enabled', true);
+	}
 }

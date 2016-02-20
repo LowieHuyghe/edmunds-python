@@ -22,6 +22,7 @@ use Core\Localization\Models\Localization;
 use Core\Localization\Models\Location;
 use Core\Auth\Models\User;
 use Core\Registry;
+use Exception;
 
 /**
  * The helper for the visitor
@@ -183,98 +184,105 @@ class Visitor extends BaseStructure
 	{
 		if (!isset($this->visitorLocalization))
 		{
-			$idKey = config('core.keys.visitor.localization.general');
-			$headerLocale = config('core.keys.visitor.localization.locale');
-			$headerCurrency = config('core.keys.visitor.localization.currency');
-			$headerTimezone = config('core.keys.visitor.localization.timezone');
-
-			// update method
-			Localization::saving(function ($localization) use ($idKey, $headerLocale, $headerCurrency, $headerTimezone)
+			if (! Localization::isEnabled())
 			{
-				$response = Response::getInstance();
+				$localization = $this->getNewLocalization();
+			}
+			else
+			{
+				$idKey = config('core.keys.visitor.localization.general');
+				$headerLocale = config('core.keys.visitor.localization.locale');
+				$headerCurrency = config('core.keys.visitor.localization.currency');
+				$headerTimezone = config('core.keys.visitor.localization.timezone');
 
-				// when stateful
-				if (app()->isStateful())
+				// update method
+				Localization::saving(function ($localization) use ($idKey, $headerLocale, $headerCurrency, $headerTimezone)
 				{
-					Request::getInstance()->session->set($idKey, $localization);
-					$response->cookie($idKey, json_encode($localization->getAttributes()));
+					$response = Response::getInstance();
+
+					// when stateful
+					if (app()->isStateful())
+					{
+						Request::getInstance()->session->set($idKey, $localization);
+						$response->cookie($idKey, json_encode($localization->getAttributes()));
+					}
+					// when stateless
+					else
+					{
+						$response->header($headerLocale, $localization->locale);
+						$response->header($headerCurrency, $localization->currency);
+						$response->header($headerTimezone, $localization->timezone);
+					}
+
+					if (!$localization->user) return false;
+				});
+
+				// from user
+				if ($user = $this->user)
+				{
+					$localization = $user->localization;
+				}
+				// when stateful
+				elseif (app()->isStateful())
+				{
+					// recover from session
+					if ($this->request->session->has($idKey))
+					{
+						$localization = $this->request->session->get($idKey);
+					}
+					// recover from cookie
+					elseif ($localizationJson = $this->request->getCookie($idKey))
+					{
+						if ($localizationJson = json_decode($localizationJson, true))
+						{
+							$localization = Localization::recover($localizationJson);
+						}
+					}
 				}
 				// when stateless
 				else
 				{
-					$response->header($headerLocale, $localization->locale);
-					$response->header($headerCurrency, $localization->currency);
-					$response->header($headerTimezone, $localization->timezone);
+					$localization = new Localization();
+					$localization->locale = $this->request->getHeader($headerLocale);
+					$localization->currency = $this->request->getHeader($headerCurrency);
+					$localization->timezone = $this->request->getHeader($headerTimezone);
 				}
 
-				if (!$localization->user) return false;
-			});
+				// check for error
+				if (isset($localization) && $localization)
+				{
+					$check = array('locale', 'currency', 'timezone');
+					$newLocalization = null;
 
-			// from user
-			if ($user = $this->user)
-			{
-				$localization = $user->localization;
-			}
-			// when stateful
-			elseif (app()->isStateful())
-			{
-				// recover from session
-				if ($this->request->session->has($idKey))
-				{
-					$localization = $this->request->session->get($idKey);
-				}
-				// recover from cookie
-				elseif ($localizationJson = $this->request->getCookie($idKey))
-				{
-					if ($localizationJson = json_decode($localizationJson, true))
+					foreach ($check as $attribute)
 					{
-						$localization = Localization::recover($localizationJson);
+						if (is_null($localization->$attribute))
+						{
+							if (!$newLocalization) $newLocalization = $this->getNewLocalization();
+
+							// fill in
+							$localization->$attribute = $newLocalization->getAttributes()[$attribute];
+						}
+					}
+
+					// changes were made so save it
+					if ($newLocalization)
+					{
+						$localization->save();
+					}
+					// if not in session or cookie, save it
+					elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
+					{
+						unset($localization->user_id);
+						$localization->save();
 					}
 				}
-			}
-			// when stateless
-			else
-			{
-				$localization = new Localization();
-				$localization->locale = $this->request->getHeader($headerLocale);
-				$localization->currency = $this->request->getHeader($headerCurrency);
-				$localization->timezone = $this->request->getHeader($headerTimezone);
-			}
-
-			// check for error
-			if (isset($localization) && $localization)
-			{
-				$check = array('locale', 'currency', 'timezone');
-				$newLocalization = null;
-
-				foreach ($check as $attribute)
+				// make new and save
+				else
 				{
-					if (is_null($localization->$attribute))
-					{
-						if (!$newLocalization) $newLocalization = $this->getNewLocalization();
-
-						// fill in
-						$localization->$attribute = $newLocalization->getAttributes()[$attribute];
-					}
-				}
-
-				// changes were made so save it
-				if ($newLocalization)
-				{
+					$localization = $this->getNewLocalization();
 					$localization->save();
 				}
-				// if not in session or cookie, save it
-				elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
-				{
-					unset($localization->user_id);
-					$localization->save();
-				}
-			}
-			// make new and save
-			else
-			{
-				$localization = $this->getNewLocalization();
-				$localization->save();
 			}
 
 			// and set to visitor
