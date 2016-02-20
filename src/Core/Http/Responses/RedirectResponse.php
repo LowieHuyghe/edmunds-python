@@ -53,12 +53,17 @@ class RedirectResponse extends BaseResponse
 		if (app()->isLocal() && config('app.routing.redirecthalt', false))
 		{
 			//Fetch the debugtrace
-			ob_start();
-			debug_print_backtrace();
-			$debugPrintBacktrace = ob_get_contents();
-			ob_end_clean();
+			$trace = debug_backtrace();
+			$debugTrace = array();
+			foreach ($trace as $line)
+			{
+				if (isset($line['file']))
+				{
+					$debugTrace[] = str_replace(base_path(), '', $line['file']) . ':' . $line['line'] . ' ~ ' . $line['function'];
+				}
+			}
 
-			$response = $this->viewRedirect($response, $debugPrintBacktrace);
+			$response = $this->viewRedirect($response, $debugTrace);
 		}
 
 		//Return response
@@ -68,10 +73,10 @@ class RedirectResponse extends BaseResponse
 	/**
 	 * Show the redirect page
 	 * @param $response
-	 * @param string $debugPrintBacktrace
+	 * @param string $debugTrace
 	 * @return string
 	 */
-	private function viewRedirect($response, $debugPrintBacktrace)
+	private function viewRedirect($response, $debugTrace)
 	{
 		//Format target-url
 		$targetUrl = parse_url($response->getTargetUrl(), PHP_URL_PATH);
@@ -80,26 +85,11 @@ class RedirectResponse extends BaseResponse
 			$targetUrl = '/';
 		}
 
-		//Format backtrace
-		$debugPrintBacktrace = explode("\n", $debugPrintBacktrace);
-		$debugTrace = array();
-		foreach ($debugPrintBacktrace as $line)
-		{
-			if (preg_match("@^#\d+.*?[Ii]lluminate@", $line))
-			{
-				break;
-			}
-			$line = str_replace(base_path(), '', $line);
-			$line = preg_replace("@^(#\d+)@", "<span class='tracenumber'>$1</span>", $line);
-			$debugTrace[] = $line;
-		}
-		$debugTrace = join('<br/>', $debugTrace);
-
 		//Redender view
 		view()->addNamespace('core', CORE_BASE_PATH . '/resources/views');
 		$response = new ViewResponse();
 		$response->addView(null, 'core::redirect');
-		$response = $response->getResponse(array('targetUrl' => $targetUrl, 'debugTrace' => $debugTrace));
+		$response = $response->getResponse(array('targetUrl' => $targetUrl, 'debugTrace' => join('<br/>', $debugTrace)));
 
 		return $response;
 	}
