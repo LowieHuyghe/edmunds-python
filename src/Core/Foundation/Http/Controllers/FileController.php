@@ -13,10 +13,11 @@
 
 namespace Core\Filesystem\Controllers;
 
+use Core\Application;
 use Core\Bases\Http\Controllers\BaseController;
+use Core\Filesystem\Models\FileEntry;
 use Core\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Core\Filesystem\Models\FileEntry;
 
 /**
  * Controller that handles file upload
@@ -32,15 +33,49 @@ class FileController extends BaseController
 			SIZE_MAX_DOCUMENT = 3 * 1024 * 1024;
 
 	/**
+	 * Register the default routes for this controller
+	 * @param  Application $app
+	 * @param  string $prefix
+	 * @param  array  $middleware
+	 */
+	public static function registerRoutes(&$app, $prefix ='/file', $middleware = array())
+	{
+		// fethc file
+		$app->get($prefix . '/{id}', array(
+			'uses' => get_called_class() . '@get',
+			'middleware' => $middleware,
+		));
+
+		// upload methods
+		$app->post($prefix . '/picture', array(
+			'uses' => get_called_class() . '@postPicture',
+			'middleware' => $middleware,
+		));
+		$app->post($prefix . '/document', array(
+			'uses' => get_called_class() . '@postDocument',
+			'middleware' => $middleware,
+		));
+
+		// delete file
+		$app->post($prefix . '/{id}/delete', array(
+			'uses' => get_called_class() . '@postDelete',
+			'middleware' => $middleware,
+		));
+	}
+
+	/**
+	 * The default output type of the response, only used when set
+	 * @var int
+	 */
+	protected $outputType = Response::TYPE_JSON;
+
+	/**
 	 * Upload a picture
 	 * @return JsonResponse
 	 */
 	public function postPicture()
 	{
 		$this->validator->value('file')->required()->mimes(array('gif', 'jpeg', 'jpg', 'png'))->max(self::SIZE_MAX_PICTURE);
-
-		//Set response type to json
-		$this->response->setType(Response::TYPE_JSON);
 
 		if ($this->validator->hasErrors())
 		{
@@ -60,9 +95,6 @@ class FileController extends BaseController
 	public function postDocument()
 	{
 		$this->validator->value('file')->required()->mimes(array('pdf', 'doc', 'docx'))->max(self::SIZE_MAX_DOCUMENT);
-
-		//Set response type to json
-		$this->response->setType(Response::TYPE_JSON);
 
 		if ($this->validator->hasErrors())
 		{
@@ -111,8 +143,6 @@ class FileController extends BaseController
 		}
 		else
 		{
-			//Set response type to json
-			$this->response->setType(Response::TYPE_JSON);
 			return false;
 		}
 	}
@@ -125,9 +155,6 @@ class FileController extends BaseController
 	public function postDelete($id)
 	{
 		$fileEntry = FileEntry::find($id);
-
-		//Set response type to json
-		$this->response->setType(Response::TYPE_JSON);
 
 		//Delete the file
 		return ($fileEntry && $fileEntry->delete());
