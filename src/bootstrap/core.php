@@ -131,18 +131,16 @@ $app->withEloquent();
 |
 */
 
-//TODO check csrf
-
 $app->middleware(config('app.middleware', array()));
 $app->middleware(array(
-	//
+	// \Core\Foundation\Http\Middleware\VerifyCsrfToken::class,
 ));
 
 $app->routeMiddleware(config('app.routemiddleware', array()));
 $app->routeMiddleware(array(
-	'auth' => Core\Auth\Middleware\AuthMiddleware::class,
-	'rights' => Core\Auth\Middleware\RightsMiddleware::class,
-	'roles' => Core\Auth\Middleware\RolesMiddleware::class,
+	// 'auth' => Core\Auth\Middleware\AuthMiddleware::class,
+	// 'rights' => Core\Auth\Middleware\RightsMiddleware::class,
+	// 'roles' => Core\Auth\Middleware\RolesMiddleware::class,
 ));
 
 
