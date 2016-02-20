@@ -28,6 +28,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
+use Core\Foundation\Concerns\RoutesRequests;
+use Core\Foundation\Concerns\RegistersExceptionHandlers;
+use Core\Foundation\Concerns\StatefullBindingRegisterers;
 
 /**
  * The structure for application
@@ -39,6 +42,10 @@ use Throwable;
  */
 class Application extends \Laravel\Lumen\Application
 {
+	use RoutesRequests;
+	use RegistersExceptionHandlers;
+	use StatefullBindingRegisterers;
+
 	/**
 	 * Get the name of the app
 	 * @return bool
@@ -85,89 +92,6 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-	 * Dispatch the incoming request.
-	 *
-	 * @param  SymfonyRequest|null $request
-	 * @return Response
-	 */
-	public function dispatch($request = null)
-	{
-		try
-		{
-			if ($this->isDownForMaintenance())
-			{
-				abort(503);
-			}
-
-			$response = parent::dispatch($request);
-		}
-		catch (AbortHttpException $exception)
-		{
-			//
-		}
-
-		$this->logPageView(isset($exception) ? $exception : null);
-		// and send them all
-		Registry::warehouse()->flush();
-
-		// attach extra's to response
-		Response::getInstance()->attachExtras($response);
-
-		return $response;;
-	}
-
-	/**
-	 * Handle a route found by the dispatcher.
-	 *
-	 * @param  array  $routeInfo
-	 * @return mixed
-	 */
-	protected function handleFoundRoute($routeInfo)
-	{
-		if (isset($routeInfo[1]['uses']))
-		{
-			list($controller, $method) = explode('@', $routeInfo[1]['uses']);
-
-			// change method
-			$routeInfo[1]['uses'] = implode('@', array($controller, 'responseFlow'));
-
-			// change parameters
-			$routeInfo[2] = array($method, $routeInfo[2]);
-		}
-
-		return parent::handleFoundRoute($routeInfo);
-	}
-
-	/**
-	 * Throw an HttpException with the given data.
-	 *
-	 * @param  int     $code
-	 * @param  string  $message
-	 * @param  array   $headers
-	 * @return void
-	 *
-	 * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-	 */
-	public function abort($code, $message = '', array $headers = [])
-	{
-		switch($code)
-		{
-			case 200:
-				throw new AbortHttpException($message);
-			case 401:
-				throw new UnauthorizedHttpException('Basic', $message);
-			case 403:
-				throw new AccessDeniedHttpException($message);
-			case 404:
-				throw new NotFoundHttpException($message);
-			case 503:
-				throw new ServiceUnavailableHttpException(null, $message);
-			default:
-				throw new HttpException($code, $message, null, $headers);
-		}
-	}
-
-	/**
 	 * Get the path to the given configuration file.
 	 *
 	 * If no name is provided, then we'll return the path to the config folder.
@@ -211,33 +135,6 @@ class Application extends \Laravel\Lumen\Application
 				return $path;
 			}
 		}
-	}
-
-	/**
-	 * Register container bindings for the application.
-	 *
-	 * @return void
-	 */
-	protected function registerCookieBindings()
-	{
-		$this->singleton('cookie', function () {
-			return $this->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
-		});
-	}
-
-	/**
-	 * Register container bindings for the application.
-	 *
-	 * @return void
-	 */
-	protected function registerSessionBindings()
-	{
-		$this->singleton('session', function () {
-			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider');
-		});
-		$this->singleton('session.store', function () {
-			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider', 'session.store');
-		});
 	}
 
 	/**

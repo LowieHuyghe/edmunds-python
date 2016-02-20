@@ -59,20 +59,19 @@ class Request extends BaseStructure
 	{
 		if (!isset(self::$instance))
 		{
-			self::$instance = new Request(app('request'));
+			self::$instance = new Request();
 		}
 
 		return self::$instance;
 	}
 
 	/**
-	 * @param \Illuminate\Http\Request $request
+	 * Get the request
+	 * @return Illuminate\Http\Request
 	 */
-	public function __construct($request)
+	protected function getRequest()
 	{
-		parent::__construct();
-
-		$this->request = $request;
+		return app('request');
 	}
 
 	/**
@@ -81,7 +80,7 @@ class Request extends BaseStructure
 	 */
 	protected function getIpAttribute()
 	{
-		$ip = $this->request->ip();
+		$ip = $this->getRequest()->ip();
 
 		if (in_array($ip, array('127.0.0.1', '10.0.2.2', '192.168.99.1')) && app()->isLocal()
 			|| is_null($ip) && app()->isTesting())
@@ -106,7 +105,7 @@ class Request extends BaseStructure
 	 */
 	protected function getUrlAttribute()
 	{
-		return $this->request->url();
+		return $this->getRequest()->url();
 	}
 
 	/**
@@ -115,7 +114,7 @@ class Request extends BaseStructure
 	 */
 	protected function getFullUrlAttribute()
 	{
-		return $this->request->fullUrl();
+		return $this->getRequest()->fullUrl();
 	}
 
 	/**
@@ -124,7 +123,7 @@ class Request extends BaseStructure
 	 */
 	protected function getRootAttribute()
 	{
-		return $this->request->root();
+		return $this->getRequest()->root();
 	}
 
 	/**
@@ -153,7 +152,7 @@ class Request extends BaseStructure
 	 */
 	public function getCookie($key = null, $default = null)
 	{
-		return $this->request->cookie($key, $default);
+		return $this->getRequest()->cookie($key, $default);
 	}
 
 	/**
@@ -162,7 +161,7 @@ class Request extends BaseStructure
 	 */
 	protected function getPathAttribute()
 	{
-		return $this->request->path();
+		return $this->getRequest()->path();
 	}
 
 	/**
@@ -172,7 +171,7 @@ class Request extends BaseStructure
 	 */
 	public function getServer($key)
 	{
-		return $this->request->server($key);
+		return $this->getRequest()->server($key);
 	}
 
 	/**
@@ -182,7 +181,7 @@ class Request extends BaseStructure
 	 */
 	public function getHeader($key)
 	{
-		return $this->request->header($key);
+		return $this->getRequest()->header($key);
 	}
 
 	/**
@@ -191,7 +190,7 @@ class Request extends BaseStructure
 	 */
 	protected function getAjaxAttribute()
 	{
-		return $this->request->ajax();
+		return $this->getRequest()->ajax();
 	}
 
 	/**
@@ -200,7 +199,7 @@ class Request extends BaseStructure
 	 */
 	protected function getSecureAttribute()
 	{
-		return $this->request->secure();
+		return $this->getRequest()->secure();
 	}
 
 	/**
@@ -209,7 +208,7 @@ class Request extends BaseStructure
 	 */
 	protected function getJsonAttribute()
 	{
-		return $this->request->wantsJson()
+		return $this->getRequest()->wantsJson()
 			|| (Input::getInstance()->has('output') && strtolower(Input::getInstance()->get('output')) == 'json');
 	}
 
@@ -228,7 +227,7 @@ class Request extends BaseStructure
 	 */
 	protected function getMethodAttribute()
 	{
-		return $this->request->method();
+		return $this->getRequest()->method();
 	}
 
 	/**
@@ -237,7 +236,7 @@ class Request extends BaseStructure
 	 */
 	protected function getSegmentsAttribute()
 	{
-		return $this->request->segments();
+		return $this->getRequest()->segments();
 	}
 
 	/**
@@ -246,7 +245,7 @@ class Request extends BaseStructure
 	 */
 	protected function getRouteAttribute()
 	{
-		return $this->request->route()[2]['route'];
+		return $this->getRequest()->route()[2]['route'];
 	}
 
 	/**
@@ -255,7 +254,7 @@ class Request extends BaseStructure
 	 */
 	protected function getHostAttribute()
 	{
-		return $this->request->getHttpHost();
+		return $this->getRequest()->getHttpHost();
 	}
 
 	/**
@@ -264,7 +263,7 @@ class Request extends BaseStructure
 	 */
 	protected function getUserAttribute()
 	{
-		return $this->request->user();
+		return $this->getRequest()->user();
 	}
 
 	/**
@@ -276,7 +275,7 @@ class Request extends BaseStructure
 	 */
 	public function input($key = null, $default = null)
 	{
-		return $this->request->input($key, $default);
+		return $this->getRequest()->input($key, $default);
 	}
 
 	/**
@@ -287,7 +286,7 @@ class Request extends BaseStructure
 	 */
 	public function inputOnly($keys)
 	{
-		return $this->request->only($keys);
+		return $this->getRequest()->only($keys);
 	}
 
 	/**
@@ -298,7 +297,7 @@ class Request extends BaseStructure
 	 */
 	public function inputExcept($keys)
 	{
-		return $this->request->except($keys);
+		return $this->getRequest()->except($keys);
 	}
 
 	/**
@@ -309,7 +308,7 @@ class Request extends BaseStructure
 	 */
 	public function hasInput($key)
 	{
-		return $this->request->has($key);
+		return $this->getRequest()->has($key);
 	}
 
 	/**
@@ -321,7 +320,7 @@ class Request extends BaseStructure
 	 */
 	public function file($key = null, $default = null)
 	{
-		return $this->request->file($key, $default);
+		return $this->getRequest()->file($key, $default);
 	}
 
 	/**
@@ -332,7 +331,7 @@ class Request extends BaseStructure
 	 */
 	public function hasFile($key)
 	{
-		return $this->request->hasFile($key);
+		return $this->getRequest()->hasFile($key);
 	}
 
 }

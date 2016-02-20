@@ -78,7 +78,7 @@ class LoginAttempt extends BaseModel
 	 */
 	protected function addValidationRules(&$validator)
 	{
-		parent::addValidationRules();
+		parent::addValidationRules($validator);
 
 		$this->required = array_merge($this->required, array('ip', 'type'));
 
