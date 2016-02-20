@@ -105,7 +105,10 @@ if (!empty($missingConfig))
 |
 */
 
-\Core\Registry::warehouse('newrelic');
+if (\Core\Analytics\AnalyticsManager::isEnabled())
+{
+	\Core\Registry::warehouse('newrelic');
+}
 
 
 /*

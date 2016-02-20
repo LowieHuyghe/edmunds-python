@@ -13,6 +13,7 @@
 
 namespace Core\Foundation\Concerns;
 
+use Core\Analytics\AnalyticsManager;
 use Core\Http\Exceptions\AbortHttpException;
 use Core\Http\Response;
 use Core\Registry;
@@ -57,9 +58,13 @@ trait RoutesRequests
 			$response = parent::dispatch($request);
 		}
 
-        // log pageview and flush all logs
-		$this->logPageView();
-		Registry::warehouse()->flush();
+		// check if analytics are enabled
+		if (AnalyticsManager::isEnabled())
+		{
+	        // log pageview and flush all logs
+			$this->logPageView();
+			Registry::warehouse()->flush();
+		}
 
 		// attach extra's to response
 		Response::getInstance()->attachExtras($response);
