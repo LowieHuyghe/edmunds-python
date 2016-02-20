@@ -13,11 +13,12 @@
 
 namespace Core\Localization;
 
+use Core\Analytics\Tracking\ErrorLog;
+use Core\Auth\Models\Gender;
 use Core\Bases\Structures\BaseStructure;
-use Core\Localization\Exceptions\TranslationException;
 use Core\Http\Client\Visitor;
 use Core\Http\Response;
-use Core\Auth\Models\Gender;
+use Core\Localization\Exceptions\TranslationException;
 use Core\Localization\Models\Translation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
@@ -167,28 +168,31 @@ class Translator extends BaseStructure implements \Symfony\Component\Translation
 		$key = self::getKey($message);
 		$group = self::getGroup($key);
 
-		if (self::isEnabled() && !$onlyReplacements)
+		try
 		{
-			$locales = $this->getLocales($locale);
-			foreach ($locales as $potLocale)
+			if (self::isEnabled() && !$onlyReplacements)
 			{
-				$this->load($namespace, $group, $potLocale);
-				$translated = Arr::get($this->loaded[$namespace][$group][$potLocale], $key);
-				if ($translated && $translated != $key)
+				$locales = $this->getLocales($locale);
+				foreach ($locales as $potLocale)
 				{
-					try
+					$this->load($namespace, $group, $potLocale);
+					$translated = Arr::get($this->loaded[$namespace][$group][$potLocale], $key);
+					if ($translated && $translated != $key)
 					{
 						return $this->makeReplacements($key, $translated, $parameters, $potLocale);
 					}
-					catch(TranslationException $e)
-					{
-						//TODO logging
-					}
 				}
 			}
-		}
 
-		return $this->makeReplacements($key, $message, $parameters, $locale);
+			return $this->makeReplacements($key, $message, $parameters, $locale);
+		}
+		catch(TranslationException $e)
+		{
+			$log = new ErrorLog();
+			$log->exception = $e;
+			$log->type = 'TranslationError';
+			$log->log();
+		}
 	}
 
 	/**
