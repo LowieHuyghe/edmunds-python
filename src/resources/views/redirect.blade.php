@@ -34,6 +34,12 @@
 				color: #3F3F3F;
 			}
 		</style>
+		<script>
+			window.onload = function()
+			{
+				document.getElementById('link').focus();
+			};
+		</script>
 		<div>
 			<svg version='1.1' x='0px' y='0px'
 				 width='100px' height='120px' viewBox='0 0 98.254 120.247' enable-background='new 0 0 98.254 120.247'
@@ -59,7 +65,7 @@
 			Hello good sir! <br/>
 			<br/>
 			I will be obliged to excuse me. <br/>
-			As it is my duty, I am required to redirect you to: <a href='{!! $targetUrl !!}'>{{ $targetUrl }}</a>. <br/>
+			As it is my duty, I am required to redirect you to: <a id='link' href='{!! $targetUrl !!}'>{{ $targetUrl }}</a>. <br/>
 			My utmost apologies for the inconvenience.  <br/>
 			<br/>
 			Signed, <br/>
