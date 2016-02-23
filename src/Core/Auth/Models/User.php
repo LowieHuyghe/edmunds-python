@@ -67,12 +67,6 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	protected $hidden = ['password', 'remember_token'];
 
 	/**
-	 * The class responsible for the roles
-	 * @var string
-	 */
-	protected $roleClass;
-
-	/**
 	 * All the rights the user has
 	 * @var Right[]
 	 */
@@ -85,11 +79,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	public function roles()
 	{
-		if (!isset($this->roleClass))
-		{
-			throw new \Exception('The class representing the Roles not set');
-		}
-		return $this->belongsToManyEnums($this->roleClass, 'user_roles');
+		return $this->belongsToManyEnums(config('app.auth.models.role'), 'user_roles');
 	}
 
 	/**
@@ -165,7 +155,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 		$this->required = array_merge($this->required, array('email'));
 
 		$validator->value('id')->integer();
-		$validator->value('email')->max(255)->unique('users', $this->getKeyName());
+		$validator->value('email')->max(255)->email();
 		$validator->value('gender_id')->integer();
 		$validator->value('password')->max(60);
 		$validator->value('api_token')->max(100);

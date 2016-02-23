@@ -11,7 +11,7 @@
  * @since		Version 0.1
  */
 
-namespace Core\Filesystem\Controllers;
+namespace Core\Foundation\Controllers;
 
 use Core\Application;
 use Core\Bases\Http\Controllers\BaseController;
@@ -38,26 +38,26 @@ class FileController extends BaseController
 	 * @param  string $prefix
 	 * @param  array  $middleware
 	 */
-	public static function registerRoutes(&$app, $prefix ='file', $middleware = array())
+	public static function registerRoutes(&$app, $prefix ='file/', $middleware = array())
 	{
 		// fetch file
-		$app->get($prefix . '/{id}', array(
+		$app->get($prefix . '{id}', array(
 			'uses' => get_called_class() . '@get',
 			'middleware' => $middleware,
 		));
 
 		// upload methods
-		$app->post($prefix . '/picture', array(
+		$app->post($prefix . 'picture', array(
 			'uses' => get_called_class() . '@postPicture',
 			'middleware' => $middleware,
 		));
-		$app->post($prefix . '/document', array(
+		$app->post($prefix . 'document', array(
 			'uses' => get_called_class() . '@postDocument',
 			'middleware' => $middleware,
 		));
 
 		// delete file
-		$app->post($prefix . '/{id}/delete', array(
+		$app->post($prefix . '{id}/delete', array(
 			'uses' => get_called_class() . '@postDelete',
 			'middleware' => $middleware,
 		));

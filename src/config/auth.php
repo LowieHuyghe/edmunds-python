@@ -62,7 +62,7 @@ return [
 	'providers' => [
 		'users' => [
 			'driver' => 'eloquent',
-			'model' => config('app.auth.model'),
+			'model' => config('app.auth.models.user'),
 		],
 
 		// 'users' => [
