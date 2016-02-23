@@ -25,6 +25,8 @@ use Core\Http\Responses\ViewResponse;
  * @since		Version 0.1
  *
  * @property string $uri
+ * @property bool $saveIntended
+ * @property bool $gotoIntended
  */
 class RedirectResponse extends BaseResponse
 {
@@ -32,11 +34,13 @@ class RedirectResponse extends BaseResponse
 	 * Constructor
 	 * @param string $uri
 	 */
-	public function __construct($uri)
+	public function __construct($uri, $saveIntended, $gotoIntended)
 	{
 		parent::__construct();
 
 		$this->uri = $uri;
+		$this->saveIntended = $saveIntended;
+		$this->gotoIntended = $gotoIntended;
 	}
 
 	/**
@@ -46,8 +50,32 @@ class RedirectResponse extends BaseResponse
 	 */
 	public function getResponse($data = array())
 	{
+		$redirector = redirect();
+		$stateful = app()->isStateful();
+
 		//Make the redirect-response
-		$response = redirect($this->uri);
+		if (is_null($this->uri))
+		{
+			$response = $redirector->back();
+		}
+		elseif ($stateful && $this->gotoIntended)
+		{
+			$response = $redirector->intended($this->uri);
+		}
+		elseif ($stateful && $this->saveIntended)
+		{
+			$response = $redirector->guest($this->uri);
+		}
+		else
+		{
+			$response = $redirector->to($this->uri);
+		}
+
+		// assign data
+		if (app()->isStateful())
+		{
+			$response->with($data);
+		}
 
 		//For debugging purposes show the redirect-page
 		if (app()->isLocal() && config('app.routing.redirecthalt', false))

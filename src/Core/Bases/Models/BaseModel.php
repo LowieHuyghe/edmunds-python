@@ -88,7 +88,7 @@ class BaseModel extends Model
 	 */
 	public function hasErrors()
 	{
-		$this->validator->setInput($this->getAttributes());
+		$this->validator->input = $this->getAttributes();
 
 		return $this->validator->hasErrors();
 	}
@@ -99,7 +99,7 @@ class BaseModel extends Model
 	 */
 	public function getErrors()
 	{
-		$this->validator->setInput($this->getAttributes());
+		$this->validator->input = $this->getAttributes();
 
 		return $this->validator->getErrors();
 	}
