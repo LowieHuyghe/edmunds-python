@@ -13,6 +13,8 @@
 
 namespace Core\Validation;
 use Core\Bases\Structures\BaseStructure;
+use Core\Localization\Format\DateTime;
+use Core\Validation\Validation;
 
 /**
  * A rule for validation
@@ -37,19 +39,80 @@ class ValidationRule extends BaseStructure
 	protected $column;
 
 	/**
-	 * Disable the validator
+	 * Validation
+	 * @var Validation
 	 */
-	protected $validator = false;
+	protected $validation;
+
+	/**
+	 * The value to fallback on
+	 * @var mixed
+	 */
+	protected $fallback = null;
 
 	/**
 	 * Consrtuctor
 	 * @param string $column
 	 */
-	public function __construct($column)
+	public function __construct($column, $validation)
 	{
-		$this->column = $column;
-
 		parent::__construct();
+
+		$this->column = $column;
+		$this->validation = $validation;
+	}
+
+	/**
+	 * Set a fallback value
+	 * @param  mixed $value
+	 * @return ValidationRule
+	 */
+	public function fallback($value)
+	{
+		$this->fallback = $value;
+		return $this;
+	}
+
+	/**
+	 * Get the value
+	 * @return mixed
+	 */
+	public function get()
+	{
+		$value = $this->validation->input[$this->column] ?? $this->fallback;
+
+		// parse
+		if (!is_null($value))
+		{
+			if (isset($this->rules['boolean']))
+			{
+				$value = boolval($value);
+			}
+			elseif (isset($this->rules['integer']))
+			{
+				$value = intval($value);
+			}
+			elseif (isset($this->rules['numeric']))
+			{
+				$value = floatval($value);
+			}
+			elseif (isset($this->rules['date_format']))
+			{
+				if (! $value instanceof DateTime)
+				{
+					$value = DateTime::createFromFormat($this->rules['date_format'], $value);
+				}
+			}
+			elseif (isset($this->rules['date']))
+			{
+				if (! $value instanceof DateTime)
+				{
+					$value = DateTime::createFromDate($value);
+				}
+			}
+		}
+
+		return $value;
 	}
 
 	/**

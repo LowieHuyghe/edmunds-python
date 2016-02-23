@@ -24,6 +24,8 @@ use Illuminate\Validation\DatabasePresenceVerifier;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property array $input Input to validate
  */
 class Validation extends BaseStructure
 {
@@ -34,28 +36,13 @@ class Validation extends BaseStructure
 	private $values = array();
 
 	/**
-	 * Input to validate
-	 * @var array
-	 */
-	private $input;
-
-	/**
 	 * The constructor
 	 * @param array $input
 	 */
 	public function __construct($input = array())
 	{
-		//parent::__construct();
+		parent::__construct();
 
-		$this->input = $input;
-	}
-
-	/**
-	 * Explicitly set the input to validate
-	 * @param array $input
-	 */
-	public function setInput($input)
-	{
 		$this->input = $input;
 	}
 
@@ -188,7 +175,7 @@ class Validation extends BaseStructure
 	{
 		if (!isset($this->values[$name]))
 		{
-			$this->values[$name] = new ValidationRule($name);
+			$this->values[$name] = new ValidationRule($name, $valition);
 		}
 		return $this->values[$name];
 	}
@@ -204,4 +191,49 @@ class Validation extends BaseStructure
         });
     }
 
+    /**
+     * Get the value
+     * @param  string $value
+     * @return mixed
+     */
+    public function get($value)
+    {
+		return isset($this->values[$key]) ? $this->values[$key]->get() : ($this->input[$key] ?? null);
+    }
+
+    /**
+     * Fetch all values
+     * @return array
+     */
+	public function all()
+	{
+		$all = array();
+
+		foreach (array_merge(array_keys($this->input) , array_keys($this->values)) as $key)
+		{
+			$all[$key] = isset($this->values[$key]) ? $this->values[$key]->get() : $this->input[$key];
+		}
+
+		return $all;
+	}
+
+	/**
+	 * Fetch values of matching keys
+	 * @param  array $keys
+	 * @return array
+	 */
+	public function only($keys)
+	{
+		return array_only($this->all(), is_array($keys) ? $keys : func_get_args());
+	}
+
+	/**
+	 * Fetch values of all except keys
+	 * @param  array $keys
+	 * @return array
+	 */
+	public function except($keys)
+	{
+		return array_except($this->all(), is_array($keys) ? $keys : func_get_args());
+	}
 }

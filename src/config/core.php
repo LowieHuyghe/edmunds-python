@@ -33,13 +33,6 @@ return array
 
 			'app.routing.namespace',
 			'app.routing.routes',
-			'app.routing.loginroute',
-
-			'app.localization.locale.default',
-			'app.localization.locale.fallback',
-			'app.localization.locale.accepted',
-			'app.localization.currency.default',
-			'app.localization.currency.accepted',
 		),
 	),
 

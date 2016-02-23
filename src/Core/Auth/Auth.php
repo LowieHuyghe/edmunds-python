@@ -13,13 +13,14 @@
 
 namespace Core\Auth;
 
-use Core\Bases\Structures\BaseStructure;
-use Core\Http\Request;
-use Core\Localization\Format\DateTime;
 use Core\Auth\Models\LoginAttempt;
 use Core\Auth\Models\PasswordReset;
 use Core\Auth\Models\User;
+use Core\Bases\Structures\BaseStructure;
+use Core\Http\Request;
+use Core\Localization\Format\DateTime;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 
@@ -34,6 +35,11 @@ use Illuminate\Contracts\Auth\UserProvider;
  * @property bool $loggedIn
  * @property User $user
  * @property int $loginAttempts
+ * @property int $attemptsMax
+ * @property int $lockoutTime
+ * @property int $attemptsCount
+ * @property int $attemptsLeft
+ * @property bool $attemptsTooMany
  */
 class Auth extends BaseStructure
 {
@@ -78,6 +84,9 @@ class Auth extends BaseStructure
 		parent::__construct();
 
 		$this->request = $request;
+
+		$this->attemptsMax = 5;
+		$this->lockoutTime = 60;
 	}
 
 	/**
@@ -99,15 +108,55 @@ class Auth extends BaseStructure
 	}
 
 	/**
-	 * Get the number of attempts the user has made
+	 * Get the number of attempts that were made
 	 * @return int
 	 */
-	protected function getLoginAttemptsAttribute()
+	protected function getAttemptsCountAttribute()
 	{
-		$ip = $this->request->ip;
-		$dateTimeFrom = DateTime::now()->addHours(-7)->__toString();
+        return app(RateLimiter::class)->attempts($this->getAttemptsKey());
+	}
 
-		return LoginAttempt::where('ip', '=', $ip)->where('created_at', '>', $dateTimeFrom)->count();
+	/**
+	 * Get the number of attempts that are left
+	 * @return int
+	 */
+	protected function getAttemptsLeftAttribute()
+	{
+        return app(RateLimiter::class)->retriesLeft($this->getAttemptsKey(), $this->attemptsMax);
+	}
+
+	/**
+	 * Check if too many attempts
+	 * @return bool
+	 */
+	protected function getAttemptsTooManyAttribute()
+	{
+		return app(RateLimiter::class)->tooManyAttempts($this->getAttemptsKey(), $this->attemptsMax, $this->lockoutTime / 60);
+	}
+
+	/**
+	 * Increment attempts
+	 */
+	protected function incrementAttempts()
+	{
+        app(RateLimiter::class)->hit($this->getAttemptsKey());
+	}
+
+	/**
+	 * Get the key used to store the attempts
+	 * @return string
+	 */
+	protected function getAttemptsKey()
+	{
+		return $this->request->ip;
+	}
+
+	/**
+	 * Clear the number of attempts
+	 */
+	public function clearAttempts()
+	{
+        app(RateLimiter::class)->clear($this->getAttemptsKey());
 	}
 
 	/**
@@ -115,26 +164,50 @@ class Auth extends BaseStructure
 	 * @param string $email
 	 * @param string $password
 	 * @param bool $once
-	 * @return bool|string
+	 * @param bool $remember
+	 * @return bool
 	 */
-	public function login($email, $password, $once = false)
+	public function login($email, $password, $once = false, $remember = false)
 	{
-		$credentials = array('email' => $email, 'password' => $password);
+		// check if too many attempts
+		if ($this->attemptsTooMany)
+		{
+			return false;
+		}
 
+		// attempt login
+		$credentials = array('email' => $email, 'password' => $password);
 		if ($once)
 		{
-			$response = $this->getGuard()->once($credentials);
+			$loggedIn = $this->getGuard()->once($credentials);
 		}
 		else
 		{
-			$response = $this->getGuard()->attempt($credentials);
+			$loggedIn = $this->getGuard()->attempt($credentials, $remember);
 		}
 
-		//Log attempt
-		$this->saveLoginAttempt('credentials', $email, $password);
+		// clear or increment attempts
+		if ($loggedIn)
+		{
+			$this->clearAttempts();
+		}
+		else
+		{
+			$this->incrementAttempts();
+		}
 
 		//Return result
-		return $response;
+		return $loggedIn;
+	}
+
+	/**
+	 * Login a user
+	 * @param  User  $user
+	 * @param  boolean $remember
+	 */
+	public function loginUser($user, $remember = false)
+	{
+		$this->getGuard()->login($user, $remember);
 	}
 
 	/**
@@ -144,28 +217,6 @@ class Auth extends BaseStructure
 	public function setUser($user)
 	{
 		$this->getGuard()->setUser($user);
-	}
-
-	/**
-	 * Save the login attempt
-	 * @param string $type
-	 * @param string $email
-	 * @param string $password
-	 */
-	protected function saveLoginAttempt($type, $email = null, $password = null)
-	{
-		$loginAttempt = new LoginAttempt();
-
-		$loginAttempt->ip = $this->request->ip;
-		$loginAttempt->type = $type;
-		$loginAttempt->email = $email;
-		$loginAttempt->password = $password;
-		if ($user = $this->user)
-		{
-			$loginAttempt->user()->associate($user);
-		}
-
-		$loginAttempt->save();
 	}
 
 	/**

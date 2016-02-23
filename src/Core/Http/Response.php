@@ -23,6 +23,7 @@ use Core\Http\Responses\JsonResponse;
 use Core\Http\Responses\RedirectResponse;
 use Core\Http\Responses\ViewResponse;
 use Core\Http\Responses\XmlResponse;
+use Core\Validation\Validation;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -113,6 +114,7 @@ class Response extends BaseStructure
 	 * Assign data to response
 	 * @param string|array $key
 	 * @param mixed $value
+	 * @return Response
 	 */
 	public function assign($key, $value = null)
 	{
@@ -127,6 +129,44 @@ class Response extends BaseStructure
 		{
 			$this->assignments[$key] = $value;
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Assign input to response
+	 * @param  array  $exceptKeys
+	 * @return Response
+	 */
+	public function assignInput($exceptKeys = array())
+	{
+		$this->assign(Input::getInstance()->except(is_array($exceptKeys) ? $exceptKeys : func_get_args()));
+
+		return $this;
+	}
+
+	/**
+	 * Assign input to response
+	 * @param  array  $onlyKeys
+	 * @return Response
+	 */
+	public function assignInputOnly($onlyKeys = array())
+	{
+		$this->assign(Input::getInstance()->only(is_array($onlyKeys) ? $onlyKeys : func_get_args()));
+
+		return $this;
+	}
+
+	/**
+	 * Assign errors to response
+	 * @param \Illuminate\Contracts\Validation\Validator $errors
+	 * @return Response
+	 */
+	public function assignErrors($errors)
+	{
+		$this->assign('errors', $errors->errors());
+
+		return $this;
 	}
 
 	/**
@@ -158,6 +198,7 @@ class Response extends BaseStructure
 	 * Return view
 	 * @param string $view
 	 * @param string $key
+	 * @return Response
 	 */
 	public function render($key = null, $view = null)
 	{
@@ -166,25 +207,33 @@ class Response extends BaseStructure
 			$this->viewResponse = new ViewResponse();
 		}
 		$this->viewResponse->addView($key, $view);
+
+		return $this;
 	}
 
 	/**
 	 * Assign a download
 	 * @param string $filePath
 	 * @param string $name
+	 * @return Response
 	 */
 	public function download($filePath, $name = null)
 	{
 		$this->downloadResponse = new DownloadResponse($filePath, $name);
+
+		return $this;
 	}
 
 	/**
 	 * Assign content
 	 * @param mixed $content
+	 * @return Response
 	 */
 	public function content($content)
 	{
 		$this->contentResponse = new ContentResponse($content);
+
+		return $this;
 	}
 
  	/**
@@ -192,6 +241,7 @@ class Response extends BaseStructure
 	 * @param string $key
 	 * @param mixed $value
 	 * @param int $minutes
+	 * @return Response
 	 */
 	public function cookie($key, $value, $minutes = 0)
 	{
@@ -203,12 +253,15 @@ class Response extends BaseStructure
 		{
 			$this->cookies[] = app('cookie')->forever($key, $value);
 		}
+
+		return $this;
 	}
 
 	/**
 	 * Assign headers to response
 	 * @param string|array $key
 	 * @param mixed $value
+	 * @return Response
 	 */
 	public function header($key, $value = null)
 	{
@@ -223,37 +276,20 @@ class Response extends BaseStructure
 		{
 			$this->headers[$key] = $value;
 		}
+
+		return $this;
 	}
 
 	/**
 	 * Redirect to the specified url
-	 * @param string $uri
+	 * @param string|null $uri When null, will go back
 	 * @param bool|array $input
-	 * @param bool $saveIntendedRoute
-	 * @param bool $gotoIntendedRoute
+	 * @param bool $saveIntended
+	 * @param bool $gotoIntended
 	 */
-	public function redirect($uri, $saveIntendedRoute = false, $gotoIntendedRoute = false)
+	public function redirect($uri, $saveIntended = false, $gotoIntended = false)
 	{
-		// not when stateless
-		if (app()->isStateful())
-		{
-			// go to the intended route that was saved
-			if ($gotoIntendedRoute)
-			{
-				if ($this->request->session->has('intended_route'))
-				{
-					$uri = $this->request->session->get('intended_route');
-					$this->request->session->delete('intended_route');
-				}
-			}
-			// save the route the user intended to go
-			if ($saveIntendedRoute)
-			{
-				$this->request->session->set('intended_route', $this->request->path);
-			}
-		}
-
-		$this->redirectResponse = new RedirectResponse($uri);
+		$this->redirectResponse = new RedirectResponse($uri, $saveIntended, $gotoIntended);
 
 		$this->send();
 	}

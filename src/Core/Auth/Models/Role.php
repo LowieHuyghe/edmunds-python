@@ -27,22 +27,12 @@ use Core\Database\Relations\BelongsToManyEnums;
 class Role extends BaseEnumModel
 {
 	/**
-	 * The class responsible for the rights
-	 * @var string
-	 */
-	protected $rightClass;
-
-	/**
 	 * Rights belonging to this role
 	 * @return BelongsToManyEnums
 	 * @throws \Exception
 	 */
 	public function rights()
 	{
-		if (!isset($this->rightClass))
-		{
-			throw new \Exception('The class representing the Rights not set');
-		}
-		return $this->belongsToManyEnums($this->rightClass, 'role_rights');
+		return $this->belongsToManyEnums(config('app.auth.models.right'), 'role_rights');
 	}
 }

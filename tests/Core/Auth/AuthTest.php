@@ -120,7 +120,7 @@ class AuthTest extends BaseTest
 	 */
 	protected function createUser()
 	{
-		$user = call_user_func(config('app.auth.model') . '::dummy');
+		$user = call_user_func(config('app.auth.models.user') . '::dummy');
 
 		$user->id = null;
 		$user->email = $this->email;
