@@ -93,9 +93,9 @@ return [
 	'passwords' => [
 		'users' => [
 			'provider' => 'users',
-			'email' => 'auth.emails.password',
-			'table' => config('app.auth.passwords.table'),
-			'expire' => config('app.auth.passwords.expire'),
+			'email' => config('app.auth.passwords.email'),
+			'table' => 'password_resets',
+			'expire' => config('core.auth.ttl.passwordreset'),
 		],
 	],
 
