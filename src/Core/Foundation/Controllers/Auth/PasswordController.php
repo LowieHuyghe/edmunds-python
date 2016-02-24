@@ -37,9 +37,9 @@ class AuthController extends BaseController
 	public static function registerRoutes(&$app, $prefix ='', $middleware = array())
 	{
 		// Password Reset Routes...
-		$app->get($prefix . 'password/reset/{token?}', '\\' . get_called_class() . '@showResetForm');
-		$app->post($prefix . 'password/email', '\\' . get_called_class() . '@sendResetLinkEmail');
-		$app->post($prefix . 'password/reset', '\\' . get_called_class() . '@reset');
+		$app->get($prefix . 'password/reset/{token?}', '\\' . get_called_class() . '@getReset');
+		$app->post($prefix . 'password/email', '\\' . get_called_class() . '@postEmail');
+		$app->post($prefix . 'password/reset', '\\' . get_called_class() . '@postReset');
 	}
 
 	/**
@@ -47,6 +47,12 @@ class AuthController extends BaseController
 	 * @var Auth
 	 */
 	protected $auth;
+
+	/**
+	 * Path to redirect to when logged in
+	 * @var string
+	 */
+	protected $postLogin = '/';
 
 	/**
 	 * Constructor
@@ -60,12 +66,113 @@ class AuthController extends BaseController
 	}
 
 	/**
-	 * Add validation rules
+	 * Display the password reset view for the given token.
+	 * If no token is present, display the link request form.
+	 * @param  string|null  $token
 	 */
-	protected function addValidationRules()
+	public function getReset($token = null)
+	{
+		// no token was present
+		if (is_null($token))
+		{
+			$this->response->render(null, 'auth.passwords.request');
+		}
+
+		// token is present
+		else
+		{
+			$this->addValidationRules();
+			$email = $this->validator->value('email')->max(255)->email()->get();
+
+			$this->response
+				->assign('email', $email)
+				->render(null, 'auth.passwords.email');
+		}
+	}
+
+	/**
+	 * Send a reset link to the given user.
+	 */
+	public function postEmail()
+	{
+		$this->validator->value('email')->max(255)->email()->setRequired();
+
+		// has errors
+		if ($this->validator->hasErrors())
+		{
+			abort(403);
+		}
+
+		// got email
+		else
+		{
+			// send mail
+			// TODO review with new email system
+			$response = app('auth.passwords')->broker(null)->sendResetLink($this->validator->get('email'), function (Message $message)
+			{
+				$message->subject(trans('passwords.email.subject'));
+			});
+
+			if ($response == \Illuminate\Support\Facades\Password::PASSWORD_RESET)
+			{
+				$this->response
+					->assign('status', trans($response))
+					->redirect(null);
+			}
+			else
+			{
+				$this->response
+					->withErrors(['email' => trans($response)])
+					->redirect(null);
+			}
+		}
+	}
+
+	/**
+	 * Reset the given user's password.
+	 */
+	public function postReset()
 	{
 		$this->validator->value('token')->max(255)->setRequired();
 		$this->validator->value('email')->max(255)->email()->setRequired();
 		$this->validator->value('password')->min(6)->max(60)->setRequired();
+		$this->validator->value('password_confirmation')->min(6)->max(60)->setRequired();
+
+		// there are errors
+		if ($this->validator->hasErrors())
+		{
+			abort(403);
+		}
+
+		// reset password
+		else
+		{
+			$credentials = $this->validator->only('email', 'password', 'password_confirmation', 'token');
+
+			// reset password
+			$response = app('auth.passwords')->broker(null)->reset($credentials, function ($user, $password)
+			{
+				$user->password = bcrypt($password);
+				$user->save();
+
+				$this->auth->loginUser($user);
+			});
+
+			// email sent
+			if ($response == \Illuminate\Support\Facades\Password::PASSWORD_RESET)
+			{
+				$this->response
+					->assign('status', trans($response))
+					->redirect($this->postLogin);
+			}
+			// something went wrong
+			else
+			{
+				$this->response
+					->assignInputOnly('email')
+					->assignErrors(['email' => trans($response)])
+					->redirect(null);
+			}
+		}
 	}
 }

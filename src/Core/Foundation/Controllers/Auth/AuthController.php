@@ -37,13 +37,13 @@ class AuthController extends BaseController
 	public static function registerRoutes(&$app, $prefix ='', $middleware = array())
 	{
 		// Authentication Routes...
-		$app->get($prefix . 'login', '\\' . get_called_class() . '@showLoginForm');
-		$app->post($prefix . 'login', '\\' . get_called_class() .  '@login');
-		$app->get($prefix . 'logout', '\\' . get_called_class() .  '@logout');
+		$app->get($prefix . 'login', '\\' . get_called_class() . '@getLogin');
+		$app->post($prefix . 'login', '\\' . get_called_class() .  '@postLogin');
+		$app->get($prefix . 'logout', '\\' . get_called_class() .  '@getLogout');
 
 		// Registration Routes...
-		$app->get($prefix . 'register', '\\' . get_called_class() .  '@showRegistrationForm');
-		$app->post($prefix . 'register', '\\' . get_called_class() .  '@register');
+		$app->get($prefix . 'register', '\\' . get_called_class() .  '@getRegister');
+		$app->post($prefix . 'register', '\\' . get_called_class() .  '@postRegister');
 	}
 
 	/**
@@ -51,6 +51,30 @@ class AuthController extends BaseController
 	 * @var Auth
 	 */
 	protected $auth;
+
+	/**
+	 * The login view
+	 * @var string
+	 */
+	protected $viewLogin = 'auth.login';
+
+	/**
+	 * The register view
+	 * @var string
+	 */
+	protected $viewRegister = 'auth.register';
+
+	/**
+	 * Path to redirect to when logged in
+	 * @var string
+	 */
+	protected $postLogin = '/';
+
+	/**
+	 * Path to redirect to when logged out
+	 * @var string
+	 */
+	protected $postLogout = '/login';
 
 	/**
 	 * Constructor
@@ -66,17 +90,17 @@ class AuthController extends BaseController
 	/**
 	 * Show login form
 	 */
-	public function showLoginForm()
+	public function getLogin()
 	{
 		$this->response
 			->assign('attemptsTooMany', $this->auth->attemptsTooMany)
-			->render(null, 'auth.login');
+			->render(null, $this->viewLogin);
 	}
 
 	/**
 	 * Login
 	 */
-	public function login()
+	public function postLogin()
 	{
 		// add validation rules
 		$this->addValidationRules(false);
@@ -100,34 +124,34 @@ class AuthController extends BaseController
 				$this->validator->get('remember'));
 
 			// redirect
-			$this->response->redirect(config('app.auth.redirects.login'));
+			$this->response->redirect($this->postLogin);
 		}
 	}
 
 	/**
 	 * Logout
 	 */
-	public function logout()
+	public function getLogout()
 	{
 		// logout user
 		$this->auth->logout();
 
 		// redirect
-		$this->response->redirect(config('app.auth.redirects.logout'));
+		$this->response->redirect($this->postLogout);
 	}
 
 	/**
 	 * Show registration form
 	 */
-	public function showRegistrationForm()
+	public function getRegister()
 	{
-		$this->response->render(null, 'auth.register');
+		$this->response->render(null, $this->viewRegister);
 	}
 
 	/**
 	 * Register
 	 */
-	public function register()
+	public function postRegister()
 	{
 		// add validation rules
 		$this->addValidationRules(true);
@@ -147,7 +171,7 @@ class AuthController extends BaseController
 			$this->auth->loginUser($this->create(), $this->validator->get('remember'));
 
 			// redirect
-			$this->response->redirect(config('app.auth.redirects.login'));
+			$this->response->redirect($this->postLogin);
 		}
 	}
 

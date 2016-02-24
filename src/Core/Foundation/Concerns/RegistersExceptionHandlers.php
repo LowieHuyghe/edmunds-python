@@ -42,7 +42,7 @@ trait RegistersExceptionHandlers
 	 *
 	 * @throws \Symfony\Component\HttpKernel\Exception\HttpException
 	 */
-	public function abort($code, $message = '', array $headers = [])
+	public function abort($code = 200, $message = '', array $headers = [])
 	{
 		switch($code)
 		{
