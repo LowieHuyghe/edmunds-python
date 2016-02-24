@@ -228,23 +228,6 @@ class Auth extends BaseStructure
 	}
 
 	/**
-	 * Get a password reset token
-	 * @param string $email
-	 * @return null|string
-	 */
-	public function getPasswordResetToken($email)
-	{
-		$passwordReset = new PasswordReset();
-		$passwordReset->email = $email;
-
-		if ($passwordReset->save())
-		{
-			return $passwordReset->token;
-		}
-		return null;
-	}
-
-	/**
 	 * Get the guard
 	 * @return Guard
 	 */

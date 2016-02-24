@@ -24,6 +24,8 @@ use Core\Http\Responses\RedirectResponse;
 use Core\Http\Responses\ViewResponse;
 use Core\Http\Responses\XmlResponse;
 use Core\Validation\Validation;
+use Illuminate\Contracts\Support\MessageBag;
+use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpFoundation\Cookie;
 
 /**
@@ -159,12 +161,21 @@ class Response extends BaseStructure
 
 	/**
 	 * Assign errors to response
-	 * @param \Illuminate\Contracts\Validation\Validator $errors
+	 * @param array|MessageProvider $errors
 	 * @return Response
 	 */
 	public function assignErrors($errors)
 	{
-		$this->assign('errors', $errors->errors());
+        if ($errors instanceof MessageProvider)
+        {
+            $errors = $errors->getMessageBag();
+        }
+        else
+        {
+        	$errors = new MessageBag((array) $errors);
+        }
+
+		$this->assign('errors', $errors);
 
 		return $this;
 	}
