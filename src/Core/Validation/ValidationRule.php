@@ -14,7 +14,7 @@
 namespace Core\Validation;
 use Core\Bases\Structures\BaseStructure;
 use Core\Localization\Format\DateTime;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 
 /**
  * A rule for validation
@@ -39,10 +39,10 @@ class ValidationRule extends BaseStructure
 	protected $column;
 
 	/**
-	 * Validation
-	 * @var Validation
+	 * Validator
+	 * @var Validator
 	 */
-	protected $validation;
+	protected $validator;
 
 	/**
 	 * The value to fallback on
@@ -53,13 +53,14 @@ class ValidationRule extends BaseStructure
 	/**
 	 * Consrtuctor
 	 * @param string $column
+	 * @param Validator $validator
 	 */
-	public function __construct($column, $validation)
+	public function __construct($column, $validator)
 	{
 		parent::__construct();
 
 		$this->column = $column;
-		$this->validation = $validation;
+		$this->validator = $validator;
 	}
 
 	/**
@@ -79,7 +80,7 @@ class ValidationRule extends BaseStructure
 	 */
 	public function get()
 	{
-		$value = $this->validation->input[$this->column] ?? $this->fallback;
+		$value = $this->validator->input[$this->column] ?? $this->fallback;
 
 		// parse
 		if (!is_null($value))
