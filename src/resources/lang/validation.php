@@ -54,6 +54,7 @@ return array
 	'validation.numeric'				=> 'The {attribute} must be a number.',
 	'validation.regex'					=> 'The {attribute} format is invalid.',
 	'validation.required'				=> 'The {attribute} field is required.',
+    'validation.required_unless'		=> 'The {attribute} field is required unless {other} is in {values}.',
 	'validation.required_if'			=> 'The {attribute} field is required when {other} is {value}.',
 	'validation.required_with'			=> 'The {attribute} field is required when {value}s is present.',
 	'validation.required_with_all'		=> 'The {attribute} field is required when {value}s is present.',

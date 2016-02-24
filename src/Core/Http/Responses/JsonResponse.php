@@ -27,12 +27,20 @@ use Core\Http\Response;
 class JsonResponse extends BaseResponse
 {
 	/**
+	 * Option to hide the base data
+	 * @var boolean
+	 */
+	protected $hideBaseData = true;
+
+	/**
 	 * Get the response
 	 * @param array $data
 	 * @return \Illuminate\Http\Response
 	 */
 	public function getResponse($data = array())
 	{
+		$data = $this->processData($data);
+
 		return response()->json($data);
 	}
 

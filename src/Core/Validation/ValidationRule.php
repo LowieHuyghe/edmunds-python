@@ -345,6 +345,15 @@ class ValidationRule extends BaseStructure
 		return $this;
 	}
 	/**
+	 * The field under validation must a valid JSON string.
+	 * @return ValidationRule
+	 */
+	public function json()
+	{
+		$this->add('json');
+		return $this;
+	}
+	/**
 	 * The field under validation must be less than or equal to a maximum value. Strings, numerics, and files are evaluated in the same fashion as the size rule.
 	 * @param mixed $value
 	 * @return ValidationRule
@@ -427,6 +436,17 @@ class ValidationRule extends BaseStructure
 		return $this;
 	}
 	/**
+	 * The field under validation must be present unless the anotherfield field is equal to any value.
+	 * @param string $field
+	 * @param array $values
+	 * @return ValidationRule
+	 */
+	public function requiredUnless($field, $values)
+	{
+		$this->add('required_unless', "$field," . implode(',', $values));
+		return $this;
+	}
+	/**
 	 * The field under validation must be present only if any of the other specified fields are present.
 	 * @param array $list
 	 * @return ValidationRule
@@ -484,6 +504,16 @@ class ValidationRule extends BaseStructure
 	public function size($value)
 	{
 		$this->add('size', $value);
+		return $this;
+	}
+	/**
+	 * The field under validation must be a string.
+	 * @param int $value
+	 * @return ValidationRule
+	 */
+	public function string($value)
+	{
+		$this->add('string', $value);
 		return $this;
 	}
 	/**
