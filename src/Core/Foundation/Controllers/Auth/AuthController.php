@@ -181,8 +181,8 @@ class AuthController extends BaseController
 	 */
 	protected function addValidationRules($register)
 	{
-		$this->validator->value('email')->max(255)->email()->setRequired();
-		$this->validator->value('password')->max(60)->setRequired();
+		$this->validator->value('email')->max(255)->email()->required();
+		$this->validator->value('password')->max(60)->required();
 		$this->validator->value('remember')->boolean()->fallback(false);
 
 		if (!$register)

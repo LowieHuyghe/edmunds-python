@@ -23,7 +23,7 @@ use Core\Http\Responses\JsonResponse;
 use Core\Http\Responses\RedirectResponse;
 use Core\Http\Responses\ViewResponse;
 use Core\Http\Responses\XmlResponse;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpFoundation\Cookie;

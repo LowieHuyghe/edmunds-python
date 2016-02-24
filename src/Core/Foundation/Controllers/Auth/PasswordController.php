@@ -95,7 +95,7 @@ class AuthController extends BaseController
 	 */
 	public function postEmail()
 	{
-		$this->validator->value('email')->max(255)->email()->setRequired();
+		$this->validator->value('email')->max(255)->email()->required();
 
 		// has errors
 		if ($this->validator->hasErrors())
@@ -133,10 +133,10 @@ class AuthController extends BaseController
 	 */
 	public function postReset()
 	{
-		$this->validator->value('token')->max(255)->setRequired();
-		$this->validator->value('email')->max(255)->email()->setRequired();
-		$this->validator->value('password')->min(6)->max(60)->setRequired();
-		$this->validator->value('password_confirmation')->min(6)->max(60)->setRequired();
+		$this->validator->value('token')->max(255)->required();
+		$this->validator->value('email')->max(255)->email()->required();
+		$this->validator->value('password')->min(6)->max(60)->required();
+		$this->validator->value('password_confirmation')->min(6)->max(60)->required();
 
 		// there are errors
 		if ($this->validator->hasErrors())
