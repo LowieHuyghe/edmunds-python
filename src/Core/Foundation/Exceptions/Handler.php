@@ -89,7 +89,7 @@ class Handler extends ExceptionHandler
 				$response = Response::getInstance();
 
 				$response->header($e->getHeaders());
-				$response->render(null, $viewName);
+				$response->view(null, $viewName);
 				$response->assign('message', $e->getMessage());
 				$response->statusCode = $e->getStatusCode();
 

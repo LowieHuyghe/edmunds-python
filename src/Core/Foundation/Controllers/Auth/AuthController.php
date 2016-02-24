@@ -94,7 +94,7 @@ class AuthController extends BaseController
 	{
 		$this->response
 			->assign('attemptsTooMany', $this->auth->attemptsTooMany)
-			->render(null, $this->viewLogin);
+			->view(null, $this->viewLogin);
 	}
 
 	/**
@@ -109,8 +109,8 @@ class AuthController extends BaseController
 		if ($this->validator->hasErrors())
 		{
 			$this->response
-				->assignErrors($this->validator->getErrors())
-				->assignInput('password')
+				->errors($this->validator->getErrors())
+				->input('password')
 				->redirect(null);
 		}
 
@@ -145,7 +145,7 @@ class AuthController extends BaseController
 	 */
 	public function getRegister()
 	{
-		$this->response->render(null, $this->viewRegister);
+		$this->response->view(null, $this->viewRegister);
 	}
 
 	/**
@@ -160,8 +160,8 @@ class AuthController extends BaseController
 		if ($this->validator->hasErrors())
 		{
 			$this->response
-				->assignErrors($this->validator->getErrors())
-				->assignInput('password')
+				->errors($this->validator->getErrors())
+				->input('password')
 				->redirect(null);
 		}
 

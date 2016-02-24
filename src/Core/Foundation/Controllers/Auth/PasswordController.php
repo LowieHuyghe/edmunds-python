@@ -75,7 +75,7 @@ class AuthController extends BaseController
 		// no token was present
 		if (is_null($token))
 		{
-			$this->response->render(null, 'auth.passwords.request');
+			$this->response->view(null, 'auth.passwords.request');
 		}
 
 		// token is present
@@ -86,7 +86,7 @@ class AuthController extends BaseController
 
 			$this->response
 				->assign('email', $email)
-				->render(null, 'auth.passwords.email');
+				->view(null, 'auth.passwords.email');
 		}
 	}
 
@@ -169,8 +169,8 @@ class AuthController extends BaseController
 			else
 			{
 				$this->response
-					->assignInputOnly('email')
-					->assignErrors(['email' => trans($response)])
+					->inputOnly('email')
+					->errors(['email' => trans($response)])
 					->redirect(null);
 			}
 		}

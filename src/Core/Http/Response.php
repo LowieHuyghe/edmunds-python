@@ -140,7 +140,7 @@ class Response extends BaseStructure
 	 * @param  array  $exceptKeys
 	 * @return Response
 	 */
-	public function assignInput($exceptKeys = array())
+	public function input($exceptKeys = array())
 	{
 		$this->assign(Input::getInstance()->except(is_array($exceptKeys) ? $exceptKeys : func_get_args()));
 
@@ -152,7 +152,7 @@ class Response extends BaseStructure
 	 * @param  array  $onlyKeys
 	 * @return Response
 	 */
-	public function assignInputOnly($onlyKeys = array())
+	public function inputOnly($onlyKeys = array())
 	{
 		$this->assign(Input::getInstance()->only(is_array($onlyKeys) ? $onlyKeys : func_get_args()));
 
@@ -164,7 +164,7 @@ class Response extends BaseStructure
 	 * @param array|MessageProvider $errors
 	 * @return Response
 	 */
-	public function assignErrors($errors)
+	public function errors($errors)
 	{
         if ($errors instanceof MessageProvider)
         {
@@ -206,12 +206,12 @@ class Response extends BaseStructure
 	}
 
 	/**
-	 * Return view
+	 * Assign a view
 	 * @param string $view
 	 * @param string $key
 	 * @return Response
 	 */
-	public function render($key = null, $view = null)
+	public function view($key = null, $view = null)
 	{
 		if (!isset($this->viewResponse))
 		{
