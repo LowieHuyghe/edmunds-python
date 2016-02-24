@@ -227,6 +227,22 @@ class Validation extends \Illuminate\Validation\Validator
 	}
 
 	/**
+	 * Replace all place-holders for the required_unless rule.
+	 *
+	 * @param  string  $message
+	 * @param  string  $attribute
+	 * @param  string  $rule
+	 * @param  array   $parameters
+	 * @return string
+	 */
+	protected function replaceRequiredUnless($message, $attribute, $rule, $parameters)
+	{
+		$other = $this->getAttribute(array_shift($parameters));
+
+		return array('other' => $other, 'values' => implode(', ', $parameters));
+	}
+
+	/**
 	 * Replace all place-holders for the required_with rule.
 	 *
 	 * @param  string  $message

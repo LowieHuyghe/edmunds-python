@@ -26,11 +26,47 @@ use Core\Bases\Structures\BaseStructure;
 class BaseResponse extends BaseStructure
 {
 	/**
+	 * Option to hide the base data
+	 * @var boolean
+	 */
+	protected $hideBaseData = false;
+
+	/**
 	 * Get the response
+	 * @param array $data
 	 * @return \Illuminate\Http\Response
 	 */
-	public function getResponse()
+	public function getResponse($data = array())
 	{
+		$data = $this->processData($data);
+
 		return response()->make();
+	}
+
+	/**
+	 * Process the data
+	 * @param  array $data
+	 * @return array
+	 */
+	protected function processData($data)
+	{
+		// hide base data
+		if ($this->hideBaseData)
+		{
+			$processData = array();
+
+			foreach ($data as $key => $value)
+			{
+				if ($key[0] != '_')
+				{
+					$processData[$key] = $data;
+				}
+			}
+
+			return $processData;
+		}
+
+		// return full data
+		return $data;
 	}
 }

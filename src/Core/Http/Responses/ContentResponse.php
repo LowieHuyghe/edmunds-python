@@ -45,6 +45,8 @@ class ContentResponse extends BaseResponse
 	 */
 	public function getResponse($data = array())
 	{
+		$data = $this->processData($data);
+
 		return response($this->content);
 	}
 
