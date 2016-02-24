@@ -14,11 +14,10 @@
 namespace Core\Bases\Models;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 use Core\Localization\Format\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Validator;
 
 /**
  * A base for the models to extend from
@@ -34,7 +33,7 @@ class BaseModel extends Model
 {
 	/**
 	 * The validator
-	 * @var Validation
+	 * @var Validator
 	 */
 	protected $validatorInstance;
 
@@ -65,13 +64,13 @@ class BaseModel extends Model
 
 	/**
 	 * Fetch the validator
-	 * @return Validation
+	 * @return Validator
 	 */
 	protected function getValidatorAttribute()
 	{
 		if (!isset($this->validatorInstance))
 		{
-			$validator = new Validation();
+			$validator = new Validator();
 
 			$this->addValidationRules($validator);
 			$this->addRequiredValidationRules($validator);
@@ -95,7 +94,7 @@ class BaseModel extends Model
 
 	/**
 	 * Return the validator with the errors
-	 * @return Validator
+	 * @return \Illuminate\Contracts\Validation\Validator
 	 */
 	public function getErrors()
 	{

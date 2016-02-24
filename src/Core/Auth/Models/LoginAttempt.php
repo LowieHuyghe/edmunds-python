@@ -14,7 +14,7 @@
 namespace Core\Auth\Models;
 use Core\Bases\Models\BaseModel;
 use Core\Auth\Models\User;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 
 /**
  * The model for files

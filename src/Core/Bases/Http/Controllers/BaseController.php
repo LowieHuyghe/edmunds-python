@@ -17,7 +17,7 @@ use Core\Http\Client\Input;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Http\Client\Visitor;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 use Laravel\Lumen\Routing\Controller;
 
 /**
@@ -56,7 +56,7 @@ class BaseController extends Controller
 
 	/**
 	 * The validator
-	 * @var Validation
+	 * @var Validator
 	 */
 	protected $validator;
 
@@ -75,7 +75,7 @@ class BaseController extends Controller
 		$this->response = Response::getInstance();
 		$this->visitor = Visitor::getInstance();
 		$this->input = Input::getInstance();
-		$this->validator = new Validation($this->input->all());
+		$this->validator = new Validator($this->input->all());
 
 		if (isset($this->outputType))
 		{

@@ -16,7 +16,7 @@ namespace Core\Auth\Models;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Database\Relations\BelongsToManyEnums;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 use Core\Localization\Format\DateTime;
 use Core\Auth\Models\Gender;
 use Core\Localization\Models\Localization;

@@ -15,7 +15,7 @@ namespace Core\Filesystem\Models;
 use Core\Bases\Models\BaseModel;
 use Core\Database\Relations\BelongsToEnum;
 use Core\Http\Client\Input;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 use Core\Localization\Format\DateTime;
 use Core\Filesystem\Models\FileType;
 use Faker\Generator;

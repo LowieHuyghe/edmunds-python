@@ -16,7 +16,7 @@ namespace Core\Localization\Models;
 use Core\Localization\Format\DateTime;
 use Core\Bases\Models\BaseModel;
 use Faker\Generator;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 
 /**
  * The model for translations

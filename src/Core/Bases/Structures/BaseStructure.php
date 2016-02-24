@@ -19,13 +19,12 @@ use Core\Localization\Format\DateTime;
 use Faker\Generator;
 use Illuminate\Database\Eloquent\MassAssignmentException;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Validator;
 use JsonSerializable;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Core\Validation\Validation;
+use Core\Validation\Validator;
 
 /**
  * A base for the structures to extend from
@@ -35,7 +34,7 @@ use Core\Validation\Validation;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  *
- * @property Validation $validator The validator
+ * @property Validator $validator The validator
  */
 abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {
@@ -196,7 +195,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * The validator
-	 * @var Validation
+	 * @var Validator
 	 */
 	protected $validatorInstance;
 
@@ -214,13 +213,13 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * Fetch the validator
-	 * @return Validation
+	 * @return Validator
 	 */
 	protected function getValidatorAttribute()
 	{
 		if (!isset($this->validatorInstance))
 		{
-			$validator = new Validation();
+			$validator = new Validator();
 
 			$this->addValidationRules($validator);
 
@@ -1614,7 +1613,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 	/**
 	 * Return the validator with the errors
-	 * @return Validator
+	 * @return \Illuminate\Contracts\Validation\Validator
 	 */
 	public function getErrors()
 	{
