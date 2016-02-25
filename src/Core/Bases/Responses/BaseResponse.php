@@ -59,7 +59,7 @@ class BaseResponse extends BaseStructure
 			{
 				if ($key[0] != '_')
 				{
-					$processData[$key] = $data;
+					$processData[$key] = $value;
 				}
 			}
 

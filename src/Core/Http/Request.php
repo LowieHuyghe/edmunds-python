@@ -279,39 +279,6 @@ class Request extends BaseStructure
 	}
 
 	/**
-	 * Get a subset of the items from the input data.
-	 *
-	 * @param  array  $keys
-	 * @return array
-	 */
-	public function inputOnly($keys)
-	{
-		return $this->getRequest()->only($keys);
-	}
-
-	/**
-	 * Get all of the input except for a specified array of items.
-	 *
-	 * @param  array  $keys
-	 * @return array
-	 */
-	public function inputExcept($keys)
-	{
-		return $this->getRequest()->except($keys);
-	}
-
-	/**
-	 * Determine if the request contains a non-empty value for an input item.
-	 *
-	 * @param  string|string[]  $key
-	 * @return bool
-	 */
-	public function hasInput($key)
-	{
-		return $this->getRequest()->has($key);
-	}
-
-	/**
 	 * Retrieve a file from the request.
 	 *
 	 * @param  string  $key
@@ -321,17 +288,6 @@ class Request extends BaseStructure
 	public function file($key = null, $default = null)
 	{
 		return $this->getRequest()->file($key, $default);
-	}
-
-	/**
-	 * Determine if the uploaded data contains a file.
-	 *
-	 * @param  string  $key
-	 * @return bool
-	 */
-	public function hasFile($key)
-	{
-		return $this->getRequest()->hasFile($key);
 	}
 
 }
