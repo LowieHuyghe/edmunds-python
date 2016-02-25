@@ -142,25 +142,25 @@ class Location extends BaseModel
 
 		$this->required = array_merge($this->required, array('user_id', 'ip'));
 
-		$validator->value('user_id')->integer();
+		$validator->rule('user_id')->integer();
 
-		$validator->value('ip')->ip()->max(255);
+		$validator->rule('ip')->ip()->max(255);
 
-		$validator->value('continent_code')->max(10);
-		$validator->value('continent_name')->max(255);
+		$validator->rule('continent_code')->max(10);
+		$validator->rule('continent_name')->max(255);
 
-		$validator->value('country_code')->max(10);
-		$validator->value('country_name')->max(255);
+		$validator->rule('country_code')->max(10);
+		$validator->rule('country_name')->max(255);
 
-		$validator->value('region_code')->max(10);
-		$validator->value('region_name')->max(255);
+		$validator->rule('region_code')->max(10);
+		$validator->rule('region_name')->max(255);
 
-		$validator->value('city_name')->max(255);
-		$validator->value('postal_code')->max(32);
+		$validator->rule('city_name')->max(255);
+		$validator->rule('postal_code')->max(32);
 
-		$validator->value('latitude')->numeric();
-		$validator->value('longitude')->numeric();
-		$validator->value('timezone')->max(255);
+		$validator->rule('latitude')->numeric();
+		$validator->rule('longitude')->numeric();
+		$validator->rule('timezone')->max(255);
 	}
 
 	/**
