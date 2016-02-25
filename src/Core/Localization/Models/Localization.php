@@ -321,10 +321,10 @@ class Localization extends BaseModel
 
 		$this->required = array_merge($this->required, array('user_id'));
 
-		$validator->value('user_id')->integer();
-		$validator->value('locale')->max(32);
-		$validator->value('currency')->max(10);
-		$validator->value('timezone')->max(255);
+		$validator->rule('user_id')->integer();
+		$validator->rule('locale')->max(32);
+		$validator->rule('currency')->max(10);
+		$validator->rule('timezone')->max(255);
 	}
 
 	/**

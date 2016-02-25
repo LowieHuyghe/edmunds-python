@@ -144,8 +144,8 @@ class BaseEnumModel extends BaseModel
 
 		$this->required = array_merge($this->required, array('name'));
 
-		$validator->value('id')->integer();
-		$validator->value('name')->max(32);
+		$validator->rule('id')->integer();
+		$validator->rule('name')->max(32);
 	}
 
 	/**

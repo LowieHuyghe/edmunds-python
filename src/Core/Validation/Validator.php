@@ -167,11 +167,11 @@ class Validator extends BaseStructure
 	}
 
 	/**
-	 * Get the value for a certain name
+	 * Get the rule for a certain name
 	 * @param string|null $name
 	 * @return ValidationRule|ValidationRule[]
 	 */
-	public function value($name)
+	public function rule($name)
 	{
 		if (is_null($name))
 		{

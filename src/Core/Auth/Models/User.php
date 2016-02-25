@@ -154,14 +154,14 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
 		$this->required = array_merge($this->required, array('email'));
 
-		$validator->value('id')->integer();
-		$validator->value('email')->max(255)->email();
-		$validator->value('gender_id')->integer();
-		$validator->value('password')->max(60);
-		$validator->value('api_token')->max(100);
-		$validator->value('remember_token')->max(100);
+		$validator->rule('id')->integer();
+		$validator->rule('email')->max(255)->email();
+		$validator->rule('gender_id')->integer();
+		$validator->rule('password')->max(60);
+		$validator->rule('api_token')->max(100);
+		$validator->rule('remember_token')->max(100);
 
-		$validator->value('deleted_at')->date();
+		$validator->rule('deleted_at')->date();
 	}
 
 	/**

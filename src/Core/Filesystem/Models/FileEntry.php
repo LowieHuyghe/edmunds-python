@@ -348,14 +348,14 @@ class FileEntry extends BaseModel
 
 		$this->required = array_merge($this->required, array('name', 'md5', 'sha1', 'original_name', 'mime', 'type', 'size'));
 
-		$validator->value('id')->integer();
-		$validator->value('name')->max(20)->unique('file_entries', $this->getKey());
-		$validator->value('md5')->max(32);
-		$validator->value('sha1')->max(40);
-		$validator->value('original_name')->max(255);
-		$validator->value('mime')->max(20);
-		//$validator->value('type');
-		$validator->value('size')->integer();
+		$validator->rule('id')->integer();
+		$validator->rule('name')->max(20)->unique('file_entries', $this->getKey());
+		$validator->rule('md5')->max(32);
+		$validator->rule('sha1')->max(40);
+		$validator->rule('original_name')->max(255);
+		$validator->rule('mime')->max(20);
+		//$validator->rule('type');
+		$validator->rule('size')->integer();
 	}
 
 	/**

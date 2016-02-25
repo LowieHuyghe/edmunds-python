@@ -96,7 +96,7 @@ class Input extends BaseStructure
 	 */
 	public function rule($name)
 	{
-		return $this->getValidator()->value($name);
+		return $this->getValidator()->rule($name);
 	}
 
 	/**

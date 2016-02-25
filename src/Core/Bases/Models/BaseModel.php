@@ -263,9 +263,9 @@ class BaseModel extends Model
 	 */
 	protected function addValidationRules(&$validator)
 	{
-		$validator->value('created_at')->date();
-		$validator->value('updated_at')->date();
-		$validator->value('deleted_at')->date();
+		$validator->rule('created_at')->date();
+		$validator->rule('updated_at')->date();
+		$validator->rule('deleted_at')->date();
 	}
 
 	/**
@@ -275,7 +275,7 @@ class BaseModel extends Model
 	{
 		foreach ($this->required as $field)
 		{
-			$validator->value($field)->required();
+			$validator->rule($field)->required();
 		}
 	}
 
