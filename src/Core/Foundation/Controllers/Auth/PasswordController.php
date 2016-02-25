@@ -82,7 +82,8 @@ class AuthController extends BaseController
 		else
 		{
 			$this->addValidationRules();
-			$email = $this->validator->value('email')->max(255)->email()->get();
+			$this->validator->value('email')->max(255)->email();
+			$email = $this->validator->get('email');
 
 			$this->response
 				->assign('email', $email)
