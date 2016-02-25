@@ -30,10 +30,10 @@ use Illuminate\Validation\DatabasePresenceVerifier;
 class Validator extends BaseStructure
 {
 	/**
-	 * Values to validate
+	 * Rules to validate
 	 * @var ValidationRule[]
 	 */
-	protected $values = array();
+	protected $rules = array();
 
 	/**
 	 * The constructor
@@ -59,7 +59,7 @@ class Validator extends BaseStructure
 		if (is_null($names))
 		{
 			//Check all rules
-			foreach ($this->values as $name => $rule)
+			foreach ($this->rules as $name => $rule)
 			{
 				$values = $rule->rules;
 				$vs = array();
@@ -95,12 +95,12 @@ class Validator extends BaseStructure
 			//Check specific rules
 			foreach ($names as $name)
 			{
-				if (!isset($this->values[$name]))
+				if (!isset($this->rules[$name]))
 				{
 					continue;
 				}
 
-				$values = $this->values[$name]->rules;
+				$values = $this->rules[$name]->rules;
 				$vs = array();
 				$sometimesSet = false;
 				foreach ($values as $key => $value)
@@ -168,16 +168,20 @@ class Validator extends BaseStructure
 
 	/**
 	 * Get the value for a certain name
-	 * @param string $name
-	 * @return ValidationRule
+	 * @param string|null $name
+	 * @return ValidationRule|ValidationRule[]
 	 */
 	public function value($name)
 	{
-		if (!isset($this->values[$name]))
+		if (is_null($name))
 		{
-			$this->values[$name] = new ValidationRule($name, $this);
+			return $this->rules;
 		}
-		return $this->values[$name];
+		if (!isset($this->rules[$name]))
+		{
+			$this->rules[$name] = new ValidationRule($name, $this);
+		}
+		return $this->rules[$name];
 	}
 
     /**
@@ -193,13 +197,66 @@ class Validator extends BaseStructure
 
     /**
      * Get the value
-     * @param  string $value
+     * @param  string $name
+     * @param  mixed $default
      * @return mixed
      */
-    public function get($value)
+    public function get($name, $default = null)
     {
-		return isset($this->values[$key]) ? $this->values[$key]->get() : ($this->input[$key] ?? null);
+    	if (!isset($this->input[$name]))
+    	{
+    		$value = $default;
+    	}
+    	else
+    	{
+    		$value = $this->input[$name];
+
+    		// parse
+			if (isset($this->rules[$name]))
+			{
+				$rules = $this->rules[$name]->rules;
+
+				if (isset($rules['boolean']))
+				{
+					$value = boolval($value);
+				}
+				elseif (isset($rules['integer']))
+				{
+					$value = intval($value);
+				}
+				elseif (isset($rules['numeric']))
+				{
+					$value = floatval($value);
+				}
+				elseif (isset($rules['date_format']))
+				{
+					if (! $value instanceof DateTime)
+					{
+						$value = DateTime::createFromFormat($rules['date_format'], $value);
+					}
+				}
+				elseif (isset($rules['date']))
+				{
+					if (! $value instanceof DateTime)
+					{
+						$value = DateTime::createFromDate($value);
+					}
+				}
+			}
+    	}
+
+		return $value;
     }
+
+    /**
+     * Check if has value
+     * @param  string  $key
+     * @return boolean
+     */
+	public function has($key)
+	{
+		return isset($this->input[$key]);
+	}
 
     /**
      * Fetch all values
@@ -209,9 +266,9 @@ class Validator extends BaseStructure
 	{
 		$all = array();
 
-		foreach (array_merge(array_keys($this->input) , array_keys($this->values)) as $key)
+		foreach (array_merge(array_keys($this->input) , array_keys($this->rules)) as $key)
 		{
-			$all[$key] = isset($this->values[$key]) ? $this->values[$key]->get() : $this->input[$key];
+			$all[$key] = $this->get($key);
 		}
 
 		return $all;

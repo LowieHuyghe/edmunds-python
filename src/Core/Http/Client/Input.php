@@ -15,6 +15,8 @@ namespace Core\Http\Client;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Http\Request;
+use Core\Validation\ValidationRule;
+use Core\Validation\Validator;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -54,6 +56,12 @@ class Input extends BaseStructure
 	private $request;
 
 	/**
+	 * The validator
+	 * @var Validator
+	 */
+	protected $validatorInstance;
+
+	/**
 	 * Constructor
 	 * @param Request $request
 	 */
@@ -65,15 +73,72 @@ class Input extends BaseStructure
 	}
 
 	/**
+	 * Fetch the validator
+	 * @return Validator
+	 */
+	protected function getValidator()
+	{
+		if (!isset($this->validatorInstance))
+		{
+			$this->validatorInstance = new Validator();
+		}
+
+		// set the input
+		$input = $this->request->input();
+
+		// loop input for files
+		foreach ($this->validatorInstance->value(null) as $name => $rule)
+		{
+			// if file
+			if (array_key_exists('image', $rule->rules) || array_key_exists('mimes', $rule->rules))
+			{
+				$input[$name] = $this->request->file($name);
+			}
+		}
+
+		$this->validatorInstance->input = $input;
+
+		return $this->validatorInstance;
+	}
+
+	/**
+	 * Fetch the rule for a certain name
+	 * @param  string $name
+	 * @return ValidationRule
+	 */
+	public function rule($name)
+	{
+		return $this->getValidator()->value($name);
+	}
+
+	/**
+	 * Check if input has errors
+	 * @return bool
+	 */
+	public function hasErrors()
+	{
+		return $this->getValidator()->hasErrors();
+	}
+
+	/**
+	 * Return the validator with the errors
+	 * @return \Illuminate\Contracts\Validation\Validator
+	 */
+	public function getErrors()
+	{
+		return $this->getValidator()->getErrors();
+	}
+
+	/**
 	 * Retrieve an input item from the request.
 	 *
 	 * @param  string  $key
 	 * @param  mixed   $default
-	 * @return string|string[]
+	 * @return mixed|mixed[]
 	 */
 	public function get($key, $default = null)
 	{
-		return $this->request->input($key, $default);
+		return $this->getValidator()->get($key, $default);
 	}
 
 	/**
@@ -84,16 +149,16 @@ class Input extends BaseStructure
 	 */
 	public function has($key)
 	{
-		return $this->request->hasInput($key);
+		return $this->getValidator()->has($key);
 	}
 
 	/**
 	 * Fetch all the data
-	 * @return string[]
+	 * @return mixed[]
 	 */
 	public function all()
 	{
-		return $this->request->input();
+		return $this->getValidator()->all();
 	}
 
 	/**
@@ -103,7 +168,7 @@ class Input extends BaseStructure
 	 */
 	public function only($keys)
 	{
-		return $this->request->inputOnly($keys);
+		return $this->getValidator()->only($keys);
 	}
 
 	/**
@@ -113,51 +178,6 @@ class Input extends BaseStructure
 	 */
 	public function except($keys)
 	{
-		return $this->request->inputExcept($keys);
-	}
-
-	/**
-	 * Retrieve file
-	 * @param  string  $key
-	 * @param  mixed   $default
-	 * @return UploadedFile|UploadedFile[]
-	 */
-	public function file($key, $default = null)
-	{
-		return $this->request->file($key, $default);
-	}
-
-	/**
-	 * Check if file exists
-	 * @param string $key
-	 * @return bool
-	 */
-	public function hasFile($key)
-	{
-		return $this->request->hasFile($key);
-	}
-
-	/**
-	 * Check if file is valid
-	 * @param string $key
-	 * @return bool
-	 */
-	public function fileIsValid($key)
-	{
-		return $this->file($key)->isValid();
-	}
-
-	/**
-	 * Check if file exists and is valid
-	 * @param string $key
-	 * @return bool
-	 */
-	public function fileExistsAndIsValid($key)
-	{
-		if ($this->hasFile($key))
-		{
-			return $this->fileIsValid($key);
-		}
-		return false;
+		return $this->getValidator()->except($keys);
 	}
 }

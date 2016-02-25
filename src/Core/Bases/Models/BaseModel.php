@@ -78,6 +78,7 @@ class BaseModel extends Model
 			$this->validatorInstance = $validator;
 		}
 
+		$this->validatorInstance->input = $this->getAttributes();
 		return $this->validatorInstance;
 	}
 
@@ -87,8 +88,6 @@ class BaseModel extends Model
 	 */
 	public function hasErrors()
 	{
-		$this->validator->input = $this->getAttributes();
-
 		return $this->validator->hasErrors();
 	}
 
@@ -98,8 +97,6 @@ class BaseModel extends Model
 	 */
 	public function getErrors()
 	{
-		$this->validator->input = $this->getAttributes();
-
 		return $this->validator->getErrors();
 	}
 
