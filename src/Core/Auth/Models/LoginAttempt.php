@@ -82,12 +82,12 @@ class LoginAttempt extends BaseModel
 
 		$this->required = array_merge($this->required, array('ip', 'type'));
 
-		$validator->value('id')->integer();
-		$validator->value('ip')->ip()->max(255);
-		$validator->value('type')->max(255);
+		$validator->rule('id')->integer();
+		$validator->rule('ip')->ip()->max(255);
+		$validator->rule('type')->max(255);
 
-		$validator->value('email')->email()->max(255);
-		$validator->value('pass')->max(255);
+		$validator->rule('email')->email()->max(255);
+		$validator->rule('pass')->max(255);
 	}
 
 }
