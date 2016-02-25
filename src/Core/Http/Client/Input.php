@@ -80,23 +80,11 @@ class Input extends BaseStructure
 	{
 		if (!isset($this->validatorInstance))
 		{
-			$this->validatorInstance = new Validator();
+			// fetch input
+			$input = $this->request->input() + $this->request->file();
+
+			$this->validatorInstance = new Validator($input);
 		}
-
-		// set the input
-		$input = $this->request->input();
-
-		// loop input for files
-		foreach ($this->validatorInstance->value(null) as $name => $rule)
-		{
-			// if file
-			if (array_key_exists('image', $rule->rules) || array_key_exists('mimes', $rule->rules))
-			{
-				$input[$name] = $this->request->file($name);
-			}
-		}
-
-		$this->validatorInstance->input = $input;
 
 		return $this->validatorInstance;
 	}
