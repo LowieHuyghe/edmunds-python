@@ -226,6 +226,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 			$this->validatorInstance = $validator;
 		}
 
+		$this->validatorInstance->input = $this->getAttributes();
 		return $this->validatorInstance;
 	}
 
@@ -1606,8 +1607,6 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	public function hasErrors()
 	{
-		$this->validator->input = $this->getAttributes();
-
 		return $this->validator->hasErrors();
 	}
 
@@ -1617,8 +1616,6 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	public function getErrors()
 	{
-		$this->validator->input = $this->getAttributes();
-
 		return $this->validator->getErrors();
 	}
 
