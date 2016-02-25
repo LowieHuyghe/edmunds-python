@@ -69,11 +69,11 @@ class FileController extends BaseController
 	 */
 	public function postPicture()
 	{
-		$this->validator->value('file')->required()->mimes(array('gif', 'jpeg', 'jpg', 'png'))->max(self::SIZE_MAX_PICTURE);
+		$this->input->rule('file')->required()->mimes(array('gif', 'jpeg', 'jpg', 'png'))->max(self::SIZE_MAX_PICTURE);
 
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
-			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
+			$this->response->assignErrors($this->input->getErrors());
 			return false;
 		}
 		else
@@ -88,11 +88,11 @@ class FileController extends BaseController
 	 */
 	public function postDocument()
 	{
-		$this->validator->value('file')->required()->mimes(array('pdf', 'doc', 'docx'))->max(self::SIZE_MAX_DOCUMENT);
+		$this->input->rule('file')->required()->mimes(array('pdf', 'doc', 'docx'))->max(self::SIZE_MAX_DOCUMENT);
 
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
-			$this->response->assign('errors', $this->validator->getErrors()->errors()->all());
+			$this->response->assignErrors($this->input->getErrors());
 			return false;
 		}
 		else
@@ -106,7 +106,7 @@ class FileController extends BaseController
 	 */
 	private function upload()
 	{
-		$fileEntry = FileEntry::generateFromInput('file');
+		$fileEntry = FileEntry::generateFromInput($this->input->get('file'));
 
 		if ($fileEntry && $fileEntry->save())
 		{

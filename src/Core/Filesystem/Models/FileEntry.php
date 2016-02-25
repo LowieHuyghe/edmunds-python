@@ -304,13 +304,12 @@ class FileEntry extends BaseModel
 
 	/**
 	 * Generate a fileEntry from an uploaded file
-	 * @param string $name
+	 * @param \Illuminate\Http\UploadedFile $uploadedFile
 	 * @return FileEntry
 	 */
-	public static function generateFromInput($name)
+	public static function generateFromInput($uploadedFile)
 	{
 		//Fetch the uploaded file
-		$uploadedFile = Input::getInstance()->file($name);
 		if (!$uploadedFile)
 		{
 			return null;

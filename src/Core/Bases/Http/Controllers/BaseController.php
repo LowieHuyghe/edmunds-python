@@ -55,12 +55,6 @@ class BaseController extends Controller
 	protected $input;
 
 	/**
-	 * The validator
-	 * @var Validator
-	 */
-	protected $validator;
-
-	/**
 	 * The visitor
 	 * @var Visitor
 	 */
@@ -75,7 +69,6 @@ class BaseController extends Controller
 		$this->response = Response::getInstance();
 		$this->visitor = Visitor::getInstance();
 		$this->input = Input::getInstance();
-		$this->validator = new Validator($this->input->all());
 
 		if (isset($this->outputType))
 		{

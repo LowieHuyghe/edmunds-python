@@ -82,8 +82,8 @@ class AuthController extends BaseController
 		else
 		{
 			$this->addValidationRules();
-			$this->validator->value('email')->max(255)->email();
-			$email = $this->validator->get('email');
+			$this->input->rule('email')->max(255)->email();
+			$email = $this->input->get('email');
 
 			$this->response
 				->assign('email', $email)
@@ -96,10 +96,10 @@ class AuthController extends BaseController
 	 */
 	public function postEmail()
 	{
-		$this->validator->value('email')->max(255)->email()->required();
+		$this->input->rule('email')->max(255)->email()->required();
 
 		// has errors
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
 			abort(403);
 		}
@@ -109,7 +109,7 @@ class AuthController extends BaseController
 		{
 			// send mail
 			// TODO review with new email system
-			$response = app('auth.passwords')->broker(null)->sendResetLink($this->validator->get('email'), function (Message $message)
+			$response = app('auth.passwords')->broker(null)->sendResetLink($this->input->get('email'), function (Message $message)
 			{
 				$message->subject(trans('passwords.email.subject'));
 			});
@@ -134,13 +134,13 @@ class AuthController extends BaseController
 	 */
 	public function postReset()
 	{
-		$this->validator->value('token')->max(255)->required();
-		$this->validator->value('email')->max(255)->email()->required();
-		$this->validator->value('password')->min(6)->max(60)->required();
-		$this->validator->value('password_confirmation')->min(6)->max(60)->required();
+		$this->input->rule('token')->max(255)->required();
+		$this->input->rule('email')->max(255)->email()->required();
+		$this->input->rule('password')->min(6)->max(60)->required();
+		$this->input->rule('password_confirmation')->min(6)->max(60)->required();
 
 		// there are errors
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
 			abort(403);
 		}
@@ -148,7 +148,7 @@ class AuthController extends BaseController
 		// reset password
 		else
 		{
-			$credentials = $this->validator->only('email', 'password', 'password_confirmation', 'token');
+			$credentials = $this->input->only('email', 'password', 'password_confirmation', 'token');
 
 			// reset password
 			$response = app('auth.passwords')->broker(null)->reset($credentials, function ($user, $password)
