@@ -31,7 +31,6 @@ return array
 			'app.key',
 			'app.cipher',
 
-			'app.routing.namespace',
 			'app.routing.routes',
 		),
 	),

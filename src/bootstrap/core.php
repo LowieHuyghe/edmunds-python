@@ -178,10 +178,7 @@ foreach ($providers as $provider)
 |
 */
 
-$app->group(['namespace' => config('app.routing.namespace')], function ($app)
-{
-    require REAL_BASE_PATH . '/' . config('app.routing.routes');
-});
+require REAL_BASE_PATH . '/' . config('app.routing.routes');
 
 
 return $app;
