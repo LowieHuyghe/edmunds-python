@@ -106,10 +106,10 @@ class AuthController extends BaseController
 		$this->addValidationRules(false);
 
 		// check if error
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
 			$this->response
-				->errors($this->validator->getErrors())
+				->errors($this->input->getErrors())
 				->input('password')
 				->redirect(null);
 		}
@@ -118,10 +118,10 @@ class AuthController extends BaseController
 		else
 		{
 			$this->auth->login(
-				$this->validator->get('email'),
-				$this->validator->get('password'),
+				$this->input->get('email'),
+				$this->input->get('password'),
 				false,
-				$this->validator->get('remember'));
+				$this->input->get('remember'));
 
 			// redirect
 			$this->response->redirect($this->postLogin);
@@ -157,10 +157,10 @@ class AuthController extends BaseController
 		$this->addValidationRules(true);
 
 		// check if error
-		if ($this->validator->hasErrors())
+		if ($this->input->hasErrors())
 		{
 			$this->response
-				->errors($this->validator->getErrors())
+				->errors($this->input->getErrors())
 				->input('password')
 				->redirect(null);
 		}
@@ -168,7 +168,7 @@ class AuthController extends BaseController
 		// create and login
 		else
 		{
-			$this->auth->loginUser($this->create(), $this->validator->get('remember'));
+			$this->auth->loginUser($this->create(), $this->input->get('remember'));
 
 			// redirect
 			$this->response->redirect($this->postLogin);
@@ -181,13 +181,13 @@ class AuthController extends BaseController
 	 */
 	protected function addValidationRules($register)
 	{
-		$this->validator->value('email')->max(255)->email()->required();
-		$this->validator->value('password')->max(60)->required();
-		$this->validator->value('remember')->boolean()->fallback(false);
+		$this->input->rule('email')->max(255)->email()->required();
+		$this->input->rule('password')->max(60)->required();
+		$this->input->rule('remember')->boolean()->fallback(false);
 
 		if (!$register)
 		{
-			$this->validator->value('email')->unique('users');
+			$this->input->rule('email')->unique('users');
 		}
 	}
 
@@ -198,8 +198,8 @@ class AuthController extends BaseController
 	protected function create()
 	{
 		return ${config('app.auth.models.user')}::create(array(
-			'email' => $this->validator->get('email'),
-			'password' => bcrypt($this->validator->get('password')),
+			'email' => $this->input->get('email'),
+			'password' => bcrypt($this->input->get('password')),
 		));
 	}
 }
