@@ -26,7 +26,7 @@ use Core\Bases\Http\Controllers\BaseController;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class AuthController extends BaseController
+class PasswordController extends BaseController
 {
 	/**
 	 * Register the default routes for this controller
