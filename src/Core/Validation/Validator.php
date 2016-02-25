@@ -216,26 +216,26 @@ class Validator extends BaseStructure
 			{
 				$rules = $this->rules[$name]->rules;
 
-				if (isset($rules['boolean']))
+				if (array_key_exists('boolean', $rules))
 				{
 					$value = boolval($value);
 				}
-				elseif (isset($rules['integer']))
+				elseif (array_key_exists('integer', $rules))
 				{
 					$value = intval($value);
 				}
-				elseif (isset($rules['numeric']))
+				elseif (array_key_exists('numeric', $rules))
 				{
 					$value = floatval($value);
 				}
-				elseif (isset($rules['date_format']))
+				elseif (array_key_exists('date_format', $rules))
 				{
 					if (! $value instanceof DateTime)
 					{
 						$value = DateTime::createFromFormat($rules['date_format'], $value);
 					}
 				}
-				elseif (isset($rules['date']))
+				elseif (array_key_exists('date', $rules))
 				{
 					if (! $value instanceof DateTime)
 					{
@@ -266,7 +266,7 @@ class Validator extends BaseStructure
 	{
 		$all = array();
 
-		foreach (array_merge(array_keys($this->input) , array_keys($this->rules)) as $key)
+		foreach (array_keys($this->input) as $key)
 		{
 			$all[$key] = $this->get($key);
 		}
