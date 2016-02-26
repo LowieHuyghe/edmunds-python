@@ -12,9 +12,12 @@
  */
 
 namespace Core\Validation;
+
 use Core\Localization\Translator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
+use Illuminate\Validation\DatabasePresenceVerifier;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * The validator for input
@@ -26,6 +29,28 @@ use Illuminate\Support\Str;
  */
 class Validation extends \Illuminate\Validation\Validator
 {
+    /**
+     * Create a new Validator instance.
+     * @param  \Symfony\Component\Translation\TranslatorInterface  $translator
+     * @param  array  $data
+     * @param  array  $rules
+     * @param  array  $messages
+     * @param  array  $customAttributes
+     * @return void
+     */
+	public function __construct(TranslatorInterface $translator, array $data, array $rules, array $messages = [], array $customAttributes = [])
+	{
+		parent::__construct($translator, $data, $rules, $messages, $customAttributes);
+
+		// set presence
+		if (!isset(app()['validation.presence']))
+		{
+			app()->singleton('validation.presence', function () {
+				return new DatabasePresenceVerifier(app()['db']);
+			});
+		}
+		$this->setPresenceVerifier(app()['validation.presence']);
+	}
 
 	/**
 	 * Get the validation message for an attribute and rule.

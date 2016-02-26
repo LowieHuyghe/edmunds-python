@@ -78,7 +78,7 @@ class BaseModel extends Model
 			$this->validatorInstance = $validator;
 		}
 
-		$this->validatorInstance->input = $this->getAttributes();
+		$this->validatorInstance->setInput($this->getAttributes());
 		return $this->validatorInstance;
 	}
 
