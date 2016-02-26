@@ -39,6 +39,12 @@ class ValidationRule extends BaseStructure
 	protected $column;
 
 	/**
+	 * The validator
+	 * @var Validator
+	 */
+	protected $validator;
+
+	/**
 	 * The value to fallback on
 	 * @var mixed
 	 */
@@ -47,12 +53,14 @@ class ValidationRule extends BaseStructure
 	/**
 	 * Consrtuctor
 	 * @param string $column
+	 * @param Validator $validator
 	 */
-	public function __construct($column)
+	public function __construct($column, $validator)
 	{
 		parent::__construct();
 
 		$this->column = $column;
+		$this->validator = $validator;
 	}
 
 	/**
@@ -74,6 +82,8 @@ class ValidationRule extends BaseStructure
 	private function add($key, $value = null)
 	{
 		$this->rules[$key] = $value;
+
+		$this->validator->rebuildRules = true;
 	}
 
 	/**

@@ -226,7 +226,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 			$this->validatorInstance = $validator;
 		}
 
-		$this->validatorInstance->input = $this->getAttributes();
+		$this->validatorInstance->setInput($this->getAttributes());
 		return $this->validatorInstance;
 	}
 
