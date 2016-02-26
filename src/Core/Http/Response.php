@@ -292,9 +292,18 @@ class Response extends BaseStructure
 	}
 
 	/**
+	 * Redirect to previous page
+	 * @param bool $saveIntended
+	 * @param bool $gotoIntended
+	 */
+	public function back($saveIntended = false, $gotoIntended = false)
+	{
+		return $this->redirect(null, $saveIntended, $gotoIntended);
+	}
+
+	/**
 	 * Redirect to the specified url
 	 * @param string|null $uri When null, will go back
-	 * @param bool|array $input
 	 * @param bool $saveIntended
 	 * @param bool $gotoIntended
 	 */
