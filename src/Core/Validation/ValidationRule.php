@@ -23,6 +23,8 @@ use Core\Validation\Validator;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
  * @since		Version 0.1
+ *
+ * @property mixed $fallback The value to fallback on
  */
 class ValidationRule extends BaseStructure
 {
@@ -45,12 +47,6 @@ class ValidationRule extends BaseStructure
 	protected $validator;
 
 	/**
-	 * The value to fallback on
-	 * @var mixed
-	 */
-	protected $fallback = null;
-
-	/**
 	 * Consrtuctor
 	 * @param string $column
 	 * @param Validator $validator
@@ -61,6 +57,15 @@ class ValidationRule extends BaseStructure
 
 		$this->column = $column;
 		$this->validator = $validator;
+	}
+
+	/**
+	 * Get the value for this rule
+	 * @return mixed
+	 */
+	public function get()
+	{
+		return $this->validator->get($this->column);
 	}
 
 	/**

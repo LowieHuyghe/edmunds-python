@@ -67,7 +67,6 @@ class Validator extends BaseStructure
 	 */
 	protected function getValidation()
 	{
-		dd($this->rebuildRules);
 		if ($this->rebuildRules)
 		{
 			$this->rebuildRules($this->validation);
@@ -83,8 +82,6 @@ class Validator extends BaseStructure
 	 */
 	protected function rebuildRules(&$validation)
 	{
-		dd('building');
-
 		$rules = array();
 		$sometimes = array();
 
@@ -189,7 +186,8 @@ class Validator extends BaseStructure
 	{
 		if (!isset($this->input[$name]))
 		{
-			$value = $default;
+			$fallback = isset($this->rules[$name]) ? $this->rules[$name]->fallback : null;
+			$value = $default ?: $fallback;
 		}
 		else
 		{

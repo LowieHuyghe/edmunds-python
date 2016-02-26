@@ -27,5 +27,13 @@ use Core\Bases\Analytics\Tracking\BaseLog;
  */
 class PageviewLog extends BaseLog
 {
-	//
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->title = app()->getName();
+	}
 }
