@@ -26,6 +26,7 @@ use Illuminate\Validation\DatabasePresenceVerifier;
  * @since		Version 0.1
  *
  * @property array $input Input to validate
+ * @property boolean $rebuildRules Boolean to check if rules need to be rebuilded
  */
 class Validator extends BaseStructure
 {
@@ -36,6 +37,18 @@ class Validator extends BaseStructure
 	protected $rules = array();
 
 	/**
+	 * Input to validate
+	 * @var array
+	 */
+	protected $input;
+
+	/**
+	 * The validation
+	 * @var Validation
+	 */
+	protected $validation;
+
+	/**
 	 * The constructor
 	 * @param array $input
 	 */
@@ -44,105 +57,87 @@ class Validator extends BaseStructure
 		parent::__construct();
 
 		$this->input = $input;
+		$this->validation = new Validation(Translator::getInstance(), $input, array());
+		$this->rebuildRules = true;
 	}
 
 	/**
 	 * Get the validator with the current Input-data and rules
-	 * @param string[] $names To check for only one specific argument
 	 * @return Validation
 	 */
-	protected function getValidation($names = null)
+	protected function getValidation()
 	{
+		dd($this->rebuildRules);
+		if ($this->rebuildRules)
+		{
+			$this->rebuildRules($this->validation);
+			$this->rebuildRules = false;
+		}
+
+		return $this->validation;
+	}
+
+	/**
+	 * Rebuild the rules for validation
+	 * @param Validation $validation
+	 */
+	protected function rebuildRules(&$validation)
+	{
+		dd('building');
+
 		$rules = array();
 		$sometimes = array();
 
-		if (is_null($names))
+		//Check all rules
+		foreach ($this->rules as $name => $rule)
 		{
-			//Check all rules
-			foreach ($this->rules as $name => $rule)
+			$values = $rule->rules;
+			$vs = array();
+			$sometimesSet = false;
+			foreach ($values as $key => $value)
 			{
-				$values = $rule->rules;
-				$vs = array();
-				$sometimesSet = false;
-				foreach ($values as $key => $value)
+				if ($key != 'sometimes')
 				{
-					if ($key != 'sometimes')
+					if ($key == 'unique')
 					{
-						if ($key == 'unique')
-						{
-							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input[$value[2]]) && $this->input[$value[2]]) ? (',' . $this->input[$value[2]]) : '') . ($value[3] ? (',' . $value[3]) : '');
-						}
-						$vs[] = $key . (is_null($value) ? '' : ":$value");
+						$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input[$value[2]]) && $this->input[$value[2]]) ? (',' . $this->input[$value[2]]) : '') . ($value[3] ? (',' . $value[3]) : '');
 					}
-					else
-					{
-						$sometimes[$name] = array('function' => $value);
-						$sometimesSet = true;
-					}
-				}
-				if (!$sometimesSet)
-				{
-					$rules[$name] = implode('|', $vs);
+					$vs[] = $key . (is_null($value) ? '' : ":$value");
 				}
 				else
 				{
-					$sometimes[$name]['rules'] = implode('|', $vs);
+					$sometimes[$name] = array('function' => $value);
+					$sometimesSet = true;
 				}
 			}
-		}
-		else
-		{
-			//Check specific rules
-			foreach ($names as $name)
+			if (!$sometimesSet)
 			{
-				if (!isset($this->rules[$name]))
-				{
-					continue;
-				}
-
-				$values = $this->rules[$name]->rules;
-				$vs = array();
-				$sometimesSet = false;
-				foreach ($values as $key => $value)
-				{
-					if ($key != 'sometimes')
-					{
-						if ($key == 'unique')
-						{
-							$value = $value[0] . ',' . $value[1] . (($value[2] && isset($this->input[$value[2]]) && $this->input[$value[2]]) ? (',' . $this->input[$value[2]]) : '') . ($value[3] ? (',' . $value[3]) : '');
-						}
-						$vs[] = $key . (is_null($value) ? '' : ":$value");
-					}
-					else
-					{
-						$sometimes[$name] = array('function' => $value);
-						$sometimesSet = true;
-					}
-				}
-				if (!$sometimesSet)
-				{
-					$rules[$name] = implode('|', $vs);
-				}
-				else
-				{
-					$sometimes[$name]['rules'] = implode('|', $vs);
-				}
+				$rules[$name] = implode('|', $vs);
+			}
+			else
+			{
+				$sometimes[$name]['rules'] = implode('|', $vs);
 			}
 		}
 
-		//Make validator
-		$validator = new Validation(Translator::getInstance(), $this->input, $rules);
-		if (!isset(app()['validation.presence']))
-		{
-			$this->registerPresenceVerifier();
-		}
-		$validator->setPresenceVerifier(app()['validation.presence']);
-
+		// set rules
+		$validation->setRules($rules);
 		foreach ($sometimes as $name => $values)
 		{
-			$validator->sometimes($name, $values['rules'], $values['function']);
+			$validation->sometimes($name, $values['rules'], $values['function']);
 		}
-		return $validator;
+	}
+
+	/**
+	 * Set the input
+	 * @param array $input
+	 */
+	protected function setInput($input)
+	{
+		$this->input = $input;
+		$this->validation->setData($input);
+
+		$this->rebuildRules = true;
 	}
 
 	/**
@@ -184,34 +179,23 @@ class Validator extends BaseStructure
 		return $this->rules[$name];
 	}
 
-    /**
-     * Register the database presence verifier.
-     * @return void
-     */
-    protected function registerPresenceVerifier()
-    {
-        app()->singleton('validation.presence', function () {
-            return new DatabasePresenceVerifier(app()['db']);
-        });
-    }
+	/**
+	 * Get the value
+	 * @param  string $name
+	 * @param  mixed $default
+	 * @return mixed
+	 */
+	public function get($name, $default = null)
+	{
+		if (!isset($this->input[$name]))
+		{
+			$value = $default;
+		}
+		else
+		{
+			$value = $this->input[$name];
 
-    /**
-     * Get the value
-     * @param  string $name
-     * @param  mixed $default
-     * @return mixed
-     */
-    public function get($name, $default = null)
-    {
-    	if (!isset($this->input[$name]))
-    	{
-    		$value = $default;
-    	}
-    	else
-    	{
-    		$value = $this->input[$name];
-
-    		// parse
+			// parse
 			if (isset($this->rules[$name]))
 			{
 				$rules = $this->rules[$name]->rules;
@@ -243,25 +227,25 @@ class Validator extends BaseStructure
 					}
 				}
 			}
-    	}
+		}
 
 		return $value;
-    }
+	}
 
-    /**
-     * Check if has value
-     * @param  string  $key
-     * @return boolean
-     */
+	/**
+	 * Check if has value
+	 * @param  string  $key
+	 * @return boolean
+	 */
 	public function has($key)
 	{
 		return isset($this->input[$key]);
 	}
 
-    /**
-     * Fetch all values
-     * @return array
-     */
+	/**
+	 * Fetch all values
+	 * @return array
+	 */
 	public function all()
 	{
 		$all = array();

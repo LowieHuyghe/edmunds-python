@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Translation\FileLoader;
 use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * The helper responsible for translations
@@ -37,7 +38,7 @@ use Symfony\Component\Translation\MessageSelector;
  * @license		http://LicenseUrl
  * @since		Version 0.1
  */
-class Translator extends BaseStructure implements \Symfony\Component\Translation\TranslatorInterface
+class Translator extends BaseStructure implements TranslatorInterface
 {
 	/**
 	 * Instance of the localization-helper
