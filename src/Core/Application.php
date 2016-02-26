@@ -159,10 +159,7 @@ class Application extends \Laravel\Lumen\Application
 	{
 		if (!$this->runningInConsole())
 		{
-			$pageview = new PageviewLog();
-			$pageview->title = $this->getName();
-
-			$pageview->log();
+			(new PageviewLog())->log();
 		}
 	}
 

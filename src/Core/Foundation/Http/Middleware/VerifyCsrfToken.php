@@ -61,6 +61,11 @@ class VerifyCsrfToken
     {
         $this->app = $app;
         $this->encrypter = $encrypter;
+
+        if (!$app->isStateful())
+        {
+            throw new Exception('VerifyCsrfToken is not supported is a stateless app.');
+        }
     }
 
     /**
