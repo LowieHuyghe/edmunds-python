@@ -118,13 +118,13 @@ class PasswordController extends BaseController
 			{
 				$this->response
 					->assign('status', trans($response))
-					->redirect(null);
+					->back();
 			}
 			else
 			{
 				$this->response
 					->withErrors(['email' => trans($response)])
-					->redirect(null);
+					->back();
 			}
 		}
 	}
@@ -172,7 +172,7 @@ class PasswordController extends BaseController
 				$this->response
 					->inputOnly('email')
 					->errors(['email' => trans($response)])
-					->redirect(null);
+					->back();
 			}
 		}
 	}
