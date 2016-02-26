@@ -73,10 +73,10 @@ class LogController extends BaseController
 	 */
 	protected function processErrorLog()
 	{
-		$this->input->rule('message')->required();
-		$this->input->rule('code')->fallback(0);
-		$this->input->rule('file')->fallback('');
-		$this->input->rule('line')->integer()->fallback(0);
+		$message = $this->input->rule('message')->required()->get();
+		$code = $this->input->rule('code')->fallback(0)->get();
+		$file = $this->input->rule('file')->fallback('')->get();
+		$line = $this->input->rule('line')->integer()->fallback(0)->get();
 
 		// input has errors
 		if ($this->input->hasErrors())
@@ -89,7 +89,7 @@ class LogController extends BaseController
 		{
 			$log = new ErrorLog();
 			$log->type = 'Javascript';
-			$log->exception = new ErrorException($this->input->get('message'), $this->input->get('code'), 1, $this->input->get('file'), $this->input->get('line'));
+			$log->exception = new ErrorException($message, $code, 1, $file, $line);
 			$log->log();
 
 			return true;
@@ -102,13 +102,12 @@ class LogController extends BaseController
 	 */
 	protected function processEventLog()
 	{
-		$this->input->rule('category')->required();
-		$this->input->rule('action')->required();
-		$this->input->rule('name')->required();
-		$this->input->rule('value')->required();
+		$log = new EventLog($this->input->only(array(
+			'category', 'action', 'name', 'value'
+		)));
 
 		// input has errors
-		if ($this->input->hasErrors())
+		if ($log->hasErrors())
 		{
 			return false;
 		}
@@ -116,11 +115,6 @@ class LogController extends BaseController
 		// it's ok, let's process this
 		else
 		{
-			$log = new EventLog();
-			$log->category = $this->input->get('category');
-			$log->action = $this->input->get('action');
-			$log->name = $this->input->get('name');
-			$log->value = $this->input->get('value');
 			$log->log();
 
 			return true;
@@ -133,10 +127,18 @@ class LogController extends BaseController
 	 */
 	protected function processPageviewLog()
 	{
-		$this->input->rule('url')->required();
+		$log = new PageviewLog($this->input->only(array(
+			'url', 'referrer'
+		)));
+
+		$urlParts = parse_url($log->url);
+		$log->host = $urlParts['host'];
+
+		$path = $urlParts['path'];
+		$log->path = (!$path || $path[0] != '/') ? "/$path" : $path;
 
 		// input has errors
-		if ($this->input->hasErrors())
+		if ($log->hasErrors())
 		{
 			return false;
 		}
@@ -144,17 +146,6 @@ class LogController extends BaseController
 		// it's ok, let's process this
 		else
 		{
-
-			$log = new PageviewLog();
-			$log->url = $this->input->get('url');
-			$log->referrer = $this->input->get('referrer');
-
-			$urlParts = parse_url($log->url);
-			$log->host = $urlParts['host'];
-
-			$path = $urlParts['path'];
-			$log->path = (!$path || $path[0] != '/') ? "/$path" : $path;
-
 			$log->log();
 
 			return true;
@@ -167,17 +158,12 @@ class LogController extends BaseController
 	 */
 	protected function processEcommerceLog()
 	{
-		$this->input->rule('id')->required();
-		$this->input->rule('revenue')->numeric()->required();
-		$this->input->rule('subtotal')->numeric();
-		$this->input->rule('shipping')->numeric();
-		$this->input->rule('tax')->numeric();
-		$this->input->rule('discount')->numeric();
-		$this->input->rule('items')->array_();
-		$this->input->rule('previous')->date();
+		$log = new EcommerceLog($this->input->only(array(
+			'id', 'revenue', 'subtotal', 'shipping', 'tax', 'discount', 'previous'
+		)));
 
 		// input has errors
-		if ($this->input->hasErrors())
+		if ($log->hasErrors())
 		{
 			return false;
 		}
@@ -185,41 +171,21 @@ class LogController extends BaseController
 		// it's ok, let's process this
 		else
 		{
-
-			$log = new EcommerceLog();
-			$log->id = $this->input->get('id');
-			$log->revenue = $this->input->get('revenue');
-			$log->subtotal = $this->input->get('subtotal');
-			$log->shipping = $this->input->get('shipping');
-			$log->tax = $this->input->get('tax');
-			$log->discount = $this->input->get('discount');
-			$log->previous = $this->input->get('previous');
-
-			$itemValidator = new Validator();
-			$itemValidator->rule('id')->required();
-			$itemValidator->rule('category')->required();
-			$itemValidator->rule('name')->required();
-			$itemValidator->rule('price')->numeric()->required();
-			$itemValidator->rule('quantity')->required();
-
 			$items = array();
+
 			foreach ($this->input->get('items') as $item)
 			{
-				$itemValidator->setInput($item);
+				$logItem = new EcommerceItem(array_only($item, array(
+					'id', 'category', 'name', 'price', 'quantity'
+				)));
 
-				if (!$itemValidator->hasErrors())
+				if (!$logItem->hasErrors())
 				{
-					$logItem = new EcommerceItem();
-					$logItem->id = $this->input->get('id');
-					$logItem->category = $this->input->get('category');
-					$logItem->name = $this->input->get('name');
-					$logItem->price = $this->input->get('price');
-					$logItem->quantity = $this->input->get('quantity');
-
-					$log->items = $items;
+					$items[] = $logItem;
 				}
 			}
 
+			$log->items = $items;
 			$log->log();
 
 			return true;

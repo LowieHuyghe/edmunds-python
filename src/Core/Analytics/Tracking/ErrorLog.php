@@ -29,5 +29,14 @@ use Exception;
  */
 class ErrorLog extends BaseLog
 {
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules(&$validator)
+	{
+		parent::addValidationRules($validator);
 
+		$this->input->rule('type')->required();
+		$this->input->rule('exception')->required();
+	}
 }
