@@ -17,7 +17,8 @@ use Core\Bases\Http\Controllers\BaseController;
 use Core\Http\Response;
 
 /**
- * Controller that handles password resets
+ * Controller that renders a requested view
+ * (Mainly meant for requesting component-templates for in example Angular)
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
@@ -26,14 +27,6 @@ use Core\Http\Response;
  */
 class ViewController extends BaseController
 {
-	/**
-	 * The templates allowed to be rendered
-	 * @var array
-	 */
-	protected $only = array(
-		//
-	);
-
 	/**
 	 * Register the default routes for this controller
 	 * @param  Application $app
@@ -44,6 +37,14 @@ class ViewController extends BaseController
 	{
 		$app->get($prefix . 'view', '\\' . get_called_class() . '@getView');
 	}
+
+	/**
+	 * The templates allowed to be rendered
+	 * @var array
+	 */
+	protected $only = array(
+		//
+	);
 
 	/**
 	 * Render the view
