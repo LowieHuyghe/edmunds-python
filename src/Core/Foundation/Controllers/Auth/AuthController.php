@@ -111,7 +111,7 @@ class AuthController extends BaseController
 			$this->response
 				->errors($this->input->getErrors())
 				->input('password')
-				->redirect(null);
+				->back();
 		}
 
 		// login user
@@ -162,7 +162,7 @@ class AuthController extends BaseController
 			$this->response
 				->errors($this->input->getErrors())
 				->input('password')
-				->redirect(null);
+				->back();
 		}
 
 		// create and login
