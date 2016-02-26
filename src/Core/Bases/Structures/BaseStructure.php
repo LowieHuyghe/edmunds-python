@@ -93,7 +93,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 *
 	 * @var array
 	 */
-	protected $guarded = ['*'];
+	protected $guarded = [];
 
 	/**
 	 * The attributes that should be mutated to dates.

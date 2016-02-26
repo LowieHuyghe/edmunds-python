@@ -31,5 +31,17 @@ use Core\Bases\Structures\BaseStructure;
  */
 class EcommerceItem extends BaseStructure
 {
-	//
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules(&$validator)
+	{
+		parent::addValidationRules($validator);
+
+		$validator->rule('id')->required();
+		$validator->rule('category')->required();
+		$validator->rule('name')->required();
+		$validator->rule('price')->numeric()->required();
+		$validator->rule('quantity')->integer()->required();
+	}
 }

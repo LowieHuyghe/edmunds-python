@@ -36,4 +36,14 @@ class PageviewLog extends BaseLog
 
 		$this->title = app()->getName();
 	}
+
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules(&$validator)
+	{
+		parent::addValidationRules($validator);
+
+		$this->input->rule('title')->required();
+	}
 }
