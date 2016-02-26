@@ -38,5 +38,20 @@ use Core\Localization\Format\DateTime;
  */
 class EcommerceLog extends BaseLog
 {
-	//
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules(&$validator)
+	{
+		parent::addValidationRules($validator);
+
+		$validator->rule('id')->required();
+		$validator->rule('revenue')->numeric()->required();
+		$validator->rule('subtotal')->numeric();
+		$validator->rule('shipping')->numeric();
+		$validator->rule('tax')->numeric();
+		$validator->rule('discount')->numeric();
+		$validator->rule('items')->array_();
+		$validator->rule('previous')->date();
+	}
 }

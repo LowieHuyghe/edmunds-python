@@ -30,5 +30,16 @@ use Core\Bases\Analytics\Tracking\BaseLog;
  */
 class EventLog extends BaseLog
 {
+	/**
+	 * Add the validation of the model
+	 */
+	protected function addValidationRules(&$validator)
+	{
+		parent::addValidationRules($validator);
 
+		$validator->rule('category')->required();
+		$validator->rule('action')->required();
+		$validator->rule('name')->required();
+		$validator->rule('value')->required();
+	}
 }
