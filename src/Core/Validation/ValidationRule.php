@@ -92,6 +92,15 @@ class ValidationRule extends BaseStructure
 	}
 
 	/**
+	 * The field under validation must be a file.
+	 * @return ValidationRule
+	 */
+	public function file()
+	{
+		$this->add('file');
+		return $this;
+	}
+	/**
 	 * The field under validation must be yes, on, or 1. This is useful for validating "Terms of Service" acceptance.
 	 * @return ValidationRule
 	 */

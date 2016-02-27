@@ -77,7 +77,7 @@ class ViewResponse extends BaseResponse
 	{
 		$data = $this->processData($data);
 
-		return response()->make($this->getViewResponse($data));
+		return $this->getViewResponse($data);
 	}
 
 	/**
