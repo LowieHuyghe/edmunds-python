@@ -32,6 +32,7 @@ use ErrorException;
  */
 class LogController extends BaseController
 {
+	protected $outputType = \Core\Http\Response::TYPE_JSON;
 	/**
 	 * Register the default routes for this controller
 	 * @param  Application $app
@@ -175,6 +176,8 @@ class LogController extends BaseController
 
 			foreach ($this->input->get('items') as $item)
 			{
+				$item = json_decode($item, true);
+
 				$logItem = new EcommerceItem(array_only($item, array(
 					'id', 'category', 'name', 'price', 'quantity'
 				)));

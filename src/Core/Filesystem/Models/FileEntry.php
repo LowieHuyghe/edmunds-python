@@ -285,7 +285,7 @@ class FileEntry extends BaseModel
 	 */
 	private static function getDisk()
 	{
-		return app('storage')->disk(config('filesystems.default'));
+		return app('filesystem')->disk(config('filesystems.default'));
 	}
 
 	/**

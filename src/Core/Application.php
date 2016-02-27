@@ -31,6 +31,7 @@ use Throwable;
 use Core\Foundation\Concerns\RoutesRequests;
 use Core\Foundation\Concerns\RegistersExceptionHandlers;
 use Core\Foundation\Concerns\StatefullBindingRegisterers;
+use Core\Foundation\Concerns\FilesystemBindingRegisterers;
 
 /**
  * The structure for application
@@ -45,6 +46,7 @@ class Application extends \Laravel\Lumen\Application
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
 	use StatefullBindingRegisterers;
+	use FilesystemBindingRegisterers;
 
 	/**
 	 * Get the name of the app

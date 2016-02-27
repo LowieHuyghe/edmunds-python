@@ -37,6 +37,7 @@ class FileType extends BaseEnumModel
 	 */
 	protected static $mapping = array(
 		self::AUDIO => array(
+			'audio/mp3'							=> array('mp3'),
 			'audio/mpeg3'						=> array('mp3'),
 			'audio/x-mpeg-3'					=> array('mp3'),
 			'audio/x-mid'						=> array('midi'),
@@ -108,6 +109,9 @@ class FileType extends BaseEnumModel
 			$extensions = array_merge($extensions, $mimesExtensions);
 		}
 
-		return sort(array_unique($extensions));
+		$extensions = array_unique($extensions);
+		sort($extensions);
+
+		return $extensions;
 	}
 }

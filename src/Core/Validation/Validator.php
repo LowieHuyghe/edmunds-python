@@ -129,7 +129,7 @@ class Validator extends BaseStructure
 	 * Set the input
 	 * @param array $input
 	 */
-	protected function setInput($input)
+	public function setInput($input)
 	{
 		$this->input = $input;
 		$this->validation->setData($input);

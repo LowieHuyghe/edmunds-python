@@ -377,13 +377,16 @@ class Response extends BaseStructure
 	public function attachExtras(&$response)
 	{
 		//Assign headers
-		$response->withHeaders($this->headers);
+		foreach ($this->headers as $key => $value)
+		{
+			$response->headers->set($key, $value);
+		}
 		$this->headers = array();
 
 		//Assign cookie
 		foreach ($this->cookies as $cookie)
 		{
-			$response->withCookie($cookie);
+			$response->headers->setCookie($cookie);
 		}
 		$this->cookies = array();
 

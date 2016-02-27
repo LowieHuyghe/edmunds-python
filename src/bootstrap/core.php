@@ -131,17 +131,17 @@ $app->withEloquent();
 |
 */
 
-$app->middleware(config('app.middleware', array()));
-$app->middleware(array(
-	// \Core\Foundation\Http\Middleware\VerifyCsrfToken::class,
-));
-
-$app->routeMiddleware(config('app.routemiddleware', array()));
-$app->routeMiddleware(array(
-	// 'auth' => Core\Auth\Middleware\AuthMiddleware::class,
-	// 'rights' => Core\Auth\Middleware\RightsMiddleware::class,
-	// 'roles' => Core\Auth\Middleware\RolesMiddleware::class,
-));
+$app
+	->middleware(config('app.middleware', array()))
+	->middleware(array(
+		// \Core\Foundation\Http\Middleware\VerifyCsrfToken::class,
+	))
+	->routeMiddleware(config('app.routemiddleware', array()))
+	->routeMiddleware(array(
+		// 'auth' => Core\Auth\Middleware\AuthMiddleware::class,
+		// 'rights' => Core\Auth\Middleware\RightsMiddleware::class,
+		// 'roles' => Core\Auth\Middleware\RolesMiddleware::class,
+	));
 
 
 /*
@@ -158,6 +158,7 @@ $app->routeMiddleware(array(
 $providers = array(
 	Core\Foundation\Providers\StatefullServiceProvider::class,
 	Core\Auth\Providers\AuthServiceProvider::class,
+	Core\Foundation\Providers\FilesystemServiceProvider::class,
 );
 $providers = array_merge($providers, config('app.providers', array()));
 

@@ -11,39 +11,27 @@
  * @since		Version 0.1
  */
 
-namespace Core\Analytics\Tracking;
-
-use Core\Bases\Analytics\Tracking\BaseLog;
+namespace Core\Foundation\Concerns;
 
 /**
- * A pageview log
+ * The FilesystemBindingRegisterers concern
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- *
- * @property  string $title
+ * @since		Version 0.
  */
-class PageviewLog extends BaseLog
+trait FilesystemBindingRegisterers
 {
 	/**
-	 * Constructor
+	 * Register container bindings for the application.
+	 *
+	 * @return void
 	 */
-	public function __construct()
+	protected function registerFilesystemBindings()
 	{
-		parent::__construct();
-
-		$this->title = app()->getName();
-	}
-
-	/**
-	 * Add the validation of the model
-	 */
-	protected function addValidationRules(&$validator)
-	{
-		parent::addValidationRules($validator);
-
-		$validator->rule('title')->required();
+		$this->singleton('filesystem', function () {
+			return $this->loadComponent('filesystems', 'Illuminate\Filesystem\FilesystemServiceProvider', 'filesystem');
+		});
 	}
 }

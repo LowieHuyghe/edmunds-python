@@ -73,6 +73,18 @@ class Validation extends \Illuminate\Validation\Validator
 		return "validation.{$lowerRule}";
 	}
 
+    /**
+     * Validate the value is a file.
+     *
+     * @param  string  $attribute
+     * @param  mixed   $value
+     * @return bool
+     */
+    protected function validateFile($attribute, $value)
+    {
+        return $this->isAValidFileInstance($value);
+    }
+
 	/**
 	 * Replace all error message place-holders with actual values.
 	 *
