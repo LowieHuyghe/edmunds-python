@@ -16,6 +16,7 @@ namespace Core\Foundation\Controllers;
 use Core\Application;
 use Core\Bases\Http\Controllers\BaseController;
 use Core\Filesystem\Models\FileEntry;
+use Core\Filesystem\Models\FileType;
 use Core\Http\Response;
 use Illuminate\Http\JsonResponse;
 
@@ -29,8 +30,7 @@ use Illuminate\Http\JsonResponse;
  */
 class FileController extends BaseController
 {
-	const	SIZE_MAX_PICTURE = 3 * 1024,
-			SIZE_MAX_DOCUMENT = 3 * 1024 * 1024;
+	const	SIZE_MAX_FILE = 3 * 1024 * 1024;
 
 	/**
 	 * Register the default routes for this controller
@@ -47,12 +47,8 @@ class FileController extends BaseController
 		));
 
 		// upload methods
-		$app->post($prefix . 'picture', array(
-			'uses' => get_called_class() . '@postPicture',
-			'middleware' => $middleware,
-		));
-		$app->post($prefix . 'document', array(
-			'uses' => get_called_class() . '@postDocument',
+		$app->post($prefix . 'upload', array(
+			'uses' => get_called_class() . '@postUpload',
 			'middleware' => $middleware,
 		));
 
@@ -64,50 +60,54 @@ class FileController extends BaseController
 	}
 
 	/**
-	 * Upload a picture
-	 * @return JsonResponse
+	 * The default output type of the response, only used when set
+	 * @var int
 	 */
-	public function postPicture()
-	{
-		$this->input->rule('file')->required()->mimes(array('gif', 'jpeg', 'jpg', 'png'))->max(self::SIZE_MAX_PICTURE);
-
-		if ($this->input->hasErrors())
-		{
-			$this->response->assignErrors($this->input->getErrors());
-			return false;
-		}
-		else
-		{
-			return $this->upload();
-		}
-	}
+	protected $outputType = Response::TYPE_JSON;
 
 	/**
-	 * Upload a document
+	 * Upload a file
 	 * @return JsonResponse
 	 */
-	public function postDocument()
+	public function postUpload()
 	{
-		$this->input->rule('file')->required()->mimes(array('pdf', 'doc', 'docx'))->max(self::SIZE_MAX_DOCUMENT);
+		$this->input->rule('type')->required()->integer();
 
+		// check if file and type are present
 		if ($this->input->hasErrors())
 		{
-			$this->response->assignErrors($this->input->getErrors());
+			$this->response->errors($this->input->getErrors());
 			return false;
 		}
+
+		// type and file are present, check it
 		else
 		{
-			return $this->upload();
+			$this->input->rule('file')->mimes(FileType::getExtensionsForType($this->input->get('type')))->max(self::SIZE_MAX_FILE);
+
+			// check if file mime is correct
+			if ($this->input->hasErrors())
+			{
+				$this->response->errors($this->input->getErrors());
+				return false;
+			}
+
+			// upload it
+			else
+			{
+				$fileEntry = FileEntry::generateFromInput($this->input->get('file'));
+
+				return $this->upload($fileEntry);
+			}
 		}
 	}
 
 	/**
 	 * Upload the file
+	 * @param FileEntry $fileEntry
 	 */
-	private function upload()
+	protected function upload($fileEntry)
 	{
-		$fileEntry = FileEntry::generateFromInput($this->input->get('file'));
-
 		if ($fileEntry && $fileEntry->save())
 		{
 			$this->response->assign('attributes', array_merge(array('id' => $fileEntry->id), $fileEntry->getAttributes()));
@@ -132,7 +132,22 @@ class FileController extends BaseController
 		if ($fileEntry)
 		{
 			//Set response type to download
-			$this->response->download($fileEntry->getPath(), $fileEntry->original_name);
+			$this->response
+				->header('Content-type', $fileEntry->mime)
+				->header('Content-length', $fileEntry->size);
+
+			switch($fileEntry->type)
+			{
+				case FileType::IMAGE:
+				case FileType::AUDIO:
+				case FileType::DOCUMENT:
+				case FileType::VIDEO:
+					$response->content(file_get_contents($fileEntry->getPath()));
+					break;
+				default:
+					$response->download($fileEntry->getPath(), $fileEntry->original_name);
+					break;
+			}
 			return true;
 		}
 		else
