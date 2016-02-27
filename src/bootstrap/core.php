@@ -141,6 +141,7 @@ $app
 		// 'auth' => Core\Auth\Middleware\AuthMiddleware::class,
 		// 'rights' => Core\Auth\Middleware\RightsMiddleware::class,
 		// 'roles' => Core\Auth\Middleware\RolesMiddleware::class,
+		// 'guest' => Core\Auth\Middleware\RedirectIfAuthenticated::class,
 	));
 
 

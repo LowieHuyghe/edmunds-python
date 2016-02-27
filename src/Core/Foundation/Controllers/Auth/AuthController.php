@@ -65,18 +65,6 @@ class AuthController extends BaseController
 	protected $viewRegister = 'auth.register';
 
 	/**
-	 * Path to redirect to when logged in
-	 * @var string
-	 */
-	protected $postLogin = '/';
-
-	/**
-	 * Path to redirect to when logged out
-	 * @var string
-	 */
-	protected $postLogout = '/login';
-
-	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -124,7 +112,7 @@ class AuthController extends BaseController
 				$this->input->get('remember'));
 
 			// redirect
-			$this->response->redirect($this->postLogin);
+			$this->response->redirect(config('app.auth.redirects.login', '/'));
 		}
 	}
 
@@ -137,7 +125,7 @@ class AuthController extends BaseController
 		$this->auth->logout();
 
 		// redirect
-		$this->response->redirect($this->postLogout);
+		$this->response->redirect(config('app.auth.redirects.logout', '/'));
 	}
 
 	/**
@@ -171,7 +159,7 @@ class AuthController extends BaseController
 			$this->auth->loginUser($this->create(), $this->input->get('remember'));
 
 			// redirect
-			$this->response->redirect($this->postLogin);
+			$this->response->redirect(config('app.auth.redirects.login', '/'));
 		}
 	}
 
