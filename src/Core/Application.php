@@ -140,17 +140,28 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-     * Register an available binding with the application.
-     *
-     * @param  string  $abstract
-     * @param  \Closure|string  $concrete
+	 * Register container bindings for the application.
+	 * @return void
+	 */
+	protected function registerUrlGeneratorBindings()
+	{
+		$this->singleton('url', function () {
+			return new Routing\UrlGenerator($this);
+		});
+	}
+
+	/**
+	 * Register an available binding with the application.
+	 *
+	 * @param  string  $abstract
+	 * @param  \Closure|string  $concrete
 	 */
 	public function bindAvailable($abstract, $concrete)
 	{
-        $abstract = $this->normalize($abstract);
-        $concrete = $this->normalize($concrete);
+		$abstract = $this->normalize($abstract);
+		$concrete = $this->normalize($concrete);
 
-        $this->availableBindings[$abstract] = $concrete;
+		$this->availableBindings[$abstract] = $concrete;
 	}
 
 	/**

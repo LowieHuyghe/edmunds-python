@@ -173,7 +173,7 @@ class AuthController extends BaseController
 		$this->input->rule('password')->max(60)->required();
 		$this->input->rule('remember')->boolean()->fallback(false);
 
-		if (!$register)
+		if ($register)
 		{
 			$this->input->rule('email')->unique('users');
 		}

@@ -74,13 +74,16 @@ class Handler extends ExceptionHandler
 	 */
 	public function render($request, Exception $e)
 	{
+		// aborted request
+		if ($e instanceof AbortHttpException)
+		{
+			return Response::getInstance()->getResponse();
+		}
+
+		// render the exception
 		try
 		{
-			if ($e instanceof AbortHttpException)
-			{
-				return Response::getInstance()->getResponse();
-			}
-			else if (($e instanceof UnauthorizedHttpException
+			if (($e instanceof UnauthorizedHttpException
 					|| $e instanceof AccessDeniedHttpException
 					|| $e instanceof NotFoundHttpException
 					|| $e instanceof ServiceUnavailableHttpException)
@@ -101,9 +104,10 @@ class Handler extends ExceptionHandler
 				return $response->getResponse();
 			}
 		}
-		catch(Exception $e){}
-		catch(Throwable $e){}
+		catch(Exception $exception){}
+		catch(Throwable $exception){}
 
+		// show render page
 		return parent::render($request, $e);
 	}
 }
