@@ -13,7 +13,6 @@
 
 namespace Core\Auth;
 
-use Core\Auth\Models\LoginAttempt;
 use Core\Auth\Models\PasswordReset;
 use Core\Auth\Models\User;
 use Core\Bases\Structures\BaseStructure;
@@ -34,7 +33,6 @@ use Illuminate\Contracts\Auth\UserProvider;
  *
  * @property bool $loggedIn
  * @property User $user
- * @property int $loginAttempts
  * @property int $attemptsMax
  * @property int $lockoutTime
  * @property int $attemptsCount
