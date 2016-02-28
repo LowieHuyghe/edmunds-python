@@ -109,3 +109,23 @@
     {
     	return \Core\Http\Client\Session::getInstance()->token();
     }
+
+    /**
+     * Get an instance of the redirector.
+     *
+     * @param  string|null  $to
+     * @param  int     $status
+     * @param  array   $headers
+     * @param  bool    $secure
+     * @return \Laravel\Lumen\Http\Redirector|\Illuminate\Http\RedirectResponse
+     */
+    function redirect($to = null, $status = 302, $headers = [], $secure = null)
+    {
+        $redirector = new \Core\Routing\Redirector(app());
+
+        if (is_null($to)) {
+            return $redirector;
+        }
+
+        return $redirector->to($to, $status, $headers, $secure);
+    }
