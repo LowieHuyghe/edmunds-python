@@ -156,9 +156,12 @@ $app
 |
 */
 
+//$app->configure('mail');
 $providers = array(
 	Core\Foundation\Providers\StatefullServiceProvider::class,
 	Core\Auth\Providers\AuthServiceProvider::class,
+	Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+	Core\Foundation\Providers\MailServiceProvider::class,
 	Core\Foundation\Providers\FilesystemServiceProvider::class,
 );
 $providers = array_merge($providers, config('app.providers', array()));
