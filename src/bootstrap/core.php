@@ -22,11 +22,25 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-$dotEnvFile = (env('APP_ENV') != 'testing') ? '.env' : '.env.testing';
 try {
-    (new Dotenv\Dotenv(REAL_BASE_PATH, $dotEnvFile))->load();
+	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.' . env('APP_ENV') . '.local'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
-    //
+	//
+}
+try {
+	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.' . env('APP_ENV')))->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {
+	//
+}
+try {
+	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.local'))->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {
+	//
+}
+try {
+	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env'))->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {
+	//
 }
 
 
