@@ -49,12 +49,6 @@ class PasswordController extends BaseController
 	protected $auth;
 
 	/**
-	 * Path to redirect to when logged in
-	 * @var string
-	 */
-	protected $postLogin = '/';
-
-	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -109,7 +103,7 @@ class PasswordController extends BaseController
 		{
 			// send mail
 			// TODO review with new email system
-			$response = app('auth.passwords')->broker(null)->sendResetLink($this->input->get('email'), function (Message $message)
+			$response = app('auth.password')->broker(null)->sendResetLink($this->input->get('email'), function (Message $message)
 			{
 				$message->subject(trans('passwords.email.subject'));
 			});
@@ -151,7 +145,7 @@ class PasswordController extends BaseController
 			$credentials = $this->input->only('email', 'password', 'password_confirmation', 'token');
 
 			// reset password
-			$response = app('auth.passwords')->broker(null)->reset($credentials, function ($user, $password)
+			$response = app('auth.password')->broker(null)->reset($credentials, function ($user, $password)
 			{
 				$user->password = bcrypt($password);
 				$user->save();
@@ -164,7 +158,7 @@ class PasswordController extends BaseController
 			{
 				$this->response
 					->assign('status', trans($response))
-					->redirect($this->postLogin);
+					->redirect(config('app.auth.redirects.login', '/'));
 			}
 			// something went wrong
 			else

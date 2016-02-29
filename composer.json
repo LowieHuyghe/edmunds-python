@@ -16,6 +16,8 @@
 		"illuminate/session": "5.2.*",
 		"illuminate/cookie": "5.2.*",
 		"illuminate/filesystem": "5.2.*",
+		"illuminate/mail": "5.2.*",
+		"guzzlehttp/guzzle": "~5.3|~6.0",
 		"league/flysystem": "~1.0",
 		"vlucas/phpdotenv": "~2.2",
 		"piwik/device-detector": "3.5.*",

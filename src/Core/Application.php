@@ -32,6 +32,7 @@ use Core\Foundation\Concerns\RoutesRequests;
 use Core\Foundation\Concerns\RegistersExceptionHandlers;
 use Core\Foundation\Concerns\StatefullBindingRegisterers;
 use Core\Foundation\Concerns\FilesystemBindingRegisterers;
+use Core\Foundation\Concerns\MailBindingRegisterers;
 
 /**
  * The structure for application
@@ -47,6 +48,7 @@ class Application extends \Laravel\Lumen\Application
 	use RegistersExceptionHandlers;
 	use StatefullBindingRegisterers;
 	use FilesystemBindingRegisterers;
+	use MailBindingRegisterers;
 
 	/**
 	 * Get the name of the app

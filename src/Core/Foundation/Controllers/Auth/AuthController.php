@@ -185,9 +185,9 @@ class AuthController extends BaseController
 	 */
 	protected function create()
 	{
-		return ${config('app.auth.models.user')}::create(array(
+		return call_user_func_array(config('app.auth.models.user'). '::create', array(array(
 			'email' => $this->input->get('email'),
 			'password' => bcrypt($this->input->get('password')),
-		));
+		)));
 	}
 }
