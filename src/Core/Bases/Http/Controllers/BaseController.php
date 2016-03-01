@@ -70,10 +70,7 @@ class BaseController extends Controller
 		$this->visitor = Visitor::getInstance();
 		$this->input = Input::getInstance();
 
-		if (isset($this->outputType))
-		{
-			$this->response->outputType = $this->outputType;
-		}
+		$this->response->outputType = $this->outputType ?? config('app.outputtype', $this->response->outputType);
 	}
 
 	/**
