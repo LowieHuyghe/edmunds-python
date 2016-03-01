@@ -1,8 +1,8 @@
 <?php
 
-if (!defined('REAL_BASE_PATH'))
+if (!defined('APP_BASE_PATH'))
 {
-	define('REAL_BASE_PATH', realpath(BASE_PATH));
+	define('APP_BASE_PATH', realpath(BASE_PATH));
 }
 if (!defined('CORE_BASE_PATH'))
 {
@@ -10,7 +10,7 @@ if (!defined('CORE_BASE_PATH'))
 }
 
 require_once CORE_BASE_PATH . '/helpers.php';
-require_once REAL_BASE_PATH .'/vendor/autoload.php';
+require_once APP_BASE_PATH .'/vendor/autoload.php';
 
 
 /*
@@ -22,25 +22,17 @@ require_once REAL_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-try {
-	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.' . env('APP_ENV') . '.local'))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-	//
-}
-try {
-	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.' . env('APP_ENV')))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-	//
-}
-try {
-	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env.local'))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-	//
-}
-try {
-	(new Dotenv\Dotenv(REAL_BASE_PATH, '.env'))->load();
-} catch (Dotenv\Exception\InvalidPathException $e) {
-	//
+$envFiles = array(
+	'.env.' . env('APP_ENV') . '.local',
+	'.env.' . env('APP_ENV'),
+	'.env.local',
+	'.env',
+);
+foreach ($envFiles as $envFile)
+{
+	try {
+		(new Dotenv\Dotenv(APP_BASE_PATH, $envFile))->load();
+	} catch (Dotenv\Exception\InvalidPathException $e) {}
 }
 
 
@@ -55,7 +47,7 @@ try {
 |
 */
 
-$app = new \Core\Application(REAL_BASE_PATH);
+$app = new \Core\Application(APP_BASE_PATH);
 
 
 /*
@@ -170,12 +162,9 @@ $app
 |
 */
 
-//$app->configure('mail');
 $providers = array(
 	Core\Foundation\Providers\StatefullServiceProvider::class,
 	Core\Auth\Providers\AuthServiceProvider::class,
-	Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
-	Core\Foundation\Providers\MailServiceProvider::class,
 	Core\Foundation\Providers\FilesystemServiceProvider::class,
 );
 $providers = array_merge($providers, config('app.providers', array()));
@@ -197,7 +186,7 @@ foreach ($providers as $provider)
 |
 */
 
-require REAL_BASE_PATH . '/' . config('app.routing.routes');
+require APP_BASE_PATH . '/' . config('app.routing.routes');
 
 
 return $app;

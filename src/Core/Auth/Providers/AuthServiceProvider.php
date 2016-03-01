@@ -39,6 +39,7 @@ class AuthServiceProvider extends BaseServiceProvider
 		$this->registerSessionGuard();
 		$this->registerTokenGuard();
 		$this->registerBasicGuard();
+		$this->registerPasswordReset();
 	}
 
 	/**
@@ -95,5 +96,14 @@ class AuthServiceProvider extends BaseServiceProvider
 				);
 			}
 		});
+	}
+
+	/**
+	 * Register password reset providers
+	 */
+	protected function registerPasswordReset()
+	{
+		$this->app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
+		$this->app->register(\Core\Foundation\Providers\MailServiceProvider::class);
 	}
 }
