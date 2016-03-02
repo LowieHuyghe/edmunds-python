@@ -22,12 +22,15 @@ require_once APP_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-$envFiles = array(
-	'.env.' . env('APP_ENV') . '.local',
-	'.env.' . env('APP_ENV'),
-	'.env.local',
-	'.env',
-);
+$envFiles = array();
+if ($appEnvironment = env('APP_ENV'))
+{
+	$envFiles[] = '.env.' . $appEnvironment . '.local';
+	$envFiles[] = '.env.' . $appEnvironment;
+}
+$envFiles[] = '.env.local';
+$envFiles[] = '.env';
+
 foreach ($envFiles as $envFile)
 {
 	try {
