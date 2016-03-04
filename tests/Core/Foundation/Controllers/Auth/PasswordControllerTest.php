@@ -49,7 +49,6 @@ class PasswordControllerTest extends BaseTest
 		parent::setUp();
 
 		PasswordController::registerRoutes($this->app);
-		config(['app.routing.redirecthalt' => false]);
 	}
 
 	/**
