@@ -22,21 +22,9 @@ require_once APP_BASE_PATH .'/vendor/autoload.php';
 |
 */
 
-$envFiles = array();
-if ($appEnvironment = env('APP_ENV'))
-{
-	$envFiles[] = '.env.' . $appEnvironment . '.local';
-	$envFiles[] = '.env.' . $appEnvironment;
-}
-$envFiles[] = '.env.local';
-$envFiles[] = '.env';
-
-foreach ($envFiles as $envFile)
-{
-	try {
-		(new Dotenv\Dotenv(APP_BASE_PATH, $envFile))->load();
-	} catch (Dotenv\Exception\InvalidPathException $e) {}
-}
+try {
+	(new Dotenv\Dotenv(APP_BASE_PATH))->load();
+} catch (Dotenv\Exception\InvalidPathException $e) {}
 
 
 /*

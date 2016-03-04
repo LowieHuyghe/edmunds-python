@@ -65,7 +65,16 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function isStateful()
 	{
-		return config('app.features.stateful', true);
+		return config('app.stateful', true);
+	}
+
+	/**
+	 * Get entrypoint
+	 * @return string
+	 */
+	public function getEntrypoint()
+	{
+		return config('app.entrypoint', 'default');
 	}
 
 	/**
@@ -93,6 +102,16 @@ class Application extends \Laravel\Lumen\Application
 	public function isTesting()
 	{
 		return $this->environment('testing');
+	}
+
+	/**
+     * Determine if we are running unit tests.
+     *
+     * @return bool
+     */
+	public function runningUnitTests()
+	{
+		return $this->isTesting();
 	}
 
 	/**
