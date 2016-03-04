@@ -49,7 +49,6 @@ class AuthControllerTest extends BaseTest
 		parent::setUp();
 
 		AuthController::registerRoutes($this->app);
-		config(['app.routing.redirecthalt' => false]);
 	}
 
 	/**
