@@ -31,7 +31,6 @@ class Handler extends ExceptionHandler
 	public function __construct()
 	{
 		$this->dontReport = array_merge($this->dontReport, array(
-			HttpException::class,
 			AbortHttpException::class,
 		));
 	}
