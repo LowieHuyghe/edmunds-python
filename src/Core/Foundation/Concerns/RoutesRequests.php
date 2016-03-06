@@ -41,7 +41,16 @@ trait RoutesRequests
 	 */
 	public function dispatch($request = null)
 	{
-    	// check down for maintenance
+		// initializer
+		if ($iniializerController = config('app.routing.initializer'))
+		{
+			$instance = $this->make($iniializerController);
+			$method = 'initialize';
+
+			$this->callControllerCallable([$instance, $method], array());
+		}
+
+		// check down for maintenance
 		if ($this->isDownForMaintenance())
 		{
 			try
@@ -50,8 +59,8 @@ trait RoutesRequests
 			}
 			catch (ServiceUnavailableHttpException $exception)
 			{
-	            $response = $this->sendExceptionToHandler($exception);
-	        }
+				$response = $this->sendExceptionToHandler($exception);
+			}
 		}
 		else
 		{
@@ -61,7 +70,7 @@ trait RoutesRequests
 		// check if analytics are enabled
 		if (AnalyticsManager::isEnabled())
 		{
-	        // log pageview and flush all logs
+			// log pageview and flush all logs
 			$this->logPageView();
 			Registry::warehouse()->flush();
 		}
