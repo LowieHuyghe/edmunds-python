@@ -104,8 +104,9 @@ class Handler extends ExceptionHandler
 				return $response->getResponse();
 			}
 		}
-		catch(Exception $exception){}
-		catch(Throwable $exception){}
+		// overwrite exception
+		catch(Exception $e){}
+		catch(Throwable $e){}
 
 		// show render page
 		return parent::render($request, $e);
