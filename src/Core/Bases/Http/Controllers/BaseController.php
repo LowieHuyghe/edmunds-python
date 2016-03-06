@@ -86,9 +86,6 @@ class BaseController extends Controller
 		//Call the tight method
 		$response = call_user_func_array(array($this, $method), $parameters);
 
-		//Finalize this controller
-		$this->finalize();
-
 		//set the status of the response
 		if ($response === true || $response === false)
 		{
@@ -102,14 +99,6 @@ class BaseController extends Controller
 	 * Function called after construct
 	 */
 	public function initialize()
-	{
-		//
-	}
-
-	/**
-	 * Function called after method
-	 */
-	public function finalize()
 	{
 		//
 	}
