@@ -40,26 +40,6 @@ class Kernel extends ConsoleKernel
 		//
 	];
 
-    /**
-     * Create a new console kernel instance.
-     *
-     * @param  Application  $app
-     * @return void
-     */
-    public function __construct(Application $app)
-    {
-    	$this->commands = array_merge($this->commands, array(
-
-			UpdateGeoIPCommand::class,
-			DownCommand::class,
-			UpCommand::class,
-			SyncCommand::class,
-
-    	));
-
-    	parent::__construct($app);
-    }
-
 	/**
 	 * Define the application's command schedule.
 	 *
@@ -68,6 +48,6 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('updategeoip')->weekly();
+		//
 	}
 }
