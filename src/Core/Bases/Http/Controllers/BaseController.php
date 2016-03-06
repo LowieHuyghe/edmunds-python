@@ -80,9 +80,6 @@ class BaseController extends Controller
 	 */
 	public function responseFlow($method, $parameters)
 	{
-		//Assign default values
-		$this->assignDefaults();
-
 		//Initialiaz this controller
 		$this->initialize();
 
@@ -99,21 +96,6 @@ class BaseController extends Controller
 		}
 
 		return $this->response->getResponse();
-	}
-
-	/**
-	 * Assign some default values
-	 */
-	protected function assignDefaults()
-	{
-		$this->response->assign('__root', $this->request->root);
-		$this->response->assign('__siteName', app()->getName());
-
-		$this->response->assign('__local', app()->isLocal());
-
-		$this->response->assign('__login', $this->visitor->user);
-
-		$this->response->assign('__rtl', $this->visitor->localization->rtl);
 	}
 
 	/**
