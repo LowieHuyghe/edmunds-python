@@ -20,6 +20,8 @@
 		</whitelist>
 	</filter>
 	<php>
+		<const name="RELATIVE_BASE_PATH" value="../.."/>
+
 		<env name="APP_ENV" value="testing"/>
 		<env name="APP_ENTRYPOINT" value="phpunit"/>
 
