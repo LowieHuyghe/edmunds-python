@@ -91,41 +91,81 @@
 	}
 
 	/**
-     * Generate a CSRF token form field.
-     *
-     * @return string
-     */
-    function csrf_field()
-    {
-        return new \Illuminate\Support\HtmlString('<input type="hidden" name="_token" value="'.csrf_token().'">');
-    }
+	 * Generate a CSRF token form field.
+	 *
+	 * @return string
+	 */
+	function csrf_field()
+	{
+		return new \Illuminate\Support\HtmlString('<input type="hidden" name="_token" value="'.csrf_token().'">');
+	}
 
-    /**
-     * Get the CSRF token value.
-     *
-     * @return string
-     */
-    function csrf_token()
-    {
-    	return \Core\Http\Client\Session::getInstance()->token();
-    }
+	/**
+	 * Get the CSRF token value.
+	 *
+	 * @return string
+	 */
+	function csrf_token()
+	{
+		return \Core\Http\Client\Session::getInstance()->token();
+	}
 
-    /**
-     * Get an instance of the redirector.
-     *
-     * @param  string|null  $to
-     * @param  int     $status
-     * @param  array   $headers
-     * @param  bool    $secure
-     * @return \Laravel\Lumen\Http\Redirector|\Illuminate\Http\RedirectResponse
-     */
-    function redirect($to = null, $status = 302, $headers = [], $secure = null)
-    {
-        $redirector = new \Core\Routing\Redirector(app());
+	/**
+	 * Get an instance of the redirector.
+	 *
+	 * @param  string|null  $to
+	 * @param  int     $status
+	 * @param  array   $headers
+	 * @param  bool    $secure
+	 * @return \Laravel\Lumen\Http\Redirector|\Illuminate\Http\RedirectResponse
+	 */
+	function redirect($to = null, $status = 302, $headers = [], $secure = null)
+	{
+		$redirector = new \Core\Routing\Redirector(app());
 
-        if (is_null($to)) {
-            return $redirector;
-        }
+		if (is_null($to)) {
+			return $redirector;
+		}
 
-        return $redirector->to($to, $status, $headers, $secure);
-    }
+		return $redirector->to($to, $status, $headers, $secure);
+	}
+
+	/**
+	 * Encode a value
+	 * @param  int $value
+	 * @return int
+	 */
+	function encode($value)
+	{
+		return app('obfuscator')->encode($value);
+	}
+
+	/**
+	 * Decode a value
+	 * @param  int $value
+	 * @return int
+	 */
+	function decode($value)
+	{
+		return app('obfuscator')->decode($value);
+	}
+
+	/**
+	 * Scramble a value
+	 * @param  int $value
+	 * @return string
+	 */
+	function scramble($value)
+	{
+		return app('obfuscator')->scramble($value);
+	}
+
+	/**
+	 * Unscramble a value
+	 * @param  string $value
+	 * @return int
+	 */
+	function unscramble($value)
+	{
+		return app('obfuscator')->unscramble($value);
+	}

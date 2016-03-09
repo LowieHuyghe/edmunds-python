@@ -33,6 +33,7 @@ use Core\Foundation\Concerns\RegistersExceptionHandlers;
 use Core\Foundation\Concerns\StatefullBindingRegisterers;
 use Core\Foundation\Concerns\FilesystemBindingRegisterers;
 use Core\Foundation\Concerns\MailBindingRegisterers;
+use Core\Foundation\Concerns\BindingRegisterers;
 
 /**
  * The structure for application
@@ -46,6 +47,7 @@ class Application extends \Laravel\Lumen\Application
 {
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
+	use BindingRegisterers;
 	use StatefullBindingRegisterers;
 	use FilesystemBindingRegisterers;
 	use MailBindingRegisterers;
@@ -113,6 +115,18 @@ class Application extends \Laravel\Lumen\Application
 	{
 		return $this->isTesting();
 	}
+
+    /**
+     * Bootstrap the application container.
+     *
+     * @return void
+     */
+    protected function bootstrapContainer()
+    {
+    	parent::bootstrapContainer();
+
+    	$this->registerAdditionalBindings();
+    }
 
 	/**
 	 * Get the path to the given configuration file.
