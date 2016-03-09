@@ -8,8 +8,7 @@
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 
 namespace Core\Filesystem\Models;
 use Core\Bases\Models\BaseModel;
@@ -27,8 +26,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- *
+  *
  * @property int $id Database table-id
  * @property string $name
  * @property string $md5

@@ -8,8 +8,7 @@
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 
 namespace Core\Auth\Models;
 use Core\Bases\Models\BaseModel;
@@ -22,8 +21,7 @@ use Core\Validation\Validator;
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- *
+  *
  * @property int $id
  * @property string $ip
  * @property string $type

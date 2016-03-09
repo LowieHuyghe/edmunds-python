@@ -8,8 +8,7 @@
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 
 namespace Core\Localization\Models;
 
@@ -27,8 +26,7 @@ use Locale;
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- *
+  *
  * @property User $user
  * @property string $locale The default locale
  * @property-read string $rawLocale The raw default locale
