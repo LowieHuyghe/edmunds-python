@@ -8,8 +8,7 @@
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 
 namespace Core\Bases\Models;
 use Core\Database\Relations\BelongsToEnum;
@@ -25,8 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- *
+  *
  * @property Validation $validator The validator
  */
 class BaseModel extends Model

@@ -8,8 +8,7 @@
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 
 namespace Core\Routing;
 
@@ -22,8 +21,7 @@ use Laravel\Lumen\Http\Redirector as BaseRedirector;
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.1
- */
+  */
 class Redirector extends BaseRedirector
 {
 	/**
