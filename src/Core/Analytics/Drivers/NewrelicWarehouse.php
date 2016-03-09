@@ -37,7 +37,7 @@ class NewrelicWarehouse extends BaseWarehouse
 	{
 		parent::__construct();
 
-		$this->appName = config('app.analytics.newrelic.appname');
+		$this->appName = app()->getName();
 		$this->license = config('app.analytics.newrelic.license') ?: ini_get('newrelic.license');
 
 		$this->loaded = $this->license && extension_loaded('newrelic');
