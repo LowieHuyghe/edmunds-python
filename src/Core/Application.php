@@ -29,9 +29,6 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 use Core\Foundation\Concerns\RoutesRequests;
 use Core\Foundation\Concerns\RegistersExceptionHandlers;
-use Core\Foundation\Concerns\StatefullBindingRegisterers;
-use Core\Foundation\Concerns\FilesystemBindingRegisterers;
-use Core\Foundation\Concerns\MailBindingRegisterers;
 use Core\Foundation\Concerns\BindingRegisterers;
 
 /**
@@ -47,9 +44,6 @@ class Application extends \Laravel\Lumen\Application
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
 	use BindingRegisterers;
-	use StatefullBindingRegisterers;
-	use FilesystemBindingRegisterers;
-	use MailBindingRegisterers;
 
 	/**
 	 * Get the name of the app
