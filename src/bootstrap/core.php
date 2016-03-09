@@ -2,14 +2,7 @@
 
 if (!defined('APP_BASE_PATH'))
 {
-	if (defined('RELATIVE_BASE_PATH'))
-	{
-		define('APP_BASE_PATH', realpath(__DIR__ . '/' . RELATIVE_BASE_PATH));
-	}
-	else
-	{
-		define('APP_BASE_PATH', realpath(BASE_PATH));
-	}
+	define('APP_BASE_PATH', realpath(BASE_PATH));
 }
 if (!defined('CORE_BASE_PATH'))
 {
