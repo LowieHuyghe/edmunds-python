@@ -43,7 +43,7 @@ use GeoIp2\Model\City;
  */
 class Location extends BaseModel
 {
-	const	GEOIP_DIR	= 'geoip',
+	const	GEOIP_DIR	= 'app/geoip',
 			GEOIP_CITY	= 'GeoLite2-City.mmdb';
 
 	/**
