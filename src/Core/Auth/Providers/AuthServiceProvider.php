@@ -104,6 +104,5 @@ class AuthServiceProvider extends BaseServiceProvider
 	protected function registerPasswordReset()
 	{
 		$this->app->register(\Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
-		$this->app->register(\Core\Foundation\Providers\MailServiceProvider::class);
 	}
 }

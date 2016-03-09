@@ -30,6 +30,8 @@ trait BindingRegisterers
 	protected function registerAdditionalBindings()
 	{
 		$this->availableBindings['obfuscator'] = 'registerObfuscatorBindings';
+		$this->availableBindings['filesystem'] = 'registerFilesystemBindings';
+		$this->availableBindings['mailer'] = 'registerMailBindings';
 	}
 
 	/**
@@ -41,5 +43,56 @@ trait BindingRegisterers
         {
             return $this->loadComponent('app', ObfuscatorServiceProvider::class, 'obfuscator');
         });
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerCookieBindings()
+	{
+		$this->singleton('cookie', function () {
+			return $this->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
+		});
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerSessionBindings()
+	{
+		$this->singleton('session', function () {
+			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider');
+		});
+		$this->singleton('session.store', function () {
+			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider', 'session.store');
+		});
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerFilesystemBindings()
+	{
+		$this->singleton('filesystem', function () {
+			return $this->loadComponent('filesystems', 'Illuminate\Filesystem\FilesystemServiceProvider', 'filesystem');
+		});
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerMailBindings()
+	{
+		$this->singleton('mailer', function () {
+			return $this->loadComponent('mail', 'Illuminate\Mail\MailServiceProvider', 'mailer');
+		});
 	}
 }
