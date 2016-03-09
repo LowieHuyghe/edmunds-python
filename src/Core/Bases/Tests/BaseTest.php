@@ -33,7 +33,7 @@ class BaseTest extends TestCase
 	 */
 	public function createApplication()
 	{
-		return require __DIR__ . '/../../../bootstrap/core.php';
+		return require APP_BASE_PATH . '/bootstrap/app.php';
 	}
 
 	/**
