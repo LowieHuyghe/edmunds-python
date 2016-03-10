@@ -35,7 +35,11 @@ class UsersTableSeeder extends BaseSeeder
 		for ($i=0; $i < 100; $i++)
 		{
 			$user = call_user_func_array(config('app.auth.models.user'). '::dummy', array());
-			$user->save();
+
+			if (call_user_func_array(config('app.auth.models.user'). '::where', array('user_id', '=', $user->id))->get()->count() == 0)
+			{
+				$user->save();
+			}
 		}
 	}
 }
