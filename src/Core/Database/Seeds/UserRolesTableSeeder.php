@@ -32,17 +32,21 @@ class UserRolesTableSeeder extends BaseSeeder
 	 */
 	public function run()
 	{
-		$users = User::all();
-		$roles = \App\Models\Role::all();
+		$users = call_user_func_array(config('app.auth.models.user'). '::all', array());
+		$roles = call_user_func_array(config('app.auth.models.role'). '::all', array());
 
 		foreach ($users as $user)
 		{
-			shuffle($roles);
+			$roles = $roles->shuffle();
 			$count = rand(0, count($roles));
 
 			for ($i=0; $i < $count; $i++)
 			{
-				$user->roles()->attach($roles[$i]->id);
+				$roleId = $roles[$i]->id;
+				if (!$user->hasRole($roleId))
+				{
+					$user->roles()->attach($roleId);
+				}
 			}
 
 		}

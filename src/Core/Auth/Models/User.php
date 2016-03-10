@@ -96,7 +96,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	 */
 	public function hasRole($roleId)
 	{
-		return $this->roles()->contains($roleId);
+		return $this->roles()->lists('role_id')->contains($roleId);
 	}
 
 	/**
