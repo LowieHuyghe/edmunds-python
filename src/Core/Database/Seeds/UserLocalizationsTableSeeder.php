@@ -35,11 +35,14 @@ class UserLocalizationsTableSeeder extends BaseSeeder
 	{
 		$users = call_user_func_array(config('app.auth.models.user'). '::all', array());
 
-		if (Localization::where('user_id', '=', $user->id)->get()->count() == 0)
+		foreach ($users as $user)
 		{
-			$localization = Localization::dummy();
-			$localization->user()->associate($user);
-			$localization->save();
+			if (Localization::where('user_id', '=', $user->id)->get()->count() == 0)
+			{
+				$localization = Localization::dummy();
+				$localization->user()->associate($user);
+				$localization->save();
+			}
 		}
 	}
 }
