@@ -58,7 +58,7 @@ class Localization extends BaseModel
 	 */
 	public function user()
 	{
-		return $this->belongsTo(User::class);
+		return $this->belongsTo(config('app.auth.models.user'));
 	}
 
 	/**
@@ -333,7 +333,7 @@ class Localization extends BaseModel
 	protected static function factory($faker)
 	{
 		return array(
-			'user_id' => $faker->integer,
+			'user_id' => $faker->numberBetween(),
 			'locale' => $faker->locale,
 			'currency' => $faker->currencyCode,
 			'timezone' => $faker->timezone,

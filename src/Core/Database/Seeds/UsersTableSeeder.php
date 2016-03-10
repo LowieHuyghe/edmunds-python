@@ -32,9 +32,9 @@ class UsersTableSeeder extends BaseSeeder
 	 */
 	public function run()
 	{
-		for ($i=0; $i < 1000; $i++)
+		for ($i=0; $i < 100; $i++)
 		{
-			$user = User::dummy();
+			$user = call_user_func_array(config('app.auth.models.user'). '::dummy', array());
 			$user->save();
 		}
 	}

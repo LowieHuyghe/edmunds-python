@@ -39,7 +39,7 @@ class LoginAttempt extends BaseModel
 	 */
 	public function user()
 	{
-		return $this->belongsTo(User::class);
+		return $this->belongsTo(config('app.auth.models.user'));
 	}
 
 	/**
