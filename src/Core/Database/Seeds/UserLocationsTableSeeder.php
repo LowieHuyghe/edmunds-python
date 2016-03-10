@@ -33,9 +33,9 @@ class UserLocationsTableSeeder extends BaseSeeder
 	 */
 	public function run()
 	{
-		$users = User::all();
+		$users = call_user_func_array(config('app.auth.models.user'). '::all', array());
 
-		foreach ($users as $user)
+		if (Location::where('user_id', '=', $user->id)->get()->count() == 0)
 		{
 			$location = Location::dummy();
 			$location->user()->associate($user);
