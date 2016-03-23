@@ -17,7 +17,7 @@ use Core\Bases\Analytics\BaseWarehouse;
 use Core\Bases\Structures\BaseStructure;
 use Core\Cache\Cache;
 use Core\Database\Database;
-use Core\Io\Admin\PmManager;
+use Core\Io\Channels\ChannelManager;
 use Core\Queue\Queue;
 
 /**
@@ -81,18 +81,18 @@ class Registry extends BaseStructure
 	}
 
 	/**
-	 * Get a instance of the Pm
+	 * Get a instance of the Channel
 	 * @param string $driver
-	 * @return Pm
+	 * @return Channel
 	 */
-	public static function pm($driver = null)
+	public static function channel($driver = null)
 	{
-		if (!isset(self::$registry['adminPm'][$driver ?: 0]))
+		if (!isset(self::$registry['channel'][$driver ?: 0]))
 		{
-			self::$registry['adminPm'][$driver ?: 0] = (new PmManager($driver))->channel();
+			self::$registry['channel'][$driver ?: 0] = (new ChannelManager($driver))->channel();
 		}
 
-		return self::$registry['adminPm'][$driver ?: 0];
+		return self::$registry['channel'][$driver ?: 0];
 	}
 
 	/**

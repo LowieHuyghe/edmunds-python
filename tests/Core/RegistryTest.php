@@ -56,11 +56,11 @@ class RegistryTest extends BaseTest
 	}
 
 	/**
-	 * Test Pm default
+	 * Test Channel default
 	 */
-	public function testPm()
+	public function testChannel()
 	{
-		$success = Registry::pm() != null;
+		$success = Registry::channel() != null;
 
 		$this->assertTrue($success);
 	}

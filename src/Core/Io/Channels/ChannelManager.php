@@ -10,11 +10,11 @@
  * @license		http://LicenseUrl
   */
 
-namespace Core\Io\Admin;
+namespace Core\Io\Channels;
 
-use Core\Bases\Io\Admin\BaseChannel;
+use Core\Bases\Io\Channels\BaseChannel;
 use Core\Bases\Structures\BaseStructure;
-use Core\Io\Admin\Drivers\SlackChannel;
+use Core\Io\Channels\Drivers\SlackChannel;
 
 /**
  * The pm manager
@@ -23,7 +23,7 @@ use Core\Io\Admin\Drivers\SlackChannel;
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
   */
-class PmManager extends BaseStructure
+class ChannelManager extends BaseStructure
 {
 	/**
 	 * The driver
@@ -79,7 +79,7 @@ class PmManager extends BaseStructure
 	 */
 	protected function getDefaultDriver()
 	{
-		return $this->driver ?? config('core.admin.pm.default', null);
+		return $this->driver ?? config('app.io.channel.default', null);
 	}
 
 	/**

@@ -10,7 +10,7 @@
  * @license		http://LicenseUrl
   */
 
-namespace Core\Bases\Io\Admin;
+namespace Core\Bases\Io\Channels;
 
 use Core\Bases\Structures\BaseStructure;
 use Core\Registry;

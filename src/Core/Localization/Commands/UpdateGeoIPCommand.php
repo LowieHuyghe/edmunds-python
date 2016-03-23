@@ -14,7 +14,7 @@ namespace Core\Localization\Commands;
 
 use Core\Bases\Commands\BaseCommand;
 use Core\Localization\Models\Location;
-use Core\Registry\Admin\Pm;
+use Core\Registry\Admin\Channel;
 use Core\Registry;
 
 /**
@@ -189,6 +189,6 @@ class UpdateGeoIPCommand extends BaseCommand
 	{
 		$this->error($message);
 
-		Registry::pm()->error('GeoIP Error!', $message);
+		Registry::channel()->error('GeoIP Error!', $message);
 	}
 }

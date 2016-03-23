@@ -10,19 +10,19 @@
  * @license		http://LicenseUrl
   */
 
-namespace CoreTest\Io\Admin;
+namespace CoreTest\Io\Channels;
 
 use Core\Bases\Tests\BaseTest;
 use Core\Registry;
 
 /**
- * Testing Pm-class
+ * Testing Channel-class
  *
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
   */
-class PmTest extends BaseTest
+class ChannelTest extends BaseTest
 {
 
 	/**
@@ -30,7 +30,7 @@ class PmTest extends BaseTest
 	 */
 	public function testInfo()
 	{
-		$success = Registry::pm()->info('Info-Title', "The body of the info");
+		$success = Registry::channel()->info('Info-Title', "The body of the info");
 
 		$this->assertTrue($success);
 	}
@@ -40,7 +40,7 @@ class PmTest extends BaseTest
 	 */
 	public function testWarning()
 	{
-		$success = Registry::pm()->warning('Warning-Title', "The body of the warning");
+		$success = Registry::channel()->warning('Warning-Title', "The body of the warning");
 
 		$this->assertTrue($success);
 	}
@@ -50,7 +50,7 @@ class PmTest extends BaseTest
 	 */
 	public function testError()
 	{
-		$success = Registry::pm()->error('Error-Title', "The body of the error");
+		$success = Registry::channel()->error('Error-Title', "The body of the error");
 
 		$this->assertTrue($success);
 	}

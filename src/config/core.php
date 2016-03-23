@@ -38,33 +38,6 @@ return array
 
 	/*
 	|--------------------------------------------------------------------------
-	| Admin
-	|--------------------------------------------------------------------------
-	|
-	| Set configuration to use when contacting the admin through slack
-	| or similar channels.
-	|
-	*/
-
-	'admin' => array(
-		'pm' => array(
-			'default' => 'slack',
-
-			'slack' => array(
-				'hook' => 'https://hooks.slack.com/services/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',
-				'icon' => ':sheep:',
-				'channel' => array(
-					'info' => '#dev-info',
-					'warning' => '#dev-warning',
-					'error' => '#dev-error',
-				),
-			),
-		),
-	),
-
-
-	/*
-	|--------------------------------------------------------------------------
 	| Authentication
 	|--------------------------------------------------------------------------
 	|
