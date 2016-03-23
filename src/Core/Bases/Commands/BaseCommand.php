@@ -32,7 +32,7 @@ class BaseCommand extends Command
 	 * Log automatically to pm
 	 * @var boolean
 	 */
-	protected $logPm = false;
+	protected $logChannel = false;
 
 	/**
 	 * Execute the console command.
@@ -48,19 +48,19 @@ class BaseCommand extends Command
 		{
 			$response = parent::execute($input, $output);
 
-			$this->logPm ? Registry::pm()->info($title, 'Succesful') : null;
+			$this->logChannel ? Registry::channel()->info($title, 'Succesful') : null;
 
 			return $response;
 		}
 		catch (\Exception $e)
 		{
-			$this->logPm ? Registry::pm()->info($title, 'Failed') : null;
+			$this->logChannel ? Registry::channel()->info($title, 'Failed') : null;
 
 			throw $e;
 		}
 		catch (\Throwable $e)
 		{
-			$this->logPm ? Registry::pm()->info($title, 'Failed') : null;
+			$this->logChannel ? Registry::channel()->info($title, 'Failed') : null;
 
 			throw $e;
 		}
