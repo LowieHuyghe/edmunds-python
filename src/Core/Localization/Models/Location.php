@@ -15,7 +15,7 @@ namespace Core\Localization\Models;
 use Core\Bases\Models\BaseModel;
 use Core\Http\Request;
 use Core\Auth\Models\User;
-use Core\Registry\Admin\Pm;
+use Core\Registry\Admin\Channel;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\City;

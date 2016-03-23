@@ -10,9 +10,10 @@
  * @license		http://LicenseUrl
   */
 
-namespace Core\Io\Admin\Drivers;
+namespace Core\Io\Channels\Drivers;
 
-use Core\Bases\Io\Admin\BaseChannel;
+use Core\Bases\Io\Channels\BaseChannel;
+use Exception;
 
 /**
  * The driver for the slack channel
@@ -36,16 +37,21 @@ class SlackChannel extends BaseChannel
 	{
 		parent::__construct();
 
-		$hook = config('core.admin.pm.slack.hook');
+		$hook = config('app.io.channel.slack.hook');
+		if (!$hook)
+		{
+			throw new Exception('Slack-hook has not been set (app.io.channel.slack.hook).');
+		}
+
 		$settings = array(
 			'username' => app()->getName(),
 		);
 
-		if ($channel = config('core.admin.pm.slack.channel'))
+		if ($channel = config('app.io.channel.slack.channel'))
 		{
 			$settings['channel'] = $channel;
 		}
-		if ($icon = config('core.admin.pm.slack.icon'))
+		if ($icon = config('app.io.channel.slack.icon'))
 		{
 			$settings['icon'] = $icon;
 		}
@@ -61,7 +67,7 @@ class SlackChannel extends BaseChannel
 	 */
 	public function info($title, $body = null)
 	{
-		return $this->send($title, 'Info', $body, 'good', config('core.admin.pm.slack.channel.info'));
+		return $this->send($title, 'Info', $body, 'good', config('app.io.channel.slack.channel.info'));
 	}
 
 	/**
@@ -72,7 +78,7 @@ class SlackChannel extends BaseChannel
 	 */
 	public function warning($title, $body = null)
 	{
-		return $this->send($title, 'Warning', $body, 'warning', config('core.admin.pm.slack.channel.warning'));
+		return $this->send($title, 'Warning', $body, 'warning', config('app.io.channel.slack.channel.warning'));
 	}
 
 	/**
@@ -83,7 +89,7 @@ class SlackChannel extends BaseChannel
 	 */
 	public function error($title, $body = null)
 	{
-		return $this->send($title, 'Error', $body, 'danger', config('core.admin.pm.slack.channel.error'));
+		return $this->send($title, 'Error', $body, 'danger', config('app.io.channel.slack.channel.error'));
 	}
 
 	/**
