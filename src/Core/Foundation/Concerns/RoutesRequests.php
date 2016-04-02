@@ -70,7 +70,10 @@ trait RoutesRequests
 		if (AnalyticsManager::isEnabled())
 		{
 			// log pageview and flush all logs
-			$this->logPageView();
+			if (config('app.analytics.autolog.pageview', false))
+			{
+				$this->logPageView();
+			}
 			Registry::warehouse()->flush();
 		}
 
