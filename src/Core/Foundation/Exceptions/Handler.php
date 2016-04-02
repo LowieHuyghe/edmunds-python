@@ -45,7 +45,10 @@ class Handler extends ExceptionHandler
 	 */
 	public function report(Exception $e)
 	{
-		$this->logException($e);
+		if (config('app.analytics.autolog.exceptions', false))
+		{
+			$this->logException($e);
+		}
 
 		parent::report($e);
 	}
