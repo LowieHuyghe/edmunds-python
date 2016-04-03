@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
 	{
 		try
 		{
-			(new ErrorLog())->log(config('app.analytics.errordefault', null));
+			(new ErrorLog())->log(config('app.analytics.errordefault', config('app.analytics.default', null)));
 		}
 		catch(Exception $e){}
 		catch(Throwable $e){}

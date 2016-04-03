@@ -70,7 +70,7 @@ class AnalyticsManager extends BaseStructure
 	{
 		if (!isset($this->warehouses['piwik']))
 		{
-			$this->warehouses['piwik'] = new PiwikWarehouse();
+			$this->warehouses['piwik'] = new PiwikWarehouse('piwik');
 		}
 		return $this->warehouses['piwik'];
 	}
@@ -83,7 +83,7 @@ class AnalyticsManager extends BaseStructure
 	{
 		if (!isset($this->warehouses['ga']))
 		{
-			$this->warehouses['ga'] = new GaWarehouse();
+			$this->warehouses['ga'] = new GaWarehouse('ga');
 		}
 		return $this->warehouses['ga'];
 	}
@@ -96,7 +96,7 @@ class AnalyticsManager extends BaseStructure
 	{
 		if (!isset($this->warehouses['newrelic']))
 		{
-			$this->warehouses['newrelic'] = new NewrelicWarehouse();
+			$this->warehouses['newrelic'] = new NewrelicWarehouse('newrelic');
 		}
 		return $this->warehouses['newrelic'];
 	}
