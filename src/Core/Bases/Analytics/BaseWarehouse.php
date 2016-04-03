@@ -29,6 +29,12 @@ use Core\Registry;
 class BaseWarehouse extends BaseStructure
 {
 	/**
+	 * The driver used
+	 * @var string
+	 */
+	protected $driver;
+
+	/**
 	 * All the logs bundled
 	 * @var BaseLog[]
 	 */
@@ -39,6 +45,17 @@ class BaseWarehouse extends BaseStructure
 	 * @var array
 	 */
 	protected $parameterMapping = array();
+
+	/**
+	 * The constructor
+	 * @param string $driver
+	 */
+	public function __construct($driver)
+	{
+		parent::__construct();
+
+		$this->driver = $driver;
+	}
 
 	/**
 	 * Log something
@@ -68,5 +85,28 @@ class BaseWarehouse extends BaseStructure
 	protected function queue($callable, $argumentsArray)
 	{
 		(new QueueJob($callable, $argumentsArray, Queue::QUEUE_LOG, 1))->dispatch();
+	}
+
+	/**
+	 * Get the assignments for custom parameters
+	 * @param  BaseLog $log
+	 * @param  array $customConfigName
+	 * @param  string $parameter
+	 * @return array
+	 */
+	protected function getCustomAssignments($log, $customConfigName, $parameter)
+	{
+		$custom = config('app.analytics.' . $this->driver . '.custom.' . $customConfigName, array());
+		$assigns = array();
+
+		foreach ($custom as $key => $value)
+		{
+			if (isset($log->$value))
+			{
+				$assigns[str_replace('{0}', $key, $parameter)] = $log->$value;
+			}
+		}
+
+		return $assigns;
 	}
 }

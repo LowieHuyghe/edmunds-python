@@ -101,7 +101,7 @@ class BaseLog extends BaseStructure
 		$this->ip = $ip;
 		$this->url = $url;
 		$this->host = $host;
-		$path = (!$path || $path[0] != '/') ? "/$path" : $path;
+		$this->path = (!$path || $path[0] != '/') ? "/$path" : $path;
 		if ($referrer)
 		{
 			$this->referrer = $referrer;

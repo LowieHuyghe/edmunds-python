@@ -73,7 +73,7 @@ class GaWarehouse extends BaseWarehouse
 			foreach ($additionalAttributes as $additionalAttribute)
 			{
 				// queue it
-				$this->queue(array(get_called_class(), 'send'), array($attributes + $additionalAttribute, microtime(true)));
+				$this->queue(array(get_called_class(), 'send'), array(array_filter($attributes + $additionalAttribute), microtime(true)));
 			}
 		}
 
@@ -88,8 +88,8 @@ class GaWarehouse extends BaseWarehouse
 	 */
 	protected function processBaseLog($log)
 	{
-		return array(
-			'tid' => config('app.analytics.ga.trackignid'),
+		$assigns = array(
+			'tid' => config('app.analytics.ga.trackingid'),
 			'v' => config('app.analytics.ga.version'),
 			'z' => rand(0, 2000000000),
 
@@ -102,9 +102,9 @@ class GaWarehouse extends BaseWarehouse
 			'dp' => $log->path,
 			'dr' => $log->referrer,
 			'ua' => $log->userAgent,
-
-			'cdenvironment' => $log->environment,
 		);
+
+		return $assigns + $this->getCustomAssignments($log, 'dimensions', 'cd{0}') + $this->getCustomAssignments($log, 'metrics', 'cm{0}');
 	}
 
 	/**
