@@ -71,19 +71,8 @@ class PiwikWarehouse extends BaseWarehouse
 			}
 
 			// process the custom values
-			$customValues = ($attributes['custom'] ?? array()) + ($additionalAttributes['custom'] ?? array());
-			$customValuesParam = array();
-			$i = 1;
-			foreach ($customValues as $key => $value)
-			{
-				$customValuesParam["$i"] = array($key, $value);
-				++$i;
-			}
-			$attributes['_cvar'] = $customValuesParam ? json_encode($customValuesParam) : null;
-
-			// assign everything
-			unset($attributes['custom']);
-			unset($additionalAttributes['custom']);
+			$attributes['cvar'] = $this->processCustomVars('cvar', $attributes, $additionalAttributes);
+			$attributes['_cvar'] = $this->processCustomVars('_cvar', $attributes, $additionalAttributes);
 			$attributes = $attributes + $additionalAttributes;
 
 			// add to requests
@@ -104,6 +93,29 @@ class PiwikWarehouse extends BaseWarehouse
 	}
 
 	/**
+	 * Process the custom variables
+	 * @param  string $name
+	 * @param  array &$attributes
+	 * @param  array &$additionalAttributes
+	 * @return array
+	 */
+	protected function processCustomVars($name, &$attributes, &$additionalAttributes)
+	{
+		$customValues = ($attributes[$name] ?? array()) + ($additionalAttributes[$name] ?? array());
+		$customValuesParam = array();
+
+		$i = 1;
+		foreach ($customValues as $key => $value)
+		{
+			$customValuesParam["$i"] = array($key, $value);
+			++$i;
+		}
+
+		unset($attributes[$name]);
+		unset($additionalAttributes[$name]);
+	}
+
+	/**
 	 * Process the BaseLog log
 	 * @param  BaseLog $log
 	 * @return array
@@ -112,7 +124,7 @@ class PiwikWarehouse extends BaseWarehouse
 	{
 		$visitorId = substr(str_replace('-', '', $log->visitorId), 0, 16);
 
-		return array(
+		$assigns = array(
 			'idsite' => config('app.analytics.piwik.siteid'),
 			'apiv' => config('app.analytics.piwik.version'),
 			'rand' => rand(0, 2000000000),
@@ -131,10 +143,9 @@ class PiwikWarehouse extends BaseWarehouse
 			'ua' => $log->userAgent,
 
 			'otherAuthTime' => $log->time->timestamp,
-			'custom' => array(
-				'environment' => $log->environment,
-			),
 		);
+
+		return $assigns + $this->getCustomAssignments($log, 'dimensions', 'dimension{0}');
 	}
 
 	/**

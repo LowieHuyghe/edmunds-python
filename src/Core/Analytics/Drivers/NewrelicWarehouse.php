@@ -32,10 +32,11 @@ class NewrelicWarehouse extends BaseWarehouse
 {
 	/**
 	 * Constructor
+	 * @param string $driver
 	 */
-	public function __construct()
+	public function __construct($driver)
 	{
-		parent::__construct();
+		parent::__construct($driver);
 
 		$this->appName = app()->getName();
 		$this->license = config('app.analytics.newrelic.license') ?: ini_get('newrelic.license');
