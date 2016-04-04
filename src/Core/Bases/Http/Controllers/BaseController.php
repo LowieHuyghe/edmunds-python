@@ -32,7 +32,7 @@ class BaseController extends Controller
 	 * The default output type of the response, only used when set
 	 * @var int
 	 */
-	protected $outputType; //Response::TYPE_VIEW by default
+	protected $outputType;
 
 	/**
 	 * The current request
