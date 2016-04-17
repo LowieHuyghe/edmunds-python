@@ -8,7 +8,7 @@
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  */
+ */
 
 namespace Edmunds\Foundation\Helpers;
 use Edmunds\Bases\Helpers\BaseHelper;
@@ -19,7 +19,7 @@ use Edmunds\Bases\Helpers\BaseHelper;
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  */
+ */
 class MiscHelper extends BaseHelper
 {
 	/**

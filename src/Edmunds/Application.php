@@ -8,7 +8,7 @@
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  */
+ */
 
 namespace Edmunds;
 use Edmunds\Analytics\Tracking\PageviewLog;
@@ -37,7 +37,6 @@ use Edmunds\Foundation\Concerns\BindingRegisterers;
  * @author		Lowie Huyghe <iam@lowiehuyghe.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
- * @since		Version 0.
  */
 class Application extends \Laravel\Lumen\Application
 {
