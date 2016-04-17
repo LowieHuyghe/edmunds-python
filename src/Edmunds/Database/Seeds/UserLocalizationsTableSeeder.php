@@ -3,11 +3,9 @@
 /**
  * Edmunds
  *
- * The core of any web-project by Lowie Huyghe
+ * The fast PHP framework for building web applications.
  *
- * @author      Lowie Huyghe <iam@lowiehuyghe.com>
- * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
- * @license     http://LicenseUrl
+ * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
 namespace Edmunds\Database\Seeds;
@@ -18,10 +16,6 @@ use Edmunds\Auth\Models\User;
 
 /**
  * Seeder for the user_localizations-table
- *
- * @author      Lowie Huyghe <iam@lowiehuyghe.com>
- * @copyright   Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
- * @license     http://LicenseUrl
  */
 class UserLocalizationsTableSeeder extends BaseSeeder
 {
