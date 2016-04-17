@@ -5,7 +5,7 @@
 	 *
 	 * @param  string  $make
 	 * @param  array   $parameters
-	 * @return mixed|\Core\Application
+	 * @return mixed|\Edmunds\Application
 	 */
 	function app($make = null, $parameters = [])
 	{
@@ -26,7 +26,7 @@
 	 */
 	function trans($message, $parameters = array(), $locale = null, $onlyReplacements = false)
 	{
-		return \Core\Localization\Translator::getInstance()->trans($message, $parameters, null, $locale, $onlyReplacements);
+		return \Edmunds\Localization\Translator::getInstance()->trans($message, $parameters, null, $locale, $onlyReplacements);
 	}
 
 	/**
@@ -107,7 +107,7 @@
 	 */
 	function csrf_token()
 	{
-		return \Core\Http\Client\Session::getInstance()->token();
+		return \Edmunds\Http\Client\Session::getInstance()->token();
 	}
 
 	/**
@@ -121,7 +121,7 @@
 	 */
 	function redirect($to = null, $status = 302, $headers = [], $secure = null)
 	{
-		$redirector = new \Core\Routing\Redirector(app());
+		$redirector = new \Edmunds\Routing\Redirector(app());
 
 		if (is_null($to)) {
 			return $redirector;

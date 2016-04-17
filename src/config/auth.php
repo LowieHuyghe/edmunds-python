@@ -95,7 +95,7 @@ return [
 			'provider' => 'users',
 			'email' => config('app.auth.passwords.email'),
 			'table' => 'password_resets',
-			'expire' => config('core.auth.ttl.passwordreset'),
+			'expire' => config('edmunds.auth.ttl.passwordreset'),
 		],
 	],
 
