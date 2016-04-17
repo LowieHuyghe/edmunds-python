@@ -33,13 +33,13 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"Core\\": "src/Core"
+			"Edmunds\\": "src/Edmunds"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
 			"App\\": "app/",
-			"CoreTest\\": "tests/Core"
+			"EdmundsTest\\": "tests/Edmunds"
 		},
 		"classmap": [
 			"tests/",
