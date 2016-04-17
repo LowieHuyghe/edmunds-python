@@ -1,7 +1,7 @@
 {
-	"name": "lh/core",
-	"description": "The core of any web-project by Lowie Huyghe",
-	"keywords": ["core", "package", "Lowie", "Huyghe"],
+	"name": "lh/edmunds",
+	"description": "The fast PHP framework for building web applications.",
+	"keywords": ["edmunds", "framework", "core", "package", "php"],
 	"license": "http://lowiehuyghe.com/license",
 	"authors": [
 		{
