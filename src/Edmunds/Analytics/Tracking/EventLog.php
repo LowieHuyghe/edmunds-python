@@ -8,7 +8,7 @@
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  */
+ */
 
 namespace Edmunds\Analytics\Tracking;
 
@@ -20,7 +20,7 @@ use Edmunds\Bases\Analytics\Tracking\BaseLog;
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  *
+ *
  * @property string $category
  * @property string $action
  * @property string $name

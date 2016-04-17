@@ -8,7 +8,7 @@
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  */
+ */
 
 namespace Edmunds\Auth\Models;
 use Edmunds\Bases\Models\BaseModel;
@@ -21,7 +21,7 @@ use Edmunds\Validation\Validator;
  * @author		Lowie Huyghe <LowieHuyghe@users.noreply.github.com>
  * @copyright	Copyright (C) 2015, Lowie Huyghe. All rights reserved. Unauthorized copying of this file, via any medium is strictly prohibited. Proprietary and confidential.
  * @license		http://LicenseUrl
-  *
+ *
  * @property int $id
  * @property string $ip
  * @property string $type
