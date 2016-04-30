@@ -48,7 +48,7 @@ class ViewController extends BaseController
 		// not valid
 		if ($this->input->hasErrors())
 		{
-			abort(403);
+			abort(404);
 		}
 
 		// assign view
