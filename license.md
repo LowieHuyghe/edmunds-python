@@ -1,3 +1,3 @@
 ## License
 
-Edmunds is closed-source licensed. Unauthorized copying of this source code package or any file within, via any medium is strictly prohibited. Proprietary and confidential.
+This source code package is closed-source licensed. Copyright (C) 2016 Lowie Huyghe <iam@lowiehuyghe.com>. Unauthorized copying of this source code package or any file within, via any medium is strictly prohibited. Proprietary and confidential.
