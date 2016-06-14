@@ -33,15 +33,6 @@ trait RoutesRequests
 	 */
 	public function dispatch($request = null)
 	{
-		// initializer
-		if ($iniializerController = config('app.routing.initializer'))
-		{
-			$instance = $this->make($iniializerController);
-			$method = 'initialize';
-
-			$this->callControllerCallable([$instance, $method], array());
-		}
-
 		// check down for maintenance
 		if ($this->isDownForMaintenance())
 		{
