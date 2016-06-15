@@ -23,14 +23,39 @@ class ManifestController extends BaseController
 	 */
 	public function getJson()
 	{
-		$manifest = config('app.manifest_json');
+		$manifestConfig = config('app.manifest_json');
 
 		// enabled?
-		if ($manifest['enabled'])
+		if ($manifestConfig['enabled'])
 		{
 			$this->response->outputType = Response::TYPE_JSON;
 
-			$this->response->assign($manifest['data']);
+			$manifest = $manifestConfig['data'];
+
+			// add short name
+			if ($shortName = config('app.info.displayname.short', false))
+			{
+				$manifest['short_name'] = $shortName;
+			}
+			// add long name
+			if ($longName = config('app.info.displayname.long', false))
+			{
+				$manifest['name'] = $longName;
+			}
+			// add icons
+			if ($icons = config('app.info.icons', false))
+			{
+				$manifest['icons'] = array_map(function ($icon)
+					{
+						return array(
+							'src' => asset($icon['src']),
+							'size' => $icon['width'] . 'x' . $icon['height'],
+							'type' => $icon['type'],
+						);
+					}, $icons);
+			}
+
+			$this->response->assign($manifest);
 		}
 		else
 		{

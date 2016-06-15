@@ -27,7 +27,7 @@ return array
 
 	'config' => array(
 		'required' => array(
-			'app.name',
+			'app.info.name',
 			'app.key',
 			'app.cipher',
 
