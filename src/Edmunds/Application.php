@@ -45,7 +45,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function getName()
 	{
-		return config('app.name');
+		return config('app.info.name');
 	}
 
 	/**
