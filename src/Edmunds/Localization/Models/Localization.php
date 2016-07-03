@@ -150,7 +150,7 @@ class Localization extends BaseModel
 	 */
 	protected function getRawLocaleAttribute()
 	{
-		return $this->attributes['locale'] ?? null;
+		return isset($this->attributes['locale']) ? $this->attributes['locale'] : null;
 	}
 
 	/**

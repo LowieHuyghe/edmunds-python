@@ -101,7 +101,7 @@ class AnalyticsManager extends BaseStructure
 	 */
 	protected function getDefaultDriver()
 	{
-		return $this->driver ?? config('app.analytics.default', null);
+		return $this->driver ?: config('app.analytics.default', null);
 	}
 
 	/**
