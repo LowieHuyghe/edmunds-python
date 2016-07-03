@@ -73,7 +73,7 @@ class ChannelManager extends BaseStructure
 	 */
 	protected function getDefaultDriver()
 	{
-		return $this->driver ?? config('app.io.channel.default', null);
+		return $this->driver ?: config('app.io.channel.default', null);
 	}
 
 	/**

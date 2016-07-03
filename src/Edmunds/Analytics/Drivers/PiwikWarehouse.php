@@ -95,7 +95,7 @@ class PiwikWarehouse extends BaseWarehouse
 	 */
 	protected function processCustomVars($name, &$attributes, &$additionalAttributes)
 	{
-		$customValues = ($attributes[$name] ?? array()) + ($additionalAttributes[$name] ?? array());
+		$customValues = (isset($attributes[$name]) ? $attributes[$name] : array()) + (isset($additionalAttributes[$name]) ? $additionalAttributes[$name] : array());
 		$customValuesParam = array();
 
 		$i = 1;
