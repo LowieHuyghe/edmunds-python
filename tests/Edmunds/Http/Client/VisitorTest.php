@@ -58,7 +58,7 @@ class VisitorTest extends BaseTest
 	{
 		// not logged in
 		Auth::getInstance()->logout();
-		$this->assertTrue(!Visitor::getInstance()->loggedIn);
+		$this->assertTrue( ! Visitor::getInstance()->loggedIn);
 
 		// make user
 		$user = $this->createUser();
@@ -69,7 +69,7 @@ class VisitorTest extends BaseTest
 
 		// logged out
 		Auth::getInstance()->logout();
-		$this->assertTrue(!Visitor::getInstance()->loggedIn);
+		$this->assertTrue( ! Visitor::getInstance()->loggedIn);
 	}
 
 	/**

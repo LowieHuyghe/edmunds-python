@@ -67,7 +67,7 @@ class BaseModel extends Model
 	 */
 	protected function getValidatorAttribute()
 	{
-		if (!isset($this->validatorInstance))
+		if ( ! isset($this->validatorInstance))
 		{
 			$validator = new Validator();
 
@@ -180,7 +180,7 @@ class BaseModel extends Model
         }
 
         // Validate it all
-		if ((!isset($options['validate']) || $options['validate']) && $this->hasErrors()) {
+		if (( ! isset($options['validate']) || $options['validate']) && $this->hasErrors()) {
 			return false;
 		}
 
@@ -317,7 +317,7 @@ class BaseModel extends Model
 
 		foreach ($attributes as $key => $value)
 		{
-			if (!in_array($key, $objectKeys))
+			if ( ! in_array($key, $objectKeys))
 			{
 				$model->$key = $value;
 			}

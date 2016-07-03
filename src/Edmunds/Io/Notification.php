@@ -41,7 +41,7 @@ class Notification extends BaseStructure
 	public static function all($type = null, $subtype = null)
 	{
 		//If nothing specified, just return all
-		if (!$type && !$subtype)
+		if ( ! $type && !$subtype)
 		{
 			return collect(self::$all);
 		}

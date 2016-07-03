@@ -68,7 +68,7 @@ class Context extends BaseStructure
 	 */
 	protected function getDetector()
 	{
-		if (!isset($this->detector))
+		if ( ! isset($this->detector))
 		{
 			$this->detector = new DeviceDetector($this->userAgent);
 			$this->detector->parse();

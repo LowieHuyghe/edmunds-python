@@ -128,7 +128,7 @@ class LogController extends BaseController
 		$log->host = $urlParts['host'];
 
 		$path = $urlParts['path'];
-		$log->path = (!$path || $path[0] != '/') ? "/$path" : $path;
+		$log->path = ( ! $path || $path[0] != '/') ? "/$path" : $path;
 
 		// input has errors
 		if ($log->hasErrors())
@@ -174,7 +174,7 @@ class LogController extends BaseController
 					'id', 'category', 'name', 'price', 'quantity'
 				)));
 
-				if (!$logItem->hasErrors())
+				if ( ! $logItem->hasErrors())
 				{
 					$items[] = $logItem;
 				}

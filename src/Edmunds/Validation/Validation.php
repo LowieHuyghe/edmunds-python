@@ -35,7 +35,7 @@ class Validation extends \Illuminate\Validation\Validator
 		parent::__construct($translator, $data, $rules, $messages, $customAttributes);
 
 		// set presence
-		if (!isset(app()['validation.presence']))
+		if ( ! isset(app()['validation.presence']))
 		{
 			app()->singleton('validation.presence', function () {
 				return new DatabasePresenceVerifier(app()['db']);
@@ -400,7 +400,7 @@ class Validation extends \Illuminate\Validation\Validator
 	 */
 	protected function replaceBefore($message, $attribute, $rule, $parameters)
 	{
-		if (! (strtotime($parameters[0]))) {
+		if ( ! (strtotime($parameters[0]))) {
 			return array('date' => $this->getAttribute($parameters[0]));
 		}
 
@@ -451,12 +451,12 @@ class Validation extends \Illuminate\Validation\Validator
 	 */
 	public function messages()
 	{
-		if (!isset($this->failedRules))
+		if ( ! isset($this->failedRules))
 		{
 			$this->passes();
 		}
 		// generate messages
-		if (!$this->messages)
+		if ( ! $this->messages)
 		{
 			$this->messages = new MessageBag;
 
@@ -478,7 +478,7 @@ class Validation extends \Illuminate\Validation\Validator
 	 */
 	public function valid()
 	{
-		if (!isset($this->failedRules))
+		if ( ! isset($this->failedRules))
 		{
 			$this->passes();
 		}
@@ -492,7 +492,7 @@ class Validation extends \Illuminate\Validation\Validator
 	 */
 	public function invalid()
 	{
-		if (!isset($this->failedRules))
+		if ( ! isset($this->failedRules))
 		{
 			$this->passes();
 		}

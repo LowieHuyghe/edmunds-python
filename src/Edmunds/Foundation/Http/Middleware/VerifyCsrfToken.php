@@ -54,7 +54,7 @@ class VerifyCsrfToken
         $this->app = $app;
         $this->encrypter = $encrypter;
 
-        if (!$app->isStateful())
+        if ( ! $app->isStateful())
         {
             throw new Exception('VerifyCsrfToken is not supported is a stateless app.');
         }
@@ -126,11 +126,11 @@ class VerifyCsrfToken
 
         $token = $request->input('_token') ?: $request->header('X-CSRF-TOKEN');
 
-        if (! $token && $header = $request->header('X-XSRF-TOKEN')) {
+        if ( ! $token && $header = $request->header('X-XSRF-TOKEN')) {
             $token = $this->encrypter->decrypt($header);
         }
 
-        if (! is_string($sessionToken) || ! is_string($token)) {
+        if ( ! is_string($sessionToken) || ! is_string($token)) {
             return false;
         }
 

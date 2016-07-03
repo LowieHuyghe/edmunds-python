@@ -247,7 +247,7 @@ class TokenGuard extends \Illuminate\Auth\TokenGuard
 	{
 		$user = $this->user();
 
-		if (!is_null($this->user))
+		if ( ! is_null($this->user))
 		{
 			$this->refreshApiToken($this->user);
 		}

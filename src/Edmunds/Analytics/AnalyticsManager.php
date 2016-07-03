@@ -62,7 +62,7 @@ class AnalyticsManager extends BaseStructure
 	 */
 	protected function createPiwikDriver()
 	{
-		if (!isset($this->warehouses['piwik']))
+		if ( ! isset($this->warehouses['piwik']))
 		{
 			$this->warehouses['piwik'] = new PiwikWarehouse('piwik');
 		}
@@ -75,7 +75,7 @@ class AnalyticsManager extends BaseStructure
 	 */
 	protected function createGaDriver()
 	{
-		if (!isset($this->warehouses['ga']))
+		if ( ! isset($this->warehouses['ga']))
 		{
 			$this->warehouses['ga'] = new GaWarehouse('ga');
 		}
@@ -88,7 +88,7 @@ class AnalyticsManager extends BaseStructure
 	 */
 	protected function createNewrelicDriver()
 	{
-		if (!isset($this->warehouses['newrelic']))
+		if ( ! isset($this->warehouses['newrelic']))
 		{
 			$this->warehouses['newrelic'] = new NewrelicWarehouse('newrelic');
 		}
@@ -111,7 +111,7 @@ class AnalyticsManager extends BaseStructure
 	 */
 	protected function get($name)
 	{
-		if (!isset($this->warehouses[$name]))
+		if ( ! isset($this->warehouses[$name]))
 		{
 			$this->warehouses[$name] = call_user_func(array($this, 'create' . ucfirst($name) . 'Driver'));
 		}

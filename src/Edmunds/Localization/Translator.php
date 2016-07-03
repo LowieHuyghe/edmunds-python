@@ -44,7 +44,7 @@ class Translator extends BaseStructure implements TranslatorInterface
 	 */
 	public static function getInstance()
 	{
-		if (!isset(self::$instance))
+		if ( ! isset(self::$instance))
 		{
 			self::$instance = new Translator();
 		}
@@ -105,7 +105,7 @@ class Translator extends BaseStructure implements TranslatorInterface
 	protected function getLocales($locale = null)
 	{
 		//Set the default locales
-		if (!isset($this->locales))
+		if ( ! isset($this->locales))
 		{
 			$localization = Visitor::getInstance()->localization;
 
@@ -266,7 +266,7 @@ class Translator extends BaseStructure implements TranslatorInterface
 	 */
 	protected function getSelector()
 	{
-		if (!isset($this->selector)) {
+		if ( ! isset($this->selector)) {
 			$this->selector = new MessageSelector;
 		}
 		return $this->selector;

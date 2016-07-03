@@ -64,7 +64,7 @@ class NewrelicWarehouse extends BaseWarehouse
 	public function log($log)
 	{
 		// check if loaded
-		if (!$this->loaded)
+		if ( ! $this->loaded)
 		{
 			return;
 		}

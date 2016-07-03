@@ -32,7 +32,7 @@ class SlackChannel extends BaseChannel
 		parent::__construct();
 
 		$hook = config('app.io.channel.slack.hook');
-		if (!$hook)
+		if ( ! $hook)
 		{
 			throw new Exception('Slack-hook has not been set (app.io.channel.slack.hook).');
 		}
