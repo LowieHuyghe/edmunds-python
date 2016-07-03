@@ -69,15 +69,15 @@ class UpdateGeoIPCommand extends BaseCommand
 				unlink($tmpFileNameGz);
 
 				//Check if uncompressed
-				if (!file_exists($tmpFileNameMmdb))
+				if ( ! file_exists($tmpFileNameMmdb))
 				{
 					continue;
 				}
 
 				//Check if geo-directory exists and make it if not
-				if (!file_exists($directoryName))
+				if ( ! file_exists($directoryName))
 				{
-					if (!mkdir($directoryName, 0777, true))
+					if ( ! mkdir($directoryName, 0777, true))
 					{
 						$this->informAdminError("Could not create the directory for the db. ($name)");
 						continue;
@@ -91,17 +91,17 @@ class UpdateGeoIPCommand extends BaseCommand
 					if (file_exists($fileName . '.old'))
 					{
 						//If already exist *.old file, remove it
-						if (!unlink($fileName . '.old'))
+						if ( ! unlink($fileName . '.old'))
 						{
 							$this->informAdminError("Could not remove an existing *.old file. ($name)");
 							continue;
 						}
 					}
 					//Rename to *.old
-					if (!rename($fileName, $fileName . '.old'))
+					if ( ! rename($fileName, $fileName . '.old'))
 					{
 						//Not succeeded and if file does not exist anymore, inform admin
-						if (!file_exists($fileName))
+						if ( ! file_exists($fileName))
 						{
 							$this->informAdminError("Could not rename existing db to *.old, and now there is no db anymore. ($name)");
 						}
@@ -123,7 +123,7 @@ class UpdateGeoIPCommand extends BaseCommand
 					if ($oldFile)
 					{
 						//Error, so rename old file to correct name
-						if (!rename($fileName . '.old', $fileName))
+						if ( ! rename($fileName . '.old', $fileName))
 						{
 							//If not succeeded, there is an error
 							$this->informAdminError("Could not move the new db and could not move old db back. ($name)");
@@ -164,7 +164,7 @@ class UpdateGeoIPCommand extends BaseCommand
 		$out_file = fopen($fileName, 'wb');
 
 		// Keep repeating until the end of the input file
-		while(!gzeof($file)) {
+		while( ! gzeof($file)) {
 			// Read buffer-size bytes
 			// Both fwrite and gzread and binary-safe
 			fwrite($out_file, gzread($file, $buffer_size));

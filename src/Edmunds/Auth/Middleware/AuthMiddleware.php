@@ -35,7 +35,7 @@ class AuthMiddleware extends BaseMiddleware
 		$response = Response::getInstance();
 
 		// check if guest
-		if (!$auth->loggedIn)
+		if ( ! $auth->loggedIn)
 		{
 			$guard = $auth->getGuard();
 			if ($guard instanceof BasicStatefulGuard

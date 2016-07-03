@@ -49,7 +49,7 @@ class AuthTest extends BaseTest
 
 		// logout
 		$auth->logout();
-		$this->assertTrue(!$auth->loggedIn);
+		$this->assertTrue( ! $auth->loggedIn);
 		$this->assertTrue($auth->user == null);
 	}
 
@@ -67,7 +67,7 @@ class AuthTest extends BaseTest
 
 		// logout
 		$auth->logout();
-		$this->assertTrue(!$auth->loggedIn);
+		$this->assertTrue( ! $auth->loggedIn);
 	}
 
 	/**
@@ -81,14 +81,14 @@ class AuthTest extends BaseTest
 		$currentLoginAttempts = $auth->attemptsCount;
 
 		// try login
-		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
-		$this->assertTrue(!$auth->loggedIn);
+		$this->assertTrue( ! $auth->login($this->email, 'notthepassword'));
+		$this->assertTrue( ! $auth->loggedIn);
 		//The ratelimiter has fault code where it first ads the value 1 when it does not exist and increments it afterwards. Resulting in 2 instead of 1.
 		$this->assertTrue($auth->attemptsCount === $currentLoginAttempts + ($currentLoginAttempts == 0 ? 2 : 1));
 
 		// try login
-		$this->assertTrue(!$auth->login($this->email, 'notthepassword'));
-		$this->assertTrue(!$auth->loggedIn);
+		$this->assertTrue( ! $auth->login($this->email, 'notthepassword'));
+		$this->assertTrue( ! $auth->loggedIn);
 		$this->assertTrue($auth->attemptsCount === $currentLoginAttempts + ($currentLoginAttempts == 0 ? 3 : 2));
 
 		// login

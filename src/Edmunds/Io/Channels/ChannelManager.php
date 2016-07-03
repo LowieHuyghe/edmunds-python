@@ -60,7 +60,7 @@ class ChannelManager extends BaseStructure
 	 */
 	protected function createSlackDriver()
 	{
-		if (!isset($this->channels['slack']))
+		if ( ! isset($this->channels['slack']))
 		{
 			$this->channels['slack'] = new SlackChannel();
 		}
@@ -83,7 +83,7 @@ class ChannelManager extends BaseStructure
 	 */
 	protected function get($name)
 	{
-		if (!isset($this->channels[$name]))
+		if ( ! isset($this->channels[$name]))
 		{
 			$this->channels[$name] = call_user_func(array($this, 'create' . ucfirst($name) . 'Driver'));
 		}

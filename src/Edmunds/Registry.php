@@ -36,7 +36,7 @@ class Registry extends BaseStructure
 	 */
 	public static function cache($store = null)
 	{
-		if (!isset(self::$registry['cache'][$store ?: 0]))
+		if ( ! isset(self::$registry['cache'][$store ?: 0]))
 		{
 			self::$registry['cache'][$store ?: 0] = new Cache($store);
 		}
@@ -51,7 +51,7 @@ class Registry extends BaseStructure
 	 */
 	public static function db($connection = null)
 	{
-		if (!isset(self::$registry['db'][$connection ?: 0]))
+		if ( ! isset(self::$registry['db'][$connection ?: 0]))
 		{
 			self::$registry['db'][$connection ?: 0] = new Database($connection);
 		}
@@ -66,7 +66,7 @@ class Registry extends BaseStructure
 	 */
 	public static function queue($driver = null)
 	{
-		if (!isset(self::$registry['queue'][$driver ?: 0]))
+		if ( ! isset(self::$registry['queue'][$driver ?: 0]))
 		{
 			self::$registry['queue'][$driver ?: 0] = new Queue($driver);
 		}
@@ -81,7 +81,7 @@ class Registry extends BaseStructure
 	 */
 	public static function channel($driver = null)
 	{
-		if (!isset(self::$registry['channel'][$driver ?: 0]))
+		if ( ! isset(self::$registry['channel'][$driver ?: 0]))
 		{
 			self::$registry['channel'][$driver ?: 0] = (new ChannelManager($driver))->channel();
 		}
@@ -96,7 +96,7 @@ class Registry extends BaseStructure
 	 */
 	public static function warehouse($driver = null)
 	{
-		if (!isset(self::$registry['warehouse'][$driver ?: 0]))
+		if ( ! isset(self::$registry['warehouse'][$driver ?: 0]))
 		{
 			self::$registry['warehouse'][$driver ?: 0] = (new AnalyticsManager($driver))->warehouse();
 		}

@@ -40,7 +40,7 @@ class RolesMiddleware extends BaseMiddleware
 
 			foreach ($roleIds as $roleId)
 			{
-				if (!$auth->user->hasRole($roleId))
+				if ( ! $auth->user->hasRole($roleId))
 				{
 					$allowed = false;
 					break;
@@ -48,7 +48,7 @@ class RolesMiddleware extends BaseMiddleware
 			}
 		}
 
-		if (!$allowed)
+		if ( ! $allowed)
 		{
 			abort(403);
 		}

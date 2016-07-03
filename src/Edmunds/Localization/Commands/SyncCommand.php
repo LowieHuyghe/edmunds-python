@@ -162,7 +162,7 @@ class SyncCommand extends BaseCommand
 				//Put contents in files
 				$dir = "$langDir/$lang";
 				$file = "$dir/$group.php";
-				if (!file_exists($dir))
+				if ( ! file_exists($dir))
 				{
 					mkdir($dir, 0777, true);
 				}
@@ -192,11 +192,11 @@ class SyncCommand extends BaseCommand
 
 			$path = realpath("$dir/$value");
 
-			if(!is_dir($path))
+			if( ! is_dir($path))
 			{
 				$results[] = $path;
 			}
-			else if(!in_array($path, array(base_path('vendor'), storage_path(), Translator::getLangPath())))
+			else if( ! in_array($path, array(base_path('vendor'), storage_path(), Translator::getLangPath())))
 			{
 				$this->getAllFiles($path, $results);
 			}
