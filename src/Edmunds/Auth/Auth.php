@@ -45,7 +45,7 @@ class Auth extends BaseStructure
 	 */
 	public static function getInstance()
 	{
-		if (!isset(self::$instance))
+		if ( ! isset(self::$instance))
 		{
 			self::$instance = new Auth(Request::getInstance());
 		}

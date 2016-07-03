@@ -49,7 +49,7 @@ class Response extends BaseStructure
 	 */
 	public static function getInstance()
 	{
-		if (!isset(self::$instance))
+		if ( ! isset(self::$instance))
 		{
 			self::$instance = new Response(Request::getInstance());
 		}
@@ -205,7 +205,7 @@ class Response extends BaseStructure
 	 */
 	public function view($key = null, $view = null)
 	{
-		if (!isset($this->viewResponse))
+		if ( ! isset($this->viewResponse))
 		{
 			$this->viewResponse = new ViewResponse();
 		}
@@ -342,7 +342,7 @@ class Response extends BaseStructure
 		//Json response
 		elseif ($this->outputType == self::TYPE_JSON)
 		{
-			if (!isset($this->assignments['html']) && isset($this->viewResponse))
+			if ( ! isset($this->assignments['html']) && isset($this->viewResponse))
 			{
 				$this->assignments['html'] = $this->viewResponse->getRendered($this->assignments);
 			}

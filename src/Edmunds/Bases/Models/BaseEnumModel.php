@@ -38,7 +38,7 @@ class BaseEnumModel extends BaseModel
 		$calledClass = get_called_class();
 
 		//Check if already fetched
-		if (!isset(self::$constants[$calledClass]))
+		if ( ! isset(self::$constants[$calledClass]))
 		{
 			//Get all the constants
 			$reflect = new \ReflectionClass($calledClass);

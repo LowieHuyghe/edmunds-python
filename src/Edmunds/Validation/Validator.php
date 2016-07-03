@@ -100,7 +100,7 @@ class Validator extends BaseStructure
 					$sometimesSet = true;
 				}
 			}
-			if (!$sometimesSet)
+			if ( ! $sometimesSet)
 			{
 				$rules[$name] = implode('|', $vs);
 			}
@@ -162,7 +162,7 @@ class Validator extends BaseStructure
 		{
 			return $this->rules;
 		}
-		if (!isset($this->rules[$name]))
+		if ( ! isset($this->rules[$name]))
 		{
 			$this->rules[$name] = new ValidationRule($name, $this);
 		}
@@ -177,7 +177,7 @@ class Validator extends BaseStructure
 	 */
 	public function get($name, $default = null)
 	{
-		if (!isset($this->input[$name]))
+		if ( ! isset($this->input[$name]))
 		{
 			$fallback = isset($this->rules[$name]) ? $this->rules[$name]->fallback : null;
 			$value = $default ?: $fallback;
@@ -205,14 +205,14 @@ class Validator extends BaseStructure
 				}
 				elseif (array_key_exists('date_format', $rules))
 				{
-					if (! $value instanceof DateTime)
+					if ( ! $value instanceof DateTime)
 					{
 						$value = DateTime::createFromFormat($rules['date_format'], $value);
 					}
 				}
 				elseif (array_key_exists('date', $rules))
 				{
-					if (! $value instanceof DateTime)
+					if ( ! $value instanceof DateTime)
 					{
 						$value = DateTime::createFromDate($value);
 					}

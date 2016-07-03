@@ -51,7 +51,7 @@ class Visitor extends BaseStructure
 	 */
 	public static function getInstance()
 	{
-		if (!isset(self::$instance))
+		if ( ! isset(self::$instance))
 		{
 			self::$instance = new Visitor(Request::getInstance(), Response::getInstance());
 		}
@@ -109,7 +109,7 @@ class Visitor extends BaseStructure
 	 */
 	protected function getIdAttribute()
 	{
-		if (!isset($this->visitorId))
+		if ( ! isset($this->visitorId))
 		{
 			if (app()->isStateful())
 			{
@@ -117,11 +117,11 @@ class Visitor extends BaseStructure
 
 				//First check session
 				$clientId = $this->request->session->get($idKey);
-				if (!$clientId)
+				if ( ! $clientId)
 				{
 					//Then check cookie
 					$clientId = $this->request->getCookie($idKey);
-					if (!$clientId)
+					if ( ! $clientId)
 					{
 						//Otherwise generate and save
 						$clientId = MiscHelper::generate_uuid();
@@ -136,7 +136,7 @@ class Visitor extends BaseStructure
 
 				// check header
 				$clientId = $this->request->getHeader($headerId);
-				if (!$clientId)
+				if ( ! $clientId)
 				{
 					// generate and save
 					$clientId = MiscHelper::generate_uuid();
@@ -174,9 +174,9 @@ class Visitor extends BaseStructure
 	 */
 	protected function getLocalizationAttribute()
 	{
-		if (!isset($this->visitorLocalization))
+		if ( ! isset($this->visitorLocalization))
 		{
-			if (! Localization::isEnabled())
+			if ( ! Localization::isEnabled())
 			{
 				$localization = $this->getNewLocalization();
 			}
@@ -206,7 +206,7 @@ class Visitor extends BaseStructure
 						$response->header($headerTimezone, $localization->timezone);
 					}
 
-					if (!$localization->user) return false;
+					if ( ! $localization->user) return false;
 				});
 
 				// from user
@@ -250,7 +250,7 @@ class Visitor extends BaseStructure
 					{
 						if (is_null($localization->$attribute))
 						{
-							if (!$newLocalization) $newLocalization = $this->getNewLocalization();
+							if ( ! $newLocalization) $newLocalization = $this->getNewLocalization();
 
 							// fill in
 							$localization->$attribute = $newLocalization->getAttributes()[$attribute];
@@ -263,7 +263,7 @@ class Visitor extends BaseStructure
 						$localization->save();
 					}
 					// if not in session or cookie, save it
-					elseif (!$this->request->session->get($idKey) || !$this->request->getCookie($idKey))
+					elseif ( ! $this->request->session->get($idKey) || !$this->request->getCookie($idKey))
 					{
 						unset($localization->user_id);
 						$localization->save();
@@ -301,9 +301,9 @@ class Visitor extends BaseStructure
 	 */
 	protected function getLocationAttribute()
 	{
-		if (!isset($this->visitorLocation))
+		if ( ! isset($this->visitorLocation))
 		{
-			if (! Location::isEnabled())
+			if ( ! Location::isEnabled())
 			{
 				$location = $this->getNewLocation();
 			}
@@ -326,7 +326,7 @@ class Visitor extends BaseStructure
 						Registry::cache()->set($cacheKey, $location, 60 * 24 * 4); // 4 days because of default lifecycle of DHCP
 					}
 
-					if (!$location->user) return false;
+					if ( ! $location->user) return false;
 				});
 
 				// from user
@@ -352,7 +352,7 @@ class Visitor extends BaseStructure
 				}
 
 				// no location or ip not matching
-				if (!isset($location) || !$location || $location->ip != $this->request->ip)
+				if ( ! isset($location) || !$location || $location->ip != $this->request->ip)
 				{
 					$location = $this->getNewLocation();
 					$location->save();

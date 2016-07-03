@@ -513,7 +513,7 @@ class ValidationRule extends BaseStructure
 	 */
 	public function unique($table, $premiumKey = null, $column = null, $where = array())
 	{
-		if (!empty($where))
+		if ( ! empty($where))
 		{
 			$string = '';
 			$first = true;

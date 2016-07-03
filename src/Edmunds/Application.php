@@ -125,7 +125,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	public function getConfigurationPath($name = null)
 	{
-		if (!$name)
+		if ( ! $name)
 		{
 			$appConfigDir = $this->basePath('config').'/';
 
@@ -192,7 +192,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	protected function logPageView($exception = null)
 	{
-		if (!$this->runningInConsole())
+		if ( ! $this->runningInConsole())
 		{
 			(new PageviewLog())->log();
 		}

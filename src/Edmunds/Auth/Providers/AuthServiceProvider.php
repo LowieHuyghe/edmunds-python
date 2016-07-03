@@ -41,7 +41,7 @@ class AuthServiceProvider extends BaseServiceProvider
 	{
 		$this->app['auth']->extend('session', function($app, $name, array $config)
 		{
-			if (!$app->isStateful())
+			if ( ! $app->isStateful())
 			{
 				throw new Exception('Cannot use SessionGuard for authentication in a stateless application.');
 			}
@@ -71,7 +71,7 @@ class AuthServiceProvider extends BaseServiceProvider
 	{
 		$this->app['auth']->extend('basic', function($app, $name, array $config)
 		{
-			if (!$app->isStateful())
+			if ( ! $app->isStateful())
 			{
 				return new BasicStatelessGuard(
 					$app['auth']->createUserProvider($config['provider']),

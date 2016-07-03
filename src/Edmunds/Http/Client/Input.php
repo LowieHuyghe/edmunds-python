@@ -33,7 +33,7 @@ class Input extends BaseStructure
 	 */
 	public static function getInstance()
 	{
-		if (!isset(self::$instance))
+		if ( ! isset(self::$instance))
 		{
 			self::$instance = new Input(Request::getInstance());
 		}
@@ -70,7 +70,7 @@ class Input extends BaseStructure
 	 */
 	protected function getValidator()
 	{
-		if (!isset($this->validatorInstance))
+		if ( ! isset($this->validatorInstance))
 		{
 			// fetch input
 			$input = $this->request->input() + $this->request->file();

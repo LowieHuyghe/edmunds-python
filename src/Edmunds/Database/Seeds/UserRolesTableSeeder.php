@@ -35,7 +35,7 @@ class UserRolesTableSeeder extends BaseSeeder
 			for ($i=0; $i < $count; $i++)
 			{
 				$roleId = $roles[$i]->id;
-				if (!$user->hasRole($roleId))
+				if ( ! $user->hasRole($roleId))
 				{
 					$user->roles()->attach($roleId);
 				}

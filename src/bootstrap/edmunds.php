@@ -3,11 +3,11 @@
 try
 {
 
-	if (!defined('APP_BASE_PATH'))
+	if ( ! defined('APP_BASE_PATH'))
 	{
 		define('APP_BASE_PATH', realpath(BASE_PATH));
 	}
-	if (!defined('EDMUNDS_BASE_PATH'))
+	if ( ! defined('EDMUNDS_BASE_PATH'))
 	{
 		define('EDMUNDS_BASE_PATH', realpath(__DIR__ . '/..'));
 	}
@@ -62,12 +62,12 @@ try
 	$missingConfig = array();
 	foreach (config('edmunds.config.required') as $line)
 	{
-		if (!config($line))
+		if ( ! config($line))
 		{
 			$missingConfig[] = $line;
 		}
 	}
-	if (!empty($missingConfig))
+	if ( ! empty($missingConfig))
 	{
 		throw new Exception("The following config-values are required:\n" . implode("\n", $missingConfig));
 	}
@@ -187,7 +187,7 @@ catch (Exception $e)
 {
 
 	// when application is not set, render exception-page
-	if (!isset($app))
+	if ( ! isset($app))
 	{
 		$exceptionHandler = new Edmunds\Foundation\Exceptions\Handler();
 		$request = new Illuminate\Http\Request();

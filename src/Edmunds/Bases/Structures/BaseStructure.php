@@ -209,7 +209,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	protected function getValidatorAttribute()
 	{
-		if (!isset($this->validatorInstance))
+		if ( ! isset($this->validatorInstance))
 		{
 			$validator = new Validator();
 
@@ -231,7 +231,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	{
 		$class = get_class($this);
 
-		if (! isset(static::$booted[$class])) {
+		if ( ! isset(static::$booted[$class])) {
 			static::$booted[$class] = true;
 
 			$this->fireModelEvent('booting', false);
@@ -404,7 +404,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	public static function flushEventListeners()
 	{
-		if (! isset(static::$dispatcher)) {
+		if ( ! isset(static::$dispatcher)) {
 			return;
 		}
 
@@ -488,7 +488,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	protected function fireModelEvent($event, $halt = true)
 	{
-		if (! isset(static::$dispatcher)) {
+		if ( ! isset(static::$dispatcher)) {
 			return true;
 		}
 
@@ -511,11 +511,11 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	{
 		$time = $this->freshTimestamp();
 
-		if (! $this->isDirty(static::UPDATED_AT)) {
+		if ( ! $this->isDirty(static::UPDATED_AT)) {
 			$this->setUpdatedAt($time);
 		}
 
-		if (! $this->exists && ! $this->isDirty(static::CREATED_AT)) {
+		if ( ! $this->exists && ! $this->isDirty(static::CREATED_AT)) {
 			$this->setCreatedAt($time);
 		}
 	}
@@ -869,7 +869,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	protected function removeTableFromKey($key)
 	{
-		if (! Str::contains($key, '.')) {
+		if ( ! Str::contains($key, '.')) {
 			return $key;
 		}
 
@@ -920,7 +920,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		// to a DateTime / Carbon instance. This is so we will get some consistent
 		// formatting while accessing attributes vs. arraying / JSONing a model.
 		foreach ($this->getDates() as $key) {
-			if (! isset($attributes[$key])) {
+			if ( ! isset($attributes[$key])) {
 				continue;
 			}
 
@@ -935,7 +935,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		// the mutator for the attribute. We cache off every mutated attributes so
 		// we don't have to constantly check on attributes that actually change.
 		foreach ($mutatedAttributes as $key) {
-			if (! array_key_exists($key, $attributes)) {
+			if ( ! array_key_exists($key, $attributes)) {
 				continue;
 			}
 
@@ -948,7 +948,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		// the values to their appropriate type. If the attribute has a mutator we
 		// will not perform the cast on those attributes to avoid any confusion.
 		foreach ($this->casts as $key => $value) {
-			if (! array_key_exists($key, $attributes) ||
+			if ( ! array_key_exists($key, $attributes) ||
 				in_array($key, $mutatedAttributes)) {
 				continue;
 			}
@@ -985,7 +985,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	 */
 	protected function getArrayableAppends()
 	{
-		if (! count($this->appends)) {
+		if ( ! count($this->appends)) {
 			return [];
 		}
 
@@ -1049,7 +1049,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 		// instance on retrieval, which makes it quite convenient to work with
 		// date fields without having to create a mutator for each property.
 		elseif (in_array($key, $this->getDates())) {
-			if (! is_null($value)) {
+			if ( ! is_null($value)) {
 				return $this->asDateTime($value);
 			}
 		}
@@ -1365,7 +1365,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 			return count($dirty) > 0;
 		}
 
-		if (! is_array($attributes)) {
+		if ( ! is_array($attributes)) {
 			$attributes = func_get_args();
 		}
 
@@ -1434,7 +1434,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 	{
 		$class = get_class($this);
 
-		if (! isset(static::$mutatorCache[$class])) {
+		if ( ! isset(static::$mutatorCache[$class])) {
 			static::cacheMutatedAttributes($class);
 		}
 
@@ -1661,7 +1661,7 @@ abstract class BaseStructure implements ArrayAccess, Arrayable, Jsonable, JsonSe
 
 		foreach ($attributes as $key => $value)
 		{
-			if (!in_array($key, $objectKeys))
+			if ( ! in_array($key, $objectKeys))
 			{
 				$structure->$key = $value;
 			}

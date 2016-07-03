@@ -101,7 +101,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 	public function hasRight($rightId)
 	{
 		//Fetch all the rights
-		if (!isset($this->rights))
+		if ( ! isset($this->rights))
 		{
 			$rights = array();
 			$roles = $this->roles;

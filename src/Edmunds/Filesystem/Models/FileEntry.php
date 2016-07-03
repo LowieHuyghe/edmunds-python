@@ -72,7 +72,7 @@ class FileEntry extends BaseModel
 	 */
 	public function type()
 	{
-		if (!isset($this->typeClass))
+		if ( ! isset($this->typeClass))
 		{
 			throw new \Exception('The class representing the Types not set');
 		}
@@ -87,7 +87,7 @@ class FileEntry extends BaseModel
 	public function save(array $options = Array())
 	{
 		//Set the name for the file when saving
-		if (!$this->name)
+		if ( ! $this->name)
 		{
 			$this->name = self::getNewName($this->getExtension());
 		}
@@ -166,7 +166,7 @@ class FileEntry extends BaseModel
 		$deleted = true;
 		if ($this->name && $this->getFileExist())
 		{
-			if (!self::getDisk()->delete($this->name))
+			if ( ! self::getDisk()->delete($this->name))
 			{
 				$deleted = false;
 			}
@@ -303,7 +303,7 @@ class FileEntry extends BaseModel
 	public static function generateFromInput($uploadedFile)
 	{
 		//Fetch the uploaded file
-		if (!$uploadedFile)
+		if ( ! $uploadedFile)
 		{
 			return null;
 		}

@@ -64,7 +64,7 @@ class Localization extends BaseModel
 	 */
 	public function initialize($timezone, $countryCode, $locale, $fallback = null)
 	{
-		if (! self::isEnabled())
+		if ( ! self::isEnabled())
 		{
 			// not enabled, so set defaults
 			$this->attributes['locale'] = $this->fallback;
@@ -84,7 +84,7 @@ class Localization extends BaseModel
 				$locale = Locale::parseLocale($locale);
 
 				// add currency when possible
-				if ($countryCode && (!isset($locale['region']) || !$locale['region']))
+				if ($countryCode && ( ! isset($locale['region']) || !$locale['region']))
 				{
 					$locale['region'] = strtoupper($countryCode);
 				}

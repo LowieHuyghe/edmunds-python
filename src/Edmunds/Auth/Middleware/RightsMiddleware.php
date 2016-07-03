@@ -38,7 +38,7 @@ class RightsMiddleware extends BaseMiddleware
 
 			foreach ($rightIds as $rightId)
 			{
-				if (!$auth->user->hasRight($rightId))
+				if ( ! $auth->user->hasRight($rightId))
 				{
 					$allowed = false;
 					break;
@@ -46,7 +46,7 @@ class RightsMiddleware extends BaseMiddleware
 			}
 		}
 
-		if (!$allowed)
+		if ( ! $allowed)
 		{
 			abort(403);
 		}
