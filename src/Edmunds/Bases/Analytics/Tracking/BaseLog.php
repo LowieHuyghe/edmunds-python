@@ -87,8 +87,8 @@ class BaseLog extends BaseStructure
 			$url = $request->fullUrl();
 			$host = $request->getHttpHost();
 			$path = $request->path();
-			$referrer = $_SERVER['HTTP_REFERER'] ?? null;
-			$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+			$referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+			$userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
 		}
 
 		// set values
