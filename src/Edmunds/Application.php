@@ -94,26 +94,26 @@ class Application extends \Laravel\Lumen\Application
 	}
 
 	/**
-     * Determine if we are running unit tests.
-     *
-     * @return bool
-     */
+	 * Determine if we are running unit tests.
+	 *
+	 * @return bool
+	 */
 	public function runningUnitTests()
 	{
 		return $this->isTesting();
 	}
 
-    /**
-     * Bootstrap the application container.
-     *
-     * @return void
-     */
-    protected function bootstrapContainer()
-    {
-    	parent::bootstrapContainer();
+	/**
+	 * Bootstrap the application container.
+	 *
+	 * @return void
+	 */
+	protected function bootstrapContainer()
+	{
+		parent::bootstrapContainer();
 
-    	$this->registerAdditionalBindings();
-    }
+		$this->registerAdditionalBindings();
+	}
 
 	/**
 	 * Get the path to the given configuration file.
@@ -184,6 +184,26 @@ class Application extends \Laravel\Lumen\Application
 		$concrete = $this->normalize($concrete);
 
 		$this->availableBindings[$abstract] = $concrete;
+	}
+
+	/**
+	 * Get the storage path for the application.
+	 *
+	 * @param  string|null  $path
+	 * @return string
+	 */
+	public function storagePath($path = null)
+	{
+		$customStorage = config('app.storage', null);
+
+		if ($customStorage)
+		{
+			return $customStorage . '/storage' . ($path ? '/' . $path : $path);
+		}
+		else
+		{
+			return parent::storagePath($path);
+		}
 	}
 
 	/**

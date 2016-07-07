@@ -85,7 +85,7 @@ trait BindingRegisterers
 	protected function registerMailBindings()
 	{
 		$this->singleton('mailer', function () {
-			return $this->loadComponent('mail', 'Illuminate\Mail\MailServiceProvider', 'mailer');
+			return $this->loadComponent('mail', 'Edmunds\Mail\Providers\MailServiceProvider', 'mailer');
 		});
 	}
 }
