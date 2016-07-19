@@ -45,7 +45,8 @@ trait BindingRegisterers
 	 */
 	protected function registerCookieBindings()
 	{
-		$this->singleton('cookie', function () {
+		$this->singleton('cookie', function ()
+		{
 			return $this->loadComponent('session', 'Illuminate\Cookie\CookieServiceProvider', 'cookie');
 		});
 	}
@@ -57,10 +58,12 @@ trait BindingRegisterers
 	 */
 	protected function registerSessionBindings()
 	{
-		$this->singleton('session', function () {
+		$this->singleton('session', function ()
+		{
 			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider');
 		});
-		$this->singleton('session.store', function () {
+		$this->singleton('session.store', function ()
+		{
 			return $this->loadComponent('session', 'Illuminate\Session\SessionServiceProvider', 'session.store');
 		});
 	}
@@ -72,8 +75,9 @@ trait BindingRegisterers
 	 */
 	protected function registerFilesystemBindings()
 	{
-		$this->singleton('filesystem', function () {
-			return $this->loadComponent('filesystems', 'Illuminate\Filesystem\FilesystemServiceProvider', 'filesystem');
+		$this->singleton('filesystem', function ()
+		{
+			return $this->loadComponent('filesystems', 'Edmunds\Filesystem\Providers\FilesystemServiceProvider', 'filesystem');
 		});
 	}
 
@@ -84,7 +88,8 @@ trait BindingRegisterers
 	 */
 	protected function registerMailBindings()
 	{
-		$this->singleton('mailer', function () {
+		$this->singleton('mailer', function ()
+		{
 			return $this->loadComponent('mail', 'Edmunds\Mail\Providers\MailServiceProvider', 'mailer');
 		});
 	}
