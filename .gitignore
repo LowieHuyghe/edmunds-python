@@ -5,17 +5,4 @@
 .idea
 *.sublime-*
 
-/app
-/bootstrap
-/config
-/database
-/public
-/resources
-/storage
-.gitattributes
-artisan
-gulpfile.js
-package.json
-phpspec.yml
-server.php
 composer.lock
