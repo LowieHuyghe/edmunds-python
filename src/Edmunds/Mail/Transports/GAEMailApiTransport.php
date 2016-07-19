@@ -10,6 +10,7 @@
 
 namespace Edmunds\Mail\Transports;
 
+use InvalidArgumentException;
 use Swift_Attachment;
 use Swift_Events_EventListener;
 use Swift_Mime_Message;
@@ -57,24 +58,35 @@ class GAEMailApiTransport implements Swift_Transport
 	 */
 	public function send(Swift_Mime_Message $message, &$failedRecipients = null)
 	{
-		$gaeMessage = new GAEMessage();
+		$count = 0;
 
-		if ($sender = $this->getSender($message)) $gaeMessage->setSender($sender);
-		if ($replyTo = $this->getReplyTo($message)) $gaeMessage->setReplyTo($replyTo);
-		if ($to = $this->getTo($message)) $gaeMessage->addTo($to);
-		if ($cc = $this->getCc($message)) $gaeMessage->addCc($cc);
-		if ($bcc = $this->getBcc($message)) $gaeMessage->addBcc($bcc);
-		if ($headers = $this->getHeaders($message)) $gaeMessage->addHeaderArray($headers);
-		if ($subject = $this->getSubject($message)) $gaeMessage->setSubject($subject);
-		if ($htmlBody = $this->getHtmlBody($message)) $gaeMessage->setHtmlBody($htmlBody);
-		if ($textBody = $this->getTextBody($message)) $gaeMessage->setTextBody($textBody);
-		if ($attachments = $this->getAttachements($message)) $gaeMessage->addAttachmentsArray($attachments);
+		try
+		{
+			$gaeMessage = new GAEMessage();
 
-		$gaeMessage->send();
+			if ($sender = $this->getSender($message)) $gaeMessage->setSender($sender);
+			if ($replyTo = $this->getReplyTo($message)) $gaeMessage->setReplyTo($replyTo);
+			if ($to = $this->getTo($message)) $gaeMessage->addTo($to);
+			if ($cc = $this->getCc($message)) $gaeMessage->addCc($cc);
+			if ($bcc = $this->getBcc($message)) $gaeMessage->addBcc($bcc);
+			if ($headers = $this->getHeaders($message)) $gaeMessage->addHeaderArray($headers);
+			if ($subject = $this->getSubject($message)) $gaeMessage->setSubject($subject);
+			if ($htmlBody = $this->getHtmlBody($message)) $gaeMessage->setHtmlBody($htmlBody);
+			if ($textBody = $this->getTextBody($message)) $gaeMessage->setTextBody($textBody);
+			if ($attachments = $this->getAttachements($message)) $gaeMessage->addAttachmentsArray($attachments);
 
-		return count((array) $message->getTo())
-			+ count((array) $message->getCc())
-			+ count((array) $message->getBcc());
+			$gaeMessage->send();
+
+			$count = count((array) $message->getTo())
+				+ count((array) $message->getCc())
+				+ count((array) $message->getBcc());
+		}
+		catch (InvalidArgumentException $ex)
+		{
+			app('log')->warning("Exception sending mail: " . $ex);
+        }
+
+        return $count;
 	}
 
 	/**
@@ -236,7 +248,7 @@ class GAEMailApiTransport implements Swift_Transport
 				$attachments[] = array(
 					'name' => $child->getFilename(),
 					'data' => $child->getBody(),
-					//'content_id' => '',
+					'content_id' => "<{$child->getContentType()}>",
 				);
 			}
 		}
