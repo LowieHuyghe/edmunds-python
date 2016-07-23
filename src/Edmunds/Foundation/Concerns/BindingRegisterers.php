@@ -32,10 +32,10 @@ trait BindingRegisterers
 	 */
 	protected function registerObfuscatorBindings()
 	{
-        $this->singleton('obfuscator', function ()
-        {
-            return $this->loadComponent('app', ObfuscatorServiceProvider::class, 'obfuscator');
-        });
+		$this->singleton('obfuscator', function ()
+		{
+			return $this->loadComponent('app', ObfuscatorServiceProvider::class, 'obfuscator');
+		});
 	}
 
 	/**
@@ -91,6 +91,23 @@ trait BindingRegisterers
 		$this->singleton('mailer', function ()
 		{
 			return $this->loadComponent('mail', 'Edmunds\Mail\Providers\MailServiceProvider', 'mailer');
+		});
+	}
+
+	/**
+	 * Register container bindings for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerQueueBindings()
+	{
+		$this->singleton('queue', function ()
+		{
+			return $this->loadComponent('queue', 'Edmunds\Queue\Providers\QueueServiceProvider', 'queue');
+		});
+		$this->singleton('queue.connection', function ()
+		{
+			return $this->loadComponent('queue', 'Edmunds\Queue\Providers\QueueServiceProvider', 'queue.connection');
 		});
 	}
 }
