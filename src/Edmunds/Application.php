@@ -11,10 +11,14 @@
 namespace Edmunds;
 
 use Edmunds\Analytics\Tracking\PageviewLog;
-use Edmunds\Database\Migrations\Migrator;
-use Edmunds\Http\Exceptions\AbortHttpException;
 use Edmunds\Auth\Auth;
+use Edmunds\Database\Migrations\Migrator;
+use Edmunds\Foundation\Concerns\BindingRegisterers;
+use Edmunds\Foundation\Concerns\GoogleAppEngine;
+use Edmunds\Foundation\Concerns\RegistersExceptionHandlers;
+use Edmunds\Foundation\Concerns\RoutesRequests;
 use Edmunds\Http\Client\Visitor;
+use Edmunds\Http\Exceptions\AbortHttpException;
 use Edmunds\Http\Request;
 use Edmunds\Http\Response;
 use Edmunds\Providers\HttpServiceProvider;
@@ -26,9 +30,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
-use Edmunds\Foundation\Concerns\RoutesRequests;
-use Edmunds\Foundation\Concerns\RegistersExceptionHandlers;
-use Edmunds\Foundation\Concerns\BindingRegisterers;
 
 /**
  * The structure for application
@@ -38,6 +39,20 @@ class Application extends \Laravel\Lumen\Application
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
 	use BindingRegisterers;
+	use GoogleAppEngine;
+
+	/**
+	 * Create a new Lumen application instance.
+	 *
+	 * @param  string|null  $basePath
+	 * @return void
+	 */
+	public function __construct($basePath = null)
+	{
+		parent::__construct($basePath);
+
+		$this->initGoogleAppEngine();
+	}
 
 	/**
 	 * Get the name of the app
@@ -184,26 +199,6 @@ class Application extends \Laravel\Lumen\Application
 		$concrete = $this->normalize($concrete);
 
 		$this->availableBindings[$abstract] = $concrete;
-	}
-
-	/**
-	 * Get the storage path for the application.
-	 *
-	 * @param  string|null  $path
-	 * @return string
-	 */
-	public function storagePath($path = null)
-	{
-		$customStorage = config('app.storage', null);
-
-		if ($customStorage)
-		{
-			return $customStorage . '/storage' . ($path ? '/' . $path : $path);
-		}
-		else
-		{
-			return parent::storagePath($path);
-		}
 	}
 
 	/**
