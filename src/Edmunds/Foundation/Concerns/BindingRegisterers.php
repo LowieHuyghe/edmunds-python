@@ -25,6 +25,8 @@ trait BindingRegisterers
 		$this->availableBindings['obfuscator'] = 'registerObfuscatorBindings';
 		$this->availableBindings['filesystem'] = 'registerFilesystemBindings';
 		$this->availableBindings['mailer'] = 'registerMailBindings';
+
+		$this->aliases['kernel'] = \Illuminate\Contracts\Console\Kernel::class;
 	}
 
 	/**
