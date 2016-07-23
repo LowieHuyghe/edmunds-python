@@ -11,7 +11,6 @@
 namespace Edmunds\Foundation\Concerns;
 
 use Edmunds\Http\Request;
-use Illuminate\Support\Debug\HtmlDumper;
 use Illuminate\Support\Str;
 
 
@@ -128,15 +127,15 @@ trait GoogleAppEngine
 	 */
 	protected function replaceDefaultSymfonyLineDumpers()
 	{
-		HtmlDumper::$defaultOutput =
+		// HtmlDumper::$defaultOutput =
 		// CliDumper::$defaultOutput =
-			function($line, $depth, $indentPad)
-			{
-				if (-1 !== $depth)
-				{
-					echo str_repeat($indentPad, $depth) . $line . "\n";
-				}
-			};
+		// 	function($line, $depth, $indentPad)
+		// 	{
+		// 		if (-1 !== $depth)
+		// 		{
+		// 			echo str_repeat($indentPad, $depth) . $line . "\n";
+		// 		}
+		// 	};
 	}
 
 
