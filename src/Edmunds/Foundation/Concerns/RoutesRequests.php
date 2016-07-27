@@ -52,7 +52,6 @@ trait RoutesRequests
 
 		// log pageview and flush all logs
 		$this->logPageView();
-		Registry::warehouse()->flush();
 
 		// attach extra's to response
 		Response::getInstance()->attachExtras($response);

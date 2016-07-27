@@ -58,10 +58,11 @@ class NewrelicWarehouse extends BaseWarehouse
 	}
 
 	/**
-	 * Log something
+	 * Actually log something
 	 * @param  BaseLog $log
+	 * @return void
 	 */
-	public function log($log)
+	protected function doLog($log)
 	{
 		// check if loaded
 		if ( ! $this->loaded)
@@ -69,36 +70,17 @@ class NewrelicWarehouse extends BaseWarehouse
 			return;
 		}
 
-		parent::log($log);
+		// get the log attributes
+		$logAttributes = $log->getAttributes();
 
-		$this->flush();
-	}
-
-	/**
-	 * Flush all the saved up logs
-	 */
-	public function flush()
-	{
-		if (empty($this->logs))
+		// process the log
+		if ($log instanceof ErrorLog)
 		{
-			return;
+			$this->processErrorLog($log);
 		}
-
-		// process all logs
-		foreach ($this->logs as $log)
+		else
 		{
-			// get the log attributes
-			$logAttributes = $log->getAttributes();
-
-			// process the log
-			if ($log instanceof ErrorLog)
-			{
-				$this->processErrorLog($log);
-			}
-			else
-			{
-				throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
-			}
+			throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
 		}
 	}
 
