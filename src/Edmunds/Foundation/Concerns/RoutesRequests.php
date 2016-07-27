@@ -50,16 +50,9 @@ trait RoutesRequests
 			$response = parent::dispatch($request);
 		}
 
-		// check if analytics are enabled
-		if (AnalyticsManager::isEnabled())
-		{
-			// log pageview and flush all logs
-			if (config('app.analytics.autolog.pageview', false))
-			{
-				$this->logPageView();
-			}
-			Registry::warehouse()->flush();
-		}
+		// log pageview and flush all logs
+		$this->logPageView();
+		Registry::warehouse()->flush();
 
 		// attach extra's to response
 		Response::getInstance()->attachExtras($response);

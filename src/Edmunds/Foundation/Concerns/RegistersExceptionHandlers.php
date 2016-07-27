@@ -56,39 +56,4 @@ trait RegistersExceptionHandlers
 				throw new HttpException($code, $message, null, $headers);
 		}
 	}
-
-	/**
-	 * Get the Monolog handler for the application.
-	 *
-	 * @return \Monolog\Handler\AbstractHandler
-	 */
-	protected function getMonologHandler()
-	{
-		$monologHandler = config('app.exceptions.monologhandler', null);
-
-		// fetch class used for logging
-		if (is_array($monologHandler))
-		{
-			$monologHandlerClass = $monologHandler['class'];
-		}
-		else
-		{
-			$monologHandlerClass = $monologHandler;
-		}
-
-		switch($monologHandlerClass)
-		{
-			case SyslogHandler::class:
-				return (new SyslogHandler(
-					isset($monologHandler['ident']) ? $monologHandler['ident'] : null,
-					isset($monologHandler['facility']) ? $monologHandler['facility'] : LOG_USER,
-					Logger::DEBUG))
-						->setFormatter(new LineFormatter(null, null, true, true));
-
-			case StreamHandler::class:
-			default:
-				return parent::getMonologHandler();
-
-		}
-	}
 }

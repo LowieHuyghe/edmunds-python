@@ -12,6 +12,9 @@ namespace Edmunds\Foundation\Concerns;
 
 use Edmunds\Http\Request;
 use Illuminate\Support\Str;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\SyslogHandler;
+use Monolog\Logger;
 
 
 /**
@@ -203,9 +206,12 @@ trait GoogleAppEngine
 	{
 		if ($this->isGae())
 		{
-			$cronHeader = Request::getInstance()->getHeader('X-AppEngine-Cron');
+			$request = Request::getInstance();
 
-			return $cronHeader && ( $cronHeader === 'true' || $cronHeader === true );
+			$cronHeader = $request->getHeader('X-AppEngine-Cron');
+			$queueHeader = $request->getHeader('X-AppEngine-QueueName');
+
+			return ( $cronHeader || $queueHeader );
 		}
 		else
 		{
@@ -228,6 +234,28 @@ trait GoogleAppEngine
 		else
 		{
 			return parent::storagePath($path);
+		}
+	}
+
+
+	/**
+	 * Get the Monolog handler for the application.
+	 *
+	 * @return \Monolog\Handler\AbstractHandler
+	 */
+	protected function getMonologHandler()
+	{
+		if ($this->isGae())
+		{
+			return (new SyslogHandler(
+				null,
+				LOG_USER,
+				Logger::DEBUG))
+					->setFormatter(new LineFormatter(null, null, true, true));
+		}
+		else
+		{
+			return parent::getMonologHandler();
 		}
 	}
 }

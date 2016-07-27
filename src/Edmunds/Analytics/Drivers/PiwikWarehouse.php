@@ -35,6 +35,11 @@ class PiwikWarehouse extends BaseWarehouse
 	 */
 	public function flush()
 	{
+		if (empty($this->logs))
+		{
+			return;
+		}
+
 		// fetch the requests
 		$requests = array();
 		foreach ($this->logs as $log)

@@ -207,7 +207,7 @@ class Application extends \Laravel\Lumen\Application
 	 */
 	protected function logPageView($exception = null)
 	{
-		if ( ! $this->runningInConsole())
+		if (config('app.analytics.autolog.pageview', false) && ! $this->runningInConsole())
 		{
 			(new PageviewLog())->log();
 		}

@@ -76,7 +76,7 @@ return [
 		'gae' => [
 			'driver'     => 'gae',
 			'queue'      => 'default',
-			'url'        => '/taskhandler',
+			'url'        => '/queuehandler',
 			'encrypt'    => true,
 		],
 
