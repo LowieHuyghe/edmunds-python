@@ -31,6 +31,11 @@ class RedisWarehouse extends BaseWarehouse
 	 */
 	public function flush()
 	{
+		if (empty($this->logs))
+		{
+			return;
+		}
+
 		// process logs
 		foreach ($this->logs as $log)
 		{

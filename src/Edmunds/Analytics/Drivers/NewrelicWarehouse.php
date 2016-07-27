@@ -69,17 +69,36 @@ class NewrelicWarehouse extends BaseWarehouse
 			return;
 		}
 
-		// get the log attributes
-		$logAttributes = $log->getAttributes();
+		parent::log($log);
 
-		// process the log
-		if ($log instanceof ErrorLog)
+		$this->flush();
+	}
+
+	/**
+	 * Flush all the saved up logs
+	 */
+	public function flush()
+	{
+		if (empty($this->logs))
 		{
-			$this->processErrorLog($log);
+			return;
 		}
-		else
+
+		// process all logs
+		foreach ($this->logs as $log)
 		{
-			throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
+			// get the log attributes
+			$logAttributes = $log->getAttributes();
+
+			// process the log
+			if ($log instanceof ErrorLog)
+			{
+				$this->processErrorLog($log);
+			}
+			else
+			{
+				throw new Exception('Newrelic-warehouse does not support log: ' . get_class($log));
+			}
 		}
 	}
 

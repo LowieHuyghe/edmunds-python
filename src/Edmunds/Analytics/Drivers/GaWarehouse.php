@@ -34,8 +34,12 @@ class GaWarehouse extends BaseWarehouse
 	 */
 	public function flush()
 	{
-		// fetch the requests
-		$requests = array();
+		if (empty($this->logs))
+		{
+			return;
+		}
+
+		// process the logs
 		foreach ($this->logs as $log)
 		{
 			// fetch the base stuff

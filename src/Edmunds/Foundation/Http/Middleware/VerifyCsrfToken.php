@@ -74,6 +74,7 @@ class VerifyCsrfToken
         if (
             $this->isReading($request) ||
             $this->runningUnitTests() ||
+            $this->runninginGaeConsole() ||
             $this->shouldPassThrough($request) ||
             $this->tokensMatch($request)
         ) {
@@ -112,6 +113,16 @@ class VerifyCsrfToken
     protected function runningUnitTests()
     {
         return $this->app->runningInConsole() && $this->app->runningUnitTests();
+    }
+
+    /**
+     * Determine if the application is running in Google App Engine console.
+     *
+     * @return bool
+     */
+    protected function runninginGaeConsole()
+    {
+        return $this->app->isGae() && $this->app->runningInConsole();
     }
 
     /**
