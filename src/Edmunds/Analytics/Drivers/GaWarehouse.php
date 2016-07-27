@@ -30,53 +30,43 @@ class GaWarehouse extends BaseWarehouse
 	protected static $apiUrl = 'https://ssl.google-analytics.com/collect';
 
 	/**
-	 * Flush all the saved up logs
+	 * Actually log something
+	 * @param  BaseLog $log
+	 * @return void
 	 */
-	public function flush()
+	protected function doLog($log)
 	{
-		if (empty($this->logs))
+		// fetch the base stuff
+		$attributes = $this->processBaseLog($log);
+
+		// process event specific
+		if ($log instanceof PageviewLog)
 		{
-			return;
+			$additionalAttributes = $this->processPageviewLog($log);
+		}
+		elseif ($log instanceof EventLog)
+		{
+			$additionalAttributes = $this->processEventLog($log);
+		}
+		elseif ($log instanceof ErrorLog)
+		{
+			$additionalAttributes = $this->processErrorLog($log);
+		}
+		elseif ($log instanceof EcommerceLog)
+		{
+			$additionalAttributes = $this->processEcommerceLog($log);
+		}
+		else
+		{
+			throw new Exception('Ga-warehouse does not support log: ' . get_class($log));
 		}
 
-		// process the logs
-		foreach ($this->logs as $log)
+		// log each one
+		foreach ($additionalAttributes as $additionalAttribute)
 		{
-			// fetch the base stuff
-			$attributes = $this->processBaseLog($log);
-
-			// process event specific
-			if ($log instanceof PageviewLog)
-			{
-				$additionalAttributes = $this->processPageviewLog($log);
-			}
-			elseif ($log instanceof EventLog)
-			{
-				$additionalAttributes = $this->processEventLog($log);
-			}
-			elseif ($log instanceof ErrorLog)
-			{
-				$additionalAttributes = $this->processErrorLog($log);
-			}
-			elseif ($log instanceof EcommerceLog)
-			{
-				$additionalAttributes = $this->processEcommerceLog($log);
-			}
-			else
-			{
-				throw new Exception('Ga-warehouse does not support log: ' . get_class($log));
-			}
-
-			// log each one
-			foreach ($additionalAttributes as $additionalAttribute)
-			{
-				// queue it
-				$this->queue(array(get_called_class(), 'send'), array(array_filter($attributes + $additionalAttribute), microtime(true)));
-			}
+			// queue it
+			$this->queue(array(get_called_class(), 'send'), array(array_filter($attributes + $additionalAttribute), microtime(true)));
 		}
-
-		// empty the logs
-		parent::flush();
 	}
 
 	/**
@@ -211,7 +201,14 @@ class GaWarehouse extends BaseWarehouse
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
+		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 		curl_close ($ch);
+
+		// check status code
+		if ($statusCode < 200 || 300 <= $statusCode)
+		{
+			throw new Exception("Error sending logdata to Google Analytics (StatusCode: $statusCode)");
+		}
 	}
 }

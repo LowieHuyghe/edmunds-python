@@ -25,70 +25,44 @@ use Exception;
 class PiwikWarehouse extends BaseWarehouse
 {
 	/**
-	 * The api url
-	 * @var string
+	 * Actually log something
+	 * @param  BaseLog $log
+	 * @return void
 	 */
-	protected static $apiUrl = 'https://stats.lowiehuyghe.com/piwik.php';
-
-	/**
-	 * Flush all the saved up logs
-	 */
-	public function flush()
+	protected function doLog($log)
 	{
-		if (empty($this->logs))
+		// fetch the base stuff
+		$attributes = $this->processBaseLog($log);
+
+		// process event specific
+		if ($log instanceof PageviewLog)
 		{
-			return;
+			$additionalAttributes = $this->processPageviewLog($log);
+		}
+		elseif ($log instanceof EventLog)
+		{
+			$additionalAttributes = $this->processEventLog($log);
+		}
+		elseif ($log instanceof ErrorLog)
+		{
+			$additionalAttributes = $this->processErrorLog($log);
+		}
+		elseif ($log instanceof EcommerceLog)
+		{
+			$additionalAttributes = $this->processEcommerceLog($log);
+		}
+		else
+		{
+			throw new Exception('Piwik-warehouse does not support log: ' . get_class($log));
 		}
 
-		// fetch the requests
-		$requests = array();
-		foreach ($this->logs as $log)
-		{
-			// fetch the base stuff
-			$attributes = $this->processBaseLog($log);
+		// process the custom values
+		$attributes['cvar'] = $this->processCustomVars('cvar', $attributes, $additionalAttributes);
+		$attributes['_cvar'] = $this->processCustomVars('_cvar', $attributes, $additionalAttributes);
+		$attributes = $attributes + $additionalAttributes;
 
-			// process event specific
-			if ($log instanceof PageviewLog)
-			{
-				$additionalAttributes = $this->processPageviewLog($log);
-			}
-			elseif ($log instanceof EventLog)
-			{
-				$additionalAttributes = $this->processEventLog($log);
-			}
-			elseif ($log instanceof ErrorLog)
-			{
-				$additionalAttributes = $this->processErrorLog($log);
-			}
-			elseif ($log instanceof EcommerceLog)
-			{
-				$additionalAttributes = $this->processEcommerceLog($log);
-			}
-			else
-			{
-				throw new Exception('Piwik-warehouse does not support log: ' . get_class($log));
-			}
-
-			// process the custom values
-			$attributes['cvar'] = $this->processCustomVars('cvar', $attributes, $additionalAttributes);
-			$attributes['_cvar'] = $this->processCustomVars('_cvar', $attributes, $additionalAttributes);
-			$attributes = $attributes + $additionalAttributes;
-
-			// add to requests
-			$requests[] = '?' . http_build_query(array_filter($attributes));
-		}
-
-		// setup data
-		$data = array(
-			'requests' => $requests,
-			'token_auth' => config('app.analytics.piwik.token'),
-		);
-
-		// queue that shit
-		$this->queue(array(get_called_class(), 'send'), array($data));
-
-		// empty the logs
-		parent::flush();
+		// add to requests
+		$this->queue(array(get_called_class(), 'send'), array(array_filter($attributes)));
 	}
 
 	/**
@@ -142,6 +116,8 @@ class PiwikWarehouse extends BaseWarehouse
 			'ua' => $log->userAgent,
 
 			'otherAuthTime' => $log->time->timestamp,
+
+			'token_auth' => config('app.analytics.piwik.token'),
 		);
 
 		return $assigns + $this->getCustomAssignments($log, 'dimensions', 'dimension{0}');
@@ -234,13 +210,20 @@ class PiwikWarehouse extends BaseWarehouse
 		// send request
 		$ch = curl_init();
 
-		curl_setopt($ch, CURLOPT_URL, static::$apiUrl);
+		curl_setopt($ch, CURLOPT_URL, config('app.analytics.piwik.url'));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 		curl_setopt($ch, CURLOPT_POST, count($data));
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_exec($ch);
+		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 		curl_close ($ch);
+
+		// check status code
+		if ($statusCode < 200 || 300 <= $statusCode)
+		{
+			throw new Exception("Error sending logdata to Piwik (StatusCode: $statusCode)");
+		}
 	}
 }
