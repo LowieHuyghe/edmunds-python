@@ -16,6 +16,7 @@ use Edmunds\Bases\Structures\BaseStructure;
 use Edmunds\Queue\Queue;
 use Edmunds\Queue\QueueJob;
 use Edmunds\Registry;
+use Exception;
 
 /**
  * The warehouse base to extend from
@@ -27,12 +28,6 @@ class BaseWarehouse extends BaseStructure
 	 * @var string
 	 */
 	protected $driver;
-
-	/**
-	 * All the logs bundled
-	 * @var BaseLog[]
-	 */
-	protected $logs = array();
 
 	/**
 	 * Parameter mapping
@@ -58,18 +53,23 @@ class BaseWarehouse extends BaseStructure
 	 */
 	public function log($log)
 	{
-		if (AnalyticsManager::isEnabled())
+		// check if should log
+		if ( ! AnalyticsManager::isEnabled())
 		{
-			$this->logs[] = $log;
+			return;
 		}
+
+		$this->doLog($log);
 	}
 
 	/**
-	 * Flush all the saved up logs
+	 * Actually log something
+	 * @param  BaseLog $log
+	 * @return void
 	 */
-	public function flush()
+	protected function doLog($log)
 	{
-		$this->logs = array();
+		throw new Exception('Warehouse Driver does not implement doLog-function.');
 	}
 
 	/**

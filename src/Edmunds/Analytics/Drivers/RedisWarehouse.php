@@ -27,52 +27,42 @@ use Exception;
 class RedisWarehouse extends BaseWarehouse
 {
 	/**
-	 * Flush all the saved up logs
+	 * Actually log something
+	 * @param  BaseLog $log
+	 * @return void
 	 */
-	public function flush()
+	protected function doLog($log)
 	{
-		if (empty($this->logs))
+		// fetch the base stuff
+		$attributes = $this->processBaseLog($log);
+
+		// process event specific
+		if ($log instanceof PageviewLog)
 		{
-			return;
+			$additionalAttributes = $this->processPageviewLog($log);
+		}
+		elseif ($log instanceof EventLog)
+		{
+			$additionalAttributes = $this->processEventLog($log);
+		}
+		elseif ($log instanceof ErrorLog)
+		{
+			$additionalAttributes = $this->processErrorLog($log);
+		}
+		elseif ($log instanceof EcommerceLog)
+		{
+			$additionalAttributes = $this->processEcommerceLog($log);
+		}
+		else
+		{
+			throw new Exception('Redis-warehouse does not support log: ' . get_class($log));
 		}
 
-		// process logs
-		foreach ($this->logs as $log)
-		{
-			// fetch the base stuff
-			$attributes = $this->processBaseLog($log);
+		// assign everything
+		$attributes = $attributes + $additionalAttributes;
 
-			// process event specific
-			if ($log instanceof PageviewLog)
-			{
-				$additionalAttributes = $this->processPageviewLog($log);
-			}
-			elseif ($log instanceof EventLog)
-			{
-				$additionalAttributes = $this->processEventLog($log);
-			}
-			elseif ($log instanceof ErrorLog)
-			{
-				$additionalAttributes = $this->processErrorLog($log);
-			}
-			elseif ($log instanceof EcommerceLog)
-			{
-				$additionalAttributes = $this->processEcommerceLog($log);
-			}
-			else
-			{
-				throw new Exception('Redis-warehouse does not support log: ' . get_class($log));
-			}
-
-			// assign everything
-			$attributes = $attributes + $additionalAttributes;
-
-			// broadcast it
-			(new BroadcastEvent(array('log'), $attributes, Queue::QUEUE_LOG))->broadcast();
-		}
-
-		// empty the logs
-		parent::flush();
+		// broadcast it
+		(new BroadcastEvent(array('log'), $attributes, Queue::QUEUE_LOG))->broadcast();
 	}
 
 	/**
