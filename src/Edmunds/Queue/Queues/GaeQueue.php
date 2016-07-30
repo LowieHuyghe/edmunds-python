@@ -10,6 +10,8 @@
 
 namespace Edmunds\Queue\Queues;
 
+use Edmunds\Http\Client\Input;
+use Edmunds\Http\Request as EdmundsRequest;
 use Edmunds\Queue\Jobs\GaeJob;
 use Exception;
 use Illuminate\Contracts\Queue\Queue as QueueContract;
@@ -18,6 +20,7 @@ use Illuminate\Http\Response;
 use Illuminate\Queue\Queue;
 use RuntimeException;
 use google\appengine\api\taskqueue\PushTask;
+use StdClass;
 
 
 /**
@@ -94,8 +97,8 @@ class GaeQueue extends Queue implements QueueContract
 	{
 		if ($this->shouldEncrypt) $payload = $this->crypt->encrypt($payload);
 		$task = new PushTask($this->url,
-		                     array(self::PAYLOAD_REQ_PARAM_NAME => $payload),
-		                     $options);
+							 array(self::PAYLOAD_REQ_PARAM_NAME => $payload),
+							 $options);
 		return $task->add($this->getQueue($queue));
 	}
 
@@ -137,7 +140,19 @@ class GaeQueue extends Queue implements QueueContract
 	 */
 	public function pop($queue = null)
 	{
-		throw new RuntimeException("Pop is not supported by GaeQueue.");
+		$request = EdmundsRequest::getInstance();
+
+		// fetch payload
+		$payload = $request->input(self::PAYLOAD_REQ_PARAM_NAME);
+		if ($this->shouldEncrypt) $payload = $this->crypt->decrypt($payload);
+
+		// create job
+		$job = new StdClass();
+		$job->id = $request->getHeader('X-AppEngine-TaskName');
+		$job->body = $payload;
+		$job->pushed = true;
+
+		return new GaeJob($this->container, $this, $job);
 	}
 
 	/**

@@ -25,6 +25,7 @@ trait BindingRegisterers
 		$this->availableBindings['obfuscator'] = 'registerObfuscatorBindings';
 		$this->availableBindings['filesystem'] = 'registerFilesystemBindings';
 		$this->availableBindings['mailer'] = 'registerMailBindings';
+		$this->availableBindings['queue.worker'] = 'registerQueueBindings';
 
 		$this->aliases['kernel'] = \Illuminate\Contracts\Console\Kernel::class;
 	}
@@ -110,6 +111,10 @@ trait BindingRegisterers
 		$this->singleton('queue.connection', function ()
 		{
 			return $this->loadComponent('queue', 'Edmunds\Queue\Providers\QueueServiceProvider', 'queue.connection');
+		});
+		$this->singleton('queue.worker', function ()
+		{
+			return $this->loadComponent('queue', 'Edmunds\Queue\Providers\QueueServiceProvider', 'queue.worker');
 		});
 	}
 }
