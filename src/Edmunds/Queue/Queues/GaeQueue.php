@@ -140,15 +140,13 @@ class GaeQueue extends Queue implements QueueContract
 	 */
 	public function pop($queue = null)
 	{
-		$request = EdmundsRequest::getInstance();
-
 		// fetch payload
-		$payload = $request->input(self::PAYLOAD_REQ_PARAM_NAME);
+		$payload = $this->request->input(self::PAYLOAD_REQ_PARAM_NAME);
 		if ($this->shouldEncrypt) $payload = $this->crypt->decrypt($payload);
 
 		// create job
 		$job = new StdClass();
-		$job->id = $request->getHeader('X-AppEngine-TaskName');
+		$job->id = $this->request->header('X-AppEngine-TaskName');
 		$job->body = $payload;
 		$job->pushed = true;
 
