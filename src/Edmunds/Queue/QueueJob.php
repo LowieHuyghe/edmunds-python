@@ -40,7 +40,7 @@ class QueueJob extends BaseJob
 	 * @param array $args
 	 * @param int $attempts
 	 */
-	public function __construct($callable, $args = array(), $queue = Queue::QUEUE_DEFAULT, $attempts = 1)
+	public function __construct($callable, $args = array(), $queue = Queue::QUEUE_DEFAULT, $attempts = 0)
 	{
 		$this->callable = $callable;
 		$this->args = $args;
@@ -54,7 +54,7 @@ class QueueJob extends BaseJob
 	 */
 	public function handle()
 	{
-		if ($this->attempts() <= $this->attempts)
+		if ($this->attempts == 0 || $this->attempts() <= $this->attempts)
 		{
 			call_user_func_array($this->callable, $this->args);
 		}
