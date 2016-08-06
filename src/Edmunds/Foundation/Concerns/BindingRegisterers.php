@@ -26,10 +26,6 @@ trait BindingRegisterers
 		$this->availableBindings['filesystem'] = 'registerFilesystemBindings';
 		$this->availableBindings['mailer'] = 'registerMailBindings';
 		$this->availableBindings['queue.worker'] = 'registerQueueBindings';
-		$this->availableBindings['edmunds.request'] = 'registerEdmundsBindings';
-		$this->availableBindings['edmunds.response'] = 'registerEdmundsBindings';
-		$this->availableBindings['edmunds.visitor'] = 'registerEdmundsBindings';
-		$this->availableBindings['edmunds.input'] = 'registerEdmundsBindings';
 
 		$this->aliases['kernel'] = \Illuminate\Contracts\Console\Kernel::class;
 	}
@@ -119,31 +115,6 @@ trait BindingRegisterers
 		$this->singleton('queue.worker', function ()
 		{
 			return $this->loadComponent('queue', 'Edmunds\Queue\Providers\QueueServiceProvider', 'queue.worker');
-		});
-	}
-
-	/**
-	 * Register edmunds bindings for the application.
-	 *
-	 * @return void
-	 */
-	protected function registerEdmundsBindings()
-	{
-		$this->singleton('edmunds.request', function ()
-		{
-			return $this->loadComponent('app', 'Edmunds\Foundation\Providers\EdmundsServiceProvider', 'edmunds.request');
-		});
-		$this->singleton('edmunds.response', function ()
-		{
-			return $this->loadComponent('app', 'Edmunds\Foundation\Providers\EdmundsServiceProvider', 'edmunds.response');
-		});
-		$this->singleton('edmunds.visitor', function ()
-		{
-			return $this->loadComponent('app', 'Edmunds\Foundation\Providers\EdmundsServiceProvider', 'edmunds.visitor');
-		});
-		$this->singleton('edmunds.input', function ()
-		{
-			return $this->loadComponent('app', 'Edmunds\Foundation\Providers\EdmundsServiceProvider', 'edmunds.input');
 		});
 	}
 }
