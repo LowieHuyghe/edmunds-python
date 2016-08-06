@@ -61,7 +61,6 @@ trait GoogleAppEngine
 		if ($this->isGae())
 		{
 			$this->initializeGaeBucket();
-			$this->replaceDefaultSymfonyLineDumpers();
 		}
 	}
 
@@ -119,28 +118,6 @@ trait GoogleAppEngine
 		}
 	}
 
-	/**
-	 * Replaces the default output stream of Symfony's
-	 * CliDumper and HtmlDumper classes in order to
-	 * be able to run on Google App Engine.
-	 *
-	 * 'php://stdout' is used by CliDumper,
-	 * 'php://output' is used by HtmlDumper,
-	 * both are not supported on GAE.
-	 */
-	protected function replaceDefaultSymfonyLineDumpers()
-	{
-		// HtmlDumper::$defaultOutput =
-		// CliDumper::$defaultOutput =
-		// 	function($line, $depth, $indentPad)
-		// 	{
-		// 		if (-1 !== $depth)
-		// 		{
-		// 			echo str_repeat($indentPad, $depth) . $line . "\n";
-		// 		}
-		// 	};
-	}
-
 
 	/**
 	 * Returns 'true' if running on GAE.
@@ -163,60 +140,51 @@ trait GoogleAppEngine
 	}
 
 	/**
-	 * Get or check the current application environment.
+	 * Get or check the current Google App Engine application environment.
 	 *
 	 * @param  mixed
 	 * @return string
 	 */
-	public function environment()
+	protected function gaeEnvironment()
 	{
-		if ($this->isGae())
+		$env = $this->gaeProduction ? 'production' : 'develop';
+
+		if (func_num_args() > 0)
 		{
-			$env = $this->gaeProduction ? 'production' : 'develop';
+			$patterns = is_array(func_get_arg(0)) ? func_get_arg(0) : func_get_args();
 
-			if (func_num_args() > 0)
+			foreach ($patterns as $pattern)
 			{
-				$patterns = is_array(func_get_arg(0)) ? func_get_arg(0) : func_get_args();
-
-				foreach ($patterns as $pattern)
+				if (Str::is($pattern, $env))
 				{
-					if (Str::is($pattern, $env))
-					{
-						return true;
-					}
+					return true;
 				}
-
-				return false;
 			}
 
-			return $env;
+			return false;
 		}
-		else
-		{
-			return call_user_func_array(array($this, 'parent::' . __FUNCTION__), func_get_args());
-		}
+
+		return $env;
 	}
 
 	/**
-	 * Determine if the application is running in the console.
+	 * Determine if the application is running in Google App Engine console.
 	 *
 	 * @return bool
 	 */
-	public function runningInConsole()
+	public function runninginGaeConsole()
 	{
-		if ($this->isGae())
+		if ( ! $this->isGae())
 		{
-			$request = Request::getInstance();
-
-			$cronHeader = $request->getHeader('X-AppEngine-Cron');
-			$queueHeader = $request->getHeader('X-AppEngine-QueueName');
-
-			return ( $cronHeader || $queueHeader );
+			return false;
 		}
-		else
-		{
-			return parent::runningInConsole();
-		}
+
+		$request = Request::getInstance();
+
+		$cronHeader = $request->getHeader('X-AppEngine-Cron');
+		$queueHeader = $request->getHeader('X-AppEngine-QueueName');
+
+		return ( $cronHeader || $queueHeader );
 	}
 
 	/**
@@ -225,37 +193,22 @@ trait GoogleAppEngine
 	 * @param  string|null  $path
 	 * @return string
 	 */
-	public function storagePath($path = null)
+	protected function gaeStoragePath($path = null)
 	{
-		if ($this->isGae() && $this->gaeBucketPath)
-		{
-			return $this->gaeBucketPath . '/storage' . ($path ? '/' . $path : $path);
-		}
-		else
-		{
-			return parent::storagePath($path);
-		}
+		return $this->gaeBucketPath . '/storage' . ($path ? '/' . $path : $path);
 	}
 
-
 	/**
-	 * Get the Monolog handler for the application.
+	 * Get the Google App Engine Monolog handler for the application.
 	 *
 	 * @return \Monolog\Handler\AbstractHandler
 	 */
-	protected function getMonologHandler()
+	protected function getGaeMonologHandler()
 	{
-		if ($this->isGae())
-		{
-			return (new SyslogHandler(
-				null,
-				LOG_USER,
-				Logger::DEBUG))
-					->setFormatter(new LineFormatter(null, null, true, true));
-		}
-		else
-		{
-			return parent::getMonologHandler();
-		}
+		return (new SyslogHandler(
+			null,
+			LOG_USER,
+			Logger::DEBUG))
+				->setFormatter(new LineFormatter(null, null, true, true));
 	}
 }
