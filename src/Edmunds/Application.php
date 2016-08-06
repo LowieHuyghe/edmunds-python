@@ -17,6 +17,7 @@ use Edmunds\Foundation\Concerns\BindingRegisterers;
 use Edmunds\Foundation\Concerns\GoogleAppEngine;
 use Edmunds\Foundation\Concerns\RegistersExceptionHandlers;
 use Edmunds\Foundation\Concerns\RoutesRequests;
+use Edmunds\Foundation\Concerns\RuntimeEnvironment;
 use Edmunds\Http\Client\Visitor;
 use Edmunds\Http\Exceptions\AbortHttpException;
 use Edmunds\Http\Request;
@@ -36,6 +37,7 @@ use Throwable;
  */
 class Application extends \Laravel\Lumen\Application
 {
+	use RuntimeEnvironment;
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
 	use BindingRegisterers;
@@ -72,51 +74,6 @@ class Application extends \Laravel\Lumen\Application
 		return config('app.stateful', true);
 	}
 
-	/**
-	 * Get entrypoint
-	 * @return string
-	 */
-	public function getEntrypoint()
-	{
-		return config('app.entrypoint', 'default');
-	}
-
-	/**
-	 * Check if local environment
-	 * @return bool
-	 */
-	public function isLocal()
-	{
-		return $this->environment('local');
-	}
-
-	/**
-	 * Check if production environment
-	 * @return bool
-	 */
-	public function isProduction()
-	{
-		return $this->environment('production');
-	}
-
-	/**
-	 * Check if testing environment
-	 * @return bool
-	 */
-	public function isTesting()
-	{
-		return $this->environment('testing');
-	}
-
-	/**
-	 * Determine if we are running unit tests.
-	 *
-	 * @return bool
-	 */
-	public function runningUnitTests()
-	{
-		return $this->isTesting();
-	}
 
 	/**
 	 * Bootstrap the application container.
@@ -199,6 +156,37 @@ class Application extends \Laravel\Lumen\Application
 		$concrete = $this->normalize($concrete);
 
 		$this->availableBindings[$abstract] = $concrete;
+	}
+
+	/**
+	 * Determine if the application is running in the console.
+	 *
+	 * @return bool
+	 */
+	public function runningInConsole()
+	{
+		if ($this->isGae())
+		{
+			return $this->runningInGaeConsole();
+		}
+
+		return parent::runningInConsole();
+	}
+
+	/**
+	 * Get the storage path for the application.
+	 *
+	 * @param  string|null  $path
+	 * @return string
+	 */
+	public function storagePath($path = null)
+	{
+		if ($this->isGae())
+		{
+			return $this->gaeStoragePath($path);
+		}
+
+		return parent::storagePath($path);
 	}
 
 	/**

@@ -13,10 +13,13 @@ namespace Edmunds\Foundation\Concerns;
 use Edmunds\Http\Exceptions\AbortHttpException;
 use Edmunds\Http\Response;
 use Edmunds\Registry;
+use \Error;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -54,6 +57,48 @@ trait RegistersExceptionHandlers
 				throw new ServiceUnavailableHttpException(null, $message);
 			default:
 				throw new HttpException($code, $message, null, $headers);
+		}
+	}
+
+	/**
+	 * Get the Monolog handler for the application.
+	 *
+	 * @return \Monolog\Handler\AbstractHandler
+	 */
+	protected function getMonologHandler()
+	{
+		if ($this->isGae())
+		{
+			return $this->getGaeMonologHandler();
+		}
+
+		return parent::getMonologHandler();
+	}
+
+	/**
+	 * Handle an uncaught exception instance.
+	 *
+	 * @param  \Throwable  $e
+	 * @return void
+	 */
+	protected function handleUncaughtException($e)
+	{
+		$handler = $this->resolveExceptionHandler();
+
+		if ($e instanceof Error)
+		{
+			$e = new FatalThrowableError($e);
+		}
+
+		$handler->report($e);
+
+		if ($this->runningInConsole() && ! $this->runninginGaeConsole())
+		{
+			$handler->renderForConsole(new ConsoleOutput, $e);
+		}
+		else
+		{
+			$handler->render($this->make('request'), $e)->send();
 		}
 	}
 }
