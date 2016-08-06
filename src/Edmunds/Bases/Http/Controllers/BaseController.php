@@ -29,6 +29,12 @@ class BaseController extends Controller
 	protected $outputType;
 
 	/**
+	 * The current application
+	 * @var Edmunds\Application
+	 */
+	protected $app;
+
+	/**
 	 * The current request
 	 * @var Request
 	 */
@@ -57,6 +63,7 @@ class BaseController extends Controller
 	 */
 	function __construct()
 	{
+		$this->app = app();
 		$this->request = Request::getInstance();
 		$this->response = Response::getInstance();
 		$this->visitor = Visitor::getInstance();
