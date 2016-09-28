@@ -61,6 +61,23 @@ trait RegistersExceptionHandlers
 	}
 
 	/**
+	 * Set the error handling for the application.
+	 *
+	 * @return void
+	 */
+	protected function registerErrorHandling()
+	{
+		$result = parent::registerErrorHandling();
+
+		if ( ! $this->isTesting())
+		{
+			ini_set('display_errors', 0);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Get the Monolog handler for the application.
 	 *
 	 * @return \Monolog\Handler\AbstractHandler
