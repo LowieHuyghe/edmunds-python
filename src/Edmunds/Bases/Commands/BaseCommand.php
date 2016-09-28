@@ -40,7 +40,7 @@ class BaseCommand extends Command
 		{
 			$response = parent::execute($input, $output);
 
-			$this->logChannel ? Registry::channel()->info($title, 'Succesful') : null;
+			$this->logChannel ? Registry::channel()->info($title, 'Successful') : null;
 
 			return $response;
 		}

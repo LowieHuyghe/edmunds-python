@@ -26,16 +26,6 @@ class Handler extends ExceptionHandler
 	];
 
 	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->dontReport = array_merge($this->dontReport, array(
-			AbortHttpException::class,
-		));
-	}
-
-	/**
 	 * Report or log an exception.
 	 *
 	 * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
@@ -45,6 +35,10 @@ class Handler extends ExceptionHandler
 	 */
 	public function report(Exception $e)
 	{
+		$this->dontReport = array_unique(array_merge($this->dontReport, array(
+			AbortHttpException::class,
+		)));
+
 		if (config('app.analytics.autolog.exceptions', false))
 		{
 			$this->logException($e);
