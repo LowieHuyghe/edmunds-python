@@ -95,21 +95,17 @@ class Location extends BaseModel
 	}
 
 	/**
-	 * Return the GeoIP of browser
-	 * @return Reader
-	 */
-	private function getGeoIPCity()
-	{
-		return new Reader(storage_path(self::GEOIP_DIR . '/' . self::GEOIP_CITY));
-	}
-
-	/**
 	 * Return the details of city db
 	 * @param string $ip
 	 * @return City
 	 */
-	private function getDetailsCity($ip)
+	protected function getDetailsCity($ip)
 	{
+		if (app()->isGae())
+		{
+			return $this->getGaeIPCity();
+		}
+
 		try
 		{
 			$reader = $this->getGeoIPCity();
@@ -123,6 +119,70 @@ class Location extends BaseModel
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Return the GeoIP of browser
+	 * @return Reader
+	 */
+	protected function getGeoIPCity()
+	{
+		return new Reader(storage_path(self::GEOIP_DIR . '/' . self::GEOIP_CITY));
+	}
+
+	/**
+	 * Get Ip city in Google App Engine
+	 * @return Std_Class
+	 */
+	protected function getGaeIPCity()
+	{
+		$request = Request::getInstance();
+
+		$country = $request->getHeader('X-AppEngine-Country');
+		if ($country == 'ZZ')
+		{
+			return false;
+		}
+
+		$region = $request->getHeader('X-AppEngine-Region');
+		$city = $request->getHeader('X-AppEngine-City');
+		$cityLatLong = $request->getHeader('X-AppEngine-CityLatLong');
+		if ($cityLatLong)
+		{
+			list($latitude, $longitude) = explode(',', $cityLatLong);
+			$latitude = floatval($latitude);
+			$longitude = floatval($longitude);
+		}
+		else
+		{
+			$latitude = $longitude = null;
+		}
+
+		return json_decode(json_encode([
+			'continent' => [
+				'code' => null,
+				'name' => null,
+			],
+			'country' => [
+				'isoCode' => $country,
+				'name' => null,
+			],
+			'mostSpecificSubdivision' => [
+				'isoCode' => $region,
+				'name' => null,
+			],
+			'city' => [
+				'name' => $city,
+			],
+			'postal' => [
+				'code' => null,
+			],
+			'location' => [
+				'latitude' => $latitude,
+				'longitude' => $longitude,
+				'timeZone' => null,
+			],
+		]));
 	}
 
 	/**
