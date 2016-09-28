@@ -91,7 +91,7 @@ try
 
 	$app->singleton(
 		Illuminate\Contracts\Console\Kernel::class,
-		config('app.console.kernel', Edmunds\Foundation\Console\Kernel::class)
+		config('app.console.kernel', Edmunds\Console\Kernel::class)
 	);
 
 
