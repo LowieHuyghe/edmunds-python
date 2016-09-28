@@ -61,88 +61,93 @@ class UpdateGeoIPCommand extends BaseCommand
 			$fileName = "$directoryName/$name";
 			$save = file_put_contents($tmpFileNameGz, $contents);
 
-			if ($save)
+			try
 			{
-				$this->info("Processing database");
-
-				$this->unzipGz($tmpFileNameGz, $tmpFileNameMmdb);
-				unlink($tmpFileNameGz);
-
-				//Check if uncompressed
-				if ( ! file_exists($tmpFileNameMmdb))
+				if ($save)
 				{
-					continue;
-				}
+					$this->info("Processing database");
 
-				//Check if geo-directory exists and make it if not
-				if ( ! file_exists($directoryName))
-				{
-					if ( ! mkdir($directoryName, 0777, true))
+					$this->unzipGz($tmpFileNameGz, $tmpFileNameMmdb);
+					unlink($tmpFileNameGz);
+
+					//Check if uncompressed
+					if ( ! file_exists($tmpFileNameMmdb))
 					{
-						$this->informAdminError("Could not create the directory for the db. ($name)");
 						continue;
 					}
-				}
 
-				//Check if already a db
-				$oldFile = file_exists($fileName);
-				if ($oldFile)
-				{
-					if (file_exists($fileName . '.old'))
+					//Check if geo-directory exists and make it if not
+					if ( ! file_exists($directoryName))
 					{
-						//If already exist *.old file, remove it
-						if ( ! unlink($fileName . '.old'))
+						if ( ! mkdir($directoryName, 0777, true))
 						{
-							$this->informAdminError("Could not remove an existing *.old file. ($name)");
+							$this->informAdminError("Could not create the directory for the db. ($name)");
 							continue;
 						}
 					}
-					//Rename to *.old
-					if ( ! rename($fileName, $fileName . '.old'))
-					{
-						//Not succeeded and if file does not exist anymore, inform admin
-						if ( ! file_exists($fileName))
-						{
-							$this->informAdminError("Could not rename existing db to *.old, and now there is no db anymore. ($name)");
-						}
-						continue;
-					}
-				}
 
-				//Move new db to right location
-				if (rename($tmpFileNameMmdb, $fileName))
-				{
+					//Check if already a db
+					$oldFile = file_exists($fileName);
 					if ($oldFile)
 					{
-						//Remove old file
-						unlink($fileName . '.old');
-					}
-				}
-				else
-				{
-					if ($oldFile)
-					{
-						//Error, so rename old file to correct name
-						if ( ! rename($fileName . '.old', $fileName))
+						if (file_exists($fileName . '.old'))
 						{
-							//If not succeeded, there is an error
-							$this->informAdminError("Could not move the new db and could not move old db back. ($name)");
+							//If already exist *.old file, remove it
+							if ( ! unlink($fileName . '.old'))
+							{
+								$this->informAdminError("Could not remove an existing *.old file. ($name)");
+								continue;
+							}
+						}
+						//Rename to *.old
+						if ( ! rename($fileName, $fileName . '.old'))
+						{
+							//Not succeeded and if file does not exist anymore, inform admin
+							if ( ! file_exists($fileName))
+							{
+								$this->informAdminError("Could not rename existing db to *.old, and now there is no db anymore. ($name)");
+							}
+							continue;
+						}
+					}
+
+					//Move new db to right location
+					if (rename($tmpFileNameMmdb, $fileName))
+					{
+						if ($oldFile)
+						{
+							//Remove old file
+							unlink($fileName . '.old');
 						}
 					}
 					else
 					{
-						//There is no geo-db
-						$this->informAdminError("There is no geo-db. ($name)");
+						if ($oldFile)
+						{
+							//Error, so rename old file to correct name
+							if ( ! rename($fileName . '.old', $fileName))
+							{
+								//If not succeeded, there is an error
+								$this->informAdminError("Could not move the new db and could not move old db back. ($name)");
+							}
+						}
+						else
+						{
+							//There is no geo-db
+							$this->informAdminError("There is no geo-db. ($name)");
+						}
+						unlink($tmpFileNameMmdb);
 					}
-					unlink($tmpFileNameMmdb);
+
+					$this->info("Succesfully updated");
 				}
-
-				$this->info("Succesfully updated");
+				else
+				{
+					$this->error("Couldn't download database '$name' from: $url");
+				}
 			}
-			else
+			finally
 			{
-				$this->error("Couldn't download database '$name' from: $url");
-
 				unlink($tmpFileNameGz);
 				unlink($tmpFileNameMmdb);
 			}
