@@ -10,14 +10,9 @@
 
 namespace Edmunds\Console;
 
-use Edmunds\Application;
-use Edmunds\Console\Scheduling\Schedule;
-use Edmunds\Foundation\Console\Commands\DownCommand;
-use Edmunds\Foundation\Console\Commands\UpCommand;
-use Edmunds\Localization\Commands\SyncCommand;
-use Edmunds\Localization\Commands\UpdateGeoIPCommand;
+use Edmunds\Gae\Console\Scheduling\Schedule as GaeSchedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
-use Illuminate\Console\Scheduling\Schedule as LumenSchedule;
+use Illuminate\Console\Scheduling\Schedule;
 
 /**
  * The kernel for the console
@@ -36,10 +31,10 @@ class Kernel extends ConsoleKernel
 	/**
 	 * Define the application's command schedule.
 	 *
-	 * @param  \Edmunds\Console\Scheduling\Schedule  $schedule
+	 * @param  \Illuminate\Console\Scheduling\Schedule $schedule
 	 * @return void
 	 */
-	protected function schedule(LumenSchedule $schedule)
+	protected function schedule(Schedule $schedule)
 	{
 		//
 	}
@@ -51,10 +46,19 @@ class Kernel extends ConsoleKernel
 	 */
 	protected function defineConsoleSchedule()
 	{
-		$this->app->instance(
-			'Illuminate\Console\Scheduling\Schedule', $schedule = new Schedule
-		);
+		// Google App Engine schedule
+		if ($this->app->isGae())
+		{
+			$this->app->instance(
+				'Illuminate\Console\Scheduling\Schedule', $schedule = new GaeSchedule
+			);
 
-		$this->schedule($schedule);
+			$this->schedule($schedule);
+		}
+
+		else
+		{
+			return parent::defineConsoleSchedule();
+		}
 	}
 }
