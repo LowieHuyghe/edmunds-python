@@ -8,9 +8,9 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Console\Scheduling;
+namespace Edmunds\Gae\Console\Scheduling;
 
-use Edmunds\Console\Scheduling\Event;
+use Edmunds\Gae\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule as LumenSchedule;
 
 /**
@@ -27,22 +27,16 @@ class Schedule extends LumenSchedule
 	 */
 	public function command($command, array $parameters = [])
 	{
-		// Google App Engine
-		if (app()->isGae())
+		if (defined('ARTISAN_BINARY'))
 		{
-			if (defined('ARTISAN_BINARY'))
-			{
-				$artisan = ARTISAN_BINARY;
-			}
-			else
-			{
-				$artisan = 'artisan';
-			}
-
-			return $this->exec("{$artisan} ${command}", $parameters);
+			$artisan = ARTISAN_BINARY;
+		}
+		else
+		{
+			$artisan = 'artisan';
 		}
 
-		return parent::command($command, $parameters);
+		return $this->exec("{$artisan} ${command}", $parameters);
 	}
 
 	/**
@@ -54,20 +48,14 @@ class Schedule extends LumenSchedule
 	 */
 	public function exec($command, array $parameters = [])
 	{
-		// Google App Engine
-		if (app()->isGae())
+		if (count($parameters))
 		{
-			if (count($parameters))
-			{
-				$command .= ' ' . $this->compileParameters($parameters);
-			}
-
-			$this->events[] = $event = new Event($command);
-
-			return $event;
+			$command .= ' ' . $this->compileParameters($parameters);
 		}
 
-		return parent::exec($command, $parameters);
+		$this->events[] = $event = new Event($command);
+
+		return $event;
 	}
 
 	/**
@@ -78,15 +66,9 @@ class Schedule extends LumenSchedule
 	 */
 	protected function compileParameters(array $parameters)
 	{
-		// Google App Engine
-		if (app()->isGae())
+		return collect($parameters)->map(function ($value, $key)
 		{
-			return collect($parameters)->map(function ($value, $key)
-			{
-				return is_numeric($key) ? $value : $key . '=' . $value;
-			})->implode(' ');
-		}
-
-		return parent::compileParameters($parameters);
+			return is_numeric($key) ? $value : $key . '=' . $value;
+		})->implode(' ');
 	}
 }

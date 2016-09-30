@@ -8,7 +8,7 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Console\Process;
+namespace Edmunds\Gae\Console\Process;
 
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Symfony\Component\Process\Exception\LogicException;

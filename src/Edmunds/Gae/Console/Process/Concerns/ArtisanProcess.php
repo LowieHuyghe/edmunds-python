@@ -8,14 +8,11 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Console\Process\Concerns;
+namespace Edmunds\Gae\Console\Process\Concerns;
 
 use Illuminate\Console\Application as Artisan;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
-use Exception;
-use Throwable;
 
 /**
  * Trait for artisan process
