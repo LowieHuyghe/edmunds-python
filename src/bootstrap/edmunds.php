@@ -26,7 +26,13 @@ try
 	*/
 
 	try {
-		(new Dotenv\Dotenv(APP_BASE_PATH))->load();
+		(new Dotenv\Dotenv(APP_BASE_PATH, '.env'))->load();
+	} catch (Dotenv\Exception\InvalidPathException $e) {}
+
+	$env = env('APP_ENV', 'production');
+
+	try {
+		(new Dotenv\Dotenv(APP_BASE_PATH, '.env.' . $env))->load();
 	} catch (Dotenv\Exception\InvalidPathException $e) {}
 
 
@@ -41,13 +47,13 @@ try
 	|
 	*/
 
-	if (\Edmunds\Gae\Environment::getInstance()->isGae())
+	if (Edmunds\Gae\Environment::getInstance()->isGae())
 	{
-		$app = new \Edmunds\Gae\Application(APP_BASE_PATH);
+		$app = new Edmunds\Gae\Application(APP_BASE_PATH);
 	}
 	else
 	{
-		$app = new \Edmunds\Application(APP_BASE_PATH);
+		$app = new Edmunds\Application(APP_BASE_PATH);
 	}
 
 
@@ -111,7 +117,7 @@ try
 	|
 	*/
 
-	\Edmunds\Registry::warehouse('newrelic');
+	Edmunds\Registry::warehouse('newrelic');
 
 
 	/*
