@@ -41,7 +41,14 @@ try
 	|
 	*/
 
-	$app = new \Edmunds\Application(APP_BASE_PATH);
+	if (\Edmunds\Gae\Environment::getInstance()->isGae())
+	{
+		$app = new \Edmunds\Gae\Application(APP_BASE_PATH);
+	}
+	else
+	{
+		$app = new \Edmunds\Application(APP_BASE_PATH);
+	}
 
 
 	/*

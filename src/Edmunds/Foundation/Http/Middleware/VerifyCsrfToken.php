@@ -122,7 +122,7 @@ class VerifyCsrfToken
 	 */
 	protected function runninginGaeConsole()
 	{
-		return $this->app->runninginGaeConsole();
+		return $this->app->runningInConsole() && $this->app->isGae();
 	}
 
 	/**

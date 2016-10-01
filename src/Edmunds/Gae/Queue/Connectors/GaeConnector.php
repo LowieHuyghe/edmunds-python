@@ -8,9 +8,9 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Queue\Connectors;
+namespace Edmunds\Gae\Queue\Connectors;
 
-use Edmunds\Queue\Queues\GaeQueue;
+use Edmunds\Gae\Queue\Queues\GaeQueue;
 use Illuminate\Contracts\Encryption\Encrypter as EncrypterContract;
 use Illuminate\Http\Request;
 use Illuminate\Queue\Connectors\ConnectorInterface;

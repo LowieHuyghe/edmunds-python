@@ -11,6 +11,7 @@
 namespace Edmunds\Foundation\Concerns;
 
 use Edmunds\Encryption\ObfuscatorServiceProvider;
+use Edmunds\Gae\Environment as GaeEnvironment;
 
 /**
  * The RuntimeEnvironment concern
@@ -55,27 +56,20 @@ trait RuntimeEnvironment
 	}
 
 	/**
-	 * Get or check the current application environment.
-	 *
-	 * @param  mixed
-	 * @return string
-	 */
-	public function environment()
-	{
-		if ($this->isGae())
-		{
-			return $this->gaeEnvironment();
-		}
-
-		return call_user_func_array(array($this, 'parent::' . __FUNCTION__), func_get_args());
-	}
-
-	/**
 	 * Get entrypoint
 	 * @return string
 	 */
 	public function getEntrypoint()
 	{
 		return config('app.entrypoint', 'default');
+	}
+
+	/**
+	 * Check if Google App Engine
+	 * @return boolean
+	 */
+	public function isGae()
+	{
+		return GaeEnvironment::getInstance()->isGae();
 	}
 }

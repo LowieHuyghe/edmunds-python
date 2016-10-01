@@ -60,7 +60,7 @@ class QueueHandlerController extends BaseController
 	public function initialize()
 	{
 		$this->queueName = $this->request->getHeader('X-AppEngine-QueueName');
-		if ( ! $this->app->runninginGaeConsole() || ! $this->queueName)
+		if ( ! $this->app->runningInConsole() || ! $this->queueName)
 		{
 			abort(403);
 		}

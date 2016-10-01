@@ -8,9 +8,9 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Queue\Jobs;
+namespace Edmunds\Gae\Queue\Jobs;
 
-use Edmunds\Queue\Queues\GaeQueue;
+use Edmunds\Gae\Queue\Queues\GaeQueue;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Queue\Job as JobContract;
 use Illuminate\Queue\Jobs\Job;

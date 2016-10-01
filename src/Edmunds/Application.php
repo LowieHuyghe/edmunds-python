@@ -41,20 +41,6 @@ class Application extends \Laravel\Lumen\Application
 	use RoutesRequests;
 	use RegistersExceptionHandlers;
 	use BindingRegisterers;
-	use GoogleAppEngine;
-
-	/**
-	 * Create a new Lumen application instance.
-	 *
-	 * @param  string|null  $basePath
-	 * @return void
-	 */
-	public function __construct($basePath = null)
-	{
-		parent::__construct($basePath);
-
-		$this->initGoogleAppEngine();
-	}
 
 	/**
 	 * Get the name of the app
@@ -156,37 +142,6 @@ class Application extends \Laravel\Lumen\Application
 		$concrete = $this->normalize($concrete);
 
 		$this->availableBindings[$abstract] = $concrete;
-	}
-
-	/**
-	 * Determine if the application is running in the console.
-	 *
-	 * @return bool
-	 */
-	public function runningInConsole()
-	{
-		if ($this->isGae())
-		{
-			return $this->runningInGaeConsole();
-		}
-
-		return parent::runningInConsole();
-	}
-
-	/**
-	 * Get the storage path for the application.
-	 *
-	 * @param  string|null  $path
-	 * @return string
-	 */
-	public function storagePath($path = null)
-	{
-		if ($this->isGae())
-		{
-			return $this->gaeStoragePath($path);
-		}
-
-		return parent::storagePath($path);
 	}
 
 	/**
