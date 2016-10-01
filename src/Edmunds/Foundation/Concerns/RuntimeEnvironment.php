@@ -11,7 +11,7 @@
 namespace Edmunds\Foundation\Concerns;
 
 use Edmunds\Encryption\ObfuscatorServiceProvider;
-use Edmunds\Gae\Environment as GaeEnvironment;
+use Edmunds\Gae\RuntimeEnvironment as GaeRuntimeEnvironment;
 
 /**
  * The RuntimeEnvironment concern
@@ -70,6 +70,6 @@ trait RuntimeEnvironment
 	 */
 	public function isGae()
 	{
-		return GaeEnvironment::getInstance()->isGae();
+		return GaeRuntimeEnvironment::getInstance()->isGae();
 	}
 }

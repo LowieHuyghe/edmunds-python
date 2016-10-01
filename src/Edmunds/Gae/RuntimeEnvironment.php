@@ -15,7 +15,7 @@ use Edmunds\Patterns\Singleton;
 /**
  * Environment check for Google App Engine
  */
-class Environment
+class RuntimeEnvironment
 {
 	use Singleton;
 
