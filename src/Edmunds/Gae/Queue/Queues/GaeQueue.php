@@ -8,11 +8,9 @@
  * @license   This file is subject to the terms and conditions defined in file 'license.md', which is part of this source code package.
  */
 
-namespace Edmunds\Queue\Queues;
+namespace Edmunds\Gae\Queue\Queues;
 
-use Edmunds\Http\Client\Input;
-use Edmunds\Http\Request as EdmundsRequest;
-use Edmunds\Queue\Jobs\GaeJob;
+use Edmunds\Gae\Queue\Jobs\GaeJob;
 use Exception;
 use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Http\Request;

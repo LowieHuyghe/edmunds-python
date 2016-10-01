@@ -76,46 +76,4 @@ trait RegistersExceptionHandlers
 
 		return $result;
 	}
-
-	/**
-	 * Get the Monolog handler for the application.
-	 *
-	 * @return \Monolog\Handler\AbstractHandler
-	 */
-	protected function getMonologHandler()
-	{
-		if ($this->isGae())
-		{
-			return $this->getGaeMonologHandler();
-		}
-
-		return parent::getMonologHandler();
-	}
-
-	/**
-	 * Handle an uncaught exception instance.
-	 *
-	 * @param  \Throwable  $e
-	 * @return void
-	 */
-	protected function handleUncaughtException($e)
-	{
-		$handler = $this->resolveExceptionHandler();
-
-		if ($e instanceof Error)
-		{
-			$e = new FatalThrowableError($e);
-		}
-
-		$handler->report($e);
-
-		if ($this->runningInConsole() && ! $this->runninginGaeConsole())
-		{
-			$handler->renderForConsole(new ConsoleOutput, $e);
-		}
-		else
-		{
-			$handler->render($this->make('request'), $e)->send();
-		}
-	}
 }

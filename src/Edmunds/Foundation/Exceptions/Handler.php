@@ -3,6 +3,7 @@
 namespace Edmunds\Foundation\Exceptions;
 
 use Edmunds\Analytics\Tracking\ErrorLog;
+use Edmunds\Gae\Environment as GaeEnvironment;
 use Edmunds\Http\Exceptions\AbortHttpException;
 use Edmunds\Http\Response;
 use Exception;

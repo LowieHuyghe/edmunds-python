@@ -28,7 +28,7 @@ class CronHandlerController extends BaseController
 	 */
 	public function initialize()
 	{
-		if ( ! $this->app->runninginGaeConsole() || ! $this->request->getHeader('X-Appengine-Cron'))
+		if ( ! $this->app->runningInConsole() || ! $this->request->getHeader('X-Appengine-Cron'))
 		{
 			abort(403);
 		}
