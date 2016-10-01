@@ -134,6 +134,29 @@ try
 
 	/*
 	|--------------------------------------------------------------------------
+	| Register Service Providers
+	|--------------------------------------------------------------------------
+	|
+	| Here we will register all of the application's service providers which
+	| are used to bind services into the container. Service providers are
+	| totally optional, so you are not required to uncomment this line.
+	|
+	*/
+
+	$providers = array(
+		Edmunds\Foundation\Providers\StatefullServiceProvider::class,
+		Edmunds\Auth\Providers\AuthServiceProvider::class,
+	);
+	$providers = array_merge($providers, config('app.providers', array()));
+
+	foreach ($providers as $provider)
+	{
+		$app->register($provider);
+	}
+
+
+	/*
+	|--------------------------------------------------------------------------
 	| Register Middleware
 	|--------------------------------------------------------------------------
 	|
@@ -155,29 +178,6 @@ try
 			// 'roles' => Edmunds\Auth\Middleware\RolesMiddleware::class,
 			// 'guest' => Edmunds\Auth\Middleware\RedirectIfAuthenticated::class,
 		));
-
-
-	/*
-	|--------------------------------------------------------------------------
-	| Register Service Providers
-	|--------------------------------------------------------------------------
-	|
-	| Here we will register all of the application's service providers which
-	| are used to bind services into the container. Service providers are
-	| totally optional, so you are not required to uncomment this line.
-	|
-	*/
-
-	$providers = array(
-		Edmunds\Foundation\Providers\StatefullServiceProvider::class,
-		Edmunds\Auth\Providers\AuthServiceProvider::class,
-	);
-	$providers = array_merge($providers, config('app.providers', array()));
-
-	foreach ($providers as $provider)
-	{
-		$app->register($provider);
-	}
 
 
 	/*
