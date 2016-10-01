@@ -47,7 +47,7 @@ try
 	|
 	*/
 
-	if (Edmunds\Gae\Environment::getInstance()->isGae())
+	if (Edmunds\Gae\RuntimeEnvironment::getInstance()->isGae())
 	{
 		$app = new Edmunds\Gae\Application(APP_BASE_PATH);
 	}
