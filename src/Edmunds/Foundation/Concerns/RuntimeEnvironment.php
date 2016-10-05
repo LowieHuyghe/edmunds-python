@@ -24,7 +24,7 @@ trait RuntimeEnvironment
 	 */
 	public function isLocal()
 	{
-		return $this->environment('local');
+		return $this->environment('local', 'develop');
 	}
 
 	/**
@@ -33,7 +33,7 @@ trait RuntimeEnvironment
 	 */
 	public function isProduction()
 	{
-		return $this->environment('production');
+		return $this->environment('production', 'staging');
 	}
 
 	/**
