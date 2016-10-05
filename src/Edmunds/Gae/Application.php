@@ -13,7 +13,6 @@ namespace Edmunds\Gae;
 use Edmunds\Application as EdmundsApplication;
 use Edmunds\Gae\Foundation\Concerns\BindingRegisterers;
 use Edmunds\Gae\Foundation\Concerns\RegistersExceptionHandlers;
-use Edmunds\Gae\Foundation\Concerns\RuntimeEnvironment;
 use Edmunds\Http\Request;
 
 /**
@@ -23,7 +22,6 @@ class Application extends EdmundsApplication
 {
 	use BindingRegisterers;
 	use RegistersExceptionHandlers;
-	use RuntimeEnvironment;
 
 	/**
 	 * Google App Engine Identity Service
