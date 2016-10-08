@@ -185,6 +185,11 @@ class Translator extends BaseStructure implements TranslatorInterface
 			$log->exception = $e;
 			$log->type = 'TranslationError';
 			$log->log();
+
+			if (app()->isLocal())
+			{
+				throw $e;
+			}
 		}
 	}
 
@@ -201,7 +206,7 @@ class Translator extends BaseStructure implements TranslatorInterface
 	{
 		$replace = $this->sortReplacements($replace);
 
-		$regex = "/~~([pPgG]){([^~\|{}]+?)}\|\|((?!~~)(.|\n)+?\|(?!~~)(.|\n)+?)~~/";
+		$regex = "/~~(plural|gender){([^~\|{}]+?)}\|\|((?!~~)(.|\n)+?\|(?!~~)(.|\n)+?)~~/";
 
 		$count = 1;
 		while($count > 0)
@@ -214,14 +219,14 @@ class Translator extends BaseStructure implements TranslatorInterface
 
 				switch($type)
 				{
-					case 'g':
+					case 'gender':
 						$parts = explode('|', $message);
 						if ($value->gender->id == Gender::MALE)
 							$message = $parts[0];
 						else
 							$message = $parts[1];
 						break;
-					case 'p':
+					case 'plural':
 						$message = $this->getSelector()->choose($message, $value, 'nl');
 						break;
 					default:
