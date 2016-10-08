@@ -196,7 +196,7 @@ class SyncCommand extends BaseCommand
 			{
 				$results[] = $path;
 			}
-			else if( ! in_array($path, array(base_path('vendor'), storage_path(), Translator::getLangPath())))
+			elseif ( ! in_array($path, array(base_path('vendor'), base_path('node_modules'), storage_path(), Translator::getLangPath())))
 			{
 				$this->getAllFiles($path, $results);
 			}
