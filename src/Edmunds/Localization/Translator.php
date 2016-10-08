@@ -53,6 +53,12 @@ class Translator extends BaseStructure implements TranslatorInterface
 	}
 
 	/**
+	 * The regex for variables
+	 * @var string
+	 */
+	protected static $regexVariable = '{([\w\d_]+?)}';
+
+	/**
 	 * The selector of the messages
 	 * @var MessageSelector
 	 */
@@ -143,16 +149,22 @@ class Translator extends BaseStructure implements TranslatorInterface
 	 */
 	public static function getKey($message)
 	{
+		// Don't keep keys for variables into account for translations. They don't matter.
+		$message = preg_replace_callback('/' . self::$regexVariable . '/', function (array $matches)
+		{
+			return '{k}';
+		}, $message);
+
 		return md5($message);
 	}
 
 	/**
 	 * Get the translation for a given key.
 	 *
-	 * @param string  $message
-	 * @param array $parameters
-	 * @param string  $locale
-	 * @param bool $onlyReplacements
+	 * @param string   $message
+	 * @param array    $parameters
+	 * @param string   $locale
+	 * @param bool     $onlyReplacements
 	 * @return string
 	 */
 	public function trans($message, array $parameters = array(), $domain = null, $locale = null, $onlyReplacements = false)
@@ -172,12 +184,12 @@ class Translator extends BaseStructure implements TranslatorInterface
 					$translated = Arr::get($this->loaded[$namespace][$group][$potLocale], $key);
 					if ($translated && $translated != $key)
 					{
-						return $this->makeReplacements($key, $translated, $parameters, $potLocale);
+						return $this->makeReplacements($key, $message, $translated, $parameters, $potLocale);
 					}
 				}
 			}
 
-			return $this->makeReplacements($key, $message, $parameters, $locale);
+			return $this->makeReplacements($key, $message, $message, $parameters, $locale);
 		}
 		catch(TranslationException $e)
 		{
@@ -197,17 +209,32 @@ class Translator extends BaseStructure implements TranslatorInterface
 	 * Make the place-holder replacements on a line.
 	 *
 	 * @param  string $key
+	 * @param  string $original
 	 * @param  string $line
 	 * @param  array $replace
 	 * @param  string $locale
 	 * @return string
 	 */
-	protected function makeReplacements($key, $line, array $replace, $locale)
+	protected function makeReplacements($key, $original, $line, array $replace, $locale)
 	{
+		// Replace translated line variable keys with original variable keys
+		// fetch original replace keys
+		$originalReplaceKeyMatches = [];
+		preg_match_all('/' . self::$regexVariable . '/', $original, $originalReplaceKeyMatches);
+		// replace keys in translated line
+		$replaceKeyIndex = -1;
+		$line = preg_replace_callback('/' . self::$regexVariable . '/', function(array $lineReplaceKeyMatches) use ($originalReplaceKeyMatches, $replaceKeyIndex)
+		{
+			++$replaceKeyIndex;
+
+			return '{' . $originalReplaceKeyMatches[1][$replaceKeyIndex] . '}';
+		}, $line);
+
+		// Sort replacements
 		$replace = $this->sortReplacements($replace);
 
-		$regex = "/~~(plural|gender){([^~\|{}]+?)}\|\|((?!~~)(.|\n)+?\|(?!~~)(.|\n)+?)~~/";
-
+		// Plurals and Genders
+		$regex = "/~~(plural|gender)" . self::$regexVariable . "\|\|((?!~~)(.|\n)+?\|(?!~~)(.|\n)+?)~~/";
 		$count = 1;
 		while($count > 0)
 		{
@@ -237,13 +264,14 @@ class Translator extends BaseStructure implements TranslatorInterface
 			}, $line, -1, $count);
 		}
 
-		//Check if delimiters are still used
+		// Check if delimiters are still used
 		if (($pos = strpos($line, '~~')) !== false)
 		{
 			throw new TranslationException("Delimiter still present on position $pos (lng: $locale, key: $key)");
 		}
 
-		$line = preg_replace_callback("/{([^{}]+?)}/", function (array $matches) use ($replace)
+		// Replace variables
+		$line = preg_replace_callback('/' . self::$regexVariable . '/', function (array $matches) use ($replace)
 		{
 			$value = $matches[1];
 			return $this->getValue($value, $replace);
