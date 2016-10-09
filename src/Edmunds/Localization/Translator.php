@@ -194,8 +194,8 @@ class Translator extends BaseStructure implements TranslatorInterface
 		catch(TranslationException $e)
 		{
 			$log = new ErrorLog();
-			$log->exception = $e;
 			$log->type = 'TranslationError';
+			$log->exception = $e;
 			$log->log();
 
 			if (app()->isLocal())
