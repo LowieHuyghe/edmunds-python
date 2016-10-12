@@ -18,7 +18,7 @@ use Illuminate\Http\Response;
 use Illuminate\Queue\Queue;
 use RuntimeException;
 use google\appengine\api\taskqueue\PushTask;
-use StdClass;
+use stdClass;
 
 
 /**
@@ -143,7 +143,7 @@ class GaeQueue extends Queue implements QueueContract
 		if ($this->shouldEncrypt) $payload = $this->encrypter->decrypt($payload);
 
 		// create job
-		$job = new StdClass();
+		$job = new stdClass();
 		$job->id = $this->request->header('X-AppEngine-TaskName');
 		$job->body = $payload;
 		$job->pushed = true;

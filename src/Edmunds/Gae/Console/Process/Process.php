@@ -14,7 +14,7 @@ use Edmunds\Gae\Console\Process\Concerns\ArtisanProcess;
 use Edmunds\Gae\Console\Process\SymfonyProcess;
 use Exception;
 use Illuminate\Console\Application as Artisan;
-use StdClass;
+use stdClass;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -290,7 +290,7 @@ class Process extends SymfonyProcess
 	 */
 	protected function procOpen($commandline, $descriptors, $pipes, $cwd, $env, $options)
 	{
-		$process = new StdClass();
+		$process = new stdClass();
 
 		$process->commandline = $commandline;
 		$process->descriptors = $descriptors;
@@ -320,7 +320,7 @@ class Process extends SymfonyProcess
 
 	/**
 	 * Handle the given process
-	 * @param  StdClass $process
+	 * @param  stdClass $process
 	 * @return void
 	 */
 	protected function handleProcess($process)
