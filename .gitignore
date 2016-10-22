@@ -6,3 +6,5 @@
 *.sublime-*
 
 composer.lock
+/lib
+*.pyc
