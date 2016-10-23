@@ -1,6 +1,4 @@
 
-from flask import url_for
-
 
 def route(app):
 	"""
