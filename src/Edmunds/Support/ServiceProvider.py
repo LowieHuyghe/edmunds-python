@@ -13,6 +13,8 @@ class ServiceProvider(object):
 	def __init__(self, app):
 		"""
 		Initialize the application
+		:param app: 	The application
+		:type  app: 	Application
 		"""
 
 		self.app = app
