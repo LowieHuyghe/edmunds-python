@@ -1,5 +1,5 @@
 
-from src.Edmunds.Application import Application
+from Edmunds.Application import Application
 
 
 def bootstrap():
