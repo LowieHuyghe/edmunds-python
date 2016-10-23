@@ -2,7 +2,7 @@
 from flask import Flask
 from app.Http import routes
 from werkzeug.debug import DebuggedApplication
-import Support.helpers as helpers
+import Edmunds.Support.helpers as helpers
 
 
 class Application(Flask):
