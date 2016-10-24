@@ -17,20 +17,24 @@ class Application(Flask):
 
 		super(Application, self).__init__(__name__)
 
+		self.registeredServiceProviders = []
+
 		self.debug = True
 		self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
 
 		routes.route(self)
 
 
-	def register(self, className):
+	def register(self, class_):
 		"""
 		Register a Service Provider
-		:param className: 	The class name of the provider
-		:type  className: 	string
+		:param class_: 	The class of the provider
+		:type  class_: 	string
 		"""
 
-		serviceProviderClass = helpers.getClass(className)
+		if class_ not in self.registeredServiceProviders:
+			# Only register a provider once
+			self.registeredServiceProviders.append(class_)
 
-		serviceProvider = serviceProviderClass(self)
-		serviceProvider.register()
+			serviceProvider = class_(self)
+			serviceProvider.register()
