@@ -1,5 +1,6 @@
 
 import importlib
+import os
 
 
 def getClass(className):
@@ -42,3 +43,15 @@ def getFullClassName(class_):
 	"""
 
 	return class_.__module__ + '.' + class_.__name__
+
+
+def getDirFromFile(file):
+	"""
+	Get the directory of the given file
+	:param file: 	The FIle
+	:type  file: 	str
+	:return: 		The directory
+	:rtype: 		str
+	"""
+
+	return os.path.dirname(os.path.realpath(file))
