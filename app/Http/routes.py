@@ -1,5 +1,4 @@
 
-
 def route(app):
 	"""
 	Define the routes in the application
