@@ -8,8 +8,17 @@ if __name__ == '__main__':
 
 from bootstrap import test
 import unittest
+import sys
 
-suite = test.bootstrap(__file__)
+
+testLocations = []
+
+if len(sys.argv) > 1:
+	testLocations += sys.argv[1::]
+else:
+	testLocations.append('test')
+
+suite = test.bootstrap(__file__, testLocations)
 
 
 if __name__ == '__main__':
