@@ -1,5 +1,5 @@
 
-from Edmunds.Foundation.Testing.TestCase import TestCase
+from test.TestCase import TestCase
 from Edmunds.Support.ServiceProvider import ServiceProvider
 
 

@@ -1,6 +1,7 @@
 
 import unittest
 from bootstrap import edmunds
+import abc
 
 
 class TestCase(unittest.TestCase):
@@ -8,11 +9,15 @@ class TestCase(unittest.TestCase):
 	A UnitTest Test Case
 	"""
 
+	__metaclass__ = abc.ABCMeta
+
+
 	def setUp(self):
 		"""
 		Set up the test case
 		"""
-		self.app = self.createApplication()
+		if not hasattr(self, 'app'):
+			self.app = self.createApplication()
 
 
 	def tearDown(self):
@@ -22,8 +27,9 @@ class TestCase(unittest.TestCase):
 		pass
 
 
+	@abc.abstractmethod
 	def createApplication(self):
 		"""
 		Create the application for testing
 		"""
-		self.app = edmunds.bootstrap(__file__)
+		pass
