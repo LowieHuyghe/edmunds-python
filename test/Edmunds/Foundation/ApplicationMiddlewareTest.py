@@ -1,6 +1,8 @@
 
 from test.TestCase import TestCase
 from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+import Edmunds.Support.helpers as helpers
+from flask import g
 
 
 class ApplicationMiddlewareTest(TestCase):
@@ -54,6 +56,32 @@ class ApplicationMiddlewareTest(TestCase):
 		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddlewareAbstractHandle)
 
 
+	def testHandling(self):
+		"""
+		Test handling of application middleware
+		"""
+
+		# Register the middleware
+		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+
+		# Add route
+		rule = '/' + helpers.random_str(20)
+		@self.app.route(rule)
+		def handleRoute():
+			g.handledRoute = True
+			return 'handledRoute'
+
+		# Call route
+		with self.app.test_client() as c:
+			rv = c.get(rule)
+
+			assert 'handledRoute' in g
+			assert g.handledRoute
+
+			assert 'handledMiddleware' in g
+			assert g.handledMiddleware
+
+
 
 class MyApplicationMiddlewareNoAbstractHandle(ApplicationMiddleware):
 	"""
@@ -69,4 +97,9 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 	"""
 
 	def handle(self, environment, startResponse):
-		pass
+
+		@self.app.before_request
+		def before_request():
+			g.handledMiddleware = True
+
+		return super(MyApplicationMiddlewareAbstractHandle, self).handle(environment, startResponse)
