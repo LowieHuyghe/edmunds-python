@@ -17,7 +17,7 @@ class TestCase(unittest.TestCase):
 		Set up the test case
 		"""
 		if not hasattr(self, 'app'):
-			self.app = self.createApplication()
+			self.app = self.create_application()
 
 
 	def tearDown(self):
@@ -28,7 +28,7 @@ class TestCase(unittest.TestCase):
 
 
 	@abc.abstractmethod
-	def createApplication(self):
+	def create_application(self):
 		"""
 		Create the application for testing
 		"""
