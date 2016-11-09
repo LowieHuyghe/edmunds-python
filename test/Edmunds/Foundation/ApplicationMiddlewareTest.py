@@ -63,23 +63,21 @@ class ApplicationMiddlewareTest(TestCase):
 
 		# Register the middleware
 		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+		# Add it a second time to make sure it is only called once
+		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
 
 		# Add route
 		rule = '/' + helpers.random_str(20)
 		@self.app.route(rule)
 		def handleRoute():
-			g.handledRoute = True
-			return 'handledRoute'
+			pass
 
 		# Call route
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'handledRoute' in g
-			assert g.handledRoute
-
 			assert 'handledMiddleware' in g
-			assert g.handledMiddleware
+			assert g.handledMiddleware == 1
 
 
 
@@ -100,6 +98,8 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 
 		@self.app.before_request
 		def before_request():
-			g.handledMiddleware = True
+			if 'handledMiddleware' not in g:
+				g.handledMiddleware = 0
+			g.handledMiddleware += 1
 
 		return super(MyApplicationMiddlewareAbstractHandle, self).handle(environment, startResponse)
