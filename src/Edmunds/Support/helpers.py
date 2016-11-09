@@ -1,6 +1,8 @@
 
 import importlib
 import os
+import random
+import string
 
 
 def getClass(className):
@@ -55,3 +57,15 @@ def getDirFromFile(file):
 	"""
 
 	return os.path.dirname(os.path.realpath(file))
+
+
+def random_str(length):
+	"""
+	Get a random string
+	:param length: 	Length of the random string
+	:type  length: 	int
+	:return: 		Random string
+	:rtype: 		str
+	"""
+
+	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
