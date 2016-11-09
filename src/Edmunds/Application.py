@@ -1,11 +1,12 @@
 
 from flask import Flask
-from app.Http import routes
+from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as ConcernsServiceProviders
+from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
 from werkzeug.debug import DebuggedApplication
-import Edmunds.Support.helpers as helpers
+from app.Http import routes
 
 
-class Application(Flask):
+class Application(Flask, ConcernsServiceProviders, ConcernsMiddleware):
 	"""
 	The Edmunds Application
 	"""
@@ -17,24 +18,29 @@ class Application(Flask):
 
 		super(Application, self).__init__(__name__)
 
-		self.registeredServiceProviders = []
-
 		self.debug = True
 		self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
+
+		self._init_service_providers()
+		self._init_middleware()
 
 		routes.route(self)
 
 
-	def register(self, class_):
+	def route(self, rule, **options):
 		"""
-		Register a Service Provider
-		:param class_: 	The class of the provider
-		:type  class_: 	string
+		Register a route
+		This is merely a step to abstract the middleware from the route
+		:param rule: 	The rule for routing the request
+		:type  rule: 	str
+		:param options: List of options
+		:type  options: list
+		:return: 		Decorator function
+		:rtype: 		function
 		"""
 
-		if class_ not in self.registeredServiceProviders:
-			# Only register a provider once
-			self.registeredServiceProviders.append(class_)
+		# handle request middleware
+		middleware = options.pop('middleware', [])
+		self._handle_route_request_middleware(rule, middleware)
 
-			serviceProvider = class_(self)
-			serviceProvider.register()
+		return super(Application, self).route(rule, **options)
