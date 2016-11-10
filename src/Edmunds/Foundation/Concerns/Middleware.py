@@ -43,24 +43,8 @@ class Middleware(object):
 		:type  middleware: 	list
 		"""
 
-		for class_ in middleware:
-			self._register_request_middleware(class_, rule)
-
-
-	def _register_request_middleware(self, class_, rule):
-		"""
-		Add request middleware
-		:param class_: 	The class of the middleware
-		:type  class_: 	RequestMiddleware
-		:param rule: 	The route rule used to identify the middleware
-		:type  rule: 	str
-		"""
-
-		# add the middleware to the middleware by route
-		if rule not in self._request_middleware_by_rule:
-			self._request_middleware_by_rule[rule] = []
-
-		self._request_middleware_by_rule[rule].append(class_)
+		# Add middleware
+		self._request_middleware_by_rule[rule] = middleware
 
 
 	def _register_request_middleware_handling(self):
