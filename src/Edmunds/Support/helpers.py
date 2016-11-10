@@ -5,7 +5,7 @@ import random
 import string
 
 
-def getClass(className):
+def get_class(className):
 	"""
 	Get class from className
 	:param className: 	The class-name
@@ -14,12 +14,12 @@ def getClass(className):
 	:rtype: 			class
 	"""
 
-	(module, className) = getModuleAndClass(className)
+	(module, className) = get_module_and_class(className)
 
 	return getattr(importlib.import_module(module), className)
 
 
-def getModuleAndClass(className):
+def get_module_and_class(className):
 	"""
 	Get module and className from given className
 	:param className: 	The className
@@ -35,7 +35,7 @@ def getModuleAndClass(className):
 	return (module, className)
 
 
-def getFullClassName(class_):
+def get_full_class_name(class_):
 	"""
 	Get full class name of class
 	:param class_: 	The class
@@ -47,7 +47,7 @@ def getFullClassName(class_):
 	return class_.__module__ + '.' + class_.__name__
 
 
-def getDirFromFile(file):
+def get_dir_from_file(file):
 	"""
 	Get the directory of the given file
 	:param file: 	The FIle
