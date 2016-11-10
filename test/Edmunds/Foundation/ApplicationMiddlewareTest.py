@@ -2,13 +2,25 @@
 from test.TestCase import TestCase
 from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
 import Edmunds.Support.helpers as helpers
-from flask import g
 
 
 class ApplicationMiddlewareTest(TestCase):
 	"""
 	Test the Application Middleware
 	"""
+
+	cache = None
+
+
+	def setUp(self):
+		"""
+		Set up the test case
+		"""
+
+		super(ApplicationMiddlewareTest, self).setUp()
+
+		ApplicationMiddlewareTest.cache = {}
+
 
 	def testNoAbstractHandle(self):
 		"""
@@ -40,20 +52,34 @@ class ApplicationMiddlewareTest(TestCase):
 		Test registering the application middleware
 		"""
 
+		# Check empty
+		assert 0 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
+
 		# Register the middleware
-		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+		self.app.middleware(MyApplicationMiddleware)
 
 		# Check if registered
-		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddlewareAbstractHandle)
-		assert isinstance(self.app.wsgi_app, MyApplicationMiddlewareAbstractHandle)
+		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
+		assert isinstance(self.app.wsgi_app, MyApplicationMiddleware)
+		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 		# Try adding it again
-		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+		self.app.middleware(MyApplicationMiddleware)
 
 		# Check if duplicate
-		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddlewareAbstractHandle)
-		assert isinstance(self.app.wsgi_app, MyApplicationMiddlewareAbstractHandle)
-		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddlewareAbstractHandle)
+		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
+		assert isinstance(self.app.wsgi_app, MyApplicationMiddleware)
+		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+
+		# Try adding second one
+		self.app.middleware(MySecondApplicationMiddleware)
+
+		# Check if registered
+		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
+		assert 1 == self.app._registered_application_middleware.count(MySecondApplicationMiddleware)
+		assert isinstance(self.app.wsgi_app, MySecondApplicationMiddleware)
+		assert isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+		assert not isinstance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 
 	def testHandling(self):
@@ -62,9 +88,9 @@ class ApplicationMiddlewareTest(TestCase):
 		"""
 
 		# Register the middleware
-		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+		self.app.middleware(MyApplicationMiddleware)
 		# Add it a second time to make sure it is only called once
-		self.app.middleware(MyApplicationMiddlewareAbstractHandle)
+		self.app.middleware(MyApplicationMiddleware)
 
 		# Add route
 		rule = '/' + helpers.random_str(20)
@@ -73,11 +99,62 @@ class ApplicationMiddlewareTest(TestCase):
 			pass
 
 		# Call route
+		ApplicationMiddlewareTest.cache = {}
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'handledMiddleware' in g
-			assert g.handledMiddleware == 1
+			assert 'handledMiddleware' in ApplicationMiddlewareTest.cache
+			assert 1 == ApplicationMiddlewareTest.cache['handledMiddleware']
+
+		# Add second middleware
+		self.app.middleware(MySecondApplicationMiddleware)
+
+		# Call route
+		ApplicationMiddlewareTest.cache = {}
+		with self.app.test_client() as c:
+			rv = c.get(rule)
+
+			assert 'handledMiddleware' in ApplicationMiddlewareTest.cache
+			assert 2 == ApplicationMiddlewareTest.cache['handledMiddleware']
+
+
+	def testOrder(self):
+		"""
+		Test order of middleware
+		"""
+
+		# Register the middleware
+		self.app.middleware(MyApplicationMiddleware)
+		self.app.middleware(MySecondApplicationMiddleware)
+
+		# Add route
+		rule = '/' + helpers.random_str(20)
+		@self.app.route(rule)
+		def handleRoute():
+			pass
+
+		# Call route
+		ApplicationMiddlewareTest.cache = {}
+		with self.app.test_client() as c:
+			rv = c.get(rule)
+
+			assert 'firstHandledMiddleware' in ApplicationMiddlewareTest.cache
+			assert MySecondApplicationMiddleware == ApplicationMiddlewareTest.cache['firstHandledMiddleware']
+			assert 'lastHandledMiddleware' in ApplicationMiddlewareTest.cache
+			assert MyApplicationMiddleware == ApplicationMiddlewareTest.cache['lastHandledMiddleware']
+
+		# Register some more
+		self.app.middleware(MyApplicationMiddleware)
+
+		# Call route
+		ApplicationMiddlewareTest.cache = {}
+		with self.app.test_client() as c:
+			rv = c.get(rule)
+
+			assert 'firstHandledMiddleware' in ApplicationMiddlewareTest.cache
+			assert MySecondApplicationMiddleware == ApplicationMiddlewareTest.cache['firstHandledMiddleware']
+			assert 'lastHandledMiddleware' in ApplicationMiddlewareTest.cache
+			assert MyApplicationMiddleware == ApplicationMiddlewareTest.cache['lastHandledMiddleware']
 
 
 
@@ -95,11 +172,42 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 	"""
 
 	def handle(self, environment, startResponse):
+		pass
 
-		@self.app.before_request
-		def before_request():
-			if 'handledMiddleware' not in g:
-				g.handledMiddleware = 0
-			g.handledMiddleware += 1
 
-		return super(MyApplicationMiddlewareAbstractHandle, self).handle(environment, startResponse)
+class MyApplicationMiddleware(ApplicationMiddleware):
+	"""
+	Application Middleware class
+	"""
+
+	def handle(self, environment, startResponse):
+
+		if 'handledMiddleware' not in ApplicationMiddlewareTest.cache:
+			ApplicationMiddlewareTest.cache['handledMiddleware'] = 0
+		ApplicationMiddlewareTest.cache['handledMiddleware'] += 1
+
+		if 'firstHandledMiddleware' not in ApplicationMiddlewareTest.cache:
+			ApplicationMiddlewareTest.cache['firstHandledMiddleware'] = MyApplicationMiddleware
+
+		ApplicationMiddlewareTest.cache['lastHandledMiddleware'] = MyApplicationMiddleware
+
+		return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+
+
+class MySecondApplicationMiddleware(ApplicationMiddleware):
+	"""
+	Second Application Middleware class
+	"""
+
+	def handle(self, environment, startResponse):
+
+		if 'handledMiddleware' not in ApplicationMiddlewareTest.cache:
+			ApplicationMiddlewareTest.cache['handledMiddleware'] = 0
+		ApplicationMiddlewareTest.cache['handledMiddleware'] += 1
+
+		if 'firstHandledMiddleware' not in ApplicationMiddlewareTest.cache:
+			ApplicationMiddlewareTest.cache['firstHandledMiddleware'] = MySecondApplicationMiddleware
+
+		ApplicationMiddlewareTest.cache['lastHandledMiddleware'] = MySecondApplicationMiddleware
+
+		return super(MySecondApplicationMiddleware, self).handle(environment, startResponse)
