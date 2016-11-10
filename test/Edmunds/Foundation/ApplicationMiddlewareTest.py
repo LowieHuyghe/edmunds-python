@@ -166,6 +166,7 @@ class MyApplicationMiddlewareNoAbstractHandle(ApplicationMiddleware):
 	pass
 
 
+
 class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 	"""
 	Application Middleware class with handle method
@@ -173,6 +174,7 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 
 	def handle(self, environment, startResponse):
 		pass
+
 
 
 class MyApplicationMiddleware(ApplicationMiddleware):
@@ -192,6 +194,7 @@ class MyApplicationMiddleware(ApplicationMiddleware):
 		ApplicationMiddlewareTest.cache['lastHandledMiddleware'] = MyApplicationMiddleware
 
 		return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+
 
 
 class MySecondApplicationMiddleware(ApplicationMiddleware):

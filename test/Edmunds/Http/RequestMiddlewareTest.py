@@ -232,6 +232,7 @@ class MyRequestMiddleware(RequestMiddleware):
 		return super(MyRequestMiddleware, self).after(response)
 
 
+
 class MySecondRequestMiddleware(RequestMiddleware):
 	"""
 	Second Request Middleware class
