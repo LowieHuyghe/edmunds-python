@@ -1,6 +1,7 @@
 
 from flask.config import Config as FlaskConfig
 import os
+import re
 
 
 class Config(FlaskConfig):
@@ -32,9 +33,6 @@ class Config(FlaskConfig):
 		:return: 			Respectively the value and None
 		:rtype: 			mixed|None
 		"""
-
-		# Fetch the namespace and load them
-		self._load_namespace_from_call(mixed)
 
 		# Update dictionary
 		if isinstance(mixed, dict):
@@ -80,30 +78,22 @@ class Config(FlaskConfig):
 		return '_'.join(key.split('.')).upper()
 
 
-	def _load_namespace_from_call(self, mixed):
+	def load_all(self):
 		"""
-		Load namespace from call
-		:param mixed: 		Key of dictionary
-		:type mixed: 		dict|key
+		Load all config files
 		"""
 
-		namespaces = []
-		if isinstance(mixed, dict):
-			for key in mixed:
-				namespace = key.split('.')[0]
-				if key not in namespaces:
-					namespaces.append(namespace)
-		else:
-			namespace = mixed.split('.')[0]
-			namespaces.append(namespace)
+		config_dirs = [
+			'lib/edmunds/src/config',
+			'config',
+		]
 
-		for namespace in namespaces:
-			if namespace not in self.loaded_config:
-				self.loaded_config.append(namespace)
-				config_file = 'config/%s.py' % namespace
-				config_full_file_path = os.path.join(self.root_path, config_file)
+		for config_dir in config_dirs:
+			for root, subdirs, files in os.walk(config_dir):
+				for file in files:
+					if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
+						continue
 
-				print config_full_file_path
+					file_name = os.path.join(self.root_path, config_dir, file)
 
-				if os.path.isfile(config_full_file_path):
-					self.from_pyfile(config_file)
+					self.from_pyfile(file_name)
