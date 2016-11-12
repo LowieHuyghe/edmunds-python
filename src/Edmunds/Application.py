@@ -15,12 +15,14 @@ class Application(Flask, ConcernsServiceProviders, ConcernsMiddleware):
 	config_class = Config
 
 
-	def __init__(self):
+	def __init__(self, import_name):
 		"""
 		Initialize the application
+		:param import_name: 	Import name
+		:type  import_name: 	str
 		"""
 
-		super(Application, self).__init__(__name__)
+		super(Application, self).__init__(import_name)
 
 		self.debug = True
 		self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
