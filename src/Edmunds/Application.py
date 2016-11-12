@@ -4,12 +4,16 @@ from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as Con
 from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
 from werkzeug.debug import DebuggedApplication
 from app.Http import routes
+from Edmunds.Config.Config import Config
 
 
 class Application(Flask, ConcernsServiceProviders, ConcernsMiddleware):
 	"""
 	The Edmunds Application
 	"""
+
+	config_class = Config
+
 
 	def __init__(self):
 		"""
