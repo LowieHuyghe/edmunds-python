@@ -24,6 +24,8 @@ class Application(Flask, ConcernsServiceProviders, ConcernsMiddleware):
 
 		super(Application, self).__init__(import_name)
 
+		self.config.load_all()
+
 		self.debug = True
 		self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
 
