@@ -78,15 +78,25 @@ class Config(FlaskConfig):
 		return '_'.join(key.split('.')).upper()
 
 
-	def load_all(self):
+	def load_all(self, config_dirs):
 		"""
 		Load all config files
+		:param config_dirs: 	Configuration directories
+		:type  config_dirs: 	list
 		"""
 
-		config_dirs = [
-			'lib/edmunds/src/config',
-			'config',
-		]
+		# Load configuration in order
+		# Newly loaded overwrites current values
+		self._load_config(config_dirs)
+		self._load_env()
+
+
+	def _load_config(self, config_dirs):
+		"""
+		Load the configuration
+		:param config_dirs: 	Configuration directories
+		:type  config_dirs: 	list
+		"""
 
 		for config_dir in config_dirs:
 			for root, subdirs, files in os.walk(config_dir):
@@ -97,3 +107,34 @@ class Config(FlaskConfig):
 					file_name = os.path.join(self.root_path, config_dir, file)
 
 					self.from_pyfile(file_name)
+
+
+	def _load_env(self):
+		"""
+		Load environment config
+		"""
+
+		# Load .env file
+		env_file_path = os.path.join(self.root_path, '.env.py')
+		if os.path.isfile(env_file_path):
+			self.from_pyfile(env_file_path)
+
+		# Overwrite with APP_ENV value set in environment
+		if os.environ.has_key('APP_ENV'):
+			self({
+				'app.env': os.environ.get('APP_ENV')
+			})
+
+		# Check if environment set
+		if not self.has('app.env'):
+			raise RuntimeError('App environment is not set.')
+
+		# Load environment specific .env
+		env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self('app.env').lower())
+		if os.path.isfile(env_environment_file_path):
+			self.from_pyfile(env_environment_file_path)
+
+		# Lower the environment value
+		self({
+			'app.env': self('app.env').lower()
+		})
