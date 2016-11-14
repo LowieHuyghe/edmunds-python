@@ -2,6 +2,7 @@
 from flask.config import Config as FlaskConfig
 import os
 import re
+import copy
 
 
 class Config(FlaskConfig):
@@ -106,7 +107,7 @@ class Config(FlaskConfig):
 
 					file_name = os.path.join(self.root_path, config_dir, file)
 
-					self.from_pyfile(file_name)
+					self.from_custom_pyfile(file_name)
 
 
 	def _load_env(self):
@@ -117,7 +118,7 @@ class Config(FlaskConfig):
 		# Load .env file
 		env_file_path = os.path.join(self.root_path, '.env.py')
 		if os.path.isfile(env_file_path):
-			self.from_pyfile(env_file_path)
+			self.from_custom_pyfile(env_file_path)
 
 		# Overwrite with APP_ENV value set in environment
 		if os.environ.has_key('APP_ENV'):
@@ -132,9 +133,60 @@ class Config(FlaskConfig):
 		# Load environment specific .env
 		env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self('app.env').lower())
 		if os.path.isfile(env_environment_file_path):
-			self.from_pyfile(env_environment_file_path)
+			self.from_custom_pyfile(env_environment_file_path)
 
 		# Lower the environment value
 		self({
 			'app.env': self('app.env').lower()
 		})
+
+
+	def from_custom_pyfile(self, file_name):
+		"""
+		Load from py-file
+		:param file_name:	File to load
+		:type  file_name:	str
+		"""
+
+		# Backup of original
+		original = copy.copy(self)
+		self.clear()
+
+		# Load new
+		self.from_pyfile(file_name)
+		new = copy.copy(self)
+
+		# Set back original
+		self.clear()
+		self.update(original)
+
+		# Process and flatten new list
+		processed_new = self._flatten_dict(new)
+		self.update(processed_new)
+
+
+	def _flatten_dict(self, new, processed_new = None, prefix_key = ''):
+		"""
+		Flatten the dictionary to dictionary with only one level
+		:param new:				The given dictionary
+		:type  new:				dict
+		:param processed_new:	The processed dictionary
+		:type  processed_new:	dict
+		:param prefix_key:		The prefix key
+		:type  prefix_key:		str
+		:return:				The processed dictionary
+		:rtype:					dict
+		"""
+
+		if processed_new == None:
+			processed_new = {}
+
+		for key in new:
+			value = new[key]
+
+			if isinstance(value, dict):
+				self._flatten_dict(value, processed_new, prefix_key + key.upper() + '_')
+			else:
+				processed_new[prefix_key + key.upper()] = value
+
+		return processed_new
