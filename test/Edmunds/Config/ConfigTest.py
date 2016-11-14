@@ -27,10 +27,15 @@ class ConfigTest(TestCase):
 		self.env_bak_file = os.path.join(self.app.config.root_path, '.env.%s.py' % random_file)
 		os.rename(self.env_file, self.env_bak_file)
 
-		# Make env environment file
-		self.env_environment_file = os.path.join(self.app.config.root_path, '.env.testing.py')
-		self.env_environment_bak_file = os.path.join(self.app.config.root_path, '.env.testing.%s.py' % random_file)
-		os.rename(self.env_environment_file, self.env_environment_bak_file)
+		# Make env testing file
+		self.env_testing_file = os.path.join(self.app.config.root_path, '.env.testing.py')
+		self.env_testing_bak_file = os.path.join(self.app.config.root_path, '.env.testing.%s.py' % random_file)
+		os.rename(self.env_testing_file, self.env_testing_bak_file)
+
+		# Make env production file
+		self.env_production_file = os.path.join(self.app.config.root_path, '.env.production.py')
+		self.env_production_bak_file = os.path.join(self.app.config.root_path, '.env.production.%s.py' % random_file)
+		os.rename(self.env_production_file, self.env_production_bak_file)
 
 
 	def tearDown(self):
@@ -39,6 +44,9 @@ class ConfigTest(TestCase):
 		"""
 
 		super(ConfigTest, self).tearDown()
+
+		# Set environment back to testing
+		os.environ['APP_ENV'] = 'testing'
 
 		# Remove config file
 		if os.path.exists(self.config_file):
@@ -50,11 +58,17 @@ class ConfigTest(TestCase):
 				os.remove(self.env_file)
 			os.rename(self.env_bak_file, self.env_file)
 
-		# Set backup env-environment-file back
-		if os.path.exists(self.env_environment_bak_file):
-			if os.path.exists(self.env_environment_file):
-				os.remove(self.env_environment_file)
-			os.rename(self.env_environment_bak_file, self.env_environment_file)
+		# Set backup env-testing-file back
+		if os.path.exists(self.env_testing_bak_file):
+			if os.path.exists(self.env_testing_file):
+				os.remove(self.env_testing_file)
+			os.rename(self.env_testing_bak_file, self.env_testing_file)
+
+		# Set backup env-production-file back
+		if os.path.exists(self.env_production_bak_file):
+			if os.path.exists(self.env_production_file):
+				os.remove(self.env_production_file)
+			os.rename(self.env_production_bak_file, self.env_production_file)
 
 
 	def test_consistency(self):
@@ -173,7 +187,7 @@ class ConfigTest(TestCase):
 			assert value == app.config[old_key]
 
 
-	def test_env_environment_file(self):
+	def test_env_testing_file(self):
 		"""
 		Test env  file
 		"""
@@ -185,7 +199,7 @@ class ConfigTest(TestCase):
 		]
 
 		# Make config file
-		with open(self.env_environment_file, 'w+') as f:
+		with open(self.env_testing_file, 'w+') as f:
 			for row in data:
 				key, old_key, value, str_value = row
 				f.write("%s = %s\n" % (old_key, str_value))
@@ -234,8 +248,8 @@ class ConfigTest(TestCase):
 		assert 2 == app.config(key)
 		assert 2 == app.config[old_key]
 
-		# Make env environment file
-		with open(self.env_environment_file, 'w+') as f:
+		# Make env testing file
+		with open(self.env_testing_file, 'w+') as f:
 			f.write("%s = %d" % (old_key, 3))
 
 		# Make app
@@ -245,3 +259,29 @@ class ConfigTest(TestCase):
 		assert app.config.has(key)
 		assert 3 == app.config(key)
 		assert 3 == app.config[old_key]
+
+
+	def test_setting_environment(self):
+		"""
+		Test setting the environment
+		"""
+
+		value = 'nice'
+		str_value = "'nice'"
+		key = 'got.niveau'
+		old_key = 'GOT_NIVEAU'
+
+		# Make env file
+		with open(self.env_production_file, 'w+') as f:
+			f.write("%s = %s\n" % (old_key, str_value))
+
+		# Set environment value
+		os.environ['APP_ENV'] = 'production'
+
+		# Make app
+		app = self.create_application()
+
+		# Check config
+		assert app.config.has(key)
+		assert value == app.config(key)
+		assert value == app.config[old_key]
