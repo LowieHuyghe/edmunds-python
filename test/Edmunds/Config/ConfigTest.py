@@ -77,9 +77,9 @@ class ConfigTest(TestCase):
 		"""
 
 		data = [
-			('got.sun',		'GOT_SUN',		'Jon Snow'					),
-			('got.girl', 	'GOT_GIRL',		'Igritte'					),
-			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers')	),
+			('got.son',		'GOT_SON',		'Jon Snow 1'					),
+			('got.girl', 	'GOT_GIRL',		'Igritte 1'						),
+			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers', 1)	),
 		]
 
 		# Test data
@@ -105,9 +105,9 @@ class ConfigTest(TestCase):
 		"""
 
 		data = [
-			('got.sun',		'GOT_SUN',		'Jon Snow'					),
-			('got.girl', 	'GOT_GIRL',		'Igritte'					),
-			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers')	),
+			('got.son',		'GOT_SON',		'Jon Snow 2'					),
+			('got.girl', 	'GOT_GIRL',		'Igritte 2'						),
+			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers', 2)	),
 		]
 
 		# Make update dictionary
@@ -116,6 +116,10 @@ class ConfigTest(TestCase):
 			key, old_key, value = row
 
 			update[old_key] = value
+
+			assert not self.app.config.has(key)
+			assert None == self.app.config(key)
+			assert old_key not in self.app.config
 
 		# Update
 		self.app.config(update)
@@ -134,28 +138,54 @@ class ConfigTest(TestCase):
 		Test config file
 		"""
 
-		data = [
-			('got.sun',		'GOT_SUN',		'Jon Snow',						"'Jon Snow'"					),
-			('got.girl', 	'GOT_GIRL',		'Igritte',						"'Igritte'"						),
-			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers'),	"('The', 'White', 'Walkers')"	),
+		old_format = [
+			"GOT_SON 					= 'Jon Snow 3' \n",
+			"GOT_GIRL 					= 'Igritte 3' \n",
+			"GOT_ENEMY 					= ('The', 'White', 'Walkers', 3) \n",
+			"GOT_WINTER_IS_COMING_TO 	= 'Town 3'"
 		]
 
-		# Make config file
-		with open(self.config_file, 'w+') as f:
+		new_format = [
+			"GOT = { \n",
+			"	'son': 		'Jon Snow 3', \n",
+			"	'girl': 	'Igritte 3', \n",
+			"	'enemy': 	('The', 'White', 'Walkers', 3), \n",
+			"	'winter': { \n",
+			"		'is': { \n",
+			"			'coming': { \n",
+			"				'to': 'Town 3' \n",
+			"			}, \n",
+			"		}, \n",
+			"	}, \n",
+			"} \n",
+		]
+
+		data = [
+			('got.son',						'GOT_SON',					'Jon Snow 3',						),
+			('got.girl', 					'GOT_GIRL',					'Igritte 3',						),
+			('got.enemy', 					'GOT_ENEMY',				('The', 'White', 'Walkers', 3),		),
+			('got.winter.is.coming.to', 	'GOT_WINTER_IS_COMING_TO',	'Town 3'							),
+		]
+
+		# Check each format
+		for format in (old_format, new_format):
+
+			# Make config file
+			if os.path.isfile(self.config_file):
+				os.remove(self.config_file)
+			with open(self.config_file, 'w+') as f:
+				f.writelines(format)
+
+			# Make app
+			app = self.create_application()
+
+			# Check config
 			for row in data:
-				key, old_key, value, str_value = row
-				f.write("%s = %s\n" % (old_key, str_value))
+				key, old_key, value = row
 
-		# Make app
-		app = self.create_application()
-
-		# Check config
-		for row in data:
-			key, old_key, value, str_value = row
-
-			assert app.config.has(key)
-			assert value == app.config(key)
-			assert value == app.config[old_key]
+				assert app.config.has(key)
+				assert value == app.config(key)
+				assert value == app.config[old_key]
 
 
 	def test_env_file(self):
@@ -163,28 +193,54 @@ class ConfigTest(TestCase):
 		Test env file
 		"""
 
-		data = [
-			('got.sun',		'GOT_SUN',		'Jon Snow',						"'Jon Snow'"					),
-			('got.girl', 	'GOT_GIRL',		'Igritte',						"'Igritte'"						),
-			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers'),	"('The', 'White', 'Walkers')"	),
+		old_format = [
+			"GOT_SON 					= 'Jon Snow 4' \n",
+			"GOT_GIRL 					= 'Igritte 4' \n",
+			"GOT_ENEMY 					= ('The', 'White', 'Walkers', 4) \n",
+			"GOT_WINTER_IS_COMING_TO 	= 'Town 4'"
 		]
 
-		# Make config file
-		with open(self.env_file, 'w+') as f:
+		new_format = [
+			"GOT = { \n",
+			"	'son': 		'Jon Snow 4', \n",
+			"	'girl': 	'Igritte 4', \n",
+			"	'enemy': 	('The', 'White', 'Walkers', 4), \n",
+			"	'winter': { \n",
+			"		'is': { \n",
+			"			'coming': { \n",
+			"				'to': 'Town 4' \n",
+			"			}, \n",
+			"		}, \n",
+			"	}, \n",
+			"} \n",
+		]
+
+		data = [
+			('got.son',						'GOT_SON',					'Jon Snow 4',						),
+			('got.girl', 					'GOT_GIRL',					'Igritte 4',						),
+			('got.enemy', 					'GOT_ENEMY',				('The', 'White', 'Walkers', 4),		),
+			('got.winter.is.coming.to', 	'GOT_WINTER_IS_COMING_TO',	'Town 4'							),
+		]
+
+		# Check each format
+		for format in (old_format, new_format):
+
+			# Make config file
+			if os.path.isfile(self.env_file):
+				os.remove(self.env_file)
+			with open(self.env_file, 'w+') as f:
+				f.writelines(format)
+
+			# Make app
+			app = self.create_application()
+
+			# Check config
 			for row in data:
-				key, old_key, value, str_value = row
-				f.write("%s = %s\n" % (old_key, str_value))
+				key, old_key, value = row
 
-		# Make app
-		app = self.create_application()
-
-		# Check config
-		for row in data:
-			key, old_key, value, str_value = row
-
-			assert app.config.has(key)
-			assert value == app.config(key)
-			assert value == app.config[old_key]
+				assert app.config.has(key)
+				assert value == app.config(key)
+				assert value == app.config[old_key]
 
 
 	def test_env_testing_file(self):
@@ -192,24 +248,112 @@ class ConfigTest(TestCase):
 		Test env  file
 		"""
 
-		data = [
-			('got.sun',		'GOT_SUN',		'Jon Snow',						"'Jon Snow'"					),
-			('got.girl', 	'GOT_GIRL',		'Igritte',						"'Igritte'"						),
-			('got.enemy', 	'GOT_ENEMY',	('The', 'White', 'Walkers'),	"('The', 'White', 'Walkers')"	),
+		old_format = [
+			"GOT_SON 					= 'Jon Snow 5' \n",
+			"GOT_GIRL 					= 'Igritte 5' \n",
+			"GOT_ENEMY 					= ('The', 'White', 'Walkers', 5) \n",
+			"GOT_WINTER_IS_COMING_TO 	= 'Town 5'"
 		]
 
-		# Make config file
-		with open(self.env_testing_file, 'w+') as f:
+		new_format = [
+			"GOT = { \n",
+			"	'son': 		'Jon Snow 5', \n",
+			"	'girl': 	'Igritte 5', \n",
+			"	'enemy': 	('The', 'White', 'Walkers', 5), \n",
+			"	'winter': { \n",
+			"		'is': { \n",
+			"			'coming': { \n",
+			"				'to': 'Town 5' \n",
+			"			}, \n",
+			"		}, \n",
+			"	}, \n",
+			"} \n",
+		]
+
+		data = [
+			('got.son',						'GOT_SON',					'Jon Snow 5',						),
+			('got.girl', 					'GOT_GIRL',					'Igritte 5',						),
+			('got.enemy', 					'GOT_ENEMY',				('The', 'White', 'Walkers', 5),		),
+			('got.winter.is.coming.to', 	'GOT_WINTER_IS_COMING_TO',	'Town 5'							),
+		]
+
+		# Check each format
+		for format in (old_format, new_format):
+
+			# Make config file
+			if os.path.isfile(self.env_testing_file):
+				os.remove(self.env_testing_file)
+			with open(self.env_testing_file, 'w+') as f:
+				f.writelines(format)
+
+			# Make app
+			app = self.create_application()
+
+			# Check config
 			for row in data:
-				key, old_key, value, str_value = row
-				f.write("%s = %s\n" % (old_key, str_value))
+				key, old_key, value = row
+
+				assert app.config.has(key)
+				assert value == app.config(key)
+				assert value == app.config[old_key]
+
+
+	def test_merging_and_priority(self):
+		"""
+		Test merging and priority of config
+		"""
+
+		# Make env testing file
+		with open(self.env_testing_file, 'w+') as f:
+			f.writelines([
+				"GOT = { \n",
+				"	'son': 'Jon Snow 6', \n",
+				"	'priority': { \n",
+				"		'first': 1, \n",
+				"	} \n",
+				"} \n",
+			])
+
+		# Make env file
+		with open(self.env_file, 'w+') as f:
+			f.writelines([
+				"GOT = { \n",
+				"	'girl': 'Igritte 6', \n",
+				"	'priority': { \n",
+				"		'first': 2, \n",
+				"		'second': 2, \n",
+				"	} \n",
+				"} \n",
+			])
+
+		# Make config file
+		with open(self.config_file, 'w+') as f:
+			f.writelines([
+				"GOT = { \n",
+				"	'enemy': ('The', 'White', 'Walkers', 6), \n",
+				"	'priority': { \n",
+				"		'first': 3, \n",
+				"		'second': 3, \n",
+				"		'third': 3, \n",
+				"	} \n",
+				"} \n",
+			])
+
+		data = [
+			('got.son',				'GOT_SON',				'Jon Snow 6',					),
+			('got.girl', 			'GOT_GIRL',				'Igritte 6',					),
+			('got.enemy', 			'GOT_ENEMY',			('The', 'White', 'Walkers', 6),	),
+			('got.priority.first', 	'GOT_PRIORITY_FIRST',	1,								),
+			('got.priority.second', 'GOT_PRIORITY_SECOND',	2,								),
+			('got.priority.third', 	'GOT_PRIORITY_THIRD',	3,								),
+		]
 
 		# Make app
 		app = self.create_application()
 
 		# Check config
 		for row in data:
-			key, old_key, value, str_value = row
+			key, old_key, value = row
 
 			assert app.config.has(key)
 			assert value == app.config(key)

@@ -1,2 +1,6 @@
 
-APP_NAME = 'Edmunds Instance'
+APP = {
+
+	'name': 'Edmunds Instance',
+
+}
