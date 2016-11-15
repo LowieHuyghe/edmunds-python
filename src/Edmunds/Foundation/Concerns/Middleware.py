@@ -43,6 +43,9 @@ class Middleware(object):
 		:type  middleware: 	list
 		"""
 
+		if len(middleware) == 0:
+			return
+
 		# Add middleware
 		self._request_middleware_by_rule[rule] = middleware
 
