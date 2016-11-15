@@ -107,7 +107,7 @@ class Config(FlaskConfig):
 
 					file_name = os.path.join(self.root_path, config_dir, file)
 
-					self.from_custom_pyfile(file_name)
+					self.from_pyfile(file_name)
 
 
 	def _load_env(self):
@@ -118,7 +118,7 @@ class Config(FlaskConfig):
 		# Load .env file
 		env_file_path = os.path.join(self.root_path, '.env.py')
 		if os.path.isfile(env_file_path):
-			self.from_custom_pyfile(env_file_path)
+			self.from_pyfile(env_file_path)
 
 		# Overwrite with APP_ENV value set in environment
 		if os.environ.has_key('APP_ENV'):
@@ -133,7 +133,7 @@ class Config(FlaskConfig):
 		# Load environment specific .env
 		env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self('app.env').lower())
 		if os.path.isfile(env_environment_file_path):
-			self.from_custom_pyfile(env_environment_file_path)
+			self.from_pyfile(env_environment_file_path)
 
 		# Lower the environment value
 		self({
@@ -141,28 +141,34 @@ class Config(FlaskConfig):
 		})
 
 
-	def from_custom_pyfile(self, file_name):
+	def from_pyfile(self, filename, silent = False):
 		"""
 		Load from py-file
-		:param file_name:	File to load
-		:type  file_name:	str
+		:param filename:	File to load
+		:type  filename:	str
+		:param silent:		Die silently when config-file does not exist
+		:type  silent:		bool
+		:return:			Success
+		:rtype:				bool
 		"""
 
 		# Backup of original
 		original = copy.copy(self)
-		self.clear()
 
 		# Load new
-		self.from_pyfile(file_name)
-		new = copy.copy(self)
+		success = super(Config, self).from_pyfile(filename, silent)
+		if success:
+			new = copy.copy(self)
 
-		# Set back original
-		self.clear()
-		self.update(original)
+			# Set back original
+			self.clear()
+			self.update(original)
 
-		# Process and flatten new list
-		processed_new = self._flatten_dict(new)
-		self.update(processed_new)
+			# Process and flatten new list
+			processed_new = self._flatten_dict(new)
+			self.update(processed_new)
+
+		return success
 
 
 	def _flatten_dict(self, new, processed_new = None, prefix_key = ''):
