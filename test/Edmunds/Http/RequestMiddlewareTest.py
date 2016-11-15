@@ -23,6 +23,38 @@ class RequestMiddlewareTest(TestCase):
 		RequestMiddlewareTest.cache = {}
 
 
+	def test_no_middleware(self):
+		"""
+		Test route with no middleware
+		"""
+
+		rule = '/' + helpers.random_str(20)
+
+		# Check empty
+		self.assert_not_in(rule, self.app._request_middleware_by_rule)
+
+		# Add route
+		@self.app.route(rule)
+		def handleRoute():
+			pass
+
+		# Check middleware empty
+		self.assert_not_in(rule, self.app._request_middleware_by_rule)
+
+		# Call route
+		RequestMiddlewareTest.cache = {}
+		with self.app.test_request_context(rule):
+			self.app.preprocess_request()
+
+			self.assert_not_in('handledBefore', RequestMiddlewareTest.cache)
+			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+
+			resp = self.app.process_response(Response('...'))
+
+			self.assert_not_in('handledBefore', RequestMiddlewareTest.cache)
+			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+
+
 	def test_registering(self):
 		"""
 		Test registering the request middleware
