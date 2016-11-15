@@ -12,12 +12,12 @@ class ApplicationMiddlewareTest(TestCase):
 	cache = None
 
 
-	def setUp(self):
+	def set_up(self):
 		"""
 		Set up the test case
 		"""
 
-		super(ApplicationMiddlewareTest, self).setUp()
+		super(ApplicationMiddlewareTest, self).set_up()
 
 		ApplicationMiddlewareTest.cache = {}
 
@@ -27,15 +27,8 @@ class ApplicationMiddlewareTest(TestCase):
 		Test if abstract handle method is required
 		"""
 
-		try:
+		with self.assert_raises_regexp(TypeError, 'handle'):
 			MyApplicationMiddlewareNoAbstractHandle(self.app)
-			assert False
-
-		except TypeError as e:
-			if 'handle' in e.message:
-				assert True
-			else:
-				raise e
 
 
 	def testAbstractHandle(self):
@@ -43,8 +36,7 @@ class ApplicationMiddlewareTest(TestCase):
 		Test required abstract handle method
 		"""
 
-		MyApplicationMiddlewareAbstractHandle(self.app)
-		assert True
+		self.assert_is_instance(MyApplicationMiddlewareAbstractHandle(self.app), MyApplicationMiddlewareAbstractHandle)
 
 
 	def testRegistering(self):
@@ -53,33 +45,33 @@ class ApplicationMiddlewareTest(TestCase):
 		"""
 
 		# Check empty
-		assert 0 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
+		self.assert_equal(0, self.app._registered_application_middleware.count(MyApplicationMiddleware))
 
 		# Register the middleware
 		self.app.middleware(MyApplicationMiddleware)
 
 		# Check if registered
-		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
-		assert isinstance(self.app.wsgi_app, MyApplicationMiddleware)
-		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+		self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+		self.assert_is_instance(self.app.wsgi_app, MyApplicationMiddleware)
+		self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 		# Try adding it again
 		self.app.middleware(MyApplicationMiddleware)
 
 		# Check if duplicate
-		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
-		assert isinstance(self.app.wsgi_app, MyApplicationMiddleware)
-		assert not isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+		self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+		self.assert_is_instance(self.app.wsgi_app, MyApplicationMiddleware)
+		self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 		# Try adding second one
 		self.app.middleware(MySecondApplicationMiddleware)
 
 		# Check if registered
-		assert 1 == self.app._registered_application_middleware.count(MyApplicationMiddleware)
-		assert 1 == self.app._registered_application_middleware.count(MySecondApplicationMiddleware)
-		assert isinstance(self.app.wsgi_app, MySecondApplicationMiddleware)
-		assert isinstance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
-		assert not isinstance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+		self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+		self.assert_equal(1, self.app._registered_application_middleware.count(MySecondApplicationMiddleware))
+		self.assert_is_instance(self.app.wsgi_app, MySecondApplicationMiddleware)
+		self.assert_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
+		self.assert_not_is_instance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 
 	def testHandling(self):
@@ -103,8 +95,8 @@ class ApplicationMiddlewareTest(TestCase):
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'handledMiddleware' in ApplicationMiddlewareTest.cache
-			assert 1 == ApplicationMiddlewareTest.cache['handledMiddleware']
+			self.assert_in('handledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(1, ApplicationMiddlewareTest.cache['handledMiddleware'])
 
 		# Add second middleware
 		self.app.middleware(MySecondApplicationMiddleware)
@@ -114,8 +106,8 @@ class ApplicationMiddlewareTest(TestCase):
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'handledMiddleware' in ApplicationMiddlewareTest.cache
-			assert 2 == ApplicationMiddlewareTest.cache['handledMiddleware']
+			self.assert_in('handledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(2, ApplicationMiddlewareTest.cache['handledMiddleware'])
 
 
 	def testOrder(self):
@@ -138,10 +130,10 @@ class ApplicationMiddlewareTest(TestCase):
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'firstHandledMiddleware' in ApplicationMiddlewareTest.cache
-			assert MySecondApplicationMiddleware == ApplicationMiddlewareTest.cache['firstHandledMiddleware']
-			assert 'lastHandledMiddleware' in ApplicationMiddlewareTest.cache
-			assert MyApplicationMiddleware == ApplicationMiddlewareTest.cache['lastHandledMiddleware']
+			self.assert_in('firstHandledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(MySecondApplicationMiddleware, ApplicationMiddlewareTest.cache['firstHandledMiddleware'])
+			self.assert_in('lastHandledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(MyApplicationMiddleware, ApplicationMiddlewareTest.cache['lastHandledMiddleware'])
 
 		# Register some more
 		self.app.middleware(MyApplicationMiddleware)
@@ -151,10 +143,10 @@ class ApplicationMiddlewareTest(TestCase):
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			assert 'firstHandledMiddleware' in ApplicationMiddlewareTest.cache
-			assert MySecondApplicationMiddleware == ApplicationMiddlewareTest.cache['firstHandledMiddleware']
-			assert 'lastHandledMiddleware' in ApplicationMiddlewareTest.cache
-			assert MyApplicationMiddleware == ApplicationMiddlewareTest.cache['lastHandledMiddleware']
+			self.assert_in('firstHandledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(MySecondApplicationMiddleware, ApplicationMiddlewareTest.cache['firstHandledMiddleware'])
+			self.assert_in('lastHandledMiddleware', ApplicationMiddlewareTest.cache)
+			self.assert_equal(MyApplicationMiddleware, ApplicationMiddlewareTest.cache['lastHandledMiddleware'])
 
 
 

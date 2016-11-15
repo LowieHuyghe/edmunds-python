@@ -22,7 +22,7 @@ class helpersTest(TestCase):
 		)
 
 		for test in data:
-			assert test[0] == helpers.get_class(test[1])
+			self.assert_equal(test[0], helpers.get_class(test[1]))
 
 
 	def testGetModuleAndClass(self):
@@ -37,7 +37,7 @@ class helpersTest(TestCase):
 		)
 
 		for test in data:
-			assert test[0] == helpers.get_module_and_class(test[1])
+			self.assert_equal(test[0], helpers.get_module_and_class(test[1]))
 
 
 	def testGetFullClassName(self):
@@ -52,7 +52,7 @@ class helpersTest(TestCase):
 		)
 
 		for test in data:
-			assert test[0] == helpers.get_full_class_name(test[1])
+			self.assert_equal(test[0], helpers.get_full_class_name(test[1]))
 
 
 	def testGetDirFromFile(self):
@@ -68,7 +68,7 @@ class helpersTest(TestCase):
 		)
 
 		for test in data:
-			assert test[0] == helpers.get_dir_from_file(test[1])
+			self.assert_equal(test[0], helpers.get_dir_from_file(test[1]))
 
 
 	def testRandomStr(self):
@@ -77,13 +77,13 @@ class helpersTest(TestCase):
 		"""
 
 		# Test length
-		assert 0 == len(helpers.random_str(0))
-		assert 1 == len(helpers.random_str(1))
-		assert 23 == len(helpers.random_str(23))
-		assert 23 != len(helpers.random_str(32))
+		self.assert_equal(0, len(helpers.random_str(0)))
+		self.assert_equal(7, len(helpers.random_str(7)))
+		self.assert_equal(23, len(helpers.random_str(23)))
+		self.assert_not_equal(23, len(helpers.random_str(32)))
 
 		# Test uniqueness
-		assert helpers.random_str(0) == helpers.random_str(0)
-		assert helpers.random_str(1) != helpers.random_str(1)
-		assert helpers.random_str(23) != helpers.random_str(23)
-		assert helpers.random_str(32) != helpers.random_str(32)
+		self.assert_equal(helpers.random_str(0), helpers.random_str(0))
+		self.assert_not_equal(helpers.random_str(7), helpers.random_str(7))
+		self.assert_not_equal(helpers.random_str(23), helpers.random_str(23))
+		self.assert_not_equal(helpers.random_str(32), helpers.random_str(32))

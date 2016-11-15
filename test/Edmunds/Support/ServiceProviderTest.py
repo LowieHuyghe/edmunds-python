@@ -13,15 +13,8 @@ class ServiceProviderTest(TestCase):
 		Test if abstract register method is required
 		"""
 
-		try:
+		with self.assert_raises_regexp(TypeError, 'register'):
 			MyServiceProviderNoAbstractRegister(self.app)
-			assert False
-
-		except TypeError as e:
-			if 'register' in e.message:
-				assert True
-			else:
-				raise e
 
 
 	def testAbstractRegister(self):
@@ -29,8 +22,7 @@ class ServiceProviderTest(TestCase):
 		Test required abstract register method
 		"""
 
-		MyServiceProviderAbstractRegister(self.app)
-		assert True
+		self.assert_is_instance(MyServiceProviderAbstractRegister(self.app), MyServiceProviderAbstractRegister)
 
 
 
