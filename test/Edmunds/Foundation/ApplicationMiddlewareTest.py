@@ -22,7 +22,7 @@ class ApplicationMiddlewareTest(TestCase):
 		ApplicationMiddlewareTest.cache = {}
 
 
-	def testNoAbstractHandle(self):
+	def test_no_abstract_handle(self):
 		"""
 		Test if abstract handle method is required
 		"""
@@ -31,7 +31,7 @@ class ApplicationMiddlewareTest(TestCase):
 			MyApplicationMiddlewareNoAbstractHandle(self.app)
 
 
-	def testAbstractHandle(self):
+	def test_abstract_handle(self):
 		"""
 		Test required abstract handle method
 		"""
@@ -39,7 +39,7 @@ class ApplicationMiddlewareTest(TestCase):
 		self.assert_is_instance(MyApplicationMiddlewareAbstractHandle(self.app), MyApplicationMiddlewareAbstractHandle)
 
 
-	def testRegistering(self):
+	def test_registering(self):
 		"""
 		Test registering the application middleware
 		"""
@@ -74,7 +74,7 @@ class ApplicationMiddlewareTest(TestCase):
 		self.assert_not_is_instance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
 
-	def testHandling(self):
+	def test_handling(self):
 		"""
 		Test handling of application middleware
 		"""
@@ -110,7 +110,7 @@ class ApplicationMiddlewareTest(TestCase):
 			self.assert_equal(2, ApplicationMiddlewareTest.cache['handledMiddleware'])
 
 
-	def testOrder(self):
+	def test_order(self):
 		"""
 		Test order of middleware
 		"""
