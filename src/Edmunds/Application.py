@@ -3,12 +3,13 @@ from flask import Flask
 from Edmunds.Foundation.Concerns.RuntimeEnvironment import RuntimeEnvironment as ConcernsRuntimeEnvironment
 from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as ConcernsServiceProviders
 from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
+from Edmunds.Foundation.Concerns.RequestRouting import RequestRouting as ConcernsRequestRouting
 from werkzeug.debug import DebuggedApplication
 from app.Http import routes
 from Edmunds.Config.Config import Config
 
 
-class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware):
+class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting):
 	"""
 	The Edmunds Application
 	"""
@@ -30,6 +31,7 @@ class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, C
 		self._init_config(config_dirs)
 		self._init_service_providers()
 		self._init_middleware()
+		self._init_request_routing()
 
 		routes.route(self)
 
@@ -73,8 +75,17 @@ class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, C
 		:rtype: 		function
 		"""
 
-		# handle request middleware
-		middleware = options.pop('middleware', [])
-		self._handle_route_request_middleware(rule, middleware)
+		# Fetch custom options
+		middleware = options.pop('middleware', None)
+		uses = options.pop('uses', None)
 
-		return super(Application, self).route(rule, **options)
+		# Fetch the decorator function
+		decorator = super(Application, self).route(rule, **options)
+
+		# Handle middleware
+		decorator = self._handle_route_request_middleware(decorator, rule, middleware)
+
+		# Handle custom dispatching
+		decorator = self._handle_route_request_dispatching(decorator, rule, uses)
+
+		return decorator
