@@ -23,7 +23,7 @@ class RequestMiddlewareTest(TestCase):
 		RequestMiddlewareTest.cache = {}
 
 
-	def testRegistering(self):
+	def test_registering(self):
 		"""
 		Test registering the request middleware
 		"""
@@ -94,7 +94,7 @@ class RequestMiddlewareTest(TestCase):
 			self.assert_equal(2, RequestMiddlewareTest.cache['handledAfter'])
 
 
-	def testOverwriting(self):
+	def test_overwriting(self):
 		"""
 		Test overwriting of middleware
 		"""
@@ -124,7 +124,7 @@ class RequestMiddlewareTest(TestCase):
 
 
 
-	def testOrder(self):
+	def test_order(self):
 		"""
 		Test the order of the middleware
 		"""

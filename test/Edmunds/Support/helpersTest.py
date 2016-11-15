@@ -10,7 +10,7 @@ class helpersTest(TestCase):
 	Test the helpers
 	"""
 
-	def testGetClass(self):
+	def test_get_class(self):
 		"""
 		Test get_class
 		"""
@@ -25,7 +25,7 @@ class helpersTest(TestCase):
 			self.assert_equal(test[0], helpers.get_class(test[1]))
 
 
-	def testGetModuleAndClass(self):
+	def test_get_module_and_class(self):
 		"""
 		Test get_module_and_class
 		"""
@@ -40,7 +40,7 @@ class helpersTest(TestCase):
 			self.assert_equal(test[0], helpers.get_module_and_class(test[1]))
 
 
-	def testGetFullClassName(self):
+	def test_get_full_class_name(self):
 		"""
 		Test get_full_class_name
 		"""
@@ -55,7 +55,7 @@ class helpersTest(TestCase):
 			self.assert_equal(test[0], helpers.get_full_class_name(test[1]))
 
 
-	def testGetDirFromFile(self):
+	def test_get_dir_from_file(self):
 		"""
 		Test get_dir_from_file
 		"""
@@ -71,7 +71,7 @@ class helpersTest(TestCase):
 			self.assert_equal(test[0], helpers.get_dir_from_file(test[1]))
 
 
-	def testRandomStr(self):
+	def test_random_str(self):
 		"""
 		Test random_str
 		"""

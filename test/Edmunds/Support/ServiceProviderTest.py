@@ -8,7 +8,7 @@ class ServiceProviderTest(TestCase):
 	Test the Service Provider
 	"""
 
-	def testNoAbstractRegister(self):
+	def test_no_abstract_register(self):
 		"""
 		Test if abstract register method is required
 		"""
@@ -17,7 +17,7 @@ class ServiceProviderTest(TestCase):
 			MyServiceProviderNoAbstractRegister(self.app)
 
 
-	def testAbstractRegister(self):
+	def test_abstract_register(self):
 		"""
 		Test required abstract register method
 		"""
