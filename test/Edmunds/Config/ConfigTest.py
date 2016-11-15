@@ -10,12 +10,12 @@ class ConfigTest(TestCase):
 	Test the Config
 	"""
 
-	def setUp(self):
+	def set_up(self):
 		"""
 		Set up the test case
 		"""
 
-		super(ConfigTest, self).setUp()
+		super(ConfigTest, self).set_up()
 
 		random_file = helpers.random_str(10)
 
@@ -38,12 +38,12 @@ class ConfigTest(TestCase):
 		os.rename(self.env_production_file, self.env_production_bak_file)
 
 
-	def tearDown(self):
+	def tear_down(self):
 		"""
 		Tear down the test case
 		"""
 
-		super(ConfigTest, self).tearDown()
+		super(ConfigTest, self).tear_down()
 
 		# Set environment back to testing
 		os.environ['APP_ENV'] = 'testing'
@@ -86,17 +86,17 @@ class ConfigTest(TestCase):
 		for row in data:
 			key, old_key, value = row
 
-			assert not self.app.config.has(key)
-			assert None == self.app.config(key)
-			assert old_key not in self.app.config
+			self.assert_false(self.app.config.has(key))
+			self.assert_is_none(self.app.config(key))
+			self.assert_not_in(old_key, self.app.config)
 
 			self.app.config({
 				key: value
 			})
 
-			assert self.app.config.has(key)
-			assert value == self.app.config(key)
-			assert value == self.app.config[old_key]
+			self.assert_true(self.app.config.has(key))
+			self.assert_equal(value, self.app.config(key))
+			self.assert_equal(value, self.app.config[old_key])
 
 
 	def test_multiple(self):
@@ -117,9 +117,9 @@ class ConfigTest(TestCase):
 
 			update[old_key] = value
 
-			assert not self.app.config.has(key)
-			assert None == self.app.config(key)
-			assert old_key not in self.app.config
+			self.assert_false(self.app.config.has(key))
+			self.assert_is_none(self.app.config(key))
+			self.assert_not_in(old_key, self.app.config)
 
 		# Update
 		self.app.config(update)
@@ -128,9 +128,9 @@ class ConfigTest(TestCase):
 		for row in data:
 			key, old_key, value = row
 
-			assert self.app.config.has(key)
-			assert value == self.app.config(key)
-			assert value == self.app.config[old_key]
+			self.assert_true(self.app.config.has(key))
+			self.assert_equal(value, self.app.config(key))
+			self.assert_equal(value, self.app.config[old_key])
 
 
 	def test_config_file(self):
@@ -183,9 +183,9 @@ class ConfigTest(TestCase):
 			for row in data:
 				key, old_key, value = row
 
-				assert app.config.has(key)
-				assert value == app.config(key)
-				assert value == app.config[old_key]
+				self.assert_true(app.config.has(key))
+				self.assert_equal(value, app.config(key))
+				self.assert_equal(value, app.config[old_key])
 
 
 	def test_env_file(self):
@@ -238,9 +238,9 @@ class ConfigTest(TestCase):
 			for row in data:
 				key, old_key, value = row
 
-				assert app.config.has(key)
-				assert value == app.config(key)
-				assert value == app.config[old_key]
+				self.assert_true(app.config.has(key))
+				self.assert_equal(value, app.config(key))
+				self.assert_equal(value, app.config[old_key])
 
 
 	def test_env_testing_file(self):
@@ -293,9 +293,9 @@ class ConfigTest(TestCase):
 			for row in data:
 				key, old_key, value = row
 
-				assert app.config.has(key)
-				assert value == app.config(key)
-				assert value == app.config[old_key]
+				self.assert_true(app.config.has(key))
+				self.assert_equal(value, app.config(key))
+				self.assert_equal(value, app.config[old_key])
 
 
 	def test_merging_and_priority(self):
@@ -355,9 +355,9 @@ class ConfigTest(TestCase):
 		for row in data:
 			key, old_key, value = row
 
-			assert app.config.has(key)
-			assert value == app.config(key)
-			assert value == app.config[old_key]
+			self.assert_true(app.config.has(key))
+			self.assert_equal(value, app.config(key))
+			self.assert_equal(value, app.config[old_key])
 
 
 	def test_file_priority(self):
@@ -376,9 +376,9 @@ class ConfigTest(TestCase):
 		app = self.create_application()
 
 		# Check config
-		assert app.config.has(key)
-		assert 1 == app.config(key)
-		assert 1 == app.config[old_key]
+		self.assert_true(app.config.has(key))
+		self.assert_equal(1, app.config(key))
+		self.assert_equal(1, app.config[old_key])
 
 		# Make env file
 		with open(self.env_file, 'w+') as f:
@@ -388,9 +388,9 @@ class ConfigTest(TestCase):
 		app = self.create_application()
 
 		# Check config
-		assert app.config.has(key)
-		assert 2 == app.config(key)
-		assert 2 == app.config[old_key]
+		self.assert_true(app.config.has(key))
+		self.assert_equal(2, app.config(key))
+		self.assert_equal(2, app.config[old_key])
 
 		# Make env testing file
 		with open(self.env_testing_file, 'w+') as f:
@@ -400,9 +400,9 @@ class ConfigTest(TestCase):
 		app = self.create_application()
 
 		# Check config
-		assert app.config.has(key)
-		assert 3 == app.config(key)
-		assert 3 == app.config[old_key]
+		self.assert_true(app.config.has(key))
+		self.assert_equal(3, app.config(key))
+		self.assert_equal(3, app.config[old_key])
 
 
 	def test_setting_environment(self):
@@ -426,6 +426,6 @@ class ConfigTest(TestCase):
 		app = self.create_application()
 
 		# Check config
-		assert app.config.has(key)
-		assert value == app.config(key)
-		assert value == app.config[old_key]
+		self.assert_true(app.config.has(key))
+		self.assert_equal(value, app.config(key))
+		self.assert_equal(value, app.config[old_key])
