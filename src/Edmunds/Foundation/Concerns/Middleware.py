@@ -34,20 +34,35 @@ class Middleware(object):
 		self.wsgi_app = class_(self)
 
 
-	def _handle_route_request_middleware(self, rule, middleware):
+	def _handle_route_request_middleware(self, decorator, rule, middleware):
 		"""
 		Handle request middleware from route
+		:param decorator:	The decorator function
+		:type  decorator:	callable
 		:param rule: 		The rule for routing the request
 		:type  rule: 		str
 		:param middleware: 	List of middleware
 		:type  middleware: 	list
+		:return:			Decorator function to call
+		:rtype:				callable
 		"""
 
-		if len(middleware) == 0:
-			return
+		# Empty middleware
+		if middleware is None:
+			return decorator
 
-		# Add middleware
-		self._request_middleware_by_rule[rule] = middleware
+		# Validate
+		for class_ in middleware:
+			assert hasattr(class_, 'before')
+			assert hasattr(class_, 'after')
+
+		# Register middleware when decorator is called
+		def register_middleware(f):
+			res = decorator(f)
+			self._request_middleware_by_rule[rule] = middleware
+			return res
+
+		return register_middleware
 
 
 	def _register_request_middleware_handling(self):
@@ -61,11 +76,12 @@ class Middleware(object):
 				g.request_middleware = []
 
 				url_rule = _request_ctx_stack.top.request.url_rule
-				rule = url_rule.rule
+				if url_rule is not None:
+					rule = url_rule.rule
 
-				if rule in self._request_middleware_by_rule:
-					for class_ in self._request_middleware_by_rule[rule]:
-						g.request_middleware.append(class_(self))
+					if rule in self._request_middleware_by_rule:
+						for class_ in self._request_middleware_by_rule[rule]:
+							g.request_middleware.append(class_(self))
 
 			# loop middleware
 			for middleware in g.request_middleware:
