@@ -64,7 +64,7 @@ class RequestRouting(object):
 		self._request_uses_by_rule[rule] = uses
 
 		# Make handler
-		def handler():
+		def handler(**kwargs):
 			return self.dispatch(flask_request)
 
 		# Call decorator
@@ -105,7 +105,7 @@ class RequestRouting(object):
 
 		# Call method of controller
 		method_func = getattr(controller, method)
-		response = method_func()
+		response = method_func(**request.view_args)
 
 		# Return the response
 		return response
