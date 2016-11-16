@@ -1,4 +1,7 @@
 
+import Edmunds.Support.helpers as helpers
+
+
 class RequestRouting(object):
 	"""
 	This class concerns request routing code for Application to extend from
@@ -8,29 +11,56 @@ class RequestRouting(object):
 		"""
 		Initiate the request routing
 		"""
-		pass
+
+		self._pre_request_uses_by_rule = {}
+		self._request_uses_by_rule = {}
 
 
-	def _handle_route_request_dispatching(self, decorator, rule, uses):
+	def _pre_handle_route_dispatching(self, rule, options):
 		"""
-		Handle route request dispatching
+		Pre handle route request dispatching
+		:param rule: 		The rule for routing the request
+		:type  rule: 		str
+		:param options: 	List of options
+		:type  options: 	list
+		"""
+
+		uses = options.pop('uses', None)
+		if uses is None:
+			return;
+
+		# Validate
+		class_, method = uses
+		assert hasattr(class_, method)
+
+		# Add uses up front
+		self._pre_request_uses_by_rule[rule] = uses
+
+		# Set unique endpoint
+		if 'endpoint' not in options:
+			options['endpoint'] = '%s.%s' % (helpers.get_full_class_name(class_), method)
+
+
+	def _post_handle_route_dispatching(self, decorator, rule, options):
+		"""
+		Post handle route request dispatching
 		:param decorator:	The decorator function
 		:type  decorator:	callable
 		:param rule: 		The rule for routing the request
 		:type  rule: 		str
-		:param uses: 		Tuple of class and method to call
-		:type  uses: 		tuple
+		:param options: 	List of options
+		:type  options: 	list
 		:return:			Decorator function to call
 		:rtype:				callable
 		"""
 
 		# Empty uses
-		if uses is None:
+		if rule not in self._pre_request_uses_by_rule:
 			return decorator
 
-		# Validate
+		# Fetch uses
+		uses = self._pre_request_uses_by_rule.pop(rule)
 		class_, method = uses
-		assert hasattr(class_, method)
 
 		# Make handler
 		def handler():
