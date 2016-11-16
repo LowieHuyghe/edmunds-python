@@ -101,7 +101,7 @@ class RequestRouting(object):
 		controller = class_()
 
 		# Initialize the controller
-		controller.initialize()
+		controller.initialize(**request.view_args)
 
 		# Call method of controller
 		method_func = getattr(controller, method)
