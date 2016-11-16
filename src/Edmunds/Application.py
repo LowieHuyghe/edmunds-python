@@ -75,17 +75,15 @@ class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, C
 		:rtype: 		function
 		"""
 
-		# Fetch custom options
-		middleware = options.pop('middleware', None)
-		uses = options.pop('uses', None)
+		# Pre handline
+		self._pre_handle_route_dispatching(rule, options)
+		self._pre_handle_route_middleware(rule, options)
 
 		# Fetch the decorator function
 		decorator = super(Application, self).route(rule, **options)
 
-		# Handle middleware
-		decorator = self._handle_route_request_middleware(decorator, rule, middleware)
-
-		# Handle custom dispatching
-		decorator = self._handle_route_request_dispatching(decorator, rule, uses)
+		# Post handline
+		decorator = self._post_handle_route_middleware(decorator, rule, options)
+		decorator = self._post_handle_route_dispatching(decorator, rule, options)
 
 		return decorator

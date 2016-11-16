@@ -13,6 +13,7 @@ class Middleware(object):
 		"""
 
 		self._registered_application_middleware = []
+		self._pre_request_middleware_by_rule = {}
 		self._request_middleware_by_rule = {}
 
 		self._register_request_middleware_handling()
@@ -34,27 +35,48 @@ class Middleware(object):
 		self.wsgi_app = class_(self)
 
 
-	def _handle_route_request_middleware(self, decorator, rule, middleware):
+	def _pre_handle_route_middleware(self, rule, options):
 		"""
-		Handle request middleware from route
-		:param decorator:	The decorator function
-		:type  decorator:	callable
+		Pre handle request middleware from route
 		:param rule: 		The rule for routing the request
 		:type  rule: 		str
-		:param middleware: 	List of middleware
-		:type  middleware: 	list
-		:return:			Decorator function to call
-		:rtype:				callable
+		:param options: 	List of options
+		:type  options: 	list
 		"""
 
-		# Empty middleware
+		# Add middleware
+		middleware = options.pop('middleware', None)
 		if middleware is None:
-			return decorator
+			return;
 
 		# Validate
 		for class_ in middleware:
 			assert hasattr(class_, 'before')
 			assert hasattr(class_, 'after')
+
+		# Add middleware upfront
+		self._pre_request_middleware_by_rule[rule] = middleware
+
+
+	def _post_handle_route_middleware(self, decorator, rule, options):
+		"""
+		Post handle request middleware from route
+		:param decorator:	The decorator function
+		:type  decorator:	callable
+		:param rule: 		The rule for routing the request
+		:type  rule: 		str
+		:param options: 	List of options
+		:type  options: 	list
+		:return:			Decorator function to call
+		:rtype:				callable
+		"""
+
+		# Empty middleware
+		if rule not in self._pre_request_middleware_by_rule:
+			return decorator
+
+		# Fetch middleware
+		middleware = self._pre_request_middleware_by_rule.pop(rule)
 
 		# Register middleware when decorator is called
 		def register_middleware(f):
@@ -66,6 +88,9 @@ class Middleware(object):
 
 
 	def _register_request_middleware_handling(self):
+		"""
+		Register the request middleware handling with before and after request
+		"""
 
 		# add a before request
 		@self.before_request
