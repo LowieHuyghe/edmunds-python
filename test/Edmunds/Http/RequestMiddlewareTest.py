@@ -21,6 +21,7 @@ class RequestMiddlewareTest(TestCase):
 		super(RequestMiddlewareTest, self).set_up()
 
 		RequestMiddlewareTest.cache = {}
+		RequestMiddlewareTest.cache['timeline'] = []
 
 
 	def test_no_middleware(self):
@@ -36,23 +37,20 @@ class RequestMiddlewareTest(TestCase):
 		# Add route
 		@self.app.route(rule)
 		def handleRoute():
-			pass
+			RequestMiddlewareTest.cache['timeline'].append('handleRoute')
+			return ''
 
 		# Check middleware empty
 		self.assert_not_in(rule, self.app._request_middleware_by_rule)
 
 		# Call route
-		RequestMiddlewareTest.cache = {}
-		with self.app.test_request_context(rule):
-			self.app.preprocess_request()
+		with self.app.test_client() as c:
+			c.get(rule)
 
-			self.assert_not_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+			self.assert_equal(1, len(RequestMiddlewareTest.cache['timeline']))
 
-			resp = self.app.process_response(Response('...'))
-
-			self.assert_not_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+			self.assert_in('handleRoute', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(0, RequestMiddlewareTest.cache['timeline'].index('handleRoute'))
 
 
 	def test_registering(self):
@@ -71,7 +69,8 @@ class RequestMiddlewareTest(TestCase):
 		# Add route
 		@self.app.route(rule, middleware = [ MyRequestMiddleware ])
 		def handleRoute():
-			pass
+			RequestMiddlewareTest.cache['timeline'].append('handleRoute')
+			return ''
 
 		# Check middleware
 		self.assert_in(rule, self.app._request_middleware_by_rule)
@@ -80,25 +79,29 @@ class RequestMiddlewareTest(TestCase):
 		self.assert_in(MyRequestMiddleware, self.app._request_middleware_by_rule[rule])
 
 		# Call route
-		RequestMiddlewareTest.cache = {}
 		with self.app.test_request_context(rule):
 			self.app.preprocess_request()
+			rv = self.app.dispatch_request()
+			response = self.app.make_response(rv)
+			response = self.app.process_response(response)
 
-			self.assert_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(1, RequestMiddlewareTest.cache['handledBefore'])
-			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+			self.assert_equal(3, len(RequestMiddlewareTest.cache['timeline']))
 
-			resp = self.app.process_response(Response('...'))
+			self.assert_in(MyRequestMiddleware.__name__ + '.before', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(0, RequestMiddlewareTest.cache['timeline'].index(MyRequestMiddleware.__name__ + '.before'))
 
-			self.assert_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(1, RequestMiddlewareTest.cache['handledBefore'])
-			self.assert_in('handledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(1, RequestMiddlewareTest.cache['handledAfter'])
+			self.assert_in('handleRoute', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(1, RequestMiddlewareTest.cache['timeline'].index('handleRoute'))
+
+			self.assert_in(MyRequestMiddleware.__name__ + '.after', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(2, RequestMiddlewareTest.cache['timeline'].index(MyRequestMiddleware.__name__ + '.after'))
+
 
 		# Add second route
 		@self.app.route(rule2, middleware = [ MyRequestMiddleware, MySecondRequestMiddleware ])
 		def handleSecondRoute():
-			pass
+			RequestMiddlewareTest.cache['timeline'].append('handleRoute')
+			return ''
 
 		# Check middleware
 		self.assert_in(rule, self.app._request_middleware_by_rule)
@@ -111,19 +114,29 @@ class RequestMiddlewareTest(TestCase):
 
 		# Call route
 		RequestMiddlewareTest.cache = {}
+		RequestMiddlewareTest.cache['timeline'] = []
 		with self.app.test_request_context(rule2):
 			self.app.preprocess_request()
+			rv = self.app.dispatch_request()
+			response = self.app.make_response(rv)
+			response = self.app.process_response(response)
 
-			self.assert_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(2, RequestMiddlewareTest.cache['handledBefore'])
-			self.assert_not_in('handledAfter', RequestMiddlewareTest.cache)
+			self.assert_equal(5, len(RequestMiddlewareTest.cache['timeline']))
 
-			resp = self.app.process_response(Response('...'))
+			self.assert_in(MyRequestMiddleware.__name__ + '.before', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(0, RequestMiddlewareTest.cache['timeline'].index(MyRequestMiddleware.__name__ + '.before'))
 
-			self.assert_in('handledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(2, RequestMiddlewareTest.cache['handledBefore'])
-			self.assert_in('handledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(2, RequestMiddlewareTest.cache['handledAfter'])
+			self.assert_in(MySecondRequestMiddleware.__name__ + '.before', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(1, RequestMiddlewareTest.cache['timeline'].index(MySecondRequestMiddleware.__name__ + '.before'))
+
+			self.assert_in('handleRoute', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(2, RequestMiddlewareTest.cache['timeline'].index('handleRoute'))
+
+			self.assert_in(MySecondRequestMiddleware.__name__ + '.after', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(3, RequestMiddlewareTest.cache['timeline'].index(MySecondRequestMiddleware.__name__ + '.after'))
+
+			self.assert_in(MyRequestMiddleware.__name__ + '.after', RequestMiddlewareTest.cache['timeline'])
+			self.assert_equal(4, RequestMiddlewareTest.cache['timeline'].index(MyRequestMiddleware.__name__ + '.after'))
 
 
 	def test_overwriting(self):
@@ -156,81 +169,6 @@ class RequestMiddlewareTest(TestCase):
 
 
 
-	def test_order(self):
-		"""
-		Test the order of the middleware
-		"""
-
-		rule = '/' + helpers.random_str(20)
-		rule2 = '/' + helpers.random_str(20)
-		self.assert_not_equal(rule, rule2)
-
-		# Add route
-		@self.app.route(rule, middleware = [ MyRequestMiddleware ])
-		def handleRoute():
-			pass
-
-		# Call route
-		RequestMiddlewareTest.cache = {}
-		with self.app.test_request_context(rule):
-			self.app.preprocess_request()
-
-			# Check first and last before
-			self.assert_in('firstHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['firstHandledBefore'])
-			self.assert_in('lastHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['lastHandledBefore'])
-			# Check first and last after
-			self.assert_not_in('firstHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_not_in('lastHandledAfter', RequestMiddlewareTest.cache)
-
-			resp = self.app.process_response(Response('...'))
-
-			# Check first and last before
-			self.assert_in('firstHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['firstHandledBefore'])
-			self.assert_in('lastHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['lastHandledBefore'])
-			# Check first and last after
-			self.assert_in('firstHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['firstHandledAfter'])
-			self.assert_in('lastHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['lastHandledAfter'])
-
-		# Add second route
-		@self.app.route(rule2, middleware = [ MyRequestMiddleware, MySecondRequestMiddleware ])
-		def handleSecondRoute():
-			pass
-
-		# Call second route
-		RequestMiddlewareTest.cache = {}
-		with self.app.test_request_context(rule2):
-			self.app.preprocess_request()
-
-			# Check first and last before
-			self.assert_in('firstHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['firstHandledBefore'])
-			self.assert_in('lastHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MySecondRequestMiddleware, RequestMiddlewareTest.cache['lastHandledBefore'])
-			# Check first and last after
-			self.assert_not_in('firstHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_not_in('lastHandledAfter', RequestMiddlewareTest.cache)
-
-			resp = self.app.process_response(Response('...'))
-
-			# Check first and last before
-			self.assert_in('firstHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['firstHandledBefore'])
-			self.assert_in('lastHandledBefore', RequestMiddlewareTest.cache)
-			self.assert_equal(MySecondRequestMiddleware, RequestMiddlewareTest.cache['lastHandledBefore'])
-			# Check first and last after
-			self.assert_in('firstHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(MySecondRequestMiddleware, RequestMiddlewareTest.cache['firstHandledAfter'])
-			self.assert_in('lastHandledAfter', RequestMiddlewareTest.cache)
-			self.assert_equal(MyRequestMiddleware, RequestMiddlewareTest.cache['lastHandledAfter'])
-
-
-
 class MyRequestMiddleware(RequestMiddleware):
 	"""
 	Request Middleware class
@@ -238,28 +176,14 @@ class MyRequestMiddleware(RequestMiddleware):
 
 	def before(self):
 
-		if 'handledBefore' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['handledBefore'] = 0
-		RequestMiddlewareTest.cache['handledBefore'] += 1
-
-		if 'firstHandledBefore' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['firstHandledBefore'] = MyRequestMiddleware
-
-		RequestMiddlewareTest.cache['lastHandledBefore'] = MyRequestMiddleware
+		RequestMiddlewareTest.cache['timeline'].append(self.__class__.__name__ + '.before')
 
 		return super(MyRequestMiddleware, self).before()
 
 
 	def after(self, response):
 
-		if 'handledAfter' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['handledAfter'] = 0
-		RequestMiddlewareTest.cache['handledAfter'] += 1
-
-		if 'firstHandledAfter' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['firstHandledAfter'] = MyRequestMiddleware
-
-		RequestMiddlewareTest.cache['lastHandledAfter'] = MyRequestMiddleware
+		RequestMiddlewareTest.cache['timeline'].append(self.__class__.__name__ + '.after')
 
 		return super(MyRequestMiddleware, self).after(response)
 
@@ -272,27 +196,13 @@ class MySecondRequestMiddleware(RequestMiddleware):
 
 	def before(self):
 
-		if 'handledBefore' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['handledBefore'] = 0
-		RequestMiddlewareTest.cache['handledBefore'] += 1
-
-		if 'firstHandledBefore' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['firstHandledBefore'] = MySecondRequestMiddleware
-
-		RequestMiddlewareTest.cache['lastHandledBefore'] = MySecondRequestMiddleware
+		RequestMiddlewareTest.cache['timeline'].append(self.__class__.__name__ + '.before')
 
 		return super(MySecondRequestMiddleware, self).before()
 
 
 	def after(self, response):
 
-		if 'handledAfter' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['handledAfter'] = 0
-		RequestMiddlewareTest.cache['handledAfter'] += 1
-
-		if 'firstHandledAfter' not in RequestMiddlewareTest.cache:
-			RequestMiddlewareTest.cache['firstHandledAfter'] = MySecondRequestMiddleware
-
-		RequestMiddlewareTest.cache['lastHandledAfter'] = MySecondRequestMiddleware
+		RequestMiddlewareTest.cache['timeline'].append(self.__class__.__name__ + '.after')
 
 		return super(MySecondRequestMiddleware, self).after(response)
