@@ -87,12 +87,15 @@ class RequestRouting(object):
 		if request is None:
 			request = flask_request
 
-		# Fetch the class and method
+		# Fetch rule
 		rule = request.url_rule.rule
 		if rule not in self._request_uses_by_rule:
 			raise RuntimeError('Dispatching request that was not defined: %s.' % rule)
+
+		# Fetch uses, class and method
 		uses = self._request_uses_by_rule[rule]
 		class_, method = uses
+
 
 		# Make instance of controller
 		controller = class_()
