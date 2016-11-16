@@ -192,6 +192,21 @@ class RequestRoutingTest(TestCase):
 			self.assert_equal(param, RequestRoutingTest.cache['init_params']['param'])
 
 
+	def test_faulty_routing(self):
+		"""
+		Test faulty routing
+		"""
+
+		rule = '/' + helpers.random_str(20)
+
+		# Add route with both uses and handler
+		with self.assert_raises_regexp(TypeError, "'NoneType' object is not callable"):
+
+			@self.app.route(rule, uses = (MyController, 'get'))
+			def handleRoute():
+				pass
+
+
 
 class MyController(Controller):
 
