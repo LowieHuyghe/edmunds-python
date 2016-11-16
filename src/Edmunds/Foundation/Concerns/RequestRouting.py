@@ -1,5 +1,6 @@
 
 import Edmunds.Support.helpers as helpers
+from flask import request as flask_request
 
 
 class RequestRouting(object):
@@ -60,11 +61,11 @@ class RequestRouting(object):
 
 		# Fetch uses
 		uses = self._pre_request_uses_by_rule.pop(rule)
-		class_, method = uses
+		self._request_uses_by_rule[rule] = uses
 
 		# Make handler
 		def handler():
-			return self.dispatch(class_, method)
+			return self.dispatch(flask_request)
 
 		# Call decorator
 		decorator(handler)
@@ -73,16 +74,25 @@ class RequestRouting(object):
 		return None
 
 
-	def dispatch(self, class_, method):
+	def dispatch(self, request = None):
 		"""
 		Dispatch a request
-		:param class_:	The class of the controller
-		:type  class_:	class
-		:param method:	Method to call
-		:type  method:	str
-		:return:		The response
-		:rtype:			str
+		:param request: 	The request
+		:type  request:		Request
+		:return:			The response
+		:rtype:				str
 		"""
+
+		# Assign current request
+		if request is None:
+			request = flask_request
+
+		# Fetch the class and method
+		rule = request.url_rule.rule
+		if rule not in self._request_uses_by_rule:
+			raise RuntimeError('Dispatching request that was not defined: %s.' % rule)
+		uses = self._request_uses_by_rule[rule]
+		class_, method = uses
 
 		# Make instance of controller
 		controller = class_()
