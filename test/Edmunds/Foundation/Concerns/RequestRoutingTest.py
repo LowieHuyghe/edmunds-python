@@ -40,7 +40,7 @@ class RequestRoutingTest(TestCase):
 			RequestRoutingTest.cache['timeline'].append('handleRoute')
 			return ''
 
-		# Check middleware empty
+		# Check uses empty
 		self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
 		self.assert_not_in(rule, self.app._request_uses_by_rule)
 
@@ -74,7 +74,7 @@ class RequestRoutingTest(TestCase):
 			RequestRoutingTest.cache['param'] = param
 			return ''
 
-		# Check middleware empty
+		# Check uses empty
 		self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
 		self.assert_not_in(rule_with_param, self.app._request_uses_by_rule)
 
@@ -105,7 +105,7 @@ class RequestRoutingTest(TestCase):
 		# Add route
 		self.app.route(rule, uses = (MyController, 'get'))
 
-		# Check middleware empty
+		# Check uses empty
 		self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
 		self.assert_in(rule, self.app._request_uses_by_rule)
 
@@ -135,7 +135,7 @@ class RequestRoutingTest(TestCase):
 		# Add route
 		self.app.route(rule_with_param, uses = (MyController, 'get_with_param'))
 
-		# Check middleware empty
+		# Check uses empty
 		self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
 		self.assert_in(rule_with_param, self.app._request_uses_by_rule)
 
@@ -152,8 +152,52 @@ class RequestRoutingTest(TestCase):
 			self.assert_equal(param, RequestRoutingTest.cache['param'])
 
 
+	def test_initialize(self):
+		"""
+		Test initialize
+		"""
+
+		rule = '/' + helpers.random_str(20)
+
+		# Add route
+		self.app.route(rule, uses = (MyController, 'get'))
+
+		# Call route
+		with self.app.test_client() as c:
+			c.get(rule)
+
+			self.assert_in('init_params', RequestRoutingTest.cache)
+			self.assert_equal(0, len(RequestRoutingTest.cache['init_params']))
+
+
+	def test_initialize_with_parameter(self):
+		"""
+		Test initialize with parameter
+		"""
+
+		rule = '/' + helpers.random_str(20)
+		rule_with_param = rule + '/<param>'
+		param = 'myparam'
+
+		# Add route
+		self.app.route(rule_with_param, uses = (MyController, 'get_with_param'))
+
+		# Call route
+		with self.app.test_client() as c:
+			c.get(rule + '/' + param)
+
+			self.assert_in('init_params', RequestRoutingTest.cache)
+			self.assert_equal(1, len(RequestRoutingTest.cache['init_params']))
+			self.assert_in('param', RequestRoutingTest.cache['init_params'])
+			self.assert_equal(param, RequestRoutingTest.cache['init_params']['param'])
+
+
 
 class MyController(Controller):
+
+	def initialize(self, **params):
+		RequestRoutingTest.cache['init_params'] = params
+		super(MyController, self).initialize(**params)
 
 	def get(self):
 		RequestRoutingTest.cache['timeline'].append('handleRoute')
