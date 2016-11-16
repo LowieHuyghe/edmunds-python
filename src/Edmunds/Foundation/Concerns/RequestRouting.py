@@ -90,7 +90,7 @@ class RequestRouting(object):
 		# Fetch rule
 		rule = request.url_rule.rule
 		if rule not in self._request_uses_by_rule:
-			raise RuntimeError('Dispatching request that was not defined: %s.' % rule)
+			raise RuntimeError('Dispatching request that was not defined with \'uses\': %s.' % rule)
 
 		# Fetch uses, class and method
 		uses = self._request_uses_by_rule[rule]
