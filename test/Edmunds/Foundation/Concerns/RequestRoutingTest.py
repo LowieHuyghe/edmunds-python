@@ -48,6 +48,8 @@ class RequestRoutingTest(TestCase):
 		with self.app.test_client() as c:
 			c.get(rule)
 
+			self.assert_equal(1, len(RequestRoutingTest.cache['timeline']))
+
 			self.assert_in('handleRoute', RequestRoutingTest.cache['timeline'])
 			self.assert_equal(0, RequestRoutingTest.cache['timeline'].index('handleRoute'))
 
@@ -80,6 +82,8 @@ class RequestRoutingTest(TestCase):
 		with self.app.test_client() as c:
 			c.get(rule + '/' + param)
 
+			self.assert_equal(1, len(RequestRoutingTest.cache['timeline']))
+
 			self.assert_in('handleRoute', RequestRoutingTest.cache['timeline'])
 			self.assert_equal(0, RequestRoutingTest.cache['timeline'].index('handleRoute'))
 
@@ -109,6 +113,8 @@ class RequestRoutingTest(TestCase):
 		with self.app.test_client() as c:
 			c.get(rule)
 
+			self.assert_equal(1, len(RequestRoutingTest.cache['timeline']))
+
 			self.assert_in('handleRoute', RequestRoutingTest.cache['timeline'])
 			self.assert_equal(0, RequestRoutingTest.cache['timeline'].index('handleRoute'))
 
@@ -136,6 +142,8 @@ class RequestRoutingTest(TestCase):
 		# Call route
 		with self.app.test_client() as c:
 			c.get(rule + '/' + param)
+
+			self.assert_equal(1, len(RequestRoutingTest.cache['timeline']))
 
 			self.assert_in('handleRoute', RequestRoutingTest.cache['timeline'])
 			self.assert_equal(0, RequestRoutingTest.cache['timeline'].index('handleRoute'))
