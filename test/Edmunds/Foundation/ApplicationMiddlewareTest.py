@@ -20,6 +20,7 @@ class ApplicationMiddlewareTest(TestCase):
 		super(ApplicationMiddlewareTest, self).set_up()
 
 		ApplicationMiddlewareTest.cache = {}
+		ApplicationMiddlewareTest.cache['timeline'] = []
 
 
 	def test_no_abstract_handle(self):
@@ -88,65 +89,40 @@ class ApplicationMiddlewareTest(TestCase):
 		rule = '/' + helpers.random_str(20)
 		@self.app.route(rule)
 		def handleRoute():
+			ApplicationMiddlewareTest.cache['timeline'].append('handleRoute')
 			pass
 
 		# Call route
-		ApplicationMiddlewareTest.cache = {}
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			self.assert_in('handledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(1, ApplicationMiddlewareTest.cache['handledMiddleware'])
+			self.assert_equal(2, len(ApplicationMiddlewareTest.cache['timeline']))
+
+			self.assert_in(MyApplicationMiddleware.__name__, ApplicationMiddlewareTest.cache['timeline'])
+			self.assert_equal(0, ApplicationMiddlewareTest.cache['timeline'].index(MyApplicationMiddleware.__name__))
+
+			self.assert_in('handleRoute', ApplicationMiddlewareTest.cache['timeline'])
+			self.assert_equal(1, ApplicationMiddlewareTest.cache['timeline'].index('handleRoute'))
 
 		# Add second middleware
 		self.app.middleware(MySecondApplicationMiddleware)
 
 		# Call route
 		ApplicationMiddlewareTest.cache = {}
+		ApplicationMiddlewareTest.cache['timeline'] = []
 		with self.app.test_client() as c:
 			rv = c.get(rule)
 
-			self.assert_in('handledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(2, ApplicationMiddlewareTest.cache['handledMiddleware'])
+			self.assert_equal(3, len(ApplicationMiddlewareTest.cache['timeline']))
 
+			self.assert_in(MySecondApplicationMiddleware.__name__, ApplicationMiddlewareTest.cache['timeline'])
+			self.assert_equal(0, ApplicationMiddlewareTest.cache['timeline'].index(MySecondApplicationMiddleware.__name__))
 
-	def test_order(self):
-		"""
-		Test order of middleware
-		"""
+			self.assert_in(MyApplicationMiddleware.__name__, ApplicationMiddlewareTest.cache['timeline'])
+			self.assert_equal(1, ApplicationMiddlewareTest.cache['timeline'].index(MyApplicationMiddleware.__name__))
 
-		# Register the middleware
-		self.app.middleware(MyApplicationMiddleware)
-		self.app.middleware(MySecondApplicationMiddleware)
-
-		# Add route
-		rule = '/' + helpers.random_str(20)
-		@self.app.route(rule)
-		def handleRoute():
-			pass
-
-		# Call route
-		ApplicationMiddlewareTest.cache = {}
-		with self.app.test_client() as c:
-			rv = c.get(rule)
-
-			self.assert_in('firstHandledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(MySecondApplicationMiddleware, ApplicationMiddlewareTest.cache['firstHandledMiddleware'])
-			self.assert_in('lastHandledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(MyApplicationMiddleware, ApplicationMiddlewareTest.cache['lastHandledMiddleware'])
-
-		# Register some more
-		self.app.middleware(MyApplicationMiddleware)
-
-		# Call route
-		ApplicationMiddlewareTest.cache = {}
-		with self.app.test_client() as c:
-			rv = c.get(rule)
-
-			self.assert_in('firstHandledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(MySecondApplicationMiddleware, ApplicationMiddlewareTest.cache['firstHandledMiddleware'])
-			self.assert_in('lastHandledMiddleware', ApplicationMiddlewareTest.cache)
-			self.assert_equal(MyApplicationMiddleware, ApplicationMiddlewareTest.cache['lastHandledMiddleware'])
+			self.assert_in('handleRoute', ApplicationMiddlewareTest.cache['timeline'])
+			self.assert_equal(2, ApplicationMiddlewareTest.cache['timeline'].index('handleRoute'))
 
 
 
@@ -176,14 +152,7 @@ class MyApplicationMiddleware(ApplicationMiddleware):
 
 	def handle(self, environment, startResponse):
 
-		if 'handledMiddleware' not in ApplicationMiddlewareTest.cache:
-			ApplicationMiddlewareTest.cache['handledMiddleware'] = 0
-		ApplicationMiddlewareTest.cache['handledMiddleware'] += 1
-
-		if 'firstHandledMiddleware' not in ApplicationMiddlewareTest.cache:
-			ApplicationMiddlewareTest.cache['firstHandledMiddleware'] = MyApplicationMiddleware
-
-		ApplicationMiddlewareTest.cache['lastHandledMiddleware'] = MyApplicationMiddleware
+		ApplicationMiddlewareTest.cache['timeline'].append(self.__class__.__name__)
 
 		return super(MyApplicationMiddleware, self).handle(environment, startResponse)
 
@@ -196,13 +165,6 @@ class MySecondApplicationMiddleware(ApplicationMiddleware):
 
 	def handle(self, environment, startResponse):
 
-		if 'handledMiddleware' not in ApplicationMiddlewareTest.cache:
-			ApplicationMiddlewareTest.cache['handledMiddleware'] = 0
-		ApplicationMiddlewareTest.cache['handledMiddleware'] += 1
-
-		if 'firstHandledMiddleware' not in ApplicationMiddlewareTest.cache:
-			ApplicationMiddlewareTest.cache['firstHandledMiddleware'] = MySecondApplicationMiddleware
-
-		ApplicationMiddlewareTest.cache['lastHandledMiddleware'] = MySecondApplicationMiddleware
+		ApplicationMiddlewareTest.cache['timeline'].append(self.__class__.__name__)
 
 		return super(MySecondApplicationMiddleware, self).handle(environment, startResponse)
