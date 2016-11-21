@@ -29,7 +29,8 @@ class ExceptionHandling(object):
 				:return:			The response
 				"""
 
-				handler = Handler(self)
+				handler_class = self.config('app.exceptions.handler', Handler)
+				handler = handler_class(self)
 
 				handler.report(exception)
 				return handler.render(exception)
