@@ -12,6 +12,7 @@ class Handler(object):
 		"""
 
 		self.app = app
+		self.dont_report = []
 
 
 	def report(self, exception):
@@ -20,6 +21,10 @@ class Handler(object):
 		:param exception: 	The exception
 		:type  exception: 	Exception
 		"""
+
+		if exception.__class__ in self.dont_report:
+			return;
+
 		pass
 
 
@@ -30,4 +35,5 @@ class Handler(object):
 		:type  exception: 	Exception
 		:return: 			The response
 		"""
-		return 'Hell Yeah!'
+
+		return exception
