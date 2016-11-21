@@ -1,4 +1,7 @@
 
+from werkzeug.exceptions import HTTPException
+
+
 class Handler(object):
 	"""
 	The Exception handler
@@ -36,4 +39,9 @@ class Handler(object):
 		:return: 			The response
 		"""
 
-		return exception
+		# Determine status code
+		status_code = 500
+		if isinstance(exception, HTTPException):
+			status_code = exception.code
+
+		return exception, status_code

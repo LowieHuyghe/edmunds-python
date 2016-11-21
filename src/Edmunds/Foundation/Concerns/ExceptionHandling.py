@@ -1,5 +1,5 @@
 
-from werkzeug.exceptions import default_exceptions, HTTPException
+from werkzeug.exceptions import default_exceptions
 from Edmunds.Exceptions.Handler import Handler
 
 
