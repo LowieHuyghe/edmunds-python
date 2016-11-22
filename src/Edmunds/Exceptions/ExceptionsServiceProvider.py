@@ -1,16 +1,17 @@
 
+from Edmunds.Support.ServiceProvider import ServiceProvider
 from werkzeug.exceptions import default_exceptions
 from Edmunds.Exceptions.Handler import Handler
 
 
-class ExceptionHandling(object):
+class ExceptionsServiceProvider(ServiceProvider):
 	"""
-	This class concerns exception handling code for Application to extend from
+	Exceptions Service Provider
 	"""
 
-	def _init_exception_handling(self):
+	def register(self):
 		"""
-		Initiate the exception handling
+		Register the service provider
 		"""
 
 		# Add all the exception to handle
@@ -20,7 +21,7 @@ class ExceptionHandling(object):
 		# Register each exception
 		for exception_class in exceptions:
 
-			@self.errorhandler(exception_class)
+			@self.app.errorhandler(exception_class)
 			def handle_exception(exception):
 				"""
 				Handle an exception
@@ -29,8 +30,8 @@ class ExceptionHandling(object):
 				:return:			The response
 				"""
 
-				handler_class = self.config('app.exceptions.handler', Handler)
-				handler = handler_class(self)
+				handler_class = self.app.config('app.exceptions.handler', Handler)
+				handler = handler_class(self.app)
 
 				handler.report(exception)
 				return handler.render(exception)
