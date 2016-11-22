@@ -4,13 +4,13 @@ from Edmunds.Foundation.Concerns.RuntimeEnvironment import RuntimeEnvironment as
 from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as ConcernsServiceProviders
 from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
 from Edmunds.Foundation.Concerns.RequestRouting import RequestRouting as ConcernsRequestRouting
-from Edmunds.Foundation.Concerns.ExceptionHandling import ExceptionHandling as ConcernsExceptionHandling
+from Edmunds.Exceptions.ExceptionsServiceProvider import ExceptionsServiceProvider
 from werkzeug.debug import DebuggedApplication
 from app.Http import routes
 from Edmunds.Config.Config import Config
 
 
-class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting, ConcernsExceptionHandling):
+class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting):
 	"""
 	The Edmunds Application
 	"""
@@ -33,7 +33,8 @@ class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, C
 		self._init_service_providers()
 		self._init_middleware()
 		self._init_request_routing()
-		self._init_exception_handling()
+
+		self.register(ExceptionsServiceProvider)
 
 		routes.route(self)
 
