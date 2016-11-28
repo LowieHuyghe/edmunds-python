@@ -1,16 +1,16 @@
 
 from flask import Flask
+from Edmunds.Foundation.Concerns.Config import Config as ConcernsConfig
 from Edmunds.Foundation.Concerns.RuntimeEnvironment import RuntimeEnvironment as ConcernsRuntimeEnvironment
 from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as ConcernsServiceProviders
 from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
 from Edmunds.Foundation.Concerns.RequestRouting import RequestRouting as ConcernsRequestRouting
 from Edmunds.Exceptions.ExceptionsServiceProvider import ExceptionsServiceProvider
-from werkzeug.debug import DebuggedApplication
-from app.Http import routes
 from Edmunds.Config.Config import Config
+from app.Http import routes
 
 
-class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting):
+class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting):
 	"""
 	The Edmunds Application
 	"""
@@ -33,37 +33,11 @@ class Application(Flask, ConcernsRuntimeEnvironment, ConcernsServiceProviders, C
 		self._init_service_providers()
 		self._init_middleware()
 		self._init_request_routing()
+		self._init_runtime_environment()
 
 		self.register(ExceptionsServiceProvider)
 
 		routes.route(self)
-
-
-	def _init_config(self, config_dirs = None):
-		"""
-		Initiate the configuration
-		:param config_dirs: 	Configuration directories
-		:type  config_dirs: 	list
-		"""
-
-		# Configuration directories
-		if config_dirs == None:
-			config_dirs = [
-				'lib/edmunds/src/config',
-				'config',
-			]
-
-		# Load config
-		self.config.load_all(config_dirs)
-
-		# Set to debug mode
-		if self.config('app.debug'):
-			self.debug = True
-			self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
-
-		# Testing environment
-		if self.is_testing():
-			self.testing = True
 
 
 	def route(self, rule, **options):

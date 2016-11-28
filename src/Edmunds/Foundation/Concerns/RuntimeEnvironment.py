@@ -1,8 +1,25 @@
 
+from Edmunds.Foundation.DebugMiddleware import DebugMiddleware
+
+
 class RuntimeEnvironment(object):
 	"""
 	This class concerns runtime-environment code for Application to extend from
 	"""
+
+	def _init_runtime_environment(self):
+		"""
+		Initialise concerning runtime environment
+		"""
+
+		# Debug environment
+		if self.config('app.debug'):
+			self.middleware(DebugMiddleware)
+
+		# Testing environment
+		if self.is_testing():
+			self.testing = True
+
 
 	def environment(self, matches = None):
 		"""
