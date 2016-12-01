@@ -1,5 +1,6 @@
 
 from Edmunds.Foundation.DebugMiddleware import DebugMiddleware
+from Edmunds.Profiler.Providers.ProfilerServiceProvider import ProfilerServiceProvider
 
 
 class RuntimeEnvironment(object):
@@ -15,6 +16,9 @@ class RuntimeEnvironment(object):
 		# Debug environment
 		if self.config('app.debug'):
 			self.middleware(DebugMiddleware)
+
+			if self.app.config('app.profiler.enabled', False):
+				self.register(ProfilerServiceProvider)
 
 		# Testing environment
 		if self.is_testing():
