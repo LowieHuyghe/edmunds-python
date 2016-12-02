@@ -8,15 +8,18 @@ class Stream(object):
 	Stream driver
 	"""
 
-	def __init__(self, config, default_profile_directory):
+	def __init__(self, app, config, default_profile_directory):
 		"""
 		Initiate the instance
+		:param app: 						The application
+		:type  app: 						Edmunds.Application
 		:param config:						The config of the driver
 		:type  config:						dict
 		:param default_profile_directory: 	The default directory to put the files
 		:type  default_profile_directory: 	str
 		"""
 
+		self.app = app
 		self._stream = config.stream if 'stream' in config else sys.stdout
 		self._sort_by = config.sort_by if 'sorty_by' in config else ('time', 'calls')
 		self._restrictions = config.restrictions if 'restrictions' in config else ()
