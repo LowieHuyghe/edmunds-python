@@ -20,7 +20,7 @@ class ProfilerMiddleware(ApplicationMiddleware):
 		super(ProfilerMiddleware, self).__init__(app)
 
 		# Initials
-		self._default_profile_dir = 'storage/profs'
+		self._default_profile_dir = self.app.storage_path('profs')
 
 
 	def handle(self, environment, start_response):
@@ -45,7 +45,7 @@ class ProfilerMiddleware(ApplicationMiddleware):
 
 		# Process profiler with every profiling instance
 		for instance in self.app.config('app.profiler.instances', []):
-			driver = instance['driver'](instance, self._default_profile_dir)
+			driver = instance['driver'](self.app, instance, self._default_profile_dir)
 			driver.process(profiler, start, end, environment, suggestive_file_name)
 
 		return [ body ]

@@ -5,12 +5,13 @@ from Edmunds.Foundation.Concerns.RuntimeEnvironment import RuntimeEnvironment as
 from Edmunds.Foundation.Concerns.ServiceProviders import ServiceProviders as ConcernsServiceProviders
 from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddleware
 from Edmunds.Foundation.Concerns.RequestRouting import RequestRouting as ConcernsRequestRouting
+from Edmunds.Foundation.Concerns.Storage import Storage as ConcernsStorage
 from Edmunds.Exceptions.ExceptionsServiceProvider import ExceptionsServiceProvider
 from Edmunds.Config.Config import Config
 from app.Http import routes
 
 
-class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting):
+class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting, ConcernsStorage):
 	"""
 	The Edmunds Application
 	"""

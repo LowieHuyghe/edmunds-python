@@ -17,7 +17,7 @@ class RuntimeEnvironment(object):
 		if self.config('app.debug'):
 			self.middleware(DebugMiddleware)
 
-			if self.app.config('app.profiler.enabled', False):
+			if self.config('app.profiler.enabled', False):
 				self.register(ProfilerServiceProvider)
 
 		# Testing environment
