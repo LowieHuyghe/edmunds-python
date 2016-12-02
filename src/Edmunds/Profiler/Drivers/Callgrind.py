@@ -1,5 +1,5 @@
 
-from pyprof2calltree import convert
+from pyprof2calltree import CalltreeConverter
 import os
 
 
@@ -47,4 +47,10 @@ class Callgrind(object):
 
 		filename = os.path.join(self._profile_dir, suggestive_file_name + '.callgrind')
 
-		convert(profiler.getstats(), filename)
+		converter = CalltreeConverter(profiler.getstats())
+		f = self.app.write_stream(filename)
+
+		try:
+			converter.output(f)
+		finally:
+			f.close()

@@ -50,34 +50,36 @@ class BlackfireIo(object):
 
 		converter = CalltreeConverter(profiler.getstats())
 
-		f = open(filename, 'w+')
-		f.write('file-format: BlackfireProbe\n')
-		f.write('cost-dimensions: wt\n')
-		f.write('request-start: 1422517098.4374\n')
-		f.write('profile-title: %s\n' % suggestive_file_name)
-		f.write('\n')
+		f = self.app.write_stream(filename)
 
-		def unique_name(code):
-			co_filename, co_firstlineno, co_name = cProfile.label(code)
-			munged_name = converter.munged_function_name(code)
-			return '%s::%s' % (co_filename, munged_name)
+		try:
+			f.write('file-format: BlackfireProbe\n')
+			f.write('cost-dimensions: wt\n')
+			f.write('request-start: %d\n' % start)
+			f.write('profile-title: %s\n' % suggestive_file_name)
+			f.write('\n')
 
-		def _entry_sort_key(entry):
-			return cProfile.label(entry.code)
+			def unique_name(code):
+				co_filename, co_firstlineno, co_name = cProfile.label(code)
+				munged_name = converter.munged_function_name(code)
+				return '%s::%s' % (co_filename, munged_name)
+
+			def _entry_sort_key(entry):
+				return cProfile.label(entry.code)
 
 
-		for entry in sorted(converter.entries, key=_entry_sort_key):
+			for entry in sorted(converter.entries, key=_entry_sort_key):
 
-			entry_name = unique_name(entry.code)
-			if entry_name.startswith('~::'):
-				continue
+				entry_name = unique_name(entry.code)
+				if entry_name.startswith('~::'):
+					continue
 
-			if entry.calls:
-				for subentry in sorted(entry.calls, key=_entry_sort_key):
-					subentry_name = unique_name(subentry.code)
-					if subentry_name.startswith('~::'):
-						continue
+				if entry.calls:
+					for subentry in sorted(entry.calls, key=_entry_sort_key):
+						subentry_name = unique_name(subentry.code)
+						if subentry_name.startswith('~::'):
+							continue
 
-					f.write('%s==>%s//%i %i\n' % (entry_name, subentry_name, subentry.callcount, int(subentry.totaltime * 1e9)))
-
-		f.close()
+						f.write('%s==>%s//%i %i\n' % (entry_name, subentry_name, subentry.callcount, int(subentry.totaltime * 1e9)))
+		finally:
+			f.close()
