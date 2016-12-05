@@ -2,6 +2,8 @@
 import unittest
 from bootstrap import edmunds
 import abc
+import os
+import Edmunds.Support.helpers as helpers
 
 
 class TestCase(unittest.TestCase):
@@ -16,7 +18,16 @@ class TestCase(unittest.TestCase):
 		"""
 		Set up the test case
 		"""
+
+		# Create the application
 		if not hasattr(self, 'app'):
+			self.app = self.create_application()
+
+		# The env testing test file
+		self.env_testing_test_file = os.path.join(self.app.config.root_path, '.env.testing.test.py')
+		if os.path.exists(self.env_testing_test_file):
+			os.remove(self.env_testing_test_file)
+
 			self.app = self.create_application()
 
 
@@ -24,7 +35,10 @@ class TestCase(unittest.TestCase):
 		"""
 		Tear down the test case
 		"""
-		pass
+
+		# Remove env-testing-file
+		if os.path.exists(self.env_testing_test_file):
+			os.remove(self.env_testing_test_file)
 
 
 	@abc.abstractmethod
@@ -33,6 +47,28 @@ class TestCase(unittest.TestCase):
 		Create the application for testing
 		"""
 		pass
+
+
+	def write_test_config(self, config, overwrite = True):
+		"""
+		Write to test config file
+		:param config: 		The config to write
+		:type  config:		str|list
+		:param overwrite:	Overwrite the current config
+		:type  overwrite:	bool
+		"""
+
+		if not os.path.exists(self.env_testing_test_file):
+			overwrite = True
+
+		write_permissions = 'w' if overwrite else 'w+'
+		with open(self.env_testing_test_file, write_permissions) as f:
+			f.write('\n')
+			if isinstance(config, list):
+				f.writelines(config)
+			else:
+				f.write(config)
+			f.write('\n')
 
 
 	def setUp(self):
