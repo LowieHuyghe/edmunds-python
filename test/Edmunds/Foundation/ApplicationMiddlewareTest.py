@@ -90,7 +90,7 @@ class ApplicationMiddlewareTest(TestCase):
 		@self.app.route(rule)
 		def handleRoute():
 			ApplicationMiddlewareTest.cache['timeline'].append('handleRoute')
-			pass
+			return ''
 
 		# Call route
 		with self.app.test_client() as c:
