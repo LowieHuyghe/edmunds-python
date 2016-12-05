@@ -25,17 +25,20 @@ class ConfigTest(TestCase):
 		# Make env file
 		self.env_file = os.path.join(self.app.config.root_path, '.env.py')
 		self.env_bak_file = os.path.join(self.app.config.root_path, '.env.%s.py' % random_file)
-		os.rename(self.env_file, self.env_bak_file)
+		if os.path.exists(self.env_file):
+			os.rename(self.env_file, self.env_bak_file)
 
 		# Make env testing file
 		self.env_testing_file = os.path.join(self.app.config.root_path, '.env.testing.py')
 		self.env_testing_bak_file = os.path.join(self.app.config.root_path, '.env.testing.%s.py' % random_file)
-		os.rename(self.env_testing_file, self.env_testing_bak_file)
+		if os.path.exists(self.env_testing_file):
+			os.rename(self.env_testing_file, self.env_testing_bak_file)
 
 		# Make env production file
 		self.env_production_file = os.path.join(self.app.config.root_path, '.env.production.py')
 		self.env_production_bak_file = os.path.join(self.app.config.root_path, '.env.production.%s.py' % random_file)
-		os.rename(self.env_production_file, self.env_production_bak_file)
+		if os.path.exists(self.env_production_file):
+			os.rename(self.env_production_file, self.env_production_bak_file)
 
 
 	def tear_down(self):
@@ -245,7 +248,7 @@ class ConfigTest(TestCase):
 
 	def test_env_testing_file(self):
 		"""
-		Test env  file
+		Test env testing file
 		"""
 
 		old_format = [
@@ -298,18 +301,81 @@ class ConfigTest(TestCase):
 				self.assert_equal(value, app.config[old_key])
 
 
+	def test_env_testing_test_file(self):
+		"""
+		Test env testing test file
+		"""
+
+		old_format = [
+			"GOT_SON 					= 'Jon Snow 6' \n",
+			"GOT_GIRL 					= 'Igritte 6' \n",
+			"GOT_ENEMY 					= ('The', 'White', 'Walkers', 6) \n",
+			"GOT_WINTER_IS_COMING_TO 	= 'Town 6'"
+		]
+
+		new_format = [
+			"GOT = { \n",
+			"	'son': 		'Jon Snow 6', \n",
+			"	'girl': 	'Igritte 6', \n",
+			"	'enemy': 	('The', 'White', 'Walkers', 6), \n",
+			"	'winter': { \n",
+			"		'is': { \n",
+			"			'coming': { \n",
+			"				'to': 'Town 6' \n",
+			"			}, \n",
+			"		}, \n",
+			"	}, \n",
+			"} \n",
+		]
+
+		data = [
+			('got.son',						'GOT_SON',					'Jon Snow 6',						),
+			('got.girl', 					'GOT_GIRL',					'Igritte 6',						),
+			('got.enemy', 					'GOT_ENEMY',				('The', 'White', 'Walkers', 6),		),
+			('got.winter.is.coming.to', 	'GOT_WINTER_IS_COMING_TO',	'Town 6'							),
+		]
+
+		# Check each format
+		for format in (old_format, new_format):
+
+			# Make config file
+			self.write_test_config(format)
+
+			# Make app
+			app = self.create_application()
+
+			# Check config
+			for row in data:
+				key, old_key, value = row
+
+				self.assert_true(app.config.has(key))
+				self.assert_equal(value, app.config(key))
+				self.assert_equal(value, app.config[old_key])
+
+
 	def test_merging_and_priority(self):
 		"""
 		Test merging and priority of config
 		"""
 
+		# Make env testing test file
+		self.write_test_config([
+			"GOT = { \n",
+			"	'son': 'Jon Snow 7', \n",
+			"	'priority': { \n",
+			"		'first': 1, \n",
+			"	} \n",
+			"} \n",
+		]);
+
 		# Make env testing file
 		with open(self.env_testing_file, 'w+') as f:
 			f.writelines([
 				"GOT = { \n",
-				"	'son': 'Jon Snow 6', \n",
+				"	'girl': 'Igritte 7', \n",
 				"	'priority': { \n",
-				"		'first': 1, \n",
+				"		'first': 2, \n",
+				"		'second': 2, \n",
 				"	} \n",
 				"} \n",
 			])
@@ -318,19 +384,7 @@ class ConfigTest(TestCase):
 		with open(self.env_file, 'w+') as f:
 			f.writelines([
 				"GOT = { \n",
-				"	'girl': 'Igritte 6', \n",
-				"	'priority': { \n",
-				"		'first': 2, \n",
-				"		'second': 2, \n",
-				"	} \n",
-				"} \n",
-			])
-
-		# Make config file
-		with open(self.config_file, 'w+') as f:
-			f.writelines([
-				"GOT = { \n",
-				"	'enemy': ('The', 'White', 'Walkers', 6), \n",
+				"	'enemy': ('The', 'White', 'Walkers', 7), \n",
 				"	'priority': { \n",
 				"		'first': 3, \n",
 				"		'second': 3, \n",
@@ -339,13 +393,29 @@ class ConfigTest(TestCase):
 				"} \n",
 			])
 
+		# Make config file
+		with open(self.config_file, 'w+') as f:
+			f.writelines([
+				"GOT = { \n",
+				"	'weapon': 'Dragon Glass 7', \n",
+				"	'priority': { \n",
+				"		'first': 4, \n",
+				"		'second': 4, \n",
+				"		'third': 4, \n",
+				"		'fourth': 4, \n",
+				"	} \n",
+				"} \n",
+			])
+
 		data = [
-			('got.son',				'GOT_SON',				'Jon Snow 6',					),
-			('got.girl', 			'GOT_GIRL',				'Igritte 6',					),
-			('got.enemy', 			'GOT_ENEMY',			('The', 'White', 'Walkers', 6),	),
-			('got.priority.first', 	'GOT_PRIORITY_FIRST',	1,								),
-			('got.priority.second', 'GOT_PRIORITY_SECOND',	2,								),
-			('got.priority.third', 	'GOT_PRIORITY_THIRD',	3,								),
+			('got.son',					'GOT_SON',				'Jon Snow 7',					),
+			('got.girl', 				'GOT_GIRL',				'Igritte 7',					),
+			('got.enemy', 				'GOT_ENEMY',			('The', 'White', 'Walkers', 7),	),
+			('got.weapon', 				'GOT_WEAPON',			'Dragon Glass 7',				),
+			('got.priority.first', 		'GOT_PRIORITY_FIRST',	1,								),
+			('got.priority.second', 	'GOT_PRIORITY_SECOND',	2,								),
+			('got.priority.third', 		'GOT_PRIORITY_THIRD',	3,								),
+			('got.priority.fourth', 	'GOT_PRIORITY_FOURTH',	4,								),
 		]
 
 		# Make app
@@ -403,6 +473,17 @@ class ConfigTest(TestCase):
 		self.assert_true(app.config.has(key))
 		self.assert_equal(3, app.config(key))
 		self.assert_equal(3, app.config[old_key])
+
+		# Make env testing test file
+		self.write_test_config("%s = %d" % (old_key, 4));
+
+		# Make app
+		app = self.create_application()
+
+		# Check config
+		self.assert_true(app.config.has(key))
+		self.assert_equal(4, app.config(key))
+		self.assert_equal(4, app.config[old_key])
 
 
 	def test_setting_environment(self):
