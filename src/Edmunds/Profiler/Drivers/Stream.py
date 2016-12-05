@@ -20,9 +20,9 @@ class Stream(object):
 		"""
 
 		self.app = app
-		self._stream = config.stream if 'stream' in config else sys.stdout
-		self._sort_by = config.sort_by if 'sorty_by' in config else ('time', 'calls')
-		self._restrictions = config.restrictions if 'restrictions' in config else ()
+		self._stream = config['stream'] if 'stream' in config else sys.stdout
+		self._sort_by = config['sort_by'] if 'sorty_by' in config else ('time', 'calls')
+		self._restrictions = config['restrictions'] if 'restrictions' in config else ()
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
