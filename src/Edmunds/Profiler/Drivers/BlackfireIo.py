@@ -23,7 +23,7 @@ class BlackfireIo(object):
 		self.app = app
 
 		if 'directory' in config:
-			self._profile_dir = config.directory
+			self._profile_dir = config['directory']
 			# Check if absolute or relative path
 			if not self._profile_dir.startswith(os.sep):
 				self._profile_dir = self.app.storage_path(_profile_dir)
