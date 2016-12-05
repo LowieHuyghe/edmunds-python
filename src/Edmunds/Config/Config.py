@@ -135,6 +135,12 @@ class Config(FlaskConfig):
 		if os.path.isfile(env_environment_file_path):
 			self.from_pyfile(env_environment_file_path)
 
+		# If testing, load specific test .env specifically meant for testing purposes
+		if self('app.env').lower() == 'testing':
+			env_environment_test_file_path = os.path.join(self.root_path, '.env.%s.test.py' % self('app.env').lower())
+			if os.path.isfile(env_environment_test_file_path):
+				self.from_pyfile(env_environment_test_file_path)
+
 		# Lower the environment value
 		self({
 			'app.env': self('app.env').lower()
@@ -153,20 +159,23 @@ class Config(FlaskConfig):
 		"""
 
 		# Backup of original
-		original = copy.copy(self)
+		processed_original = self._flatten_dict(self)
+		self.clear()
 
 		# Load new
 		success = super(Config, self).from_pyfile(filename, silent)
 		if success:
-			new = copy.copy(self)
-
-			# Set back original
+			# Flatten new list
+			processed_new = self._flatten_dict(self)
 			self.clear()
-			self.update(original)
 
-			# Process and flatten new list
-			processed_new = self._flatten_dict(new)
+			# Set back original and overwrite with new
+			self.update(processed_original)
 			self.update(processed_new)
+
+		else:
+			# Set back original
+			self.update(processed_original)
 
 		return success
 
