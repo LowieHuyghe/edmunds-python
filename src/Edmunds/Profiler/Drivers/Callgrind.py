@@ -25,9 +25,11 @@ class Callgrind(object):
 			self._profile_dir = config['directory']
 			# Check if absolute or relative path
 			if not self._profile_dir.startswith(os.sep):
-				self._profile_dir = self.app.storage_path(_profile_dir)
+				self._profile_dir = self.app.storage_path(self._profile_dir)
 		else:
 			self._profile_dir = default_profile_directory
+
+		self.prefix = config['prefix'] if 'prefix' in config else ''
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
@@ -45,7 +47,7 @@ class Callgrind(object):
 		:type  suggestive_file_name: 	str
 		"""
 
-		filename = os.path.join(self._profile_dir, suggestive_file_name + '.callgrind')
+		filename = os.path.join(self._profile_dir, self.prefix + suggestive_file_name + '.callgrind')
 
 		converter = CalltreeConverter(profiler.getstats())
 		f = self.app.write_stream(filename)
