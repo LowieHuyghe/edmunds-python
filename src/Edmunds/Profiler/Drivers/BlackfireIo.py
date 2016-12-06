@@ -26,9 +26,11 @@ class BlackfireIo(object):
 			self._profile_dir = config['directory']
 			# Check if absolute or relative path
 			if not self._profile_dir.startswith(os.sep):
-				self._profile_dir = self.app.storage_path(_profile_dir)
+				self._profile_dir = self.app.storage_path(self._profile_dir)
 		else:
 			self._profile_dir = default_profile_directory
+
+		self.prefix = config['prefix'] if 'prefix' in config else ''
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
@@ -46,7 +48,7 @@ class BlackfireIo(object):
 		:type  suggestive_file_name: 	str
 		"""
 
-		filename = os.path.join(self._profile_dir, suggestive_file_name + '.blackfireio')
+		filename = os.path.join(self._profile_dir, self.prefix + suggestive_file_name + '.blackfireio')
 
 		converter = CalltreeConverter(profiler.getstats())
 
@@ -56,7 +58,7 @@ class BlackfireIo(object):
 			f.write('file-format: BlackfireProbe\n')
 			f.write('cost-dimensions: wt\n')
 			f.write('request-start: %d\n' % start)
-			f.write('profile-title: %s\n' % suggestive_file_name)
+			f.write('profile-title: %s\n' % self.prefix + suggestive_file_name)
 			f.write('\n')
 
 			def unique_name(code):
