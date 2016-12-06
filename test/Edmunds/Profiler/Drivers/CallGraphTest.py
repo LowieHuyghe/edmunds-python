@@ -4,9 +4,9 @@ import Edmunds.Support.helpers as helpers
 import os
 
 
-class CallgrindTest(TestCase):
+class CallGraphTest(TestCase):
 	"""
-	Test the Callgrind
+	Test the CallGraph
 	"""
 
 	def set_up(self):
@@ -14,7 +14,7 @@ class CallgrindTest(TestCase):
 		Set up the test case
 		"""
 
-		super(CallgrindTest, self).set_up()
+		super(CallGraphTest, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
 		self.directory = 'profs'
@@ -25,7 +25,7 @@ class CallgrindTest(TestCase):
 		Tear down the test case
 		"""
 
-		super(CallgrindTest, self).tear_down()
+		super(CallGraphTest, self).tear_down()
 
 		# Remove all profiler files
 		directory = self.app.storage_path(self.directory)
@@ -35,14 +35,14 @@ class CallgrindTest(TestCase):
 					os.remove(os.path.join(root, file))
 
 
-	def test_callgrind(self):
+	def test_callgraph(self):
 		"""
-		Test the callgrind
+		Test the callgraph
 		"""
 
 		# Write config
 		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Callgrind import Callgrind \n",
+			"from Edmunds.Profiler.Drivers.CallGraph import CallGraph \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
@@ -50,7 +50,7 @@ class CallgrindTest(TestCase):
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
-			"				'driver': Callgrind,\n",
+			"				'driver': CallGraph,\n",
 			"				'directory': '%s',\n" % self.directory,
 			"				'prefix': '%s',\n" % self.prefix,
 			"			}, \n",
