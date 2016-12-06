@@ -3,9 +3,9 @@ from pyprof2calltree import CalltreeConverter
 import os
 
 
-class Callgrind(object):
+class CallGraph(object):
 	"""
-	Callgrind driver
+	CallGraph driver
 	"""
 
 	def __init__(self, app, config, default_profile_directory):
@@ -47,7 +47,7 @@ class Callgrind(object):
 		:type  suggestive_file_name: 	str
 		"""
 
-		filename = os.path.join(self._profile_dir, self.prefix + suggestive_file_name + '.callgrind')
+		filename = os.path.join(self._profile_dir, self.prefix + suggestive_file_name + '.callgraph')
 
 		converter = CalltreeConverter(profiler.getstats())
 		f = self.app.write_stream(filename)
