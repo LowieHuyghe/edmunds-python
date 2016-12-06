@@ -8,17 +8,17 @@ class StreamTest(TestCase):
 	Test the Stream
 	"""
 
-	def set_up(self):
+	def test_stream(self):
 		"""
-		Set up the test case
+		Test the stream
 		"""
 
-		super(StreamTest, self).set_up()
-
+		# Write config
 		self.write_test_config([
 			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
+			"	'debug': True, \n",
 			"	'profiler': { \n",
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
@@ -31,32 +31,23 @@ class StreamTest(TestCase):
 			"} \n",
 		])
 
-		self.app = self.create_application()
-		self.stream = self.app.config('app.profiler.instances')[0]['stream']
-
-		# Check stream
-		self.assert_is_not_none(self.stream)
-
-
-	def test_stream(self):
-		"""
-		Test the stream
-		"""
-
-		rule = '/' + helpers.random_str(20)
+		# Create app and fetch stream
+		app = self.create_application()
+		stream = app.config('app.profiler.instances')[0]['stream']
 
 		# Add route
-		@self.app.route(rule)
+		rule = '/' + helpers.random_str(20)
+		@app.route(rule)
 		def handleRoute():
 			return ''
 
-		with self.app.test_client() as c:
+		with app.test_client() as c:
 
 			# Check stream
-			self.assert_equal('', self.stream.getvalue())
+			self.assert_equal('', stream.getvalue())
 
 			# Call route
 			c.get(rule)
 
 			# Check stream
-			self.assert_not_equal('', self.stream.getvalue())
+			self.assert_not_equal('', stream.getvalue())
