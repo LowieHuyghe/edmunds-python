@@ -7,7 +7,7 @@ import os
 import sys
 
 
-class Manager(object):
+class ProfilerManager(object):
 	"""
 	The Log Manager
 	"""

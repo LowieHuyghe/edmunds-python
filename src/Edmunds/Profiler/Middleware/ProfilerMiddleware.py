@@ -1,6 +1,6 @@
 
 from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
-from Edmunds.Profiler.Manager import Manager
+from Edmunds.Profiler.ProfilerManager import ProfilerManager
 from cProfile import Profile
 import time
 import datetime
@@ -20,7 +20,7 @@ class ProfilerMiddleware(ApplicationMiddleware):
 
 		super(ProfilerMiddleware, self).__init__(app)
 
-		self._manager = Manager(self.app)
+		self._manager = ProfilerManager(self.app)
 
 
 	def handle(self, environment, start_response):
