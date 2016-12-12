@@ -1,5 +1,6 @@
 
 from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+from Edmunds.Profiler.Manager import Manager
 from cProfile import Profile
 import time
 import datetime
@@ -19,8 +20,7 @@ class ProfilerMiddleware(ApplicationMiddleware):
 
 		super(ProfilerMiddleware, self).__init__(app)
 
-		# Initials
-		self._default_profile_dir = self.app.storage_path('profs')
+		self._manager = Manager(self.app)
 
 
 	def handle(self, environment, start_response):
@@ -44,9 +44,8 @@ class ProfilerMiddleware(ApplicationMiddleware):
 								 )
 
 		# Process profiler with every profiling instance
-		for instance in self.app.config('app.profiler.instances', []):
-			driver = instance['driver'](self.app, instance, self._default_profile_dir)
-			driver.process(profiler, start, end, environment, suggestive_file_name)
+		for instance in self._manager.all():
+			instance.process(profiler, start, end, environment, suggestive_file_name)
 
 		return [ body ]
 

@@ -1,28 +1,32 @@
 
+from Edmunds.Profiler.Drivers.BaseDriver import BaseDriver
 from pstats import Stats
 import sys
 
 
-class Stream(object):
+class Stream(BaseDriver):
 	"""
 	Stream driver
 	"""
 
-	def __init__(self, app, config, default_profile_directory):
+	def __init__(self, app, stream, sort_by, restrictions):
 		"""
 		Initiate the instance
-		:param app: 						The application
-		:type  app: 						Edmunds.Application
-		:param config:						The config of the driver
-		:type  config:						dict
-		:param default_profile_directory: 	The default directory to put the files
-		:type  default_profile_directory: 	str
+		:param app: 			The application
+		:type  app: 			Edmunds.Application
+		:param stream:			The stream
+		:type  stream:			stream
+		:param sort_by: 		Sort by
+		:type  sort_by: 		tuple
+		:param restrictions: 	Restrictions
+		:type  restrictions: 	tuple
 		"""
 
-		self.app = app
-		self._stream = config['stream'] if 'stream' in config else sys.stdout
-		self._sort_by = config['sort_by'] if 'sorty_by' in config else ('time', 'calls')
-		self._restrictions = config['restrictions'] if 'restrictions' in config else ()
+		super(Stream, self).__init__(app)
+
+		self._stream = stream
+		self._sort_by = sort_by
+		self._restrictions = restrictions
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
