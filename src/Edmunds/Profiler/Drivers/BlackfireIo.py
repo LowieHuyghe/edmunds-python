@@ -10,7 +10,7 @@ class BlackfireIo(BaseDriver):
 	Blackfire Io driver
 	"""
 
-	def __init__(self, app, directory, prefix = ''):
+	def __init__(self, app, directory, prefix = '', suffix = ''):
 		"""
 		Initiate the instance
 		:param app: 			The application
@@ -19,12 +19,15 @@ class BlackfireIo(BaseDriver):
 		:type  directory:		str
 		:param prefix: 			The prefix for storing
 		:type  prefix: 			str
+		:param suffix: 			The suffix for storing
+		:type  suffix: 			str
 		"""
 
 		super(BlackfireIo, self).__init__(app)
 
 		self._profile_dir = directory
 		self._prefix = prefix
+		self._suffix = suffix
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
@@ -42,17 +45,18 @@ class BlackfireIo(BaseDriver):
 		:type  suggestive_file_name: 	str
 		"""
 
-		filename = os.path.join(self._profile_dir, self._prefix + suggestive_file_name + '.blackfireio')
+		filename = self._prefix + suggestive_file_name + self._suffix
+		filepath = os.path.join(self._profile_dir, filename)
 
 		converter = CalltreeConverter(profiler.getstats())
 
-		f = self._app.write_stream(filename)
+		f = self._app.write_stream(filepath)
 
 		try:
 			f.write('file-format: BlackfireProbe\n')
 			f.write('cost-dimensions: wt\n')
 			f.write('request-start: %d\n' % start)
-			f.write('profile-title: %s\n' % self._prefix + suggestive_file_name)
+			f.write('profile-title: %s\n' % filename)
 			f.write('\n')
 
 			def unique_name(code):
