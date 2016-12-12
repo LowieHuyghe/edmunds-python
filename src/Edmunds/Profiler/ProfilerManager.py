@@ -118,9 +118,7 @@ class ProfilerManager(object):
 
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
-		if 'suffix' in config:
-			options['suffix'] = config['suffix']
-		elif 'name' in config:
+		if 'name' in config:
 			options['suffix'] = '.%s' % config['name']
 
 		return BlackfireIo(self._app, directory, **options)
@@ -146,9 +144,7 @@ class ProfilerManager(object):
 
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
-		if 'suffix' in config:
-			options['suffix'] = config['suffix']
-		elif 'name' in config:
+		if 'name' in config:
 			options['suffix'] = '.%s' % config['name']
 
 		return CallGraph(self._app, directory, **options)
