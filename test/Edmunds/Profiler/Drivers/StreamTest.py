@@ -23,6 +23,7 @@ class StreamTest(TestCase):
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
+			"				'name': 'stream',\n",
 			"				'driver': Stream,\n",
 			"				'stream': cStringIO.StringIO(),\n",
 			"			}, \n",

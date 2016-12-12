@@ -50,6 +50,7 @@ class CallGraphTest(TestCase):
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
+			"				'name': 'callgraph',\n",
 			"				'driver': CallGraph,\n",
 			"				'directory': '%s',\n" % self.directory,
 			"				'prefix': '%s',\n" % self.prefix,

@@ -50,6 +50,7 @@ class BlackfireIoTest(TestCase):
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
+			"				'name': 'blackfireio',\n",
 			"				'driver': BlackfireIo,\n",
 			"				'directory': '%s',\n" % self.directory,
 			"				'prefix': '%s',\n" % self.prefix,

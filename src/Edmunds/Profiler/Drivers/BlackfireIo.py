@@ -43,7 +43,6 @@ class BlackfireIo(BaseDriver):
 		"""
 
 		filename = os.path.join(self._profile_dir, self._prefix + suggestive_file_name + '.blackfireio')
-		print filename
 
 		converter = CalltreeConverter(profiler.getstats())
 
