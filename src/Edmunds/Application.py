@@ -7,6 +7,7 @@ from Edmunds.Foundation.Concerns.Middleware import Middleware as ConcernsMiddlew
 from Edmunds.Foundation.Concerns.RequestRouting import RequestRouting as ConcernsRequestRouting
 from Edmunds.Foundation.Concerns.Storage import Storage as ConcernsStorage
 from Edmunds.Exceptions.ExceptionsServiceProvider import ExceptionsServiceProvider
+from Edmunds.Log.Providers.LogServiceProvider import LogServiceProvider
 from Edmunds.Config.Config import Config
 from app.Http import routes
 
@@ -37,6 +38,8 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 		self._init_runtime_environment()
 
 		self.register(ExceptionsServiceProvider)
+		if self.config('app.log.enabled', False):
+			self.register(LogServiceProvider)
 
 		routes.route(self)
 
