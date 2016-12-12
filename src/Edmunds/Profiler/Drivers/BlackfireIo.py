@@ -1,36 +1,30 @@
 
+from Edmunds.Profiler.Drivers.BaseDriver import BaseDriver
 from pyprof2calltree import CalltreeConverter
 import os
 import cProfile
 
 
-class BlackfireIo(object):
+class BlackfireIo(BaseDriver):
 	"""
 	Blackfire Io driver
 	"""
 
-	def __init__(self, app, config, default_profile_directory):
+	def __init__(self, app, directory, prefix):
 		"""
 		Initiate the instance
-		:param app: 						The application
-		:type  app: 						Edmunds.Application
-		:param config:						The config of the driver
-		:type  config:						dict
-		:param default_profile_directory: 	The default directory to put the files
-		:type  default_profile_directory: 	str
+		:param app: 			The application
+		:type  app: 			Edmunds.Application
+		:param directory:		The directory
+		:type  directory:		str
+		:param prefix: 			The prefix for storing
+		:type  prefix: 			str
 		"""
 
-		self.app = app
+		super(BlackfireIo, self).__init__(app)
 
-		if 'directory' in config:
-			self._profile_dir = config['directory']
-			# Check if absolute or relative path
-			if not self._profile_dir.startswith(os.sep):
-				self._profile_dir = self.app.storage_path(self._profile_dir)
-		else:
-			self._profile_dir = default_profile_directory
-
-		self.prefix = config['prefix'] if 'prefix' in config else ''
+		self._profile_dir = directory
+		self._prefix = prefix
 
 
 	def process(self, profiler, start, end, environment, suggestive_file_name):
@@ -48,17 +42,18 @@ class BlackfireIo(object):
 		:type  suggestive_file_name: 	str
 		"""
 
-		filename = os.path.join(self._profile_dir, self.prefix + suggestive_file_name + '.blackfireio')
+		filename = os.path.join(self._profile_dir, self._prefix + suggestive_file_name + '.blackfireio')
+		print filename
 
 		converter = CalltreeConverter(profiler.getstats())
 
-		f = self.app.write_stream(filename)
+		f = self._app.write_stream(filename)
 
 		try:
 			f.write('file-format: BlackfireProbe\n')
 			f.write('cost-dimensions: wt\n')
 			f.write('request-start: %d\n' % start)
-			f.write('profile-title: %s\n' % self.prefix + suggestive_file_name)
+			f.write('profile-title: %s\n' % self._prefix + suggestive_file_name)
 			f.write('\n')
 
 			def unique_name(code):
