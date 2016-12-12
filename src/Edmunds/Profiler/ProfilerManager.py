@@ -114,11 +114,12 @@ class ProfilerManager(object):
 			if not directory.startswith(os.sep):
 				directory = self._app.storage_path(directory)
 
-		prefix = ''
-		if 'prefix' in config:
-			prefix = config['prefix']
+		options = {}
 
-		return BlackfireIo(self._app, directory, prefix)
+		if 'prefix' in config:
+			options['prefix'] = config['prefix']
+
+		return BlackfireIo(self._app, directory, **options)
 
 
 	def _create_call_graph(self, config):
@@ -137,11 +138,12 @@ class ProfilerManager(object):
 			if not directory.startswith(os.sep):
 				directory = self._app.storage_path(directory)
 
-		prefix = ''
-		if 'prefix' in config:
-			prefix = config['prefix']
+		options = {}
 
-		return CallGraph(self._app, directory, prefix)
+		if 'prefix' in config:
+			options['prefix'] = config['prefix']
+
+		return CallGraph(self._app, directory, **options)
 
 
 	def _create_stream(self, config):
@@ -153,16 +155,13 @@ class ProfilerManager(object):
 		:rtype:			Stream
 		"""
 
-		stream = sys.stdout
+		options = {}
+
 		if 'stream' in config:
-			stream = config['stream']
-
-		sort_by = ('time', 'calls')
+			options['stream'] = config['stream']
 		if 'sort_by' in config:
-			sort_by = config['sort_by']
-
-		restrictions = ()
+			options['sort_by'] = config['sort_by']
 		if 'restrictions' in config:
-			restrictions = config['restrictions']
+			options['restrictions'] = config['restrictions']
 
-		return Stream(self._app, stream, sort_by, restrictions)
+		return Stream(self._app, **options)
