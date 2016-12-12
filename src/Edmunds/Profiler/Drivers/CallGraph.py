@@ -9,7 +9,7 @@ class CallGraph(BaseDriver):
 	CallGraph driver
 	"""
 
-	def __init__(self, app, directory, prefix):
+	def __init__(self, app, directory, prefix = ''):
 		"""
 		Initiate the instance
 		:param app: 			The application

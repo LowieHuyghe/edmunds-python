@@ -10,7 +10,7 @@ class BlackfireIo(BaseDriver):
 	Blackfire Io driver
 	"""
 
-	def __init__(self, app, directory, prefix):
+	def __init__(self, app, directory, prefix = ''):
 		"""
 		Initiate the instance
 		:param app: 			The application

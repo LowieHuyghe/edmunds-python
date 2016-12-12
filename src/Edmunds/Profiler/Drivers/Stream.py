@@ -9,7 +9,7 @@ class Stream(BaseDriver):
 	Stream driver
 	"""
 
-	def __init__(self, app, stream, sort_by, restrictions):
+	def __init__(self, app, stream = sys.stdout, sort_by = ('time', 'calls'), restrictions = ()):
 		"""
 		Initiate the instance
 		:param app: 			The application
