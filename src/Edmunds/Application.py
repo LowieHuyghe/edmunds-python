@@ -10,6 +10,9 @@ from Edmunds.Exceptions.ExceptionsServiceProvider import ExceptionsServiceProvid
 from Edmunds.Log.Providers.LogServiceProvider import LogServiceProvider
 from Edmunds.Config.Config import Config
 from app.Http import routes
+from threading import Lock
+
+_logger_lock = Lock()
 
 
 class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting, ConcernsStorage):
@@ -68,3 +71,25 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 		decorator = self._post_handle_route_dispatching(decorator, rule, options)
 
 		return decorator
+
+
+	@property
+	def logger(self):
+		"""
+		Fetch logger propery
+		Overriding this function because self.logger_name == '' is
+		not taken into account
+		"""
+
+		if not self.logger_name:
+			if self._logger and self._logger.name == 'root':
+				return self._logger
+			with _logger_lock:
+				if self._logger and self._logger.name == 'root':
+					return self._logger
+				from flask.logging import create_logger
+				self._logger = rv = create_logger(self)
+				return rv
+
+		else:
+			return super(Application, self).logger

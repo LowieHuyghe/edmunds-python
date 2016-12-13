@@ -3,6 +3,8 @@ import Edmunds.Support.helpers as helpers
 from Edmunds.Log.Drivers.File import File
 from Edmunds.Log.Drivers.TimedFile import TimedFile
 from Edmunds.Log.Drivers.SysLog import SysLog
+from Edmunds.Log.Drivers.Stream import Stream
+import os
 
 
 class LogManager(object):
@@ -122,6 +124,10 @@ class LogManager(object):
 			options['max_bytes'] = config['max_bytes']
 		if 'backup_count' in config:
 			options['backup_count'] = config['backup_count']
+		if 'level' in config:
+			options['level'] = config['level']
+		if 'format' in config:
+			options['format'] = config['format']
 
 		return File(self._app, directory, filename, **options)
 
@@ -154,6 +160,10 @@ class LogManager(object):
 			options['interval'] = config['interval']
 		if 'backup_count' in config:
 			options['backup_count'] = config['backup_count']
+		if 'level' in config:
+			options['level'] = config['level']
+		if 'format' in config:
+			options['format'] = config['format']
 
 		return TimedFile(self._app, directory, filename, **options)
 
@@ -169,11 +179,36 @@ class LogManager(object):
 
 		options = {}
 
-		if 'host' in config:
-			options['host'] = config['host']
-		if 'port' in config:
-			options['port'] = config['port']
+		if 'address' in config:
+			options['address'] = config['address']
 		if 'facility' in config:
 			options['facility'] = config['facility']
+		if 'socktype' in config:
+			options['socktype'] = config['socktype']
+		if 'level' in config:
+			options['level'] = config['level']
+		if 'format' in config:
+			options['format'] = config['format']
 
 		return SysLog(self._app, **options)
+
+
+	def _create_stream(self, config):
+		"""
+		Create Stream instance
+		:param config:	The config
+		:type  config:	dict
+		:return:		Stream instance
+		:rtype:			Stream
+		"""
+
+		options = {}
+
+		if 'stream' in config:
+			options['stream'] = config['stream']
+		if 'level' in config:
+			options['level'] = config['level']
+		if 'format' in config:
+			options['format'] = config['format']
+
+		return Stream(self._app, **options)
