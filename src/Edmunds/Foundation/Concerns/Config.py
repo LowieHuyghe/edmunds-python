@@ -20,7 +20,3 @@ class Config(object):
 
 		# Load config
 		self.config.load_all(config_dirs)
-
-		# Set some basic config
-		self.name = self.config('app.name')
-		self.charset = self.config('app.charset', 'utf-8')
