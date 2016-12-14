@@ -1,9 +1,11 @@
 
-import unittest
 from bootstrap import edmunds
 import abc
-import os
 import Edmunds.Support.helpers as helpers
+import os
+import threading
+import time
+import unittest
 
 
 class TestCase(unittest.TestCase):
@@ -69,6 +71,49 @@ class TestCase(unittest.TestCase):
 			else:
 				f.write(config)
 			f.write('\n')
+
+
+	def thread(self, target, count = 1000):
+		"""
+		Test thread safety of function
+		:param target:	The target function
+		:type  target:	Callable
+		:param count:	The call count
+		:type  count:	int
+		"""
+
+		for _ in self.thread_iter(target, count):
+			pass
+
+
+	def thread_iter(self, target, count = 1000):
+		"""
+		Test thread safety of function
+		:param target:	The target function
+		:type  target:	Callable
+		:param count:	The call count
+		:type  count:	int
+		"""
+
+		threads = {}
+
+		# Start all the threads
+		for index in range(count):
+			threads[index] = threading.Thread(target = target)
+			threads[index].start()
+
+		# Wait for each thread to finish
+		while len(threads) > 0:
+			finished = []
+			for index in threads:
+				if not threads[index].isAlive():
+					yield index
+					finished.append(index)
+
+			for index in finished:
+				del threads[index]
+
+			time.sleep(0.01)
 
 
 	def setUp(self):
