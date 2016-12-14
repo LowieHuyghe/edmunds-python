@@ -97,21 +97,20 @@ class TestCase(unittest.TestCase):
 
 		threads = {}
 
-		# Start all the threads
+		# Make all the threads
 		for index in range(count):
 			threads[index] = threading.Thread(target = target)
+
+		# Start all the thread (for minimun delay this is done after constructing the threads)
+		for index in threads:
 			threads[index].start()
 
 		# Wait for each thread to finish
 		while len(threads) > 0:
-			finished = []
-			for index in threads:
+			for index in threads.keys():
 				if not threads[index].isAlive():
 					yield index
-					finished.append(index)
-
-			for index in finished:
-				del threads[index]
+					del threads[index]
 
 			time.sleep(0.01)
 
