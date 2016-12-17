@@ -1,6 +1,7 @@
 
 from Edmunds.Foundation.DebugMiddleware import DebugMiddleware
 from Edmunds.Profiler.Providers.ProfilerServiceProvider import ProfilerServiceProvider
+from Edmunds.Gae.RuntimeEnvironment import RuntimeEnvironment as GaeRuntimeEnvironment
 
 
 class RuntimeEnvironment(object):
@@ -64,3 +65,14 @@ class RuntimeEnvironment(object):
 		"""
 
 		return self.environment('production')
+
+
+	def is_gae(self):
+		"""
+		Check if running in Google App Engine
+		"""
+
+		if not hasattr(self, '_is_gae'):
+			self._is_gae = GaeRuntimeEnvironment().is_gae()
+
+		return self._is_gae
