@@ -23,7 +23,7 @@ class LogManager(Manager):
 		:type  app: 	Edmunds.Application
 		"""
 
-		super(LogManager, self).__init__(app, app.config('app.log.instances'))
+		super(LogManager, self).__init__(app, app.config('app.log.instances', []))
 
 		self._default_log_dir = self._app.storage_path('logs')
 
@@ -42,9 +42,9 @@ class LogManager(Manager):
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = self._app.storage_path(directory)
+				directory = os.path.join(self._default_log_dir, directory)
 
-		filename = '%s.log' % self._app.name
+		filename = '%s.log' % 'app' # self._app.name
 
 		options = {}
 
@@ -76,9 +76,9 @@ class LogManager(Manager):
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = self._app.storage_path(directory)
+				directory = os.path.join(self._default_log_dir, directory)
 
-		filename = '%s.log' % self._app.name
+		filename = '%s.log' % 'app' # self._app.name
 
 		options = {}
 

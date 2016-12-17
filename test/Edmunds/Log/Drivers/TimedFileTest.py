@@ -17,7 +17,7 @@ class TimedFileTest(TestCase):
 		super(TimedFileTest, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = 'logs'
+		self.directory = self.app.storage_path('logs')
 
 
 	def tear_down(self):

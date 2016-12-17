@@ -20,7 +20,7 @@ class ProfilerManager(Manager):
 		:type  app: 	Edmunds.Application
 		"""
 
-		super(ProfilerManager, self).__init__(app, app.config('app.profiler.instances'))
+		super(ProfilerManager, self).__init__(app, app.config('app.profiler.instances', []))
 
 		self._default_profile_dir = self._app.storage_path('profs')
 
@@ -39,7 +39,7 @@ class ProfilerManager(Manager):
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = self._app.storage_path(directory)
+				directory = os.path.join(self._default_profile_dir, directory)
 
 		options = {}
 
@@ -65,7 +65,7 @@ class ProfilerManager(Manager):
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = self._app.storage_path(directory)
+				directory = os.path.join(self._default_profile_dir, directory)
 
 		options = {}
 

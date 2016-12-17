@@ -35,6 +35,7 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 		super(Application, self).__init__(import_name)
 
 		self._init_config(config_dirs)
+		self._init_storage()
 		self._init_service_providers()
 		self._init_middleware()
 		self._init_request_routing()

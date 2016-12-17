@@ -41,6 +41,7 @@ class HandlerTest(TestCase):
 			return ''
 
 		# Check current handler and add new
+		self.app.debug = False
 		self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
 		self.app.config({
 			'app.exceptions.handler': MyHandler
@@ -84,6 +85,7 @@ class HandlerTest(TestCase):
 		rule = '/' + helpers.random_str(20)
 
 		# Check current handler and add new
+		self.app.debug = False
 		self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
 		self.app.config({
 			'app.exceptions.handler': MyHandler
@@ -124,6 +126,7 @@ class HandlerTest(TestCase):
 			return ''
 
 		# Check current handler and add new
+		self.app.debug = False
 		self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
 		self.app.config({
 			'app.exceptions.handler': MyHandler
