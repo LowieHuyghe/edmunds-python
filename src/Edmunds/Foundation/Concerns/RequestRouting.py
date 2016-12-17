@@ -98,7 +98,7 @@ class RequestRouting(object):
 
 
 		# Make instance of controller
-		controller = class_()
+		controller = class_(self)
 
 		# Initialize the controller
 		controller.initialize(**request.view_args)
