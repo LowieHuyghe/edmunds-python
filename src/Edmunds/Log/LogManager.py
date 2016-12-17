@@ -3,9 +3,12 @@ from Edmunds.Foundation.Patterns.Manager import Manager
 import Edmunds.Support.helpers as helpers
 from Edmunds.Log.Drivers.File import File
 from Edmunds.Log.Drivers.TimedFile import TimedFile
-from Edmunds.Log.Drivers.SysLog import SysLog
 from Edmunds.Log.Drivers.Stream import Stream
+from Edmunds.Gae.RuntimeEnvironment import RuntimeEnvironment as GaeRuntimeEnvironment
 import os
+# Only import when not running in Google App Engine
+if not GaeRuntimeEnvironment().is_gae():
+	from Edmunds.Log.Drivers.SysLog import SysLog
 
 
 class LogManager(Manager):
