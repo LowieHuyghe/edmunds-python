@@ -112,7 +112,7 @@ class ManagerTest(TestCase):
 			manager.all()
 
 		# Extend
-		extend_lambda = lambda config: (config['name'], config['tuple'])
+		extend_lambda = lambda app, config: (config['name'], config['tuple'])
 		manager.extend(tuple, extend_lambda)
 
 		# Check get

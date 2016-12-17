@@ -30,6 +30,7 @@ class File(RotatingFileHandler):
 		:type  format: 			str
 		"""
 
+		self._app = app
 		filename = os.path.join(directory, prefix + filename)
 
 		super(File, self).__init__(filename, maxBytes = max_bytes, backupCount = backup_count)
@@ -39,3 +40,14 @@ class File(RotatingFileHandler):
 		if format is None:
 			format = '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
 		self.setFormatter(Formatter(format))
+
+
+	def _open(self):
+		"""
+		Open the current base file with the (original) mode and encoding.
+		Return the resulting stream.
+		"""
+
+		# self.encoding
+		# self.mode
+		return self._app.write_stream(self.baseFilename)

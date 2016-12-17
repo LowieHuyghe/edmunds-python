@@ -17,7 +17,7 @@ class BlackfireIoTest(TestCase):
 		super(BlackfireIoTest, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = 'profs'
+		self.directory = self.app.storage_path('profs')
 
 
 	def tear_down(self):

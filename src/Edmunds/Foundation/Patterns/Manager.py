@@ -109,7 +109,7 @@ class Manager(object):
 		# Make the driver
 		driver_class = instance_config['driver']
 		if driver_class in self._extend:
-			driver = self._extend[driver_class](instance_config)
+			driver = self._extend[driver_class](self._app, instance_config)
 		else:
 			method_name = '_create_%s' % helpers.snake_case(driver_class.__name__)
 			driver = getattr(self, method_name)(instance_config)
