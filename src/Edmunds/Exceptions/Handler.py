@@ -44,4 +44,7 @@ class Handler(object):
 		if isinstance(exception, HTTPException):
 			status_code = exception.code
 
-		return exception, status_code
+		if self.app.debug:
+			raise exception
+		else:
+			return str(status_code), status_code
