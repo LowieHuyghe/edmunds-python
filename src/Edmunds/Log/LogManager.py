@@ -1,14 +1,7 @@
 
 from Edmunds.Foundation.Patterns.Manager import Manager
 import Edmunds.Support.helpers as helpers
-from Edmunds.Log.Drivers.File import File
-from Edmunds.Log.Drivers.TimedFile import TimedFile
-from Edmunds.Log.Drivers.Stream import Stream
-from Edmunds.Gae.RuntimeEnvironment import RuntimeEnvironment as GaeRuntimeEnvironment
 import os
-# Only import when not running in Google App Engine
-if not GaeRuntimeEnvironment().is_gae():
-	from Edmunds.Log.Drivers.SysLog import SysLog
 
 
 class LogManager(Manager):
@@ -59,6 +52,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
+		from Edmunds.Log.Drivers.File import File
 		return File(self._app, directory, filename, **options)
 
 
@@ -95,6 +89,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
+		from Edmunds.Log.Drivers.TimedFile import TimedFile
 		return TimedFile(self._app, directory, filename, **options)
 
 
@@ -120,6 +115,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
+		from Edmunds.Log.Drivers.SysLog import SysLog
 		return SysLog(self._app, **options)
 
 
@@ -141,4 +137,27 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
+		from Edmunds.Log.Drivers.Stream import Stream
 		return Stream(self._app, **options)
+
+
+	def _create_google_app_engine(self, config):
+		"""
+		Create GoogleAppEngine instance
+		:param config:	The config
+		:type  config:	dict
+		:return:		GoogleAppEngine instance
+		:rtype:			GoogleAppEngine
+		"""
+
+		options = {}
+
+		if 'stream' in config:
+			options['stream'] = config['stream']
+		if 'level' in config:
+			options['level'] = config['level']
+		if 'format' in config:
+			options['format'] = config['format']
+
+		from Edmunds.Log.Drivers.GoogleAppEngine import GoogleAppEngine
+		return GoogleAppEngine(self._app, **options)
