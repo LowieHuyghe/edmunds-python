@@ -301,3 +301,9 @@ class TestCase(unittest.TestCase):
 		"""
 		return self.assertDictEqual(a, b)
 
+	def skip_test(self, reason):
+		"""
+		Skip this test
+		"""
+		return self.skipTest(reason)
+

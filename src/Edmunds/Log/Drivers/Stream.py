@@ -27,5 +27,5 @@ class Stream(StreamHandler):
 		self.setLevel(level)
 
 		if format is None:
-			format = '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+			format = '[%(asctime)s] %(levelname)-8s: %(message)s [in %(pathname)s:%(lineno)d]'
 		self.setFormatter(Formatter(format))
