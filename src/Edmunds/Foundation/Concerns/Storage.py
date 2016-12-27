@@ -13,48 +13,16 @@ class Storage(object):
 		Initialise concerning storage
 		"""
 
-		self._storage_manager = StorageManager(self)
+		self._storage_manager = StorageManager(self, self.root_path, 'storage')
 
 
-	def storage_path(self, path):
+	def fs(self, name = None):
 		"""
-		Get the storage path to a file
-		:param path: 	The path to the file
-		:type  path: 	str
-		:return:		The complete path
-		:rtype: 		str
-		"""
-
-		return os.path.join(self.root_path, 'storage', path)
-
-
-	def write_stream(self, path, name = None):
-		"""
-		Get a write stream to a certain path
-		:param path: 	The path to the file
-		:type  path: 	str
+		The filesystem to use
 		:param name: 	The name of the storage instance
 		:type  name: 	str
-		:return:		The write stream
-		:rtype: 		Stream
+		:return:		The file system
+		:rtype: 		Edmunds.Storage.Drivers.BaseDriver
 		"""
 
-		instance = self._storage_manager.get(name)
-
-		return instance.write_stream(path)
-
-
-	def read_stream(self, path, name = None):
-		"""
-		Get a read stream to a certain path
-		:param path: 	The path to the file
-		:type  path: 	str
-		:param name: 	The name of the storage instance
-		:type  name: 	str
-		:return:		The write stream
-		:rtype: 		Stream
-		"""
-
-		instance = self._storage_manager.get(name)
-
-		return instance.read_stream(path)
+		return self._storage_manager.get(name)

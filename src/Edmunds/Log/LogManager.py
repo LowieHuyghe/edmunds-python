@@ -1,6 +1,5 @@
 
 from Edmunds.Foundation.Patterns.Manager import Manager
-import Edmunds.Support.helpers as helpers
 import os
 
 
@@ -18,7 +17,7 @@ class LogManager(Manager):
 
 		super(LogManager, self).__init__(app, app.config('app.log.instances', []))
 
-		self._default_log_dir = self._app.storage_path('logs')
+		self._log_path = os.path.join(os.sep, 'logs')
 
 
 	def _create_file(self, config):
@@ -30,12 +29,14 @@ class LogManager(Manager):
 		:rtype:			File
 		"""
 
-		directory = self._default_log_dir
+		log_path = self._log_path
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_log_dir, directory)
+				log_path = os.path.join(log_path, directory)
+			else:
+				log_path = directory
 
 		filename = '%s.log' % 'app' # self._app.name
 
@@ -53,7 +54,7 @@ class LogManager(Manager):
 			options['format'] = config['format']
 
 		from Edmunds.Log.Drivers.File import File
-		return File(self._app, directory, filename, **options)
+		return File(self._app, log_path, filename, **options)
 
 
 	def _create_timed_file(self, config):
@@ -65,12 +66,14 @@ class LogManager(Manager):
 		:rtype:			TimedFile
 		"""
 
-		directory = self._default_log_dir
+		log_path = self._log_path
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_log_dir, directory)
+				log_path = os.path.join(log_path, directory)
+			else:
+				log_path = directory
 
 		filename = '%s.log' % 'app' # self._app.name
 
@@ -90,7 +93,7 @@ class LogManager(Manager):
 			options['format'] = config['format']
 
 		from Edmunds.Log.Drivers.TimedFile import TimedFile
-		return TimedFile(self._app, directory, filename, **options)
+		return TimedFile(self._app, log_path, filename, **options)
 
 
 	def _create_sys_log(self, config):

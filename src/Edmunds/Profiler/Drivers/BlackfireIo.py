@@ -10,13 +10,13 @@ class BlackfireIo(BaseDriver):
 	Blackfire Io driver
 	"""
 
-	def __init__(self, app, directory, prefix = '', suffix = ''):
+	def __init__(self, app, profile_path, prefix = '', suffix = ''):
 		"""
 		Initiate the instance
 		:param app: 			The application
 		:type  app: 			Edmunds.Application
-		:param directory:		The directory
-		:type  directory:		str
+		:param profile_path:	The profile path
+		:type  profile_path:	str
 		:param prefix: 			The prefix for storing
 		:type  prefix: 			str
 		:param suffix: 			The suffix for storing
@@ -25,7 +25,7 @@ class BlackfireIo(BaseDriver):
 
 		super(BlackfireIo, self).__init__(app)
 
-		self._profile_dir = directory
+		self._profile_path = profile_path
 		self._prefix = prefix
 		self._suffix = suffix
 
@@ -46,11 +46,11 @@ class BlackfireIo(BaseDriver):
 		"""
 
 		filename = self._prefix + suggestive_file_name + self._suffix
-		filepath = os.path.join(self._profile_dir, filename)
+		filepath = os.path.join(self._profile_path, filename)
 
 		converter = CalltreeConverter(profiler.getstats())
 
-		f = self._app.write_stream(filepath)
+		f = self._app.fs().write_stream(filepath)
 
 		try:
 			f.write('file-format: BlackfireProbe\n')
