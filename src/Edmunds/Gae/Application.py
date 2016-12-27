@@ -16,15 +16,3 @@ class Application(EdmundsApplication):
 		"""
 
 		return modules.get_current_instance_id()
-
-
-	def storage_path(self, path):
-		"""
-		Get the storage path to a file
-		:param path: 	The path to the file
-		:type  path: 	str
-		:return:		The complete path
-		:rtype: 		str
-		"""
-
-		return '/storage'

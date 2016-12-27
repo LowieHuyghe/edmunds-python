@@ -1,11 +1,9 @@
 
 from Edmunds.Foundation.Patterns.Manager import Manager
-import Edmunds.Support.helpers as helpers
 from Edmunds.Profiler.Drivers.BlackfireIo import BlackfireIo
 from Edmunds.Profiler.Drivers.CallGraph import CallGraph
 from Edmunds.Profiler.Drivers.Stream import Stream
 import os
-import sys
 
 
 class ProfilerManager(Manager):
@@ -22,7 +20,7 @@ class ProfilerManager(Manager):
 
 		super(ProfilerManager, self).__init__(app, app.config('app.profiler.instances', []))
 
-		self._default_profile_dir = self._app.storage_path('profs')
+		self._profile_path = os.path.join(os.sep, 'profs')
 
 
 	def _create_blackfire_io(self, config):
@@ -34,12 +32,14 @@ class ProfilerManager(Manager):
 		:rtype:			BlackfireIo
 		"""
 
-		directory = self._default_profile_dir
+		profile_path = self._profile_path
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_profile_dir, directory)
+				profile_path = os.path.join(profile_path, directory)
+			else:
+				profile_path = directory
 
 		options = {}
 
@@ -48,7 +48,7 @@ class ProfilerManager(Manager):
 		if 'name' in config:
 			options['suffix'] = '.%s' % config['name']
 
-		return BlackfireIo(self._app, directory, **options)
+		return BlackfireIo(self._app, profile_path, **options)
 
 
 	def _create_call_graph(self, config):
@@ -60,12 +60,14 @@ class ProfilerManager(Manager):
 		:rtype:			CallGraph
 		"""
 
-		directory = self._default_profile_dir
+		profile_path = self._profile_path
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_profile_dir, directory)
+				profile_path = os.path.join(profile_path, directory)
+			else:
+				profile_path = directory
 
 		options = {}
 
@@ -74,7 +76,7 @@ class ProfilerManager(Manager):
 		if 'name' in config:
 			options['suffix'] = '.%s' % config['name']
 
-		return CallGraph(self._app, directory, **options)
+		return CallGraph(self._app, profile_path, **options)
 
 
 	def _create_stream(self, config):

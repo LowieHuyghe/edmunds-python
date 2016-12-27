@@ -9,16 +9,22 @@ class StorageManager(Manager):
 	Storage Manager
 	"""
 
-	def __init__(self, app):
+	def __init__(self, app, root_path, storage_path):
 		"""
 		Initiate the manager
-		:param app: 	The application
-		:type  app: 	Edmunds.Application
+		:param app: 			The application
+		:type  app: 			Edmunds.Application
+		:param root_path: 		The root path
+		:type  root_path: 		str
+		:param storage_path: 	The storage path
+		:type  storage_path: 	str
 		"""
 
 		super(StorageManager, self).__init__(app, app.config('app.storage.instances', []))
 
-		self._default_log_dir = self._app.storage_path('files')
+		self._root_path = root_path
+		self._storage_path = storage_path
+		self._files_path = 'files'
 
 
 	def _create_file(self, config):
@@ -30,12 +36,14 @@ class StorageManager(Manager):
 		:rtype:			File
 		"""
 
-		directory = self._default_log_dir
+		storage_path = os.path.join(self._root_path, self._storage_path)
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_log_dir, directory)
+				storage_path = os.path.join(storage_path, directory)
+			else:
+				storage_path = os.path.join(self._root_path, directory[1:])
 
 		options = {}
 
@@ -43,7 +51,7 @@ class StorageManager(Manager):
 			options['prefix'] = config['prefix']
 
 		from Edmunds.Storage.Drivers.File import File
-		return File(self._app, directory, **options)
+		return File(self._app, storage_path, self._files_path, **options)
 
 
 	def _create_google_cloud_storage(self, config):
@@ -60,12 +68,14 @@ class StorageManager(Manager):
 		if 'bucket' in config:
 			bucket = config['bucket']
 
-		directory = self._default_log_dir
+		storage_path = os.path.join(os.sep, self._storage_path)
 		if 'directory' in config:
 			directory = config['directory']
 			# Check if absolute or relative path
 			if not directory.startswith(os.sep):
-				directory = os.path.join(self._default_log_dir, directory)
+				storage_path = os.path.join(storage_path, directory)
+			else:
+				storage_path = directory
 
 		options = {}
 
@@ -73,4 +83,4 @@ class StorageManager(Manager):
 			options['prefix'] = config['prefix']
 
 		from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage
-		return GoogleCloudStorage(self._app, bucket, directory, **options)
+		return GoogleCloudStorage(self._app, bucket, storage_path, self._files_path, **options)

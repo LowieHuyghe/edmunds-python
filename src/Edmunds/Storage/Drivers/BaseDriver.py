@@ -42,3 +42,41 @@ class BaseDriver(object):
 		:rtype: 		Stream
 		"""
 		pass
+
+
+	@abc.abstractmethod
+	def copy(self, path, new_path):
+		"""
+		Copy a certain path
+		:param path:		The path to the file
+		:type  path:		str
+		:param new_path:	The path to the new file
+		:type  new_path:	str
+		:return:			Success
+		:rtype:				bool
+		"""
+		pass
+
+
+	@abc.abstractmethod
+	def delete(self, path):
+		"""
+		Delete a certain path
+		:param path:	The path to the file
+		:type  path:	str
+		:return:		Success
+		:rtype:			bool
+		"""
+		pass
+
+
+	@abc.abstractmethod
+	def exists(self, path):
+		"""
+		Check if a certain path exists
+		:param path:	The path to the file
+		:type  path:	str
+		:return:		Exists
+		:rtype:			bool
+		"""
+		pass

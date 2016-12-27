@@ -9,13 +9,13 @@ class File(RotatingFileHandler):
 	File Driver
 	"""
 
-	def __init__(self, app, directory, filename, prefix = '', max_bytes = 0, backup_count = 0, level = WARNING, format = None):
+	def __init__(self, app, log_path, filename, prefix = '', max_bytes = 0, backup_count = 0, level = WARNING, format = None):
 		"""
 		Initiate the instance
 		:param app: 			The application
 		:type  app: 			Edmunds.Application
-		:param directory:		The directory
-		:type  directory:		str
+		:param log_path:		The log path
+		:type  log_path:		str
 		:param filename:		The filename
 		:type  filename:		str
 		:param prefix: 			The prefix for storing
@@ -31,7 +31,7 @@ class File(RotatingFileHandler):
 		"""
 
 		self._app = app
-		filename = os.path.join(directory, prefix + filename)
+		filename = os.path.join(log_path, prefix + filename)
 
 		super(File, self).__init__(filename, maxBytes = max_bytes, backupCount = backup_count)
 
@@ -50,4 +50,4 @@ class File(RotatingFileHandler):
 
 		# self.encoding
 		# self.mode
-		return self._app.write_stream(self.baseFilename)
+		return self._app.fs().write_stream(self.baseFilename)

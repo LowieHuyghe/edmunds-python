@@ -17,7 +17,8 @@ class TimedFileTest(TestCase):
 		super(TimedFileTest, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = self.app.storage_path('logs')
+		self.directory = os.path.join(os.sep, 'logs')
+		self.clear_paths = []
 
 
 	def tear_down(self):
@@ -28,11 +29,11 @@ class TimedFileTest(TestCase):
 		super(TimedFileTest, self).tear_down()
 
 		# Remove all profiler files
-		directory = self.app.storage_path(self.directory)
-		for root, subdirs, files in os.walk(directory):
-			for file in files:
-				if file.startswith(self.prefix):
-					os.remove(os.path.join(root, file))
+		for directory in self.clear_paths:
+			for root, subdirs, files in os.walk(directory):
+				for file in files:
+					if file.startswith(self.prefix):
+						os.remove(os.path.join(root, file))
 
 
 	def test_timed_file(self):
@@ -67,8 +68,9 @@ class TimedFileTest(TestCase):
 
 		# Create app and fetch stream
 		app = self.create_application()
+		directory = app.fs()._get_processed_path(self.directory)
+		self.clear_paths.append(directory)
 		self.assert_equal(self.directory, app.config('app.log.instances')[0]['directory'])
-		directory = app.storage_path(self.directory)
 		self.assert_equal(self.prefix, app.config('app.log.instances')[0]['prefix'])
 
 		# Add route
@@ -117,13 +119,13 @@ class TimedFileTest(TestCase):
 		for root, subdirs, files in os.walk(directory):
 			for file in files:
 				if file.startswith(starts_with):
-					log_files.append(os.path.join(root, file))
+					log_files.append(os.path.join(self.directory, file))
 
 
 		# Check files
 		occurs = False
 		for file in log_files:
-			f = self.app.read_stream(file)
+			f = self.app.fs().read_stream(file)
 
 			try:
 				if string in f.read():
