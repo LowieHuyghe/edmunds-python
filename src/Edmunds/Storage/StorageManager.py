@@ -1,6 +1,5 @@
 
 from Edmunds.Foundation.Patterns.Manager import Manager
-import Edmunds.Support.helpers as helpers
 import os
 
 
@@ -45,13 +44,17 @@ class StorageManager(Manager):
 			else:
 				storage_path = os.path.join(self._root_path, directory[1:])
 
+		files_path = self._files_path
+		if 'files_path' in config:
+			files_path = config['files_path']
+
 		options = {}
 
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
 
 		from Edmunds.Storage.Drivers.File import File
-		return File(self._app, storage_path, self._files_path, **options)
+		return File(self._app, storage_path, files_path, **options)
 
 
 	def _create_google_cloud_storage(self, config):
@@ -77,10 +80,14 @@ class StorageManager(Manager):
 			else:
 				storage_path = directory
 
+		files_path = self._files_path
+		if 'files_path' in config:
+			files_path = config['files_path']
+
 		options = {}
 
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
 
 		from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage
-		return GoogleCloudStorage(self._app, bucket, storage_path, self._files_path, **options)
+		return GoogleCloudStorage(self._app, bucket, storage_path, files_path, **options)
