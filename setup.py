@@ -215,6 +215,7 @@ class Setup(object):
         # Packages
         packages_arguments = dict()
         self._process_argument(packages_arguments, 'exclude', 'packages', 'exclude', list)
+        self._process_argument(packages_arguments, 'include', 'packages', 'include', list)
         if packages_arguments:
             setup_arguments['packages'] = setuptools.find_packages(**packages_arguments)
 
