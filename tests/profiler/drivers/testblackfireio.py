@@ -46,7 +46,6 @@ class TestBlackfireIo(TestCase):
 		self.write_config([
 			"from edmunds.storage.drivers.file import File as StorageFile \n",
 			"from edmunds.profiler.drivers.blackfireio import BlackfireIo \n",
-			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
 			"	'storage': { \n",

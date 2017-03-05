@@ -39,7 +39,7 @@ class Manager(object):
 			raise RuntimeError('No instances declared.')
 
 		if name is None:
-			name = self._instances.keys()[0]
+			name = list(self._instances.keys())[0]
 
 		return self._instances[name]
 
@@ -51,7 +51,7 @@ class Manager(object):
 
 		self._load()
 
-		return self._instances.values()
+		return list(self._instances.values())
 
 
 	def _load(self):

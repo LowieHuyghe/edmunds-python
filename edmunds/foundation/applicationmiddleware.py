@@ -1,14 +1,12 @@
 
 import abc
+ABC = abc.ABCMeta('ABC', (object,), {})
 
 
-class ApplicationMiddleware(object):
+class ApplicationMiddleware(ABC):
 	"""
 	The Application Middleware
 	"""
-
-	__metaclass__ = abc.ABCMeta
-
 
 	def __init__(self, app):
 		"""

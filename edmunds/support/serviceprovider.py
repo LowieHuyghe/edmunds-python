@@ -1,14 +1,12 @@
 
 import abc
+ABC = abc.ABCMeta('ABC', (object,), {})
 
 
-class ServiceProvider(object):
+class ServiceProvider(ABC):
 	"""
 	The Service Provider
 	"""
-
-	__metaclass__ = abc.ABCMeta
-
 
 	def __init__(self, app):
 		"""

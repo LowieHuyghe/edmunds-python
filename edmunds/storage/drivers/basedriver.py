@@ -1,14 +1,12 @@
 
 import abc
+ABC = abc.ABCMeta('ABC', (object,), {})
 
 
-class BaseDriver(object):
+class BaseDriver(ABC):
 	"""
 	The base driver for storage-drivers
 	"""
-
-	__metaclass__ = abc.ABCMeta
-
 
 	def __init__(self, app):
 		"""

@@ -121,7 +121,7 @@ class Config(FlaskConfig):
 			self.from_pyfile(env_file_path)
 
 		# Overwrite with APP_ENV value set in environment
-		if os.environ.has_key('APP_ENV'):
+		if 'APP_ENV' in os.environ:
 			self({
 				'app.env': os.environ.get('APP_ENV')
 			})

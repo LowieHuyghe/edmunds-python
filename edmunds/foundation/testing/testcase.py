@@ -4,15 +4,13 @@ import os
 import threading
 import time
 import unittest
+ABC = abc.ABCMeta('ABC', (object,), {})
 
 
-class TestCase(unittest.TestCase):
+class TestCase(unittest.TestCase, ABC):
 	"""
 	A UnitTest Test Case
 	"""
-
-	__metaclass__ = abc.ABCMeta
-
 
 	def set_up(self):
 		"""

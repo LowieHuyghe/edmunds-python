@@ -13,16 +13,16 @@ class RuntimeEnvironment(object):
 		Check if is Google App Engine
 		"""
 
-		if not os.environ.has_key('CURRENT_VERSION_ID'):
+		if 'CURRENT_VERSION_ID' not in os.environ:
 			return False
 
-		if not os.environ.has_key('AUTH_DOMAIN'):
+		if 'AUTH_DOMAIN' not in os.environ:
 			return False
 
-		if not os.environ.has_key('INSTANCE_ID'):
+		if 'INSTANCE_ID' not in os.environ:
 			return False
 
-		if not os.environ.has_key('SERVER_SOFTWARE'):
+		if 'SERVER_SOFTWARE' not in os.environ:
 			return False
 
 		server_software = os.environ.get('SERVER_SOFTWARE')

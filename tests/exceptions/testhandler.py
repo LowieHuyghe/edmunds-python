@@ -152,7 +152,7 @@ class TestHandler(TestCase):
 			self.assert_equal(2, TestHandler.cache['timeline'].index(MyHandler.__name__ + '.render'))
 
 			self.assert_true(isinstance(TestHandler.cache['timeline'][3], RuntimeError))
-			self.assert_equal('MyRuntimeError', TestHandler.cache['timeline'][3].message)
+			self.assert_equal('MyRuntimeError', '%s' % TestHandler.cache['timeline'][3])
 
 
 
