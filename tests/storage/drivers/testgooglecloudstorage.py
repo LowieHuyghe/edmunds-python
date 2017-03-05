@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import os
 
@@ -14,10 +14,10 @@ class TestGoogleCloudStorage(TestCase):
 		Set up the test case
 		"""
 
-		super(GoogleCloudStorageTest, self).set_up()
+		super(TestGoogleCloudStorage, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = os.path.join(os.sep, 'storage')
+		self.storage_directory = os.sep + 'storage' + os.sep
 		self.clear_paths = []
 
 
@@ -26,7 +26,7 @@ class TestGoogleCloudStorage(TestCase):
 		Tear down the test case
 		"""
 
-		super(GoogleCloudStorageTest, self).tear_down()
+		super(TestGoogleCloudStorage, self).tear_down()
 
 		# TODO: Delete the files
 
@@ -37,13 +37,13 @@ class TestGoogleCloudStorage(TestCase):
 		"""
 
 		if not self.app.is_gae():
-			self.skip_test('Test not running in Google App Engine environment.')
+			self.skip('Test not running in Google App Engine environment.')
 
 		string = helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage \n",
+		self.write_config([
+			"from edmunds.storage.drivers.googlecloudstorage import GoogleCloudStorage \n",
 			"from logging import WARNING \n",
 			"APP = { \n",
 			"	'storage': { \n",
@@ -51,7 +51,7 @@ class TestGoogleCloudStorage(TestCase):
 			"			{ \n",
 			"				'name': 'googlecloudstorage',\n",
 			"				'driver': GoogleCloudStorage,\n",
-			"				'directory': '%s',\n" % self.directory,
+			"				'directory': '%s',\n" % self.storage_directory,
 			"				'prefix': '%s',\n" % self.prefix,
 			"			}, \n",
 			"		], \n",
@@ -65,9 +65,9 @@ class TestGoogleCloudStorage(TestCase):
 
 		# Create app
 		app = self.create_application()
-		directory = app.fs()._get_processed_path(self.directory)
+		directory = app.fs()._get_processed_path(self.storage_directory)
 		self.clear_paths.append(directory)
-		self.assert_equal(self.directory, app.config('app.storage.instances')[0]['directory'])
+		self.assert_equal(self.storage_directory, app.config('app.storage.instances')[0]['directory'])
 		self.assert_equal(self.prefix, app.config('app.storage.instances')[0]['prefix'])
 
 		# Write

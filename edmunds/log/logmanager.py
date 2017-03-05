@@ -53,7 +53,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
-		from Edmunds.Log.Drivers.File import File
+		from edmunds.log.drivers.file import File
 		return File(self._app, log_path, filename, **options)
 
 
@@ -92,7 +92,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
-		from Edmunds.Log.Drivers.TimedFile import TimedFile
+		from edmunds.log.drivers.timedfile import TimedFile
 		return TimedFile(self._app, log_path, filename, **options)
 
 
@@ -118,7 +118,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
-		from Edmunds.Log.Drivers.SysLog import SysLog
+		from edmunds.log.drivers.syslog import SysLog
 		return SysLog(self._app, **options)
 
 
@@ -140,7 +140,7 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
-		from Edmunds.Log.Drivers.Stream import Stream
+		from edmunds.log.drivers.stream import Stream
 		return Stream(self._app, **options)
 
 
@@ -162,5 +162,5 @@ class LogManager(Manager):
 		if 'format' in config:
 			options['format'] = config['format']
 
-		from Edmunds.Log.Drivers.GoogleAppEngine import GoogleAppEngine
+		from edmunds.log.drivers.googleappengine import GoogleAppEngine
 		return GoogleAppEngine(self._app, **options)

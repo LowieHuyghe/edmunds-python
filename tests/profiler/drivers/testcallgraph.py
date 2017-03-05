@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import os
 
@@ -14,10 +14,11 @@ class TestCallGraph(TestCase):
 		Set up the test case
 		"""
 
-		super(CallGraphTest, self).set_up()
+		super(TestCallGraph, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = os.path.join(os.sep, 'profs')
+		self.storage_directory = os.sep + 'storage' + os.sep
+		self.profs_directory = os.sep + 'profs' + os.sep
 		self.clear_paths = []
 
 
@@ -26,7 +27,7 @@ class TestCallGraph(TestCase):
 		Tear down the test case
 		"""
 
-		super(CallGraphTest, self).tear_down()
+		super(TestCallGraph, self).tear_down()
 
 		# Remove all profiler files
 		for directory in self.clear_paths:
@@ -42,18 +43,29 @@ class TestCallGraph(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.CallGraph import CallGraph \n",
+		self.write_config([
+			"from edmunds.storage.drivers.file import File as StorageFile \n",
+			"from edmunds.profiler.drivers.callgraph import CallGraph \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
+			"	'storage': { \n",
+			"		'instances': [ \n",
+			"			{ \n",
+			"				'name': 'file',\n",
+			"				'driver': StorageFile,\n",
+			"				'directory': '%s',\n" % self.storage_directory,
+			"				'prefix': '%s',\n" % self.prefix,
+			"			}, \n",
+			"		], \n",
+			"	}, \n",
 			"	'profiler': { \n",
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
 			"				'name': 'callgraph',\n",
 			"				'driver': CallGraph,\n",
-			"				'directory': '%s',\n" % self.directory,
+			"				'directory': '%s',\n" % self.profs_directory,
 			"				'prefix': '%s',\n" % self.prefix,
 			"			}, \n",
 			"		], \n",
@@ -63,9 +75,9 @@ class TestCallGraph(TestCase):
 
 		# Create app and fetch stream
 		app = self.create_application()
-		directory = app.fs()._get_processed_path(self.directory)
+		directory = app.fs()._get_processed_path(self.profs_directory)
 		self.clear_paths.append(directory)
-		self.assert_equal(self.directory, app.config('app.profiler.instances')[0]['directory'])
+		self.assert_equal(self.profs_directory, app.config('app.profiler.instances')[0]['directory'])
 		self.assert_equal(self.prefix, app.config('app.profiler.instances')[0]['prefix'])
 
 		# Add route

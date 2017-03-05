@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 from edmunds.support.serviceprovider import ServiceProvider
 
 

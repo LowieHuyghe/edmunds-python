@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import edmunds.application
 import edmunds.support.serviceprovider
@@ -10,45 +10,15 @@ class TestHelpers(TestCase):
 	Test the helpers
 	"""
 
-	def test_get_class(self):
-		"""
-		Test get_class
-		"""
-
-		data = (
-			(TestCase, 'test.TestCase'),
-			(Edmunds.Application.Application, 'Edmunds.Application'),
-			(Edmunds.Support.ServiceProvider.ServiceProvider, 'Edmunds.Support.ServiceProvider'),
-		)
-
-		for test in data:
-			self.assert_equal(test[0], helpers.get_class(test[1]))
-
-
-	def test_get_module_and_class(self):
-		"""
-		Test get_module_and_class
-		"""
-
-		data = (
-			(('test.TestCase', 'TestCase'), 'test.TestCase'),
-			(('Edmunds.Application', 'Application'), 'Edmunds.Application'),
-			(('Edmunds.Support.ServiceProvider', 'ServiceProvider'), 'Edmunds.Support.ServiceProvider'),
-		)
-
-		for test in data:
-			self.assert_equal(test[0], helpers.get_module_and_class(test[1]))
-
-
 	def test_get_full_class_name(self):
 		"""
 		Test get_full_class_name
 		"""
 
 		data = (
-			('test.TestCase.TestCase', TestCase),
-			('Edmunds.Application.Application', Edmunds.Application.Application),
-			('Edmunds.Support.ServiceProvider.ServiceProvider', Edmunds.Support.ServiceProvider.ServiceProvider),
+			('tests.testcase.TestCase', TestCase),
+			('edmunds.application.Application', edmunds.application.Application),
+			('edmunds.support.serviceprovider.ServiceProvider', edmunds.support.serviceprovider.ServiceProvider),
 		)
 
 		for test in data:
