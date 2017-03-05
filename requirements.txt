@@ -1,4 +1,4 @@
-appdirs==1.4.0
+appdirs==1.4.2
 click==6.7
 Flask==0.12
 google-api-python-client==1.6.2
@@ -10,7 +10,7 @@ MarkupSafe==0.23
 oauth2client==4.0.0
 packaging==16.8
 pudb==2017.1
-pyasn1==0.2.2
+pyasn1==0.2.3
 pyasn1-modules==0.0.8
 Pygments==2.2.0
 pyparsing==2.1.10
