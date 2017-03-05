@@ -1,7 +1,6 @@
 
 from logging.handlers import SysLogHandler, SYSLOG_UDP_PORT
 from logging import WARNING
-from syslog import LOG_USER
 from socket import SOCK_DGRAM
 
 
@@ -10,7 +9,7 @@ class SysLog(SysLogHandler):
 	Sys Log Driver
 	"""
 
-	def __init__(self, app, address = ('localhost', SYSLOG_UDP_PORT), facility = LOG_USER, socktype = SOCK_DGRAM, level = WARNING):
+	def __init__(self, app, address = ('localhost', SYSLOG_UDP_PORT), facility = SysLogHandler.LOG_USER, socktype = SOCK_DGRAM, level = WARNING):
 		"""
 		Initiate the instance
 		:param app: 			The application

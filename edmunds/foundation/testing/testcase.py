@@ -1,7 +1,5 @@
 
-from bootstrap import edmunds
 import abc
-import edmunds.support.helpers as helpers
 import os
 import threading
 import time
@@ -51,7 +49,7 @@ class TestCase(unittest.TestCase):
 		pass
 
 
-	def write_test_config(self, config, overwrite = True):
+	def write_config(self, config, overwrite = True):
 		"""
 		Write to test config file
 		:param config: 		The config to write
@@ -301,7 +299,7 @@ class TestCase(unittest.TestCase):
 		"""
 		return self.assertDictEqual(a, b)
 
-	def skip_test(self, reason):
+	def skip(self, reason):
 		"""
 		Skip this test
 		"""

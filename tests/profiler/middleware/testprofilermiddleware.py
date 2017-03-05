@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 
 
@@ -14,8 +14,8 @@ class TestProfilerMiddleware(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.profiler.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
@@ -60,8 +60,8 @@ class TestProfilerMiddleware(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.profiler.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
@@ -106,8 +106,8 @@ class TestProfilerMiddleware(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.profiler.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
@@ -152,8 +152,8 @@ class TestProfilerMiddleware(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.profiler.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
@@ -198,8 +198,8 @@ class TestProfilerMiddleware(TestCase):
 		"""
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Profiler.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.profiler.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",

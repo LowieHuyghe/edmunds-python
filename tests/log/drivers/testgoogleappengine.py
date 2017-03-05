@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 
 
@@ -14,15 +14,15 @@ class TestGoogleAppEngine(TestCase):
 		"""
 
 		if not self.app.is_gae():
-			self.skip_test('Test not running in Google App Engine environment.')
+			self.skip('Test not running in Google App Engine environment.')
 
 		info_string = 'info_%s' % helpers.random_str(20)
 		warning_string = 'warning_%s' % helpers.random_str(20)
 		error_string = 'error_%s' % helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.GoogleAppEngine import GoogleAppEngine \n",
+		self.write_config([
+			"from edmunds.log.drivers.googleappengine import GoogleAppEngine \n",
 			"from logging import WARNING \n",
 			"import cStringIO \n",
 			"APP = { \n",

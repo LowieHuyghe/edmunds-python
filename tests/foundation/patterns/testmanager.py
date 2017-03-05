@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 
 from edmunds.foundation.patterns.manager import Manager
@@ -15,7 +15,7 @@ class TestManager(TestCase):
 		Set up the test case
 		"""
 
-		super(ManagerTest, self).set_up()
+		super(TestManager, self).set_up()
 
 		self._instances_config = [
 			{

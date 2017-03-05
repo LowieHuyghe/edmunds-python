@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import os
 
@@ -14,10 +14,10 @@ class TestFile(TestCase):
 		Set up the test case
 		"""
 
-		super(FileTest, self).set_up()
+		super(TestFile, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = os.path.join(os.sep, 'storage')
+		self.storage_directory = os.sep + 'storage' + os.sep
 		self.clear_paths = []
 
 
@@ -26,7 +26,7 @@ class TestFile(TestCase):
 		Tear down the test case
 		"""
 
-		super(FileTest, self).tear_down()
+		super(TestFile, self).tear_down()
 
 		# Remove all profiler files
 		for directory in self.clear_paths:
@@ -44,8 +44,8 @@ class TestFile(TestCase):
 		string = helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Storage.Drivers.File import File \n",
+		self.write_config([
+			"from edmunds.storage.drivers.file import File \n",
 			"from logging import WARNING \n",
 			"APP = { \n",
 			"	'storage': { \n",
@@ -53,7 +53,7 @@ class TestFile(TestCase):
 			"			{ \n",
 			"				'name': 'file',\n",
 			"				'driver': File,\n",
-			"				'directory': '%s',\n" % self.directory,
+			"				'directory': '%s',\n" % self.storage_directory,
 			"				'prefix': '%s',\n" % self.prefix,
 			"			}, \n",
 			"		], \n",
@@ -69,7 +69,7 @@ class TestFile(TestCase):
 		app = self.create_application()
 		directory = app.fs()._get_processed_path(None)
 		self.clear_paths.append(directory)
-		self.assert_equal(self.directory, app.config('app.storage.instances')[0]['directory'])
+		self.assert_equal(self.storage_directory, app.config('app.storage.instances')[0]['directory'])
 		self.assert_equal(self.prefix, app.config('app.storage.instances')[0]['prefix'])
 
 		# Write

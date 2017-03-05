@@ -9,7 +9,6 @@ from edmunds.foundation.concerns.storage import Storage as ConcernsStorage
 from edmunds.exceptions.exceptionsserviceprovider import ExceptionsServiceProvider
 from edmunds.log.providers.logserviceprovider import LogServiceProvider
 from edmunds.config.config import Config
-from app.Http import routes
 from threading import Lock
 
 _logger_lock = Lock()
@@ -44,8 +43,6 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 		self.register(ExceptionsServiceProvider)
 		if self.config('app.log.enabled', False):
 			self.register(LogServiceProvider)
-
-		routes.route(self)
 
 
 	def route(self, rule, **options):

@@ -53,7 +53,7 @@ class StorageManager(Manager):
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
 
-		from Edmunds.Storage.Drivers.File import File
+		from edmunds.storage.drivers.file import File
 		return File(self._app, storage_path, files_path, **options)
 
 
@@ -89,5 +89,5 @@ class StorageManager(Manager):
 		if 'prefix' in config:
 			options['prefix'] = config['prefix']
 
-		from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage
+		from edmunds.storage.drivers.googlecloudstorage import GoogleCloudStorage
 		return GoogleCloudStorage(self._app, bucket, storage_path, files_path, **options)

@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 from tests.foundation.syslogserver import SysLogServer
 
@@ -14,7 +14,7 @@ class TestSysLog(TestCase):
 		Set up the test case
 		"""
 
-		super(SysLogTest, self).set_up()
+		super(TestSysLog, self).set_up()
 
 		self._server = SysLogServer()
 		self._server.start()
@@ -25,7 +25,7 @@ class TestSysLog(TestCase):
 		Tear down the test case
 		"""
 
-		super(SysLogTest, self).tear_down()
+		super(TestSysLog, self).tear_down()
 
 		self._server.stop()
 
@@ -40,8 +40,8 @@ class TestSysLog(TestCase):
 		error_string = 'error_%s' % helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.SysLog import SysLog \n",
+		self.write_config([
+			"from edmunds.log.drivers.syslog import SysLog \n",
 			"from logging import WARNING \n",
 			"APP = { \n",
 			"	'debug': False, \n",

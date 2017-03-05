@@ -1,8 +1,8 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 from edmunds.config.config import Config
 import os
-import Edmunds.Support.helpers as helpers
+import edmunds.support.helpers as helpers
 
 
 class TestConfig(TestCase):
@@ -15,7 +15,7 @@ class TestConfig(TestCase):
 		Set up the test case
 		"""
 
-		super(ConfigTest, self).set_up()
+		super(TestConfig, self).set_up()
 
 		random_file = helpers.random_str(10)
 
@@ -46,31 +46,28 @@ class TestConfig(TestCase):
 		Tear down the test case
 		"""
 
-		super(ConfigTest, self).tear_down()
-
-		# Set environment back to testing
-		os.environ['APP_ENV'] = 'testing'
+		super(TestConfig, self).tear_down()
 
 		# Remove config file
 		if os.path.exists(self.config_file):
 			os.remove(self.config_file)
 
 		# Set backup env-file back
+		if os.path.exists(self.env_file):
+			os.remove(self.env_file)
 		if os.path.exists(self.env_bak_file):
-			if os.path.exists(self.env_file):
-				os.remove(self.env_file)
 			os.rename(self.env_bak_file, self.env_file)
 
 		# Set backup env-testing-file back
+		if os.path.exists(self.env_testing_file):
+			os.remove(self.env_testing_file)
 		if os.path.exists(self.env_testing_bak_file):
-			if os.path.exists(self.env_testing_file):
-				os.remove(self.env_testing_file)
 			os.rename(self.env_testing_bak_file, self.env_testing_file)
 
 		# Set backup env-production-file back
+		if os.path.exists(self.env_production_file):
+			os.remove(self.env_production_file)
 		if os.path.exists(self.env_production_bak_file):
-			if os.path.exists(self.env_production_file):
-				os.remove(self.env_production_file)
 			os.rename(self.env_production_bak_file, self.env_production_file)
 
 
@@ -339,7 +336,7 @@ class TestConfig(TestCase):
 		for format in (old_format, new_format):
 
 			# Make config file
-			self.write_test_config(format)
+			self.write_config(format)
 
 			# Make app
 			app = self.create_application()
@@ -359,7 +356,7 @@ class TestConfig(TestCase):
 		"""
 
 		# Make env testing test file
-		self.write_test_config([
+		self.write_config([
 			"GOT = { \n",
 			"	'son': 'Jon Snow 7', \n",
 			"	'priority': { \n",
@@ -475,7 +472,7 @@ class TestConfig(TestCase):
 		self.assert_equal(3, app.config[old_key])
 
 		# Make env testing test file
-		self.write_test_config("%s = %d" % (old_key, 4));
+		self.write_config("%s = %d" % (old_key, 4));
 
 		# Make app
 		app = self.create_application()
@@ -500,11 +497,8 @@ class TestConfig(TestCase):
 		with open(self.env_production_file, 'w+') as f:
 			f.write("%s = %s\n" % (old_key, str_value))
 
-		# Set environment value
-		os.environ['APP_ENV'] = 'production'
-
 		# Make app
-		app = self.create_application()
+		app = self.create_application(environment='production')
 
 		# Check config
 		self.assert_true(app.config.has(key))

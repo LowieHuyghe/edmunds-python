@@ -139,11 +139,12 @@ class GoogleCloudStorage(BaseDriver):
 		:rtype: 		str
 		"""
 
-		if path is not None:
+		if path is not None and self._prefix != '' and not path.endswith(os.sep):
 			path_parts = path.split(os.sep)
 
 			filename = path_parts.pop()
-			filename = self._prefix + filename
+			if not filename.startswith(self._prefix):
+				filename = self._prefix + filename
 			path_parts.append(filename)
 
 			path = os.sep.join(path_parts)
