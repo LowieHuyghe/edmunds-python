@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 
 
@@ -18,8 +18,8 @@ class TestStream(TestCase):
 		error_string = 'error_%s' % helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.log.drivers.stream import Stream \n",
 			"from logging import WARNING \n",
 			"import cStringIO \n",
 			"APP = { \n",

@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import os
 
@@ -14,10 +14,11 @@ class TestTimedFile(TestCase):
 		Set up the test case
 		"""
 
-		super(TimedFileTest, self).set_up()
+		super(TestTimedFile, self).set_up()
 
 		self.prefix = helpers.random_str(20) + '.'
-		self.directory = os.path.join(os.sep, 'logs')
+		self.storage_directory = os.sep + 'storage' + os.sep
+		self.logs_directory = os.sep + 'logs' + os.sep
 		self.clear_paths = []
 
 
@@ -26,7 +27,7 @@ class TestTimedFile(TestCase):
 		Tear down the test case
 		"""
 
-		super(TimedFileTest, self).tear_down()
+		super(TestTimedFile, self).tear_down()
 
 		# Remove all profiler files
 		for directory in self.clear_paths:
@@ -46,18 +47,29 @@ class TestTimedFile(TestCase):
 		error_string = 'error_%s' % helpers.random_str(20)
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.TimedFile import TimedFile \n",
+		self.write_config([
+			"from edmunds.storage.drivers.file import File as StorageFile \n",
+			"from edmunds.log.drivers.timedfile import TimedFile \n",
 			"from logging import WARNING \n",
 			"APP = { \n",
 			"	'debug': False, \n",
+			"	'storage': { \n",
+			"		'instances': [ \n",
+			"			{ \n",
+			"				'name': 'file',\n",
+			"				'driver': StorageFile,\n",
+			"				'directory': '%s',\n" % self.storage_directory,
+			"				'prefix': '%s',\n" % self.prefix,
+			"			}, \n",
+			"		], \n",
+			"	}, \n",
 			"	'log': { \n",
 			"		'enabled': True, \n",
 			"		'instances': [ \n",
 			"			{ \n",
 			"				'name': 'timedfile',\n",
 			"				'driver': TimedFile,\n",
-			"				'directory': '%s',\n" % self.directory,
+			"				'directory': '%s',\n" % self.logs_directory,
 			"				'prefix': '%s',\n" % self.prefix,
 			"				'level': WARNING,\n"
 			"			}, \n",
@@ -68,9 +80,9 @@ class TestTimedFile(TestCase):
 
 		# Create app and fetch stream
 		app = self.create_application()
-		directory = app.fs()._get_processed_path(self.directory)
+		directory = app.fs()._get_processed_path(self.logs_directory)
 		self.clear_paths.append(directory)
-		self.assert_equal(self.directory, app.config('app.log.instances')[0]['directory'])
+		self.assert_equal(self.logs_directory, app.config('app.log.instances')[0]['directory'])
 		self.assert_equal(self.prefix, app.config('app.log.instances')[0]['prefix'])
 
 		# Add route
@@ -85,22 +97,24 @@ class TestTimedFile(TestCase):
 		with app.test_client() as c:
 
 			# Check file
-			self.assert_false(self._is_in_log_files(directory, info_string))
-			self.assert_false(self._is_in_log_files(directory, warning_string))
-			self.assert_false(self._is_in_log_files(directory, error_string))
+			self.assert_false(self._is_in_log_files(app, directory, info_string))
+			self.assert_false(self._is_in_log_files(app, directory, warning_string))
+			self.assert_false(self._is_in_log_files(app, directory, error_string))
 
 			# Call route
 			c.get(rule)
 
 			# Check file
-			self.assert_false(self._is_in_log_files(directory, info_string))
-			self.assert_true(self._is_in_log_files(directory, warning_string))
-			self.assert_true(self._is_in_log_files(directory, error_string))
+			self.assert_false(self._is_in_log_files(app, directory, info_string))
+			self.assert_true(self._is_in_log_files(app, directory, warning_string))
+			self.assert_true(self._is_in_log_files(app, directory, error_string))
 
 
-	def _is_in_log_files(self, directory, string, starts_with = None):
+	def _is_in_log_files(self, app, directory, string, starts_with = None):
 		"""
 		Check if string is in log files
+		:param app: 			The app to work with
+		:type  app:				Application
 		:param directory: 		The directory to check
 		:type  directory:		str
 		:param string: 			The string to check
@@ -119,13 +133,12 @@ class TestTimedFile(TestCase):
 		for root, subdirs, files in os.walk(directory):
 			for file in files:
 				if file.startswith(starts_with):
-					log_files.append(os.path.join(self.directory, file))
-
+					log_files.append(os.path.join(self.logs_directory, file))
 
 		# Check files
 		occurs = False
 		for file in log_files:
-			f = self.app.fs().read_stream(file)
+			f = app.fs().read_stream(file)
 
 			try:
 				if string in f.read():

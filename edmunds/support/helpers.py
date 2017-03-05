@@ -1,39 +1,8 @@
 
-import importlib
 import os
 import random
 import string
 import re
-
-
-def get_class(className):
-	"""
-	Get class from className
-	:param className: 	The class-name
-	:type  className: 	string
-	:return: 			The class
-	:rtype: 			class
-	"""
-
-	(module, className) = get_module_and_class(className)
-
-	return getattr(importlib.import_module(module), className)
-
-
-def get_module_and_class(className):
-	"""
-	Get module and className from given className
-	:param className: 	The className
-	:type  className: 	string
-	:return: 			The module and class-name
-	:rtype: 			tuple
-	"""
-
-	parts = className.split('.')
-	module = className
-	className = parts[-1]
-
-	return (module, className)
 
 
 def get_full_class_name(class_):

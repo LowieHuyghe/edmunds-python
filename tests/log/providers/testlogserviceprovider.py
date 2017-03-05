@@ -1,5 +1,5 @@
 
-from test.TestCase import TestCase
+from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
 import os
 
@@ -17,8 +17,8 @@ class TestLogServiceProvider(TestCase):
 		log_string = 'LogServiceProviderTest::test_logging_disabled'
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.log.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
@@ -66,8 +66,8 @@ class TestLogServiceProvider(TestCase):
 		log_string = 'LogServiceProviderTest::test_logging_enabled'
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.log.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
@@ -115,8 +115,8 @@ class TestLogServiceProvider(TestCase):
 		log_string = 'LogServiceProviderTest::test_logging_enabled'
 
 		# Write config
-		self.write_test_config([
-			"from Edmunds.Log.Drivers.Stream import Stream \n",
+		self.write_config([
+			"from edmunds.log.drivers.stream import Stream \n",
 			"import cStringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
