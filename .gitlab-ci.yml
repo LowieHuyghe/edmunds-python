@@ -4,11 +4,6 @@ test:2.7:
   script:
   - python setup.py test
 
-test:3.3:
-  image: python:3.3
-  script:
-  - python setup.py test
-
 test:3.4:
   image: python:3.4
   script:
@@ -16,5 +11,10 @@ test:3.4:
 
 test:3.5:
   image: python:3.5
+  script:
+  - python setup.py test
+
+test:3.6:
+  image: python:3.6
   script:
   - python setup.py test
