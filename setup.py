@@ -168,7 +168,7 @@ class Setup(object):
                 with open(value_path, 'r') as value_file:
                     value = value_file.readlines()
                     value = filter(lambda k: bool(k), value)
-                    value = map(lambda k: k.strip().replace('\n', ''), value)
+                    value = list(map(lambda k: k.strip().replace('\n', ''), value))
             else:
                 value = value.split(',')
 

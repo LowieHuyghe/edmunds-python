@@ -16,7 +16,10 @@ class TestStream(TestCase):
 		# Write config
 		self.write_config([
 			"from edmunds.profiler.drivers.stream import Stream \n",
-			"import cStringIO \n",
+			"try: \n",
+			"	from cStringIO import StringIO \n",
+			"except ImportError: \n",
+			"	from io import StringIO \n",
 			"APP = { \n",
 			"	'debug': True, \n",
 			"	'profiler': { \n",
@@ -25,7 +28,7 @@ class TestStream(TestCase):
 			"			{ \n",
 			"				'name': 'stream',\n",
 			"				'driver': Stream,\n",
-			"				'stream': cStringIO.StringIO(),\n",
+			"				'stream': StringIO(),\n",
 			"			}, \n",
 			"		], \n",
 			"	}, \n",

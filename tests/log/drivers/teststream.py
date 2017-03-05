@@ -21,7 +21,10 @@ class TestStream(TestCase):
 		self.write_config([
 			"from edmunds.log.drivers.stream import Stream \n",
 			"from logging import WARNING \n",
-			"import cStringIO \n",
+			"try: \n",
+			"	from cStringIO import StringIO \n",
+			"except ImportError: \n",
+			"	from io import StringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
 			"	'log': { \n",
@@ -30,7 +33,7 @@ class TestStream(TestCase):
 			"			{ \n",
 			"				'name': 'stream',\n",
 			"				'driver': Stream,\n",
-			"				'stream': cStringIO.StringIO(),\n",
+			"				'stream': StringIO(),\n",
 			"				'level': WARNING,\n"
 			"			}, \n",
 			"		], \n",

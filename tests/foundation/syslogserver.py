@@ -1,5 +1,8 @@
 
-import SocketServer
+try:
+	from SocketServer import BaseRequestHandler, UDPServer
+except ImportError:
+	from socketserver import BaseRequestHandler, UDPServer
 import threading
 from time import sleep
 
@@ -71,20 +74,20 @@ class SysLogServer(object):
 
 
 
-class SysLogUDPServer(SocketServer.UDPServer):
+class SysLogUDPServer(UDPServer):
 
 	def __init__(self, *args, **kwargs):
 		"""
 		Initiate the server
 		"""
 
-		SocketServer.UDPServer.__init__(self, *args, **kwargs)
+		UDPServer.__init__(self, *args, **kwargs)
 
 		self.data = []
 
 
 
-class SysLogServerHandler(SocketServer.BaseRequestHandler):
+class SysLogServerHandler(BaseRequestHandler):
 
 	def handle(self):
 		"""

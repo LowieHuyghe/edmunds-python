@@ -24,7 +24,10 @@ class TestGoogleAppEngine(TestCase):
 		self.write_config([
 			"from edmunds.log.drivers.googleappengine import GoogleAppEngine \n",
 			"from logging import WARNING \n",
-			"import cStringIO \n",
+			"try: \n",
+			"	from cStringIO import StringIO \n",
+			"except ImportError: \n",
+			"	from io import StringIO \n",
 			"APP = { \n",
 			"	'debug': False, \n",
 			"	'log': { \n",
@@ -33,7 +36,7 @@ class TestGoogleAppEngine(TestCase):
 			"			{ \n",
 			"				'name': 'googleappengine',\n",
 			"				'driver': GoogleAppEngine,\n",
-			"				'stream': cStringIO.StringIO(),\n",
+			"				'stream': StringIO(),\n",
 			"				'level': WARNING,\n"
 			"			}, \n",
 			"			{ \n",
