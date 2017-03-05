@@ -15,7 +15,7 @@ class ExceptionsServiceProvider(ServiceProvider):
 		"""
 
 		# Add all the exception to handle
-		exceptions = default_exceptions.values()
+		exceptions = list(default_exceptions.values())
 		exceptions.append(Exception)
 
 		# Register each exception
