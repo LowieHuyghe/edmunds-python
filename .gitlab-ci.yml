@@ -1,0 +1,17 @@
+
+#test:
+#  script:
+#    - npm run prepare-gitlab-build
+#    - npm test
+
+buildandroid:
+  script:
+    - npm run build-android-production -- -v
+
+buildios:
+  script:
+    - npm run build-ios-production -- -v
+
+cache:
+  paths:
+    - node_modules/
