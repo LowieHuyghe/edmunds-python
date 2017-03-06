@@ -26,14 +26,14 @@ class TestManager(TestCase):
 			{
 				'name': 'dict',
 				'driver': dict,
-				'dict': 1,
+				'dict': 2,
 			},
 		]
 		self._instances_config_extend = self._instances_config + [
 			{
 				'name': 'tuple',
 				'driver': tuple,
-				'tuple': 1,
+				'tuple': 3,
 			},
 		]
 
@@ -75,12 +75,13 @@ class TestManager(TestCase):
 		# Make manager
 		manager = MyManager(self.app, self._instances_config)
 
-		# Returns
-		instances_return = manager.all()
-
 		# Object config
 		object_config = self._instances_config[0]
-		object_return = instances_return[0]
+		object_return = None
+		for instance_return in manager.all():
+			if instance_return[0] == object_config['name']:
+				object_return = instance_return
+				break
 
 		# Check object config
 		self.assert_is_not_none(object_return)
@@ -90,7 +91,11 @@ class TestManager(TestCase):
 
 		# Dict config
 		dict_config = self._instances_config[1]
-		dict_return = instances_return[1]
+		dict_return = None
+		for instance_return in manager.all():
+			if instance_return[0] == dict_config['name']:
+				dict_return = instance_return
+				break
 
 		# Check dict config
 		self.assert_is_not_none(dict_return)
@@ -126,7 +131,11 @@ class TestManager(TestCase):
 
 		# Check all
 		tuple_config = self._instances_config_extend[2]
-		tuple_return = manager.all()[2]
+		tuple_return = None
+		for instance_return in manager.all():
+			if instance_return[0] == tuple_config['name']:
+				tuple_return = instance_return
+				break
 
 		self.assert_is_not_none(tuple_return)
 		self.assert_equal(2, len(tuple_return))
