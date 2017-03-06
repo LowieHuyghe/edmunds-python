@@ -19,7 +19,6 @@ class TestSysLog(TestCase):
         self._server = SysLogServer()
         self._server.start()
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -28,7 +27,6 @@ class TestSysLog(TestCase):
         super(TestSysLog, self).tear_down()
 
         self._server.stop()
-
 
     def test_sys_log(self):
         """

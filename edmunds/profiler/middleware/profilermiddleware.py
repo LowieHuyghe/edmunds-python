@@ -15,13 +15,12 @@ class ProfilerMiddleware(ApplicationMiddleware):
         """
         Initialize the application
         :param app:     The application
-        :type  app:     Edmunds.Application
+        :type  app:     Application
         """
 
         super(ProfilerMiddleware, self).__init__(app)
 
         self._manager = ProfilerManager(self.app)
-
 
     def handle(self, environment, start_response):
         """
@@ -47,8 +46,7 @@ class ProfilerMiddleware(ApplicationMiddleware):
         for instance in self._manager.all():
             instance.process(profiler, start, end, environment, suggestive_file_name)
 
-        return [ body ]
-
+        return [body]
 
     def _get_profiler_and_return(self, environment, start_response):
         """

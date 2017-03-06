@@ -16,7 +16,6 @@ class RequestRouting(object):
         self._pre_request_uses_by_rule = {}
         self._request_uses_by_rule = {}
 
-
     def _pre_handle_route_dispatching(self, rule, options):
         """
         Pre handle route request dispatching
@@ -28,7 +27,7 @@ class RequestRouting(object):
 
         uses = options.pop('uses', None)
         if uses is None:
-            return;
+            return
 
         # Validate
         class_, method = uses
@@ -40,7 +39,6 @@ class RequestRouting(object):
         # Set unique endpoint
         if 'endpoint' not in options:
             options['endpoint'] = '%s.%s' % (helpers.get_full_class_name(class_), method)
-
 
     def _post_handle_route_dispatching(self, decorator, rule, options):
         """
@@ -73,8 +71,7 @@ class RequestRouting(object):
         # Return none
         return None
 
-
-    def dispatch(self, request = None):
+    def dispatch(self, request=None):
         """
         Dispatch a request
         :param request:     The request
@@ -95,7 +92,6 @@ class RequestRouting(object):
         # Fetch uses, class and method
         uses = self._request_uses_by_rule[rule]
         class_, method = uses
-
 
         # Make instance of controller
         controller = class_(self)

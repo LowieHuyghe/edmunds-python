@@ -16,7 +16,6 @@ def get_full_class_name(class_):
 
     return class_.__module__ + '.' + class_.__name__
 
-
 def get_dir_from_file(file):
     """
     Get the directory of the given file
@@ -28,7 +27,6 @@ def get_dir_from_file(file):
 
     return os.path.dirname(os.path.realpath(file))
 
-
 def random_str(length):
     """
     Get a random string
@@ -39,7 +37,6 @@ def random_str(length):
     """
 
     return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
-
 
 def snake_case(camel_case):
     """

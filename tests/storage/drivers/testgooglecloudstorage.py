@@ -20,7 +20,6 @@ class TestGoogleCloudStorage(TestCase):
         self.storage_directory = os.sep + 'storage' + os.sep
         self.clear_paths = []
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -29,7 +28,6 @@ class TestGoogleCloudStorage(TestCase):
         super(TestGoogleCloudStorage, self).tear_down()
 
         # TODO: Delete the files
-
 
     def test_google_cloud_storage(self):
         """

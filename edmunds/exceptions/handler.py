@@ -17,7 +17,6 @@ class Handler(object):
         self.app = app
         self.dont_report = []
 
-
     def report(self, exception):
         """
         Report the exception
@@ -29,7 +28,6 @@ class Handler(object):
             return;
 
         pass
-
 
     def render(self, exception):
         """

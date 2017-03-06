@@ -9,11 +9,11 @@ class Stream(BaseDriver):
     Stream driver
     """
 
-    def __init__(self, app, stream = sys.stdout, sort_by = ('time', 'calls'), restrictions = ()):
+    def __init__(self, app, stream=sys.stdout, sort_by=('time', 'calls'), restrictions=()):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param stream:          The stream
         :type  stream:          stream
         :param sort_by:         Sort by
@@ -27,7 +27,6 @@ class Stream(BaseDriver):
         self._stream = stream
         self._sort_by = sort_by
         self._restrictions = restrictions
-
 
     def process(self, profiler, start, end, environment, suggestive_file_name):
         """

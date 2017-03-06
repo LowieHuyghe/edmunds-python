@@ -24,7 +24,6 @@ class TestHelpers(TestCase):
         for test in data:
             self.assert_equal(test[0], helpers.get_full_class_name(test[1]))
 
-
     def test_get_dir_from_file(self):
         """
         Test get_dir_from_file
@@ -39,7 +38,6 @@ class TestHelpers(TestCase):
 
         for test in data:
             self.assert_equal(test[0], helpers.get_dir_from_file(test[1]))
-
 
     def test_random_str(self):
         """
@@ -57,7 +55,6 @@ class TestHelpers(TestCase):
         self.assert_not_equal(helpers.random_str(7), helpers.random_str(7))
         self.assert_not_equal(helpers.random_str(23), helpers.random_str(23))
         self.assert_not_equal(helpers.random_str(32), helpers.random_str(32))
-
 
     def test_snake_case(self):
         """

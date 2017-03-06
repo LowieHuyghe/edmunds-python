@@ -12,7 +12,7 @@ class Config(object):
         """
 
         # Configuration directories
-        if config_dirs == None:
+        if config_dirs is None:
             config_dirs = [
                 'lib/edmunds/src/config',
                 'config',

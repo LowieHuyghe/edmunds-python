@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
-import os
 
 
 class TestLogServiceProvider(TestCase):
@@ -60,7 +59,6 @@ class TestLogServiceProvider(TestCase):
             # Check log files
             self.assert_not_in(log_string, stream.getvalue())
 
-
     def test_logging_enabled(self):
         """
         Test logging enabled
@@ -111,7 +109,6 @@ class TestLogServiceProvider(TestCase):
 
             # Check log files
             self.assert_in(log_string, stream.getvalue())
-
 
     def test_multiple_loggers(self):
         """

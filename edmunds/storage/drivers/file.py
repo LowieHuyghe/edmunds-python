@@ -9,11 +9,11 @@ class File(BaseDriver):
     File driver
     """
 
-    def __init__(self, app, storage_path, files_path, prefix = ''):
+    def __init__(self, app, storage_path, files_path, prefix=''):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param storage_path:    The storage path
         :type  storage_path:    str
         :param files_path:      The files path
@@ -28,7 +28,6 @@ class File(BaseDriver):
         self._files_path = files_path
         self._prefix = prefix
 
-
     def write_stream(self, path):
         """
         Get a write stream to a certain path
@@ -42,7 +41,6 @@ class File(BaseDriver):
 
         return open(path, 'w+')
 
-
     def read_stream(self, path):
         """
         Get a read stream to a certain path
@@ -55,7 +53,6 @@ class File(BaseDriver):
         path = self._get_processed_path(path)
 
         return open(path, 'r')
-
 
     def copy(self, path, new_path, raise_errors = False):
         """
@@ -83,7 +80,6 @@ class File(BaseDriver):
             else:
                 return False
 
-
     def delete(self, path, raise_errors = False):
         """
         Delete a certain path
@@ -107,7 +103,6 @@ class File(BaseDriver):
             else:
                 return False
 
-
     def exists(self, path):
         """
         Check if a certain path exists
@@ -120,7 +115,6 @@ class File(BaseDriver):
         path = self._get_processed_path(path)
 
         return os.path.isfile(path)
-
 
     def _get_processed_path(self, path):
         """

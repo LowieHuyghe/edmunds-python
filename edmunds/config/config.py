@@ -2,7 +2,6 @@
 from flask.config import Config as FlaskConfig
 import os
 import re
-import copy
 
 
 class Config(FlaskConfig):
@@ -23,8 +22,7 @@ class Config(FlaskConfig):
 
         self.loaded_config = []
 
-
-    def __call__(self, mixed, default = None):
+    def __call__(self, mixed, default=None):
         """
         Get a value or update some values
         :param mixed:       Key of dictionary
@@ -53,7 +51,6 @@ class Config(FlaskConfig):
             processed_key = self._getProcessKey(mixed)
             return self[processed_key]
 
-
     def has(self, key):
         """
         Check if has key
@@ -66,7 +63,6 @@ class Config(FlaskConfig):
         processed_key = self._getProcessKey(key)
         return processed_key in self
 
-
     def _getProcessKey(self, key):
         """
         Process the given key
@@ -77,7 +73,6 @@ class Config(FlaskConfig):
         """
 
         return '_'.join(key.split('.')).upper()
-
 
     def load_all(self, config_dirs):
         """
@@ -90,7 +85,6 @@ class Config(FlaskConfig):
         # Newly loaded overwrites current values
         self._load_config(config_dirs)
         self._load_env()
-
 
     def _load_config(self, config_dirs):
         """
@@ -108,7 +102,6 @@ class Config(FlaskConfig):
                     file_name = os.path.join(self.root_path, config_dir, file)
 
                     self.from_pyfile(file_name)
-
 
     def _load_env(self):
         """
@@ -146,8 +139,7 @@ class Config(FlaskConfig):
             'app.env': self('app.env').lower()
         })
 
-
-    def from_pyfile(self, filename, silent = False):
+    def from_pyfile(self, filename, silent=False):
         """
         Load from py-file
         :param filename:    File to load
@@ -179,8 +171,7 @@ class Config(FlaskConfig):
 
         return success
 
-
-    def _flatten_dict(self, new, processed_new = None, prefix_key = ''):
+    def _flatten_dict(self, new, processed_new=None, prefix_key=''):
         """
         Flatten the dictionary to dictionary with only one level
         :param new:             The given dictionary
@@ -193,7 +184,7 @@ class Config(FlaskConfig):
         :rtype:                 dict
         """
 
-        if processed_new == None:
+        if processed_new is None:
             processed_new = {}
 
         for key in new:

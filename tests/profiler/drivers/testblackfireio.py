@@ -21,7 +21,6 @@ class TestBlackfireIo(TestCase):
         self.profs_directory = os.sep + 'profs' + os.sep
         self.clear_paths = []
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -35,7 +34,6 @@ class TestBlackfireIo(TestCase):
                 for file in files:
                     if file.startswith(self.prefix):
                         os.remove(os.path.join(root, file))
-
 
     def test_blackfire_io(self):
         """

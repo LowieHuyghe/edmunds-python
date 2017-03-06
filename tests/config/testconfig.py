@@ -40,7 +40,6 @@ class TestConfig(TestCase):
         if os.path.exists(self.env_production_file):
             os.rename(self.env_production_file, self.env_production_bak_file)
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -70,7 +69,6 @@ class TestConfig(TestCase):
         if os.path.exists(self.env_production_bak_file):
             os.rename(self.env_production_bak_file, self.env_production_file)
 
-
     def test_consistency(self):
         """
         Test the consistency of the config
@@ -97,7 +95,6 @@ class TestConfig(TestCase):
             self.assert_true(self.app.config.has(key))
             self.assert_equal(value, self.app.config(key))
             self.assert_equal(value, self.app.config[old_key])
-
 
     def test_multiple(self):
         """
@@ -131,7 +128,6 @@ class TestConfig(TestCase):
             self.assert_true(self.app.config.has(key))
             self.assert_equal(value, self.app.config(key))
             self.assert_equal(value, self.app.config[old_key])
-
 
     def test_config_file(self):
         """
@@ -187,7 +183,6 @@ class TestConfig(TestCase):
                 self.assert_equal(value, app.config(key))
                 self.assert_equal(value, app.config[old_key])
 
-
     def test_env_file(self):
         """
         Test env file
@@ -241,7 +236,6 @@ class TestConfig(TestCase):
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
                 self.assert_equal(value, app.config[old_key])
-
 
     def test_env_testing_file(self):
         """
@@ -297,7 +291,6 @@ class TestConfig(TestCase):
                 self.assert_equal(value, app.config(key))
                 self.assert_equal(value, app.config[old_key])
 
-
     def test_env_testing_test_file(self):
         """
         Test env testing test file
@@ -348,7 +341,6 @@ class TestConfig(TestCase):
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
                 self.assert_equal(value, app.config[old_key])
-
 
     def test_merging_and_priority(self):
         """
@@ -426,7 +418,6 @@ class TestConfig(TestCase):
             self.assert_equal(value, app.config(key))
             self.assert_equal(value, app.config[old_key])
 
-
     def test_file_priority(self):
         """
         Test priority of config
@@ -481,7 +472,6 @@ class TestConfig(TestCase):
         self.assert_true(app.config.has(key))
         self.assert_equal(4, app.config(key))
         self.assert_equal(4, app.config[old_key])
-
 
     def test_setting_environment(self):
         """

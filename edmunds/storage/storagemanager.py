@@ -12,7 +12,7 @@ class StorageManager(Manager):
         """
         Initiate the manager
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param root_path:       The root path
         :type  root_path:       str
         :param storage_path:    The storage path
@@ -24,7 +24,6 @@ class StorageManager(Manager):
         self._root_path = root_path
         self._storage_path = storage_path
         self._files_path = 'files'
-
 
     def _create_file(self, config):
         """
@@ -55,7 +54,6 @@ class StorageManager(Manager):
 
         from edmunds.storage.drivers.file import File
         return File(self._app, storage_path, files_path, **options)
-
 
     def _create_google_cloud_storage(self, config):
         """

@@ -17,7 +17,6 @@ class BaseDriver(ABC):
 
         self._app = app
 
-
     @abc.abstractmethod
     def write_stream(self, path):
         """
@@ -29,7 +28,6 @@ class BaseDriver(ABC):
         """
         pass
 
-
     @abc.abstractmethod
     def read_stream(self, path):
         """
@@ -40,7 +38,6 @@ class BaseDriver(ABC):
         :rtype:         Stream
         """
         pass
-
 
     @abc.abstractmethod
     def copy(self, path, new_path):
@@ -55,7 +52,6 @@ class BaseDriver(ABC):
         """
         pass
 
-
     @abc.abstractmethod
     def delete(self, path):
         """
@@ -66,7 +62,6 @@ class BaseDriver(ABC):
         :rtype:         bool
         """
         pass
-
 
     @abc.abstractmethod
     def exists(self, path):

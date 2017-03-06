@@ -11,7 +11,6 @@ class TestApplicationMiddleware(TestCase):
 
     cache = None
 
-
     def set_up(self):
         """
         Set up the test case
@@ -19,9 +18,8 @@ class TestApplicationMiddleware(TestCase):
 
         super(TestApplicationMiddleware, self).set_up()
 
-        TestApplicationMiddleware.cache = {}
+        TestApplicationMiddleware.cache = dict()
         TestApplicationMiddleware.cache['timeline'] = []
-
 
     def test_no_abstract_handle(self):
         """
@@ -31,14 +29,12 @@ class TestApplicationMiddleware(TestCase):
         with self.assert_raises_regexp(TypeError, 'handle'):
             MyApplicationMiddlewareNoAbstractHandle(self.app)
 
-
     def test_abstract_handle(self):
         """
         Test required abstract handle method
         """
 
         self.assert_is_instance(MyApplicationMiddlewareAbstractHandle(self.app), MyApplicationMiddlewareAbstractHandle)
-
 
     def test_registering(self):
         """
@@ -74,7 +70,6 @@ class TestApplicationMiddleware(TestCase):
         self.assert_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
-
     def test_handling(self):
         """
         Test handling of application middleware
@@ -108,7 +103,7 @@ class TestApplicationMiddleware(TestCase):
         self.app.middleware(MySecondApplicationMiddleware)
 
         # Call route
-        TestApplicationMiddleware.cache = {}
+        TestApplicationMiddleware.cache = dict()
         TestApplicationMiddleware.cache['timeline'] = []
         with self.app.test_client() as c:
             rv = c.get(rule)
@@ -125,14 +120,12 @@ class TestApplicationMiddleware(TestCase):
             self.assert_equal(2, TestApplicationMiddleware.cache['timeline'].index('handleRoute'))
 
 
-
 class MyApplicationMiddlewareNoAbstractHandle(ApplicationMiddleware):
     """
     Application Middleware class with missing handle method
     """
 
     pass
-
 
 
 class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
@@ -142,7 +135,6 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
 
     def handle(self, environment, startResponse):
         pass
-
 
 
 class MyApplicationMiddleware(ApplicationMiddleware):
@@ -155,7 +147,6 @@ class MyApplicationMiddleware(ApplicationMiddleware):
         TestApplicationMiddleware.cache['timeline'].append(self.__class__.__name__)
 
         return super(MyApplicationMiddleware, self).handle(environment, startResponse)
-
 
 
 class MySecondApplicationMiddleware(ApplicationMiddleware):

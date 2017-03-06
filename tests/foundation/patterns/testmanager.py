@@ -1,7 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
-
 from edmunds.foundation.patterns.manager import Manager
 
 
@@ -37,7 +35,6 @@ class TestManager(TestCase):
             },
         ]
 
-
     def test_get(self):
         """
         Test the get method
@@ -65,7 +62,6 @@ class TestManager(TestCase):
         self.assert_equal(2, len(dict_return))
         self.assert_equal(dict_config['name'], dict_return[0])
         self.assert_equal(dict_config['dict'], dict_return[1])
-
 
     def test_all(self):
         """
@@ -103,7 +99,6 @@ class TestManager(TestCase):
         self.assert_equal(dict_config['name'], dict_return[0])
         self.assert_equal(dict_config['dict'], dict_return[1])
 
-
     def test_extend(self):
         """
         Test the extend method
@@ -117,8 +112,9 @@ class TestManager(TestCase):
             manager.all()
 
         # Extend
-        extend_lambda = lambda app, config: (config['name'], config['tuple'])
-        manager.extend(tuple, extend_lambda)
+        def extend_def(app, config):
+            return config['name'], config['tuple']
+        manager.extend(tuple, extend_def)
 
         # Check get
         tuple_config = self._instances_config_extend[2]
@@ -143,13 +139,12 @@ class TestManager(TestCase):
         self.assert_equal(tuple_config['tuple'], tuple_return[1])
 
 
-
 class MyManager(Manager):
 
     def _create_object(self, config):
 
-        return (config['name'], config['object'])
+        return config['name'], config['object']
 
     def _create_dict(self, config):
 
-        return (config['name'], config['dict'])
+        return config['name'], config['dict']
