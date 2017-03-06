@@ -13,7 +13,6 @@ class TestHandler(TestCase):
 
     cache = None
 
-
     def set_up(self):
         """
         Set up the test case
@@ -21,9 +20,8 @@ class TestHandler(TestCase):
 
         super(TestHandler, self).set_up()
 
-        TestHandler.cache = {}
+        TestHandler.cache = dict()
         TestHandler.cache['timeline'] = []
-
 
     def test_http_exceptions(self):
         """
@@ -55,7 +53,7 @@ class TestHandler(TestCase):
             for http_exception in default_exceptions.values():
                 abort_exception = http_exception.code
 
-                TestHandler.cache = {}
+                TestHandler.cache = dict()
                 TestHandler.cache['timeline'] = []
                 rv = c.get(rule)
 
@@ -75,7 +73,6 @@ class TestHandler(TestCase):
 
                 self.assert_true(isinstance(TestHandler.cache['timeline'][3], HTTPException))
                 self.assert_equal(http_exception.code, TestHandler.cache['timeline'][3].code)
-
 
     def test_404(self):
         """
@@ -109,7 +106,6 @@ class TestHandler(TestCase):
 
             self.assert_true(isinstance(TestHandler.cache['timeline'][2], HTTPException))
             self.assert_equal(404, TestHandler.cache['timeline'][2].code)
-
 
     def test_exception(self):
         """
@@ -155,7 +151,6 @@ class TestHandler(TestCase):
             self.assert_equal('MyRuntimeError', '%s' % TestHandler.cache['timeline'][3])
 
 
-
 class MyHandler(EdmundsHandler):
     """
     Exception Handler class
@@ -171,7 +166,6 @@ class MyHandler(EdmundsHandler):
         TestHandler.cache['timeline'].append(self.__class__.__name__ + '.report')
 
         super(MyHandler, self).report(exception)
-
 
     def render(self, exception):
         """

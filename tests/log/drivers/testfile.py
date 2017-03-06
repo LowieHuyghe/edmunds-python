@@ -21,7 +21,6 @@ class TestFile(TestCase):
         self.logs_directory = os.sep + 'logs' + os.sep
         self.clear_paths = []
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -35,7 +34,6 @@ class TestFile(TestCase):
                 for file in files:
                     if file.startswith(self.prefix):
                         os.remove(os.path.join(root, file))
-
 
     def test_file(self):
         """
@@ -108,7 +106,6 @@ class TestFile(TestCase):
             self.assert_false(self._is_in_log_files(app, directory, info_string))
             self.assert_true(self._is_in_log_files(app, directory, warning_string))
             self.assert_true(self._is_in_log_files(app, directory, error_string))
-
 
     def _is_in_log_files(self, app, directory, string, starts_with = None):
         """

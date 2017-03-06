@@ -10,11 +10,11 @@ class BlackfireIo(BaseDriver):
     Blackfire Io driver
     """
 
-    def __init__(self, app, profile_path, prefix = '', suffix = ''):
+    def __init__(self, app, profile_path, prefix='', suffix=''):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param profile_path:    The profile path
         :type  profile_path:    str
         :param prefix:          The prefix for storing
@@ -28,7 +28,6 @@ class BlackfireIo(BaseDriver):
         self._profile_path = profile_path
         self._prefix = prefix
         self._suffix = suffix
-
 
     def process(self, profiler, start, end, environment, suggestive_file_name):
         """
@@ -66,7 +65,6 @@ class BlackfireIo(BaseDriver):
 
             def _entry_sort_key(entry):
                 return cProfile.label(entry.code)
-
 
             for entry in sorted(converter.entries, key=_entry_sort_key):
 

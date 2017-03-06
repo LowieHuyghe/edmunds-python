@@ -21,7 +21,6 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 
     config_class = Config
 
-
     def __init__(self, import_name, config_dirs = None):
         """
         Initialize the application
@@ -43,7 +42,6 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
         self.register(ExceptionsServiceProvider)
         if self.config('app.log.enabled', False):
             self.register(LogServiceProvider)
-
 
     def route(self, rule, **options):
         """
@@ -70,11 +68,10 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 
         return decorator
 
-
     @property
     def logger(self):
         """
-        Fetch logger propery
+        Fetch logger property
         Overriding this function because self.logger_name == '' is
         not taken into account
         """

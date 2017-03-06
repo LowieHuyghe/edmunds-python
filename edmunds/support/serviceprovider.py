@@ -17,7 +17,6 @@ class ServiceProvider(ABC):
 
         self.app = app
 
-
     @abc.abstractmethod
     def register(self):
         """

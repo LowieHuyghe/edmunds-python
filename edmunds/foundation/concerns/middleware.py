@@ -18,7 +18,6 @@ class Middleware(object):
 
         self._register_request_middleware_handling()
 
-
     def middleware(self, class_):
         """
         Add Application middleware
@@ -33,7 +32,6 @@ class Middleware(object):
 
         # add wsgi application
         self.wsgi_app = class_(self)
-
 
     def _pre_handle_route_middleware(self, rule, options):
         """
@@ -56,7 +54,6 @@ class Middleware(object):
 
         # Add middleware upfront
         self._pre_request_middleware_by_rule[rule] = middleware
-
 
     def _post_handle_route_middleware(self, decorator, rule, options):
         """
@@ -85,7 +82,6 @@ class Middleware(object):
             return res
 
         return register_middleware
-
 
     def _register_request_middleware_handling(self):
         """

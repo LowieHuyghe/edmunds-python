@@ -28,7 +28,6 @@ class TestCase(unittest.TestCase, ABC):
 
             self.app = self.create_application()
 
-
     def tear_down(self):
         """
         Tear down the test case
@@ -38,7 +37,6 @@ class TestCase(unittest.TestCase, ABC):
         if os.path.exists(self.env_testing_test_file):
             os.remove(self.env_testing_test_file)
 
-
     @abc.abstractmethod
     def create_application(self):
         """
@@ -46,8 +44,7 @@ class TestCase(unittest.TestCase, ABC):
         """
         pass
 
-
-    def write_config(self, config, overwrite = True):
+    def write_config(self, config, overwrite=True):
         """
         Write to test config file
         :param config:      The config to write
@@ -68,8 +65,7 @@ class TestCase(unittest.TestCase, ABC):
                 f.write(config)
             f.write('\n')
 
-
-    def thread(self, target, count = 1000):
+    def thread(self, target, count=1000):
         """
         Test thread safety of function
         :param target:  The target function
@@ -81,8 +77,7 @@ class TestCase(unittest.TestCase, ABC):
         for _ in self.thread_iter(target, count):
             pass
 
-
-    def thread_iter(self, target, count = 1000):
+    def thread_iter(self, target, count=1000):
         """
         Test thread safety of function
         :param target:  The target function
@@ -109,7 +104,6 @@ class TestCase(unittest.TestCase, ABC):
                     del threads[index]
 
             time.sleep(0.01)
-
 
     def setUp(self):
         self.set_up()
@@ -302,4 +296,3 @@ class TestCase(unittest.TestCase, ABC):
         Skip this test
         """
         return self.skipTest(reason)
-

@@ -1,6 +1,5 @@
 
 from edmunds.storage.storagemanager import StorageManager
-import os
 
 
 class Storage(object):
@@ -15,8 +14,7 @@ class Storage(object):
 
         self._storage_manager = StorageManager(self, self.root_path, 'storage')
 
-
-    def fs(self, name = None):
+    def fs(self, name=None):
         """
         The filesystem to use
         :param name:    The name of the storage instance

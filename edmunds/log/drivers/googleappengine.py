@@ -9,7 +9,7 @@ class GoogleAppEngine(StreamHandler):
     is special in the Google App Engine runtime.
     """
 
-    def __init__(self, app, level = WARNING, format = None, stream = None):
+    def __init__(self, app, level=WARNING, format=None, stream=None):
         """
         Initiate the instance
         :param app:             The application

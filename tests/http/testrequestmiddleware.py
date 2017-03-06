@@ -2,7 +2,6 @@
 from tests.testcase import TestCase
 from edmunds.http.requestmiddleware import RequestMiddleware
 import edmunds.support.helpers as helpers
-from flask import Response
 
 
 class TestRequestMiddleware(TestCase):
@@ -12,7 +11,6 @@ class TestRequestMiddleware(TestCase):
 
     cache = None
 
-
     def set_up(self):
         """
         Set up the test case
@@ -20,9 +18,8 @@ class TestRequestMiddleware(TestCase):
 
         super(TestRequestMiddleware, self).set_up()
 
-        TestRequestMiddleware.cache = {}
+        TestRequestMiddleware.cache = dict()
         TestRequestMiddleware.cache['timeline'] = []
-
 
     def test_no_middleware(self):
         """
@@ -52,7 +49,6 @@ class TestRequestMiddleware(TestCase):
             self.assert_in('handleRoute', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(0, TestRequestMiddleware.cache['timeline'].index('handleRoute'))
 
-
     def test_registering(self):
         """
         Test registering the request middleware
@@ -67,7 +63,7 @@ class TestRequestMiddleware(TestCase):
         self.assert_not_in(rule2, self.app._request_middleware_by_rule)
 
         # Add route
-        @self.app.route(rule, middleware = [ MyRequestMiddleware ])
+        @self.app.route(rule, middleware=[MyRequestMiddleware])
         def handleRoute():
             TestRequestMiddleware.cache['timeline'].append('handleRoute')
             return ''
@@ -96,9 +92,8 @@ class TestRequestMiddleware(TestCase):
             self.assert_in(MyRequestMiddleware.__name__ + '.after', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(2, TestRequestMiddleware.cache['timeline'].index(MyRequestMiddleware.__name__ + '.after'))
 
-
         # Add second route
-        @self.app.route(rule2, middleware = [ MyRequestMiddleware, MySecondRequestMiddleware ])
+        @self.app.route(rule2, middleware=[MyRequestMiddleware, MySecondRequestMiddleware])
         def handleSecondRoute():
             TestRequestMiddleware.cache['timeline'].append('handleRoute')
             return ''
@@ -113,7 +108,7 @@ class TestRequestMiddleware(TestCase):
         self.assert_in(MySecondRequestMiddleware, self.app._request_middleware_by_rule[rule2])
 
         # Call route
-        TestRequestMiddleware.cache = {}
+        TestRequestMiddleware.cache = dict()
         TestRequestMiddleware.cache['timeline'] = []
         with self.app.test_request_context(rule2):
             self.app.preprocess_request()
@@ -138,7 +133,6 @@ class TestRequestMiddleware(TestCase):
             self.assert_in(MyRequestMiddleware.__name__ + '.after', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(4, TestRequestMiddleware.cache['timeline'].index(MyRequestMiddleware.__name__ + '.after'))
 
-
     def test_overwriting(self):
         """
         Test overwriting of middleware
@@ -150,7 +144,7 @@ class TestRequestMiddleware(TestCase):
         self.assert_not_in(rule, self.app._request_middleware_by_rule)
 
         # Add route
-        @self.app.route(rule, middleware = [ MyRequestMiddleware ])
+        @self.app.route(rule, middleware=[MyRequestMiddleware])
         def handleRoute():
             pass
 
@@ -159,14 +153,13 @@ class TestRequestMiddleware(TestCase):
         self.assert_equal(1, len(self.app._request_middleware_by_rule[rule]))
 
         # Overwrite route
-        @self.app.route(rule, middleware = [ MyRequestMiddleware, MySecondRequestMiddleware ])
+        @self.app.route(rule, middleware=[MyRequestMiddleware, MySecondRequestMiddleware])
         def handleOverwrittenRoute():
             pass
 
         # Check middleware
         self.assert_in(rule, self.app._request_middleware_by_rule)
         self.assert_equal(2, len(self.app._request_middleware_by_rule[rule]))
-
 
 
 class MyRequestMiddleware(RequestMiddleware):
@@ -180,13 +173,11 @@ class MyRequestMiddleware(RequestMiddleware):
 
         return super(MyRequestMiddleware, self).before()
 
-
     def after(self, response):
 
         TestRequestMiddleware.cache['timeline'].append(self.__class__.__name__ + '.after')
 
         return super(MyRequestMiddleware, self).after(response)
-
 
 
 class MySecondRequestMiddleware(RequestMiddleware):
@@ -199,7 +190,6 @@ class MySecondRequestMiddleware(RequestMiddleware):
         TestRequestMiddleware.cache['timeline'].append(self.__class__.__name__ + '.before')
 
         return super(MySecondRequestMiddleware, self).before()
-
 
     def after(self, response):
 

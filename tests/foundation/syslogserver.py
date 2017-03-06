@@ -9,7 +9,7 @@ from time import sleep
 
 class SysLogServer(object):
 
-    def __init__(self, host = '0.0.0.0', port = 12323):
+    def __init__(self, host='0.0.0.0', port=12323):
         """
         Initiate the server object
         :param host:    The host
@@ -25,7 +25,6 @@ class SysLogServer(object):
         self._thread = None
         self._data = []
 
-
     def start(self):
         """
         Start the server
@@ -37,11 +36,10 @@ class SysLogServer(object):
         self._data = []
 
         self._server = SysLogUDPServer((self.host, self.port), SysLogServerHandler)
-        self._thread = threading.Thread(target = self._server.serve_forever)
+        self._thread = threading.Thread(target=self._server.serve_forever)
         self._thread.start()
 
         return True
-
 
     def stop(self):
         """
@@ -60,7 +58,6 @@ class SysLogServer(object):
 
         return True
 
-
     def get_data(self):
         """
         Get the data
@@ -73,7 +70,6 @@ class SysLogServer(object):
             return self._data
 
 
-
 class SysLogUDPServer(UDPServer):
 
     def __init__(self, *args, **kwargs):
@@ -84,7 +80,6 @@ class SysLogUDPServer(UDPServer):
         UDPServer.__init__(self, *args, **kwargs)
 
         self.data = []
-
 
 
 class SysLogServerHandler(BaseRequestHandler):

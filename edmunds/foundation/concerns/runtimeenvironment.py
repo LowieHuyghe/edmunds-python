@@ -25,7 +25,6 @@ class RuntimeEnvironment(object):
         if self.is_testing():
             self.testing = True
 
-
     def environment(self, matches = None):
         """
         Get the environment
@@ -37,11 +36,10 @@ class RuntimeEnvironment(object):
 
         environment = self.config['APP_ENV']
 
-        if matches == None:
+        if matches is None:
             return environment
         else:
             return environment == matches
-
 
     def is_local(self):
         """
@@ -50,7 +48,6 @@ class RuntimeEnvironment(object):
 
         return self.environment('local')
 
-
     def is_testing(self):
         """
         Check if running in testing environment
@@ -58,14 +55,12 @@ class RuntimeEnvironment(object):
 
         return self.environment('testing')
 
-
     def is_production(self):
         """
         Check if running in production environment
         """
 
         return self.environment('production')
-
 
     def is_gae(self):
         """

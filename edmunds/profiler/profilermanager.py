@@ -22,7 +22,6 @@ class ProfilerManager(Manager):
 
         self._profile_path = os.path.join(os.sep, 'profs')
 
-
     def _create_blackfire_io(self, config):
         """
         Create BlackfireIo instance
@@ -50,7 +49,6 @@ class ProfilerManager(Manager):
 
         return BlackfireIo(self._app, profile_path, **options)
 
-
     def _create_call_graph(self, config):
         """
         Create CallGraph instance
@@ -77,7 +75,6 @@ class ProfilerManager(Manager):
             options['suffix'] = '.%s' % config['name']
 
         return CallGraph(self._app, profile_path, **options)
-
 
     def _create_stream(self, config):
         """

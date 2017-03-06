@@ -9,11 +9,11 @@ class TimedFile(TimedRotatingFileHandler):
     Timed File Driver
     """
 
-    def __init__(self, app, log_path, filename, prefix = '', when = 'D', interval = 1, backup_count = 0, level = WARNING, format = None):
+    def __init__(self, app, log_path, filename, prefix='', when='D', interval=1, backup_count=0, level=WARNING, format=None):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param log_path:        The log path
         :type  log_path:        str
         :param filename:        The filename
@@ -35,14 +35,13 @@ class TimedFile(TimedRotatingFileHandler):
         self._app = app
         filename = os.path.join(log_path, prefix + filename)
 
-        super(TimedFile, self).__init__(filename, when = when, interval = interval, backupCount = backup_count, utc = True)
+        super(TimedFile, self).__init__(filename, when=when, interval=interval, backupCount=backup_count, utc=True)
 
         self.setLevel(level)
 
         if format is None:
             format = '[%(asctime)s] %(levelname)-8s: %(message)s [in %(pathname)s:%(lineno)d]'
         self.setFormatter(Formatter(format))
-
 
     def _open(self):
         """

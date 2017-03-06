@@ -9,11 +9,11 @@ class SysLog(SysLogHandler):
     Sys Log Driver
     """
 
-    def __init__(self, app, address = ('localhost', SYSLOG_UDP_PORT), facility = SysLogHandler.LOG_USER, socktype = SOCK_DGRAM, level = WARNING):
+    def __init__(self, app, address=('localhost', SYSLOG_UDP_PORT), facility=SysLogHandler.LOG_USER, socktype=SOCK_DGRAM, level=WARNING):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param address:         The address
         :type  address:         tuple|str
         :param facility:        The facility to log
@@ -24,6 +24,6 @@ class SysLog(SysLogHandler):
         :type  level:           int
         """
 
-        super(SysLog, self).__init__(address = address, facility = facility, socktype = socktype)
+        super(SysLog, self).__init__(address=address, facility=facility, socktype=socktype)
 
         self.setLevel(level)

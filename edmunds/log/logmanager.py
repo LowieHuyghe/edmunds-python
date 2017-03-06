@@ -12,13 +12,12 @@ class LogManager(Manager):
         """
         Initiate the manager
         :param app:     The application
-        :type  app:     Edmunds.Application
+        :type  app:     Application
         """
 
         super(LogManager, self).__init__(app, app.config('app.log.instances', []))
 
         self._log_path = os.path.join(os.sep, 'logs')
-
 
     def _create_file(self, config):
         """
@@ -38,7 +37,7 @@ class LogManager(Manager):
             else:
                 log_path = directory
 
-        filename = '%s.log' % 'app' # self._app.name
+        filename = '%s.log' % 'app'  # self._app.name
 
         options = {}
 
@@ -55,7 +54,6 @@ class LogManager(Manager):
 
         from edmunds.log.drivers.file import File
         return File(self._app, log_path, filename, **options)
-
 
     def _create_timed_file(self, config):
         """
@@ -75,7 +73,7 @@ class LogManager(Manager):
             else:
                 log_path = directory
 
-        filename = '%s.log' % 'app' # self._app.name
+        filename = '%s.log' % 'app'  # self._app.name
 
         options = {}
 
@@ -94,7 +92,6 @@ class LogManager(Manager):
 
         from edmunds.log.drivers.timedfile import TimedFile
         return TimedFile(self._app, log_path, filename, **options)
-
 
     def _create_sys_log(self, config):
         """
@@ -121,7 +118,6 @@ class LogManager(Manager):
         from edmunds.log.drivers.syslog import SysLog
         return SysLog(self._app, **options)
 
-
     def _create_stream(self, config):
         """
         Create Stream instance
@@ -142,7 +138,6 @@ class LogManager(Manager):
 
         from edmunds.log.drivers.stream import Stream
         return Stream(self._app, **options)
-
 
     def _create_google_app_engine(self, config):
         """
