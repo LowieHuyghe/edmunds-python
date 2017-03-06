@@ -12,7 +12,7 @@ class DebugMiddleware(ApplicationMiddleware):
         """
         Initialize the application
         :param app:     The application
-        :type  app:     Edmunds.Application
+        :type  app:     Application
         """
 
         super(DebugMiddleware, self).__init__(app)
@@ -21,14 +21,13 @@ class DebugMiddleware(ApplicationMiddleware):
 
         self.wsgi_app = DebuggedApplication(self.wsgi_app, True)
 
-
-    def handle(self, environment, startResponse):
+    def handle(self, environment, start_response):
         """
         Handle the middleware
         :param environment:     The environment
         :type  environment:     Environment
-        :param startResponse:   The application
-        :type  startResponse:   flask.Response
+        :param start_response:   The application
+        :type  start_response:   flask.Response
         """
 
-        return super(DebugMiddleware, self).handle(environment, startResponse)
+        return super(DebugMiddleware, self).handle(environment, start_response)

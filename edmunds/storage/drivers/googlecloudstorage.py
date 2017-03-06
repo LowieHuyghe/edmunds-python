@@ -9,11 +9,11 @@ class GoogleCloudStorage(BaseDriver):
     GoogleCloudStorage driver
     """
 
-    def __init__(self, app, bucket, storage_path, files_path, prefix = ''):
+    def __init__(self, app, bucket, storage_path, files_path, prefix=''):
         """
         Initiate the instance
         :param app:             The application
-        :type  app:             Edmunds.Application
+        :type  app:             Application
         :param bucket:          The bucket
         :type  bucket:          str
         :param storage_path:    The storage path
@@ -31,7 +31,6 @@ class GoogleCloudStorage(BaseDriver):
         self._files_path = files_path
         self._prefix = prefix
 
-
     def write_stream(self, path):
         """
         Get a write stream to a certain path
@@ -45,7 +44,6 @@ class GoogleCloudStorage(BaseDriver):
 
         return gcs.open(path, 'w')
 
-
     def read_stream(self, path):
         """
         Get a read stream to a certain path
@@ -58,7 +56,6 @@ class GoogleCloudStorage(BaseDriver):
         path = self._get_processed_path(path)
 
         return gcs.open(path, 'r')
-
 
     def copy(self, path, new_path, raise_errors = False):
         """
@@ -86,7 +83,6 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return False
 
-
     def delete(self, path, raise_errors = False):
         """
         Delete a certain path
@@ -110,7 +106,6 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return False
 
-
     def exists(self, path):
         """
         Check if a certain path exists
@@ -128,7 +123,6 @@ class GoogleCloudStorage(BaseDriver):
 
         except gcs.NotFoundError as e:
             return False
-
 
     def _get_processed_path(self, path):
         """

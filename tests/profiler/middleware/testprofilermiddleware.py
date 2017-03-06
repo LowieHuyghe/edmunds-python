@@ -56,7 +56,6 @@ class TestProfilerMiddleware(TestCase):
             # Check stream
             self.assert_equal('', stream.getvalue())
 
-
     def test_app_no_debug(self):
         """
         Test app no debug
@@ -104,7 +103,6 @@ class TestProfilerMiddleware(TestCase):
 
             # Check stream
             self.assert_equal('', stream.getvalue())
-
 
     def test_app_no_debug_profiler_disabled(self):
         """
@@ -154,7 +152,6 @@ class TestProfilerMiddleware(TestCase):
             # Check stream
             self.assert_equal('', stream.getvalue())
 
-
     def test_enabled(self):
         """
         Test enabled
@@ -202,7 +199,6 @@ class TestProfilerMiddleware(TestCase):
 
             # Check stream
             self.assert_not_equal('', stream.getvalue())
-
 
     def test_multiple_profilers(self):
         """

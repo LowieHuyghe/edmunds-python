@@ -17,7 +17,6 @@ class BaseDriver(ABC):
 
         self._app = app
 
-
     @abc.abstractmethod
     def process(self, profiler, start, end, environment, suggestive_file_name):
         """

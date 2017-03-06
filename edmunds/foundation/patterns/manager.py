@@ -12,7 +12,7 @@ class Manager(object):
         """
         Initiate the manager
         :param app:                 The application
-        :type  app:                 Edmunds.Application
+        :type  app:                 Application
         :param instances_config:    Config for the instances
         :type  instances_config:    list
         """
@@ -23,8 +23,7 @@ class Manager(object):
         self._extend = {}
         self._load_lock = Lock()
 
-
-    def get(self, name = None):
+    def get(self, name=None):
         """
         Get the instance
         :param name:    The name of the instance
@@ -43,7 +42,6 @@ class Manager(object):
 
         return self._instances[name]
 
-
     def all(self):
         """
         Get all the instances
@@ -52,7 +50,6 @@ class Manager(object):
         self._load()
 
         return list(self._instances.values())
-
 
     def _load(self):
         """
@@ -70,12 +67,11 @@ class Manager(object):
         for instance_config in self._instances_config:
             name = instance_config['name']
             if name in instances:
-                raise RuntimeError('Redeclaring instance with name "%s"' % name)
+                raise RuntimeError('Re-declaring instance with name "%s"' % name)
 
             instances[name] = self._resolve(name)
 
         self._instances = instances
-
 
     def _reload(self):
         """
@@ -84,7 +80,6 @@ class Manager(object):
 
         with self._load_lock:
             self._instances = None
-
 
     def _resolve(self, name):
         """
@@ -115,7 +110,6 @@ class Manager(object):
             driver = getattr(self, method_name)(instance_config)
 
         return driver
-
 
     def extend(self, driver_class, create_function):
         """

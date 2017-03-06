@@ -11,7 +11,6 @@ class Controller(object):
 
         self._app = app
 
-
     def initialize(self, **params):
         """
         Initialize the controller

@@ -11,7 +11,6 @@ class TestRequestRouting(TestCase):
 
     cache = None
 
-
     def set_up(self):
         """
         Set up the test case
@@ -19,9 +18,8 @@ class TestRequestRouting(TestCase):
 
         super(TestRequestRouting, self).set_up()
 
-        TestRequestRouting.cache = {}
+        TestRequestRouting.cache = dict()
         TestRequestRouting.cache['timeline'] = []
-
 
     def test_original_routing(self):
         """
@@ -53,7 +51,6 @@ class TestRequestRouting(TestCase):
             self.assert_in('handleRoute', TestRequestRouting.cache['timeline'])
             self.assert_equal(0, TestRequestRouting.cache['timeline'].index('handleRoute'))
 
-
     def test_original_routing_with_parameter(self):
         """
         Test original routing with parameter
@@ -69,7 +66,7 @@ class TestRequestRouting(TestCase):
 
         # Add route
         @self.app.route(rule_with_param)
-        def handleRoute(param = None):
+        def handleRoute(param=None):
             TestRequestRouting.cache['timeline'].append('handleRoute')
             TestRequestRouting.cache['param'] = param
             return ''
@@ -90,7 +87,6 @@ class TestRequestRouting(TestCase):
             self.assert_in('param', TestRequestRouting.cache)
             self.assert_equal(param, TestRequestRouting.cache['param'])
 
-
     def test_new_routing(self):
         """
         Test new routing
@@ -103,7 +99,7 @@ class TestRequestRouting(TestCase):
         self.assert_not_in(rule, self.app._request_uses_by_rule)
 
         # Add route
-        self.app.route(rule, uses = (MyController, 'get'))
+        self.app.route(rule, uses=(MyController, 'get'))
 
         # Check uses empty
         self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
@@ -117,7 +113,6 @@ class TestRequestRouting(TestCase):
 
             self.assert_in('handleRoute', TestRequestRouting.cache['timeline'])
             self.assert_equal(0, TestRequestRouting.cache['timeline'].index('handleRoute'))
-
 
     def test_new_routing_with_parameter(self):
         """
@@ -151,7 +146,6 @@ class TestRequestRouting(TestCase):
             self.assert_in('param', TestRequestRouting.cache)
             self.assert_equal(param, TestRequestRouting.cache['param'])
 
-
     def test_initialize(self):
         """
         Test initialize
@@ -160,7 +154,7 @@ class TestRequestRouting(TestCase):
         rule = '/' + helpers.random_str(20)
 
         # Add route
-        self.app.route(rule, uses = (MyController, 'get'))
+        self.app.route(rule, uses=(MyController, 'get'))
 
         # Call route
         with self.app.test_client() as c:
@@ -168,7 +162,6 @@ class TestRequestRouting(TestCase):
 
             self.assert_in('init_params', TestRequestRouting.cache)
             self.assert_equal(0, len(TestRequestRouting.cache['init_params']))
-
 
     def test_initialize_with_parameter(self):
         """
@@ -180,7 +173,7 @@ class TestRequestRouting(TestCase):
         param = 'myparam'
 
         # Add route
-        self.app.route(rule_with_param, uses = (MyController, 'get_with_param'))
+        self.app.route(rule_with_param, uses=(MyController, 'get_with_param'))
 
         # Call route
         with self.app.test_client() as c:
@@ -190,7 +183,6 @@ class TestRequestRouting(TestCase):
             self.assert_equal(1, len(TestRequestRouting.cache['init_params']))
             self.assert_in('param', TestRequestRouting.cache['init_params'])
             self.assert_equal(param, TestRequestRouting.cache['init_params']['param'])
-
 
     def test_faulty_routing(self):
         """
@@ -202,10 +194,9 @@ class TestRequestRouting(TestCase):
         # Add route with both uses and handler
         with self.assert_raises_regexp(TypeError, "'NoneType' object is not callable"):
 
-            @self.app.route(rule, uses = (MyController, 'get'))
+            @self.app.route(rule, uses=(MyController, 'get'))
             def handleRoute():
                 pass
-
 
 
 class MyController(Controller):
@@ -218,7 +209,7 @@ class MyController(Controller):
         TestRequestRouting.cache['timeline'].append('handleRoute')
         return ''
 
-    def get_with_param(self, param = None):
+    def get_with_param(self, param=None):
         TestRequestRouting.cache['timeline'].append('handleRoute')
         TestRequestRouting.cache['param'] = param
         return ''

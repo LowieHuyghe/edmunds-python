@@ -6,11 +6,10 @@ class ServiceProviders(object):
 
     def _init_service_providers(self):
         """
-        Initialise concerning service prodivers
+        Initialise concerning service providers
         """
 
         self._registered_service_providers = []
-
 
     def register(self, class_):
         """
@@ -24,5 +23,5 @@ class ServiceProviders(object):
             return
         self._registered_service_providers.append(class_)
 
-        serviceProvider = class_(self)
-        serviceProvider.register()
+        service_provider = class_(self)
+        service_provider.register()

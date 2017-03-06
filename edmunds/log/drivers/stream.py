@@ -9,7 +9,7 @@ class Stream(StreamHandler):
     Stream Driver
     """
 
-    def __init__(self, app, stream = sys.stderr, level = WARNING, format = None):
+    def __init__(self, app, stream=sys.stderr, level=WARNING, format=None):
         """
         Initiate the instance
         :param app:         The application

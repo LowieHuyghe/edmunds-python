@@ -1,10 +1,8 @@
 
-
 class RequestMiddleware(object):
     """
     The Request Middleware
     """
-
 
     def __init__(self, app):
         """
@@ -15,14 +13,12 @@ class RequestMiddleware(object):
 
         self.app = app
 
-
     def before(self):
         """
         Handle before the request
         """
 
         return None
-
 
     def after(self, response):
         """

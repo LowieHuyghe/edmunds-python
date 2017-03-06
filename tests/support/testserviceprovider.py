@@ -16,14 +16,12 @@ class TestServiceProvider(TestCase):
         with self.assert_raises_regexp(TypeError, 'register'):
             MyServiceProviderNoAbstractRegister(self.app)
 
-
     def test_abstract_register(self):
         """
         Test required abstract register method
         """
 
         self.assert_is_instance(MyServiceProviderAbstractRegister(self.app), MyServiceProviderAbstractRegister)
-
 
 
 class MyServiceProviderNoAbstractRegister(ServiceProvider):
