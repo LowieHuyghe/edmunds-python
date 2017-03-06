@@ -5,169 +5,169 @@ import os
 
 
 class TestLogServiceProvider(TestCase):
-	"""
-	Test the Log Service Provider
-	"""
+    """
+    Test the Log Service Provider
+    """
 
-	def test_logging_disabled(self):
-		"""
-		Test logging disabled
-		"""
+    def test_logging_disabled(self):
+        """
+        Test logging disabled
+        """
 
-		log_string = 'LogServiceProviderTest::test_logging_disabled'
+        log_string = 'LogServiceProviderTest::test_logging_disabled'
 
-		# Write config
-		self.write_config([
-			"from edmunds.log.drivers.stream import Stream \n",
-			"try: \n",
-			"	from cStringIO import StringIO \n",
-			"except ImportError: \n",
-			"	from io import StringIO \n",
-			"APP = { \n",
-			"	'debug': False, \n",
-			"	'log': { \n",
-			"		'enabled': False, \n",
-			"		'instances': [ \n",
-			"			{ \n",
-			"				'name': 'stream',\n",
-			"				'driver': Stream,\n",
-			"				'stream': StringIO(),\n",
-			"			}, \n",
-			"		], \n",
-			"	}, \n",
-			"} \n",
-		])
+        # Write config
+        self.write_config([
+            "from edmunds.log.drivers.stream import Stream \n",
+            "try: \n",
+            "   from cStringIO import StringIO \n",
+            "except ImportError: \n",
+            "   from io import StringIO \n",
+            "APP = { \n",
+            "   'debug': False, \n",
+            "   'log': { \n",
+            "       'enabled': False, \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'stream',\n",
+            "               'driver': Stream,\n",
+            "               'stream': StringIO(),\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+        ])
 
-		# Create app
-		app = self.create_application()
-		stream = app.config('app.log.instances')[0]['stream']
+        # Create app
+        app = self.create_application()
+        stream = app.config('app.log.instances')[0]['stream']
 
-		# Add route
-		rule = '/' + helpers.random_str(20)
-		@app.route(rule)
-		def handleRoute():
-			app.logger.error(log_string)
-			return ''
+        # Add route
+        rule = '/' + helpers.random_str(20)
+        @app.route(rule)
+        def handleRoute():
+            app.logger.error(log_string)
+            return ''
 
-		with app.test_client() as c:
+        with app.test_client() as c:
 
-			# Check log files
-			self.assert_not_in(log_string, stream.getvalue())
+            # Check log files
+            self.assert_not_in(log_string, stream.getvalue())
 
-			# Call route
-			c.get(rule)
+            # Call route
+            c.get(rule)
 
-			# Check log files
-			self.assert_not_in(log_string, stream.getvalue())
-
-
-	def test_logging_enabled(self):
-		"""
-		Test logging enabled
-		"""
-
-		log_string = 'LogServiceProviderTest::test_logging_enabled'
-
-		# Write config
-		self.write_config([
-			"from edmunds.log.drivers.stream import Stream \n",
-			"try: \n",
-			"	from cStringIO import StringIO \n",
-			"except ImportError: \n",
-			"	from io import StringIO \n",
-			"APP = { \n",
-			"	'debug': False, \n",
-			"	'log': { \n",
-			"		'enabled': True, \n",
-			"		'instances': [ \n",
-			"			{ \n",
-			"				'name': 'stream',\n",
-			"				'driver': Stream,\n",
-			"				'stream': StringIO(),\n",
-			"			}, \n",
-			"		], \n",
-			"	}, \n",
-			"} \n",
-		])
-
-		# Create app
-		app = self.create_application()
-		stream = app.config('app.log.instances')[0]['stream']
-
-		# Add route
-		rule = '/' + helpers.random_str(20)
-		@app.route(rule)
-		def handleRoute():
-			app.logger.error(log_string)
-			return ''
-
-		with app.test_client() as c:
-
-			# Check log files
-			self.assert_not_in(log_string, stream.getvalue())
-
-			# Call route
-			c.get(rule)
-
-			# Check log files
-			self.assert_in(log_string, stream.getvalue())
+            # Check log files
+            self.assert_not_in(log_string, stream.getvalue())
 
 
-	def test_multiple_loggers(self):
-		"""
-		Test logging enabled
-		"""
+    def test_logging_enabled(self):
+        """
+        Test logging enabled
+        """
 
-		log_string = 'LogServiceProviderTest::test_logging_enabled'
+        log_string = 'LogServiceProviderTest::test_logging_enabled'
 
-		# Write config
-		self.write_config([
-			"from edmunds.log.drivers.stream import Stream \n",
-			"try: \n",
-			"	from cStringIO import StringIO \n",
-			"except ImportError: \n",
-			"	from io import StringIO \n",
-			"APP = { \n",
-			"	'debug': False, \n",
-			"	'log': { \n",
-			"		'enabled': True, \n",
-			"		'instances': [ \n",
-			"			{ \n",
-			"				'name': 'stream',\n",
-			"				'driver': Stream,\n",
-			"				'stream': StringIO(),\n",
-			"			}, \n",
-			"			{ \n",
-			"				'name': 'stream2',\n",
-			"				'driver': Stream,\n",
-			"				'stream': StringIO(),\n",
-			"			}, \n",
-			"		], \n",
-			"	}, \n",
-			"} \n",
-		])
+        # Write config
+        self.write_config([
+            "from edmunds.log.drivers.stream import Stream \n",
+            "try: \n",
+            "   from cStringIO import StringIO \n",
+            "except ImportError: \n",
+            "   from io import StringIO \n",
+            "APP = { \n",
+            "   'debug': False, \n",
+            "   'log': { \n",
+            "       'enabled': True, \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'stream',\n",
+            "               'driver': Stream,\n",
+            "               'stream': StringIO(),\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+        ])
 
-		# Create app
-		app = self.create_application()
-		stream = app.config('app.log.instances')[0]['stream']
-		stream2 = app.config('app.log.instances')[1]['stream']
+        # Create app
+        app = self.create_application()
+        stream = app.config('app.log.instances')[0]['stream']
 
-		# Add route
-		rule = '/' + helpers.random_str(20)
-		@app.route(rule)
-		def handleRoute():
-			app.logger.error(log_string)
-			return ''
+        # Add route
+        rule = '/' + helpers.random_str(20)
+        @app.route(rule)
+        def handleRoute():
+            app.logger.error(log_string)
+            return ''
 
-		with app.test_client() as c:
+        with app.test_client() as c:
 
-			# Check log files
-			self.assert_not_in(log_string, stream.getvalue())
-			self.assert_not_in(log_string, stream2.getvalue())
+            # Check log files
+            self.assert_not_in(log_string, stream.getvalue())
 
-			# Call route
-			c.get(rule)
+            # Call route
+            c.get(rule)
 
-			# Check log files
-			self.assert_in(log_string, stream.getvalue())
-			self.assert_in(log_string, stream2.getvalue())
+            # Check log files
+            self.assert_in(log_string, stream.getvalue())
+
+
+    def test_multiple_loggers(self):
+        """
+        Test logging enabled
+        """
+
+        log_string = 'LogServiceProviderTest::test_logging_enabled'
+
+        # Write config
+        self.write_config([
+            "from edmunds.log.drivers.stream import Stream \n",
+            "try: \n",
+            "   from cStringIO import StringIO \n",
+            "except ImportError: \n",
+            "   from io import StringIO \n",
+            "APP = { \n",
+            "   'debug': False, \n",
+            "   'log': { \n",
+            "       'enabled': True, \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'stream',\n",
+            "               'driver': Stream,\n",
+            "               'stream': StringIO(),\n",
+            "           }, \n",
+            "           { \n",
+            "               'name': 'stream2',\n",
+            "               'driver': Stream,\n",
+            "               'stream': StringIO(),\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+        ])
+
+        # Create app
+        app = self.create_application()
+        stream = app.config('app.log.instances')[0]['stream']
+        stream2 = app.config('app.log.instances')[1]['stream']
+
+        # Add route
+        rule = '/' + helpers.random_str(20)
+        @app.route(rule)
+        def handleRoute():
+            app.logger.error(log_string)
+            return ''
+
+        with app.test_client() as c:
+
+            # Check log files
+            self.assert_not_in(log_string, stream.getvalue())
+            self.assert_not_in(log_string, stream2.getvalue())
+
+            # Call route
+            c.get(rule)
+
+            # Check log files
+            self.assert_in(log_string, stream.getvalue())
+            self.assert_in(log_string, stream2.getvalue())
