@@ -1,7 +1,7 @@
 
 APP = {
 
-	'name': 'Edmunds Instance',
+    'name': 'Edmunds Instance',
 
 }
 
