@@ -28,8 +28,10 @@ pages:
   - ln -s /usr/bin/nodejs /usr/bin/node
   script:
   - python setup.py docs_build
+  - rm -rf public
+  - mv _book public
   artifacts:
     paths:
-    - _book
+    - public
   only:
   - 136-convert-edmunds-to-python
