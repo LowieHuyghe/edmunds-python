@@ -23,8 +23,8 @@ pages:
   stage: deploy
   image: python:2.7
   before_script:
-  - sudo apt-get install nodejs
-  - sudo apt-get install npm
+  - apt-get install nodejs
+  - apt-get install npm
   script:
   - python setup.py docs_build
   artifacts:
