@@ -34,4 +34,4 @@ pages:
     paths:
     - public
   only:
-  - 136-convert-edmunds-to-python
+  - master
