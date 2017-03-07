@@ -94,3 +94,7 @@ ENV/
 # IDEs
 *.sublime-*
 .idea/
+
+# GitBook
+_book/
+docs/_book/
