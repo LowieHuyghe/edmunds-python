@@ -18,3 +18,13 @@ test:3.6:
   image: python:3.6
   script:
   - python setup.py test
+
+pages:
+  stage: deploy
+  script:
+  - python setup.py docs_build
+  artifacts:
+    paths:
+    - _book
+  only:
+  - master
