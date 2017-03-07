@@ -27,4 +27,4 @@ pages:
     paths:
     - _book
   only:
-  - master
+  - 136-convert-edmunds-to-python
