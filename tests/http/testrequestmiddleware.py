@@ -26,15 +26,15 @@ class TestRequestMiddleware(TestCase):
         Test route with no middleware
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
 
         # Check empty
         self.assert_not_in(rule, self.app._request_middleware_by_rule)
 
         # Add route
         @self.app.route(rule)
-        def handleRoute():
-            TestRequestMiddleware.cache['timeline'].append('handleRoute')
+        def handle_route():
+            TestRequestMiddleware.cache['timeline'].append('handle_route')
             return ''
 
         # Check middleware empty
@@ -46,16 +46,16 @@ class TestRequestMiddleware(TestCase):
 
             self.assert_equal(1, len(TestRequestMiddleware.cache['timeline']))
 
-            self.assert_in('handleRoute', TestRequestMiddleware.cache['timeline'])
-            self.assert_equal(0, TestRequestMiddleware.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestRequestMiddleware.cache['timeline'])
+            self.assert_equal(0, TestRequestMiddleware.cache['timeline'].index('handle_route'))
 
     def test_registering(self):
         """
         Test registering the request middleware
         """
 
-        rule = '/' + helpers.random_str(20)
-        rule2 = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
+        rule2 = '/' + self.rand_str(20)
         self.assert_not_equal(rule, rule2)
 
         # Check empty
@@ -64,8 +64,8 @@ class TestRequestMiddleware(TestCase):
 
         # Add route
         @self.app.route(rule, middleware=[MyRequestMiddleware])
-        def handleRoute():
-            TestRequestMiddleware.cache['timeline'].append('handleRoute')
+        def handle_route():
+            TestRequestMiddleware.cache['timeline'].append('handle_route')
             return ''
 
         # Check middleware
@@ -86,16 +86,16 @@ class TestRequestMiddleware(TestCase):
             self.assert_in(MyRequestMiddleware.__name__ + '.before', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(0, TestRequestMiddleware.cache['timeline'].index(MyRequestMiddleware.__name__ + '.before'))
 
-            self.assert_in('handleRoute', TestRequestMiddleware.cache['timeline'])
-            self.assert_equal(1, TestRequestMiddleware.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestRequestMiddleware.cache['timeline'])
+            self.assert_equal(1, TestRequestMiddleware.cache['timeline'].index('handle_route'))
 
             self.assert_in(MyRequestMiddleware.__name__ + '.after', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(2, TestRequestMiddleware.cache['timeline'].index(MyRequestMiddleware.__name__ + '.after'))
 
         # Add second route
         @self.app.route(rule2, middleware=[MyRequestMiddleware, MySecondRequestMiddleware])
-        def handleSecondRoute():
-            TestRequestMiddleware.cache['timeline'].append('handleRoute')
+        def handle_second_route():
+            TestRequestMiddleware.cache['timeline'].append('handle_route')
             return ''
 
         # Check middleware
@@ -124,8 +124,8 @@ class TestRequestMiddleware(TestCase):
             self.assert_in(MySecondRequestMiddleware.__name__ + '.before', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(1, TestRequestMiddleware.cache['timeline'].index(MySecondRequestMiddleware.__name__ + '.before'))
 
-            self.assert_in('handleRoute', TestRequestMiddleware.cache['timeline'])
-            self.assert_equal(2, TestRequestMiddleware.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestRequestMiddleware.cache['timeline'])
+            self.assert_equal(2, TestRequestMiddleware.cache['timeline'].index('handle_route'))
 
             self.assert_in(MySecondRequestMiddleware.__name__ + '.after', TestRequestMiddleware.cache['timeline'])
             self.assert_equal(3, TestRequestMiddleware.cache['timeline'].index(MySecondRequestMiddleware.__name__ + '.after'))
@@ -138,14 +138,14 @@ class TestRequestMiddleware(TestCase):
         Test overwriting of middleware
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
 
         # Check empty
         self.assert_not_in(rule, self.app._request_middleware_by_rule)
 
         # Add route
         @self.app.route(rule, middleware=[MyRequestMiddleware])
-        def handleRoute():
+        def handle_route():
             pass
 
         # Check middleware

@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 
 
 class TestProfilerMiddleware(TestCase):
@@ -40,9 +39,9 @@ class TestProfilerMiddleware(TestCase):
         stream = app.config('app.profiler.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:
@@ -88,9 +87,9 @@ class TestProfilerMiddleware(TestCase):
         stream = app.config('app.profiler.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:
@@ -136,9 +135,9 @@ class TestProfilerMiddleware(TestCase):
         stream = app.config('app.profiler.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:
@@ -184,9 +183,9 @@ class TestProfilerMiddleware(TestCase):
         stream = app.config('app.profiler.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:
@@ -238,9 +237,9 @@ class TestProfilerMiddleware(TestCase):
         stream2 = app.config('app.profiler.instances')[1]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:

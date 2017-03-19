@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 
 
 class TestGoogleAppEngine(TestCase):
@@ -16,9 +15,9 @@ class TestGoogleAppEngine(TestCase):
         if not self.app.is_gae():
             self.skip('Test not running in Google App Engine environment.')
 
-        info_string = 'info_%s' % helpers.random_str(20)
-        warning_string = 'warning_%s' % helpers.random_str(20)
-        error_string = 'error_%s' % helpers.random_str(20)
+        info_string = 'info_%s' % self.rand_str(20)
+        warning_string = 'warning_%s' % self.rand_str(20)
+        error_string = 'error_%s' % self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -54,9 +53,9 @@ class TestGoogleAppEngine(TestCase):
         stream = app.config('app.log.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             app.logger.info(info_string)
             app.logger.warning(warning_string)
             app.logger.error(error_string)

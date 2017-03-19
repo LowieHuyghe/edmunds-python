@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 from edmunds.exceptions.handler import Handler as EdmundsHandler
-import edmunds.support.helpers as helpers
 from werkzeug.exceptions import default_exceptions, HTTPException
 from flask import abort
 
@@ -28,7 +27,7 @@ class TestHandler(TestCase):
         Test http exceptions
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         abort_exception = None
 
         # Add route
@@ -79,7 +78,7 @@ class TestHandler(TestCase):
         Test 404
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
 
         # Check current handler and add new
         self.app.debug = False
@@ -112,7 +111,7 @@ class TestHandler(TestCase):
         Test generic exception
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
 
         # Add route
         @self.app.route(rule)
@@ -155,8 +154,8 @@ class TestHandler(TestCase):
         :return:    void
         """
 
-        rule1 = '/' + helpers.random_str(20)
-        rule2 = '/' + helpers.random_str(20)
+        rule1 = '/' + self.rand_str(20)
+        rule2 = '/' + self.rand_str(20)
 
         # Add route
         @self.app.route(rule1)
@@ -197,7 +196,7 @@ class TestHandler(TestCase):
         :return:    void
         """
 
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
 
         # Add route
         @self.app.route(rule)

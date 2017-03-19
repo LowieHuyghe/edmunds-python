@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 from edmunds.foundation.applicationmiddleware import ApplicationMiddleware
-import edmunds.support.helpers as helpers
 
 
 class TestApplicationMiddleware(TestCase):
@@ -81,10 +80,10 @@ class TestApplicationMiddleware(TestCase):
         self.app.middleware(MyApplicationMiddleware)
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @self.app.route(rule)
-        def handleRoute():
-            TestApplicationMiddleware.cache['timeline'].append('handleRoute')
+        def handle_route():
+            TestApplicationMiddleware.cache['timeline'].append('handle_route')
             return ''
 
         # Call route
@@ -96,8 +95,8 @@ class TestApplicationMiddleware(TestCase):
             self.assert_in(MyApplicationMiddleware.__name__, TestApplicationMiddleware.cache['timeline'])
             self.assert_equal(0, TestApplicationMiddleware.cache['timeline'].index(MyApplicationMiddleware.__name__))
 
-            self.assert_in('handleRoute', TestApplicationMiddleware.cache['timeline'])
-            self.assert_equal(1, TestApplicationMiddleware.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestApplicationMiddleware.cache['timeline'])
+            self.assert_equal(1, TestApplicationMiddleware.cache['timeline'].index('handle_route'))
 
         # Add second middleware
         self.app.middleware(MySecondApplicationMiddleware)
@@ -116,8 +115,8 @@ class TestApplicationMiddleware(TestCase):
             self.assert_in(MyApplicationMiddleware.__name__, TestApplicationMiddleware.cache['timeline'])
             self.assert_equal(1, TestApplicationMiddleware.cache['timeline'].index(MyApplicationMiddleware.__name__))
 
-            self.assert_in('handleRoute', TestApplicationMiddleware.cache['timeline'])
-            self.assert_equal(2, TestApplicationMiddleware.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestApplicationMiddleware.cache['timeline'])
+            self.assert_equal(2, TestApplicationMiddleware.cache['timeline'].index('handle_route'))
 
 
 class MyApplicationMiddlewareNoAbstractHandle(ApplicationMiddleware):

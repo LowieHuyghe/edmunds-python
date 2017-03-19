@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 import os
 import mock
 
@@ -17,7 +16,7 @@ class TestFile(TestCase):
 
         super(TestFile, self).set_up()
 
-        self.prefix = helpers.random_str(20) + '.'
+        self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
         self.clear_paths = []
 
@@ -40,7 +39,7 @@ class TestFile(TestCase):
         Test the file
         """
 
-        string = helpers.random_str(20)
+        string = self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -104,7 +103,7 @@ class TestFile(TestCase):
         :return:    void
         """
 
-        string = helpers.random_str(20)
+        string = self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -154,7 +153,7 @@ class TestFile(TestCase):
         :return:    void
         """
 
-        string = helpers.random_str(20)
+        string = self.rand_str(20)
 
         # Write config
         self.write_config([
