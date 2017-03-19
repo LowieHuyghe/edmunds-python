@@ -26,3 +26,12 @@ deploy:
     on:
       branch: master
       python: "3.6"
+
+
+notifications:
+  slack:
+    rooms:
+      - secure: xOlT1NdovyJlWzD19QQebE9h9tBQ5FMkbdCZKFU/H5f/MoCIMmtV6Pui9yWprulttJX1blAFp9O9QJZUoQiAsdBYzNUenxoRRfkVnZTzyHCZhTXNIfchX+TavtSsMXBVFr9SKm5jzwcHpb14pMiJNe7BC4b1JTewTC8S2pN26ka4KbBK5vtSgjKfah7qjglzfO7caxjTgmv0v5SrOrPXd4qB5W0V61jW+4LWCAl2i5BI3qCJ0eejpd88pNHAVxyLGhzFdnXUIH8rAqAL+wT7Rnm3u6+4NH76nN2X/HV4ExXsdXrcQR07oyNzpjFM+c/k2ec/xOZUShYkWrdwO2J91q2aH8D1eMxXrwI9FKxYBAOT1ZoLjeGuqvt5nzT6pxUTX/9V1euBONPeWOS86H7FBD7OtWHMpexFUY2P53scIPXcUq3AYI2YCTbvlC0QTmisB2arFSQJrYkhp0s9VkGu8V/aJhYLZZSaQIDJhCLuJAg+WlkcvqCEZIyNspMgOPsQ4qWEuyfzx9mN1dM9Iol5stIKIA0u+9pPWv4fYezF1CUzEc2cYlauBjS/oQUx49/9+DKbEbYtJGTPpHVD+JcBD/PcdRGZvPMLKwzNgNYQA8//pTCGcnD5JSvIQDuFBb7By3ZzrVtd1TYbuAc1C42Y10XJS8t0WKLCQgYYo2SiD+U=
+    on_success: always
+    on_failure: always
+  email: false
