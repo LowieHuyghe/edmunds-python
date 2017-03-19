@@ -1,10 +1,14 @@
 
 import abc
 import os
+import sys
 import threading
 import time
 import unittest
+import random
+import string
 ABC = abc.ABCMeta('ABC', (object,), {})
+import edmunds.support.helpers as helpers
 
 
 class TestCase(unittest.TestCase, ABC):
@@ -90,7 +94,7 @@ class TestCase(unittest.TestCase, ABC):
 
         # Make all the threads
         for index in range(count):
-            threads[index] = threading.Thread(target = target)
+            threads[index] = threading.Thread(target=target)
 
         # Start all the thread (for minimun delay this is done after constructing the threads)
         for index in threads:
@@ -104,6 +108,25 @@ class TestCase(unittest.TestCase, ABC):
                     del threads[index]
 
             time.sleep(0.01)
+
+    def rand_str(self, length=20):
+        """
+        Get random string of certain length
+        :param length:  The length of the string
+        :return:        Random string
+        """
+
+        return helpers.random_str(length)
+
+    def rand_int(self, min, max):
+        """
+        Get random integer
+        :param min: Minimum value (included)
+        :param max: Maximum value (included)
+        :return:    Random integer
+        """
+
+        return helpers.random_int(min, max)
 
     def setUp(self):
         self.set_up()
@@ -193,6 +216,8 @@ class TestCase(unittest.TestCase, ABC):
         """
         fun(*args, **kwds) raises exc and the message matches regex r
         """
+        if sys.version_info >= (3, 0):
+            return self.assertRaisesRegex(exc, r, *args, **kwds)
         return self.assertRaisesRegexp(exc, r, *args, **kwds)
 
     def assert_almost_equal(self, a, b):
@@ -235,25 +260,17 @@ class TestCase(unittest.TestCase, ABC):
         """
         r.search(s)
         """
+        if sys.version_info >= (3, 0):
+            return self.assertRegex(s, r)
         return self.assertRegexpMatches(s, r)
 
     def assert_not_regexp_matches(self, s, r):
         """
         not r.search(s)
         """
+        if sys.version_info >= (3, 0):
+            return self.assertNotRegex(s, r)
         return self.assertNotRegexpMatches(s, r)
-
-    def assert_items_equal(self, a, b):
-        """
-        sorted(a) == sorted(b) and works with unhashable objs
-        """
-        return self.assertItemsEqual(a, b)
-
-    def assert_dict_contains_subset(self, a, b):
-        """
-        all the key/value pairs in a exist in b
-        """
-        return self.assertDictContainsSubset(a, b)
 
     def assert_multi_line_equal(self, a, b):
         """
@@ -279,12 +296,6 @@ class TestCase(unittest.TestCase, ABC):
         """
         return self.assertTupleEqual(a, b)
 
-    def assert_set_equal(self, a, b):
-        """
-        sets or frozensets
-        """
-        return self.assertSetEqual(a, b)
-
     def assert_dict_equal(self, a, b):
         """
         dicts
@@ -296,3 +307,30 @@ class TestCase(unittest.TestCase, ABC):
         Skip this test
         """
         return self.skipTest(reason)
+
+    def assert_equal_deep(self, expected, value, check_type=True):
+        """
+        Assert equal deep
+        :param expected:    The expected value
+        :param value:       The value
+        :param check_type:  Do type check
+        :return:
+        """
+
+        if isinstance(expected, dict):
+            self.assert_is_instance(value, dict)
+
+            for i in range(0, len(expected)):
+                self.assert_equal_deep(sorted(expected)[i], sorted(value)[i], check_type=check_type)
+                self.assert_equal_deep(expected[sorted(expected)[i]], value[sorted(value)[i]], check_type=check_type)
+
+        elif isinstance(expected, list):
+            self.assert_is_instance(value, list)
+
+            for i in range(0, len(expected)):
+                self.assert_equal_deep(expected[i], value[i], check_type=check_type)
+
+        else:
+            self.assert_equal(expected, value)
+            if check_type:
+                self.assert_is_instance(value, type(expected))
