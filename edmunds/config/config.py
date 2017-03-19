@@ -120,7 +120,7 @@ class Config(FlaskConfig):
             })
 
         # Check if environment set
-        if not self.has('app.env'):
+        if not self.has('app.env') or not self('app.env'):
             raise RuntimeError('App environment is not set.')
 
         # Load environment specific .env

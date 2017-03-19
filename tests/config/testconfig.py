@@ -492,3 +492,20 @@ class TestConfig(TestCase):
         self.assert_true(app.config.has(key))
         self.assert_equal(value, app.config(key))
         self.assert_equal(value, app.config[old_key])
+
+    def test_env_no_environment(self):
+        """
+        Test no environment is set
+        :return:    void
+        """
+
+        with self.assert_raises_regexp(RuntimeError, 'environment'):
+            self.create_application('')
+
+    def test_non_python_config_file(self):
+        """
+        Test a non-python config file
+        :return:    void
+        """
+
+
