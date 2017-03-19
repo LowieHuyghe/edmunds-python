@@ -212,3 +212,32 @@ class TestTestCase(unittest.TestCase):
 
         self._testCase.skip('For testing purposes')
         raise RuntimeError('Should be skipped')
+
+    def test_rand_str(self):
+        """
+        Test rand_str
+        """
+
+        # Test length
+        self.assertEqual(0, len(self._testCase.rand_str(0)))
+        self.assertEqual(7, len(self._testCase.rand_str(7)))
+        self.assertEqual(23, len(self._testCase.rand_str(23)))
+        self.assertNotEqual(23, len(self._testCase.rand_str(32)))
+
+        # Test uniqueness
+        self.assertEqual(self._testCase.rand_str(0), self._testCase.rand_str(0))
+        self.assertNotEqual(self._testCase.rand_str(7), self._testCase.rand_str(7))
+        self.assertNotEqual(self._testCase.rand_str(23), self._testCase.rand_str(23))
+        self.assertNotEqual(self._testCase.rand_str(32), self._testCase.rand_str(32))
+
+    def test_rand_int(self):
+        """
+        Test rand_int
+        """
+
+        self.assertLessEqual(1, self._testCase.rand_int(1, 10))
+        self.assertGreaterEqual(10, self._testCase.rand_int(0, 10))
+        self.assertLessEqual(1, self._testCase.rand_int(1, 100))
+        self.assertGreaterEqual(100, self._testCase.rand_int(0, 100))
+        self.assertLessEqual(1, self._testCase.rand_int(1, 1000))
+        self.assertGreaterEqual(1000, self._testCase.rand_int(0, 1000))

@@ -5,8 +5,6 @@ import sys
 import threading
 import time
 import unittest
-import random
-import string
 ABC = abc.ABCMeta('ABC', (object,), {})
 import edmunds.support.helpers as helpers
 
