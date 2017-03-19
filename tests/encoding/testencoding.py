@@ -1,6 +1,6 @@
 
-from scriptcore.testing.testcase import TestCase
-from scriptcore.encoding.encoding import Encoding
+from tests.testcase import TestCase
+from edmunds.encoding.encoding import Encoding
 import sys
 
 
