@@ -1,6 +1,8 @@
 
 from tests.testcase import TestCase
+from flask.config import Config as FlaskConfig
 import os
+import mock
 
 
 class TestConfig(TestCase):
@@ -19,6 +21,7 @@ class TestConfig(TestCase):
 
         # Make config file
         self.config_file = os.path.join(self.app.config.root_path, 'config/%s.py' % random_file)
+        self.config_file_txt = os.path.join(self.app.config.root_path, 'config/%s.txt' % random_file)
 
         # Make env file
         self.env_file = os.path.join(self.app.config.root_path, '.env.py')
@@ -48,6 +51,8 @@ class TestConfig(TestCase):
         # Remove config file
         if os.path.exists(self.config_file):
             os.remove(self.config_file)
+        if os.path.exists(self.config_file_txt):
+            os.remove(self.config_file_txt)
 
         # Set backup env-file back
         if os.path.exists(self.env_file):
@@ -492,6 +497,71 @@ class TestConfig(TestCase):
         self.assert_true(app.config.has(key))
         self.assert_equal(value, app.config(key))
         self.assert_equal(value, app.config[old_key])
+
+    def test_non_py_config_file(self):
+        """
+        Testing non-python config file
+        :return:    void
+        """
+
+        # Make config file
+        with open(self.config_file_txt, 'w+') as f:
+            f.writelines([
+                "GOT = { \n",
+                "   'son': 'Jon Snow 1', \n",
+                "   'girl': 'Igritte 1', \n",
+                "   'enemy': ('The', 'White', 'Walkers', 1), \n",
+                "   'weapon': 'Dragon Glass 1', \n",
+                "} \n",
+            ])
+
+        data = [
+            ('got.son',                 'GOT_SON',              'Jon Snow 1',                   ),
+            ('got.girl',                'GOT_GIRL',             'Igritte 1',                    ),
+            ('got.enemy',               'GOT_ENEMY',            ('The', 'White', 'Walkers', 1), ),
+            ('got.weapon',              'GOT_WEAPON',           'Dragon Glass 1',               ),
+        ]
+
+        # Make app
+        app = self.create_application()
+
+        # Check config
+        for row in data:
+            key, old_key, value = row
+
+            self.assert_false(app.config.has(key))
+            self.assert_is_none(app.config(key))
+            self.assert_not_in(old_key, app.config)
+
+    def test_failed_config_load(self):
+        """
+        Test failed config load
+        :return:    void
+        """
+
+        key = 'got.season'
+        old_key = 'GOT_SEASON'
+
+        # Make config file
+        with open(self.config_file, 'w+') as f:
+            f.write("%s = %d" % (old_key, 1))
+
+        # Make app
+        app = self.create_application()
+
+        # Check config
+        self.assert_true(app.config.has(key))
+        self.assert_equal(1, app.config(key))
+        self.assert_equal(1, app.config[old_key])
+
+        # Make app
+        with mock.patch.object(FlaskConfig, 'from_pyfile', return_value=False):
+            app = self.create_application()
+
+            # Check config
+            self.assert_false(app.config.has(key))
+            self.assert_is_none(app.config(key))
+            self.assert_not_in(old_key, app.config)
 
     def test_env_no_environment(self):
         """
