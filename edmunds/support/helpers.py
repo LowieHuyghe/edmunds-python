@@ -3,6 +3,7 @@ import os
 import random
 import string
 import re
+from edmunds.encoding.encoding import Encoding
 
 
 def get_full_class_name(class_):
@@ -36,7 +37,17 @@ def random_str(length):
     :rtype:         str
     """
 
-    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
+    return Encoding.normalize(''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(length)))
+
+def random_int(min, max):
+    """
+    Get random integer
+    :param min: Minimum value (included)
+    :param max: Maximum value (included)
+    :return:    Random integer
+    """
+
+    return random.randint(min, max)
 
 def snake_case(camel_case):
     """
