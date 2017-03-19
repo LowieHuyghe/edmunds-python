@@ -22,12 +22,13 @@ class Handler(object):
         Report the exception
         :param exception:   The exception
         :type  exception:   Exception
+        :return:            Should report
         """
 
         if exception.__class__ in self.dont_report:
-            return;
+            return False
 
-        pass
+        return True
 
     def render(self, exception):
         """

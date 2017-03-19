@@ -119,7 +119,6 @@ class TestHandler(TestCase):
         def handleRoute():
             TestHandler.cache['timeline'].append('handleRoute')
             raise RuntimeError('MyRuntimeError')
-            return ''
 
         # Check current handler and add new
         self.app.debug = False
@@ -150,11 +149,86 @@ class TestHandler(TestCase):
             self.assert_true(isinstance(TestHandler.cache['timeline'][3], RuntimeError))
             self.assert_equal('MyRuntimeError', '%s' % TestHandler.cache['timeline'][3])
 
+    def test_dont_report(self):
+        """
+        Test dont_report
+        :return:    void
+        """
+
+        rule1 = '/' + helpers.random_str(20)
+        rule2 = '/' + helpers.random_str(20)
+
+        # Add route
+        @self.app.route(rule1)
+        def handleRoute1():
+            TestHandler.cache['timeline'].append('handleRoute1')
+            raise IOError()
+
+        @self.app.route(rule2)
+        def handleRoute2():
+            TestHandler.cache['timeline'].append('handleRoute2')
+            raise OSError()
+
+        self.app.debug = False
+        self.app.config({
+            'app.exceptions.handler': MyHandler
+        })
+
+        # Call route
+        with self.app.test_client() as c:
+            c.get(rule1)
+            c.get(rule2)
+
+            self.assert_equal(7, len(TestHandler.cache['timeline']))
+
+            self.assert_equal(0, TestHandler.cache['timeline'].index('handleRoute1'))
+            self.assert_equal('handleRoute1', TestHandler.cache['timeline'][0])
+            self.assert_equal(MyHandler.__name__ + '.report', TestHandler.cache['timeline'][1])
+            self.assert_equal(MyHandler.__name__ + '.render', TestHandler.cache['timeline'][2])
+            self.assert_true(isinstance(TestHandler.cache['timeline'][3], IOError))
+            self.assert_equal('handleRoute2', TestHandler.cache['timeline'][4])
+            self.assert_equal(MyHandler.__name__ + '.render', TestHandler.cache['timeline'][5])
+            self.assert_true(isinstance(TestHandler.cache['timeline'][6], OSError))
+
+    def test_raise_exception_debug(self):
+        """
+        Test raise exception in debug environment
+        :return:    void
+        """
+
+        rule = '/' + helpers.random_str(20)
+
+        # Add route
+        @self.app.route(rule)
+        def handleRoute():
+            raise RuntimeError(rule)
+
+        self.app.debug = True
+        self.app.config({
+            'app.exceptions.handler': MyHandler
+        })
+
+        # Call route
+        with self.assert_raises_regexp(RuntimeError, rule):
+            with self.app.test_client() as c:
+                c.get(rule)
+
 
 class MyHandler(EdmundsHandler):
     """
     Exception Handler class
     """
+
+    def __init__(self, app):
+        """
+        Initiate
+        :param app:     The application
+        :type  app:     Edmunds.Application
+        """
+
+        super(MyHandler, self).__init__(app)
+
+        self.dont_report.append(OSError)
 
     def report(self, exception):
         """
@@ -163,9 +237,8 @@ class MyHandler(EdmundsHandler):
         :type  exception:   Exception
         """
 
-        TestHandler.cache['timeline'].append(self.__class__.__name__ + '.report')
-
-        super(MyHandler, self).report(exception)
+        if super(MyHandler, self).report(exception):
+            TestHandler.cache['timeline'].append(self.__class__.__name__ + '.report')
 
     def render(self, exception):
         """
