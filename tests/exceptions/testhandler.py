@@ -33,8 +33,8 @@ class TestHandler(TestCase):
 
         # Add route
         @self.app.route(rule)
-        def handleRoute():
-            TestHandler.cache['timeline'].append('handleRoute')
+        def handle_route():
+            TestHandler.cache['timeline'].append('handle_route')
             abort(abort_exception)
             return ''
 
@@ -62,8 +62,8 @@ class TestHandler(TestCase):
 
                 self.assert_equal(4, len(TestHandler.cache['timeline']))
 
-                self.assert_in('handleRoute', TestHandler.cache['timeline'])
-                self.assert_equal(0, TestHandler.cache['timeline'].index('handleRoute'))
+                self.assert_in('handle_route', TestHandler.cache['timeline'])
+                self.assert_equal(0, TestHandler.cache['timeline'].index('handle_route'))
 
                 self.assert_in(MyHandler.__name__ + '.report', TestHandler.cache['timeline'])
                 self.assert_equal(1, TestHandler.cache['timeline'].index(MyHandler.__name__ + '.report'))
@@ -116,8 +116,8 @@ class TestHandler(TestCase):
 
         # Add route
         @self.app.route(rule)
-        def handleRoute():
-            TestHandler.cache['timeline'].append('handleRoute')
+        def handle_route():
+            TestHandler.cache['timeline'].append('handle_route')
             raise RuntimeError('MyRuntimeError')
 
         # Check current handler and add new
@@ -137,8 +137,8 @@ class TestHandler(TestCase):
 
             self.assert_equal(4, len(TestHandler.cache['timeline']))
 
-            self.assert_in('handleRoute', TestHandler.cache['timeline'])
-            self.assert_equal(0, TestHandler.cache['timeline'].index('handleRoute'))
+            self.assert_in('handle_route', TestHandler.cache['timeline'])
+            self.assert_equal(0, TestHandler.cache['timeline'].index('handle_route'))
 
             self.assert_in(MyHandler.__name__ + '.report', TestHandler.cache['timeline'])
             self.assert_equal(1, TestHandler.cache['timeline'].index(MyHandler.__name__ + '.report'))
@@ -160,13 +160,13 @@ class TestHandler(TestCase):
 
         # Add route
         @self.app.route(rule1)
-        def handleRoute1():
-            TestHandler.cache['timeline'].append('handleRoute1')
-            raise IOError()
+        def handle_route1():
+            TestHandler.cache['timeline'].append('handle_route1')
+            raise SystemError()
 
         @self.app.route(rule2)
-        def handleRoute2():
-            TestHandler.cache['timeline'].append('handleRoute2')
+        def handle_route2():
+            TestHandler.cache['timeline'].append('handle_route2')
             raise OSError()
 
         self.app.debug = False
@@ -177,16 +177,17 @@ class TestHandler(TestCase):
         # Call route
         with self.app.test_client() as c:
             c.get(rule1)
+        with self.app.test_client() as c:
             c.get(rule2)
 
             self.assert_equal(7, len(TestHandler.cache['timeline']))
 
-            self.assert_equal(0, TestHandler.cache['timeline'].index('handleRoute1'))
-            self.assert_equal('handleRoute1', TestHandler.cache['timeline'][0])
+            self.assert_equal(0, TestHandler.cache['timeline'].index('handle_route1'))
+            self.assert_equal('handle_route1', TestHandler.cache['timeline'][0])
             self.assert_equal(MyHandler.__name__ + '.report', TestHandler.cache['timeline'][1])
             self.assert_equal(MyHandler.__name__ + '.render', TestHandler.cache['timeline'][2])
-            self.assert_true(isinstance(TestHandler.cache['timeline'][3], IOError))
-            self.assert_equal('handleRoute2', TestHandler.cache['timeline'][4])
+            self.assert_true(isinstance(TestHandler.cache['timeline'][3], SystemError))
+            self.assert_equal('handle_route2', TestHandler.cache['timeline'][4])
             self.assert_equal(MyHandler.__name__ + '.render', TestHandler.cache['timeline'][5])
             self.assert_true(isinstance(TestHandler.cache['timeline'][6], OSError))
 
@@ -200,7 +201,7 @@ class TestHandler(TestCase):
 
         # Add route
         @self.app.route(rule)
-        def handleRoute():
+        def handle_route():
             raise RuntimeError(rule)
 
         self.app.debug = True
