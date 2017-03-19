@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/LowieHuyghe/edmunds/badge.svg?branch=master)](https://coveralls.io/github/LowieHuyghe/edmunds?branch=master)
 [![Updates](https://pyup.io/repos/github/LowieHuyghe/edmunds/shield.svg)](https://pyup.io/repos/github/LowieHuyghe/edmunds/)
 
-Edmunds is a Python framework based on [Flask](http://flask.pocoo.org/) for building web applications
+Edmunds is a Python framework for building web applications
 with a firm base to start from. Edmunds takes away the pain of
 bootstrap code so you can kickoff with the things that really
 matter.
