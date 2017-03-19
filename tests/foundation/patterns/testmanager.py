@@ -138,6 +138,44 @@ class TestManager(TestCase):
         self.assert_equal(tuple_config['name'], tuple_return[0])
         self.assert_equal(tuple_config['tuple'], tuple_return[1])
 
+    def test_no_instances(self):
+        """
+        Test no instances
+        :return:    void
+        """
+
+        # Make manager
+        manager = Manager(self.app, [])
+
+        with self.assert_raises_regexp(RuntimeError, 'no instance'):
+            manager._resolve('test')
+
+        with self.assert_raises_regexp(RuntimeError, 'No instances'):
+            manager.get('test')
+
+    def test_duplicate_instances(self):
+        """
+        Test duplicate instances
+        :return:    void
+        """
+
+        # Make manager
+        manager = MyManager(self.app, [
+            {
+                'name': 'object',
+                'driver': object,
+                'object': 1
+            },
+            {
+                'name': 'object',
+                'driver': tuple,
+                'object': 2
+            }
+        ])
+
+        with self.assert_raises_regexp(RuntimeError, 'Re-declaring instance'):
+            manager._load()
+
 
 class MyManager(Manager):
 
