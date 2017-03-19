@@ -9,7 +9,7 @@ Jinja2==2.9.5
 MarkupSafe==1.0
 oauth2client==4.0.0
 packaging==16.8
-pudb==2017.1
+pudb==2017.1.1
 pyasn1==0.2.3
 pyasn1-modules==0.0.8
 Pygments==2.2.0
