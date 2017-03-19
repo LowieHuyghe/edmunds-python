@@ -42,9 +42,9 @@ class TestLogServiceProvider(TestCase):
         stream = app.config('app.log.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             app.logger.error(log_string)
             return ''
 
@@ -93,9 +93,9 @@ class TestLogServiceProvider(TestCase):
         stream = app.config('app.log.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             app.logger.error(log_string)
             return ''
 
@@ -150,9 +150,9 @@ class TestLogServiceProvider(TestCase):
         stream2 = app.config('app.log.instances')[1]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             app.logger.error(log_string)
             return ''
 

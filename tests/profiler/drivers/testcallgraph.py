@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 import os
 
 
@@ -16,7 +15,7 @@ class TestCallGraph(TestCase):
 
         super(TestCallGraph, self).set_up()
 
-        self.prefix = helpers.random_str(20) + '.'
+        self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
         self.profs_directory = os.sep + 'profs' + os.sep
         self.clear_paths = []
@@ -78,9 +77,9 @@ class TestCallGraph(TestCase):
         self.assert_equal(self.prefix, app.config('app.profiler.instances')[0]['prefix'])
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:
