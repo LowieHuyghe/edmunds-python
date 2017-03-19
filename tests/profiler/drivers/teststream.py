@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 
 
 class TestStream(TestCase):
@@ -40,9 +39,9 @@ class TestStream(TestCase):
         stream = app.config('app.profiler.instances')[0]['stream']
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             return ''
 
         with app.test_client() as c:

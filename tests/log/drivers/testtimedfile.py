@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
 import os
 
 
@@ -16,7 +15,7 @@ class TestTimedFile(TestCase):
 
         super(TestTimedFile, self).set_up()
 
-        self.prefix = helpers.random_str(20) + '.'
+        self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
         self.logs_directory = os.sep + 'logs' + os.sep
         self.clear_paths = []
@@ -40,9 +39,9 @@ class TestTimedFile(TestCase):
         Test the timed file
         """
 
-        info_string = 'info_%s' % helpers.random_str(20)
-        warning_string = 'warning_%s' % helpers.random_str(20)
-        error_string = 'error_%s' % helpers.random_str(20)
+        info_string = 'info_%s' % self.rand_str(20)
+        warning_string = 'warning_%s' % self.rand_str(20)
+        error_string = 'error_%s' % self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -84,9 +83,9 @@ class TestTimedFile(TestCase):
         self.assert_equal(self.prefix, app.config('app.log.instances')[0]['prefix'])
 
         # Add route
-        rule = '/' + helpers.random_str(20)
+        rule = '/' + self.rand_str(20)
         @app.route(rule)
-        def handleRoute():
+        def handle_route():
             app.logger.info(info_string)
             app.logger.warning(warning_string)
             app.logger.error(error_string)

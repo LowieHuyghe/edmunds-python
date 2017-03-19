@@ -1,8 +1,6 @@
 
 from tests.testcase import TestCase
-from edmunds.config.config import Config
 import os
-import edmunds.support.helpers as helpers
 
 
 class TestConfig(TestCase):
@@ -17,7 +15,7 @@ class TestConfig(TestCase):
 
         super(TestConfig, self).set_up()
 
-        random_file = helpers.random_str(10)
+        random_file = self.rand_str(10)
 
         # Make config file
         self.config_file = os.path.join(self.app.config.root_path, 'config/%s.py' % random_file)
