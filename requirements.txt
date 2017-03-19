@@ -13,7 +13,7 @@ pudb==2017.1.1
 pyasn1==0.2.3
 pyasn1-modules==0.0.8
 Pygments==2.2.0
-pyparsing==2.1.10
+pyparsing==2.2.0
 pyprof2calltree==1.4.0
 rsa==3.4.2
 six==1.10.0
