@@ -2,5 +2,11 @@
     "root": "./docs",
     "structure": {
         "summary": "SUMMARY.md"
+    },
+    "plugins": [ "github" ],
+    "pluginsConfig": {
+        "github": {
+            "url": "https://github.com/LowieHuyghe/edmunds"
+        }
     }
 }
