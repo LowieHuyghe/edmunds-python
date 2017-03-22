@@ -98,3 +98,4 @@ ENV/
 # GitBook
 _book/
 docs/_book/
+node_modules/
