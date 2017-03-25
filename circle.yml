@@ -1,0 +1,38 @@
+
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  post:
+    - pyenv global 2.7.12 3.4.4 3.5.2 3.6.0
+    - "[ -d ~/virtualenvs/venv-2.7 ] || virtualenv -p $( which python2.7 ) ~/virtualenvs/venv-2.7"
+    - "[ -d ~/virtualenvs/venv-3.4 ] || virtualenv -p $( which python3.4 ) ~/virtualenvs/venv-3.4"
+    - "[ -d ~/virtualenvs/venv-3.5 ] || virtualenv -p $( which python3.5 ) ~/virtualenvs/venv-3.5"
+    - "[ -d ~/virtualenvs/venv-3.6 ] || virtualenv -p $( which python3.6 ) ~/virtualenvs/venv-3.6"
+
+dependencies:
+  override:
+    - ~/virtualenvs/venv-2.7/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.4/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.5/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.6/bin/pip install -r requirements.txt
+
+    - pip install codecov
+
+test:
+  override:
+    - ~/virtualenvs/venv-2.7/bin/coverage run --source=scriptcore setup.py test
+    - ~/virtualenvs/venv-3.4/bin/coverage run --source=scriptcore setup.py test
+    - ~/virtualenvs/venv-3.5/bin/coverage run --source=scriptcore setup.py test
+    - ~/virtualenvs/venv-3.6/bin/coverage run --source=scriptcore setup.py test
+
+  post:
+    - codecov
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ~/virtualenvs/venv-3.6/bin/python setup.py docs_publish
