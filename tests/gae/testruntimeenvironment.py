@@ -1,36 +1,15 @@
 
-from tests.testcase import TestCase
-from edmunds.gae.runtimeenvironment import RuntimeEnvironment
-from google.appengine.ext import testbed
+from tests.gae.gaetestcase import GaeTestCase
 from edmunds.application import Application
-from edmunds.gae.application import Application as GaeApplication
+if GaeTestCase.can_run():
+    from edmunds.gae.runtimeenvironment import RuntimeEnvironment
+    from edmunds.gae.application import Application as GaeApplication
 
 
-class TestRuntimeEnvironment(TestCase):
+class TestRuntimeEnvironment(GaeTestCase):
     """
     Test the RuntimeEnvironment
     """
-
-    def set_up(self):
-        """
-        Set up the test case
-        """
-
-        super(TestRuntimeEnvironment, self).set_up()
-
-        self._testbed = testbed.Testbed()
-
-    def tear_down(self):
-        """
-        Tear down the test case
-        """
-
-        super(TestRuntimeEnvironment, self).tear_down()
-
-        try:
-            self._testbed.deactivate()
-        except testbed.NotActivatedError:
-            pass
 
     def test_is_gae(self):
         """
@@ -40,9 +19,13 @@ class TestRuntimeEnvironment(TestCase):
 
         env = RuntimeEnvironment()
 
+        self.assert_true(env.is_gae())
+
+        self.testbed.deactivate()
+
         self.assert_false(env.is_gae())
 
-        self._testbed.activate()
+        self.testbed.activate()
 
         self.assert_true(env.is_gae())
 
@@ -52,8 +35,12 @@ class TestRuntimeEnvironment(TestCase):
         :return:    void
         """
 
+        self.assert_is_instance(self.create_application(), GaeApplication)
+
+        self.testbed.deactivate()
+
         self.assert_is_instance(self.create_application(), Application)
 
-        self._testbed.activate()
+        self.testbed.activate()
 
         self.assert_is_instance(self.create_application(), GaeApplication)
