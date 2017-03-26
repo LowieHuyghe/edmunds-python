@@ -1,19 +1,25 @@
 
-from tests.testcase import TestCase
+from tests.gae.gaetestcase import GaeTestCase
 
 
-class TestGoogleAppEngine(TestCase):
+class TestGoogleAppEngine(GaeTestCase):
     """
     Test the GoogleAppEngine
     """
+
+    def set_up(self):
+        """
+        Set up the test case
+        """
+
+        super(TestGoogleAppEngine, self).set_up()
+
+        self.testbed.init_logservice_stub()
 
     def test_stream(self):
         """
         Test the stream
         """
-
-        if not self.app.is_gae():
-            self.skip('Test not running in Google App Engine environment.')
 
         info_string = 'info_%s' % self.rand_str(20)
         warning_string = 'warning_%s' % self.rand_str(20)
