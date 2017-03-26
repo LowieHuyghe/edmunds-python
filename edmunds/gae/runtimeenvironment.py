@@ -19,9 +19,6 @@ class RuntimeEnvironment(object):
         if 'AUTH_DOMAIN' not in os.environ:
             return False
 
-        if 'INSTANCE_ID' not in os.environ:
-            return False
-
         if 'SERVER_SOFTWARE' not in os.environ:
             return False
 

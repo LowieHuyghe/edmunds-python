@@ -1,6 +1,6 @@
 
 from edmunds.application import Application as EdmundsApplication
-from google.appengine.api import modules
+from google.appengine.api import app_identity
 
 
 class Application(EdmundsApplication):
@@ -15,4 +15,4 @@ class Application(EdmundsApplication):
         :rtype:     str
         """
 
-        return modules.get_current_instance_id()
+        return app_identity.get_application_id()

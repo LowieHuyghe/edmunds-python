@@ -7,6 +7,7 @@
   - [Service Providers](coreconcepts/serviceproviders.md)
   
 * Getting Started
+  - [Installation](gettingstarted/installation.md)
   - [Configuration](gettingstarted/configuration.md)
   - [Debugging and Profiling](gettingstarted/debuggingandprofiling.md)
   - [Errors And Logging](gettingstarted/errorsandlogging.md)
