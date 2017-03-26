@@ -18,6 +18,7 @@ machine:
 dependencies:
   cache_directories:
     - /opt/google-cloud-sdk
+    - /opt/circleci/nodejs/v4.2.6/lib/node_modules
 
   override:
     - ~/virtualenvs/venv-2.7/bin/pip install -r requirements.txt
@@ -34,6 +35,9 @@ dependencies:
 
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components install app-engine-python
+
+    - npm install -g gitbook-cli
+    - gitbook install
 
 test:
   override:
