@@ -1,10 +1,8 @@
 
-from tests.testcase import TestCase
-from edmunds.gae.application import Application
-from google.appengine.ext import testbed
+from tests.gae.gaetestcase import GaeTestCase
 
 
-class TestApplication(TestCase):
+class TestApplication(GaeTestCase):
     """
     Test the Application
     """
@@ -14,20 +12,9 @@ class TestApplication(TestCase):
         Set up the test case
         """
 
-        self._testbed = testbed.Testbed()
-        self._testbed.activate()
-        self._testbed.init_app_identity_stub()
-
         super(TestApplication, self).set_up()
 
-    def tear_down(self):
-        """
-        Tear down the test case
-        """
-
-        super(TestApplication, self).tear_down()
-
-        self._testbed.deactivate()
+        self.testbed.init_app_identity_stub()
 
     def test_app_id(self):
         """
