@@ -1,40 +1,34 @@
 
-from tests.testcase import TestCase
+from tests.gae.gaetestcase import GaeTestCase
 import os
 
 
-class TestGoogleCloudStorage(TestCase):
+class TestGoogleCloudStorage(GaeTestCase):
     """
     Test the GoogleCloudStorage
     """
 
     def set_up(self):
-        """w
+        """
         Set up the test case
         """
 
         super(TestGoogleCloudStorage, self).set_up()
 
+        self.testbed.init_app_identity_stub()
+        self.testbed.init_memcache_stub()
+        self.testbed.init_urlfetch_stub()
+        self.testbed.init_blobstore_stub()
+        self.testbed.init_datastore_v3_stub()
+
         self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
         self.clear_paths = []
-
-    def tear_down(self):
-        """
-        Tear down the test case
-        """
-
-        super(TestGoogleCloudStorage, self).tear_down()
-
-        # TODO: Delete the files
 
     def test_google_cloud_storage(self):
         """
         Test the google cloud storage
         """
-
-        if not self.app.is_gae():
-            self.skip('Test not running in Google App Engine environment.')
 
         string = self.rand_str(20)
 
