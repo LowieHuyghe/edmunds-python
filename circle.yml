@@ -26,6 +26,10 @@ dependencies:
 
     - pip install codecov
 
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components install app-engine-python
+    - export PYTHONPATH="$PYTHONPATH:/opt/google-cloud-sdk/platform/google_appengine"
+    - export PYTHONPATH="$PYTHONPATH:/opt/google-cloud-sdk/platform/google_appengine/lib/yaml/lib"
+
 test:
   override:
     - ~/virtualenvs/venv-2.7/bin/coverage run --source=edmunds setup.py test
