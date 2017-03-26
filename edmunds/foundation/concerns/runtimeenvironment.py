@@ -25,7 +25,7 @@ class RuntimeEnvironment(object):
         if self.is_testing():
             self.testing = True
 
-    def environment(self, matches = None):
+    def environment(self, matches=None):
         """
         Get the environment
         :param matches:     Environment to match with
