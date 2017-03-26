@@ -36,8 +36,7 @@ dependencies:
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
     - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components install app-engine-python
 
-    - npm install -g gitbook-cli
-    - gitbook install
+    - ~/virtualenvs/venv-3.6/bin/python setup.py docs_install
 
 test:
   override:
