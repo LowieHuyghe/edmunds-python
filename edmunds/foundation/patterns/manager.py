@@ -40,6 +40,9 @@ class Manager(object):
         if name is None:
             name = list(self._instances.keys())[0]
 
+        if name not in self._instances:
+            raise RuntimeError('No instance declared named "%s"' % name)
+
         return self._instances[name]
 
     def all(self):
