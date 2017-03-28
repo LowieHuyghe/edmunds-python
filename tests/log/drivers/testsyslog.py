@@ -39,6 +39,7 @@ class TestSysLog(TestCase):
         # Write config
         self.write_config([
             "from edmunds.log.drivers.syslog import SysLog \n",
+            "from logging.handlers import SysLogHandler \n",
             "from logging import WARNING \n",
             "APP = { \n",
             "   'debug': False, \n",
@@ -50,6 +51,9 @@ class TestSysLog(TestCase):
             "               'driver': SysLog,\n",
             "               'level': WARNING,\n",
             "               'address': ('%s', %i),\n" % (self._server.host, self._server.port),
+            "               'facility': SysLogHandler.LOG_USER,\n",
+            "               'socktype': None,\n",
+            "               'format': '%(message)s',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
