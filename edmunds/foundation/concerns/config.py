@@ -1,10 +1,13 @@
 
+import os
+
+
 class Config(object):
     """
     This class concerns config code for Application to extend from
     """
 
-    def _init_config(self, config_dirs = None):
+    def _init_config(self, config_dirs=None):
         """
         Initiate the configuration
         :param config_dirs:     Configuration directories
@@ -13,8 +16,15 @@ class Config(object):
 
         # Configuration directories
         if config_dirs is None:
+            # edmunds/edmunds/foundation/concerns
+            edmunds_config_dir = os.path.dirname(os.path.realpath(__file__))
+            # edmunds/edmunds/foundation/concerns/../../../config
+            edmunds_config_dir = os.path.join(edmunds_config_dir, os.pardir, os.pardir, os.pardir, 'config')
+            # edmunds/config
+            edmunds_config_dir = os.path.abspath(edmunds_config_dir)
+
             config_dirs = [
-                'lib/edmunds/src/config',
+                edmunds_config_dir,
                 'config',
             ]
 
