@@ -3,9 +3,15 @@ from tests.testcase import TestCase
 import unittest
 import sys
 import os
+from time import sleep
+from threading import Lock
 
 
 class TestTestCase(unittest.TestCase):
+
+    thread_lock = Lock()
+    thread_count = 0
+    thread_overlapping_count = 0
 
     def setUp(self):
         """
@@ -15,6 +21,9 @@ class TestTestCase(unittest.TestCase):
 
         self._testCase = TestCase(methodName='assertEqual')
         self._testCase.set_up()
+
+        TestTestCase.thread_count = 0
+        TestTestCase.thread_overlapping_count = 0
 
     def tearDown(self):
         """
@@ -287,3 +296,44 @@ class TestTestCase(unittest.TestCase):
         self._testCase.tearDown()
 
         self.assertFalse(os.path.isfile(file))
+
+    def test_thread_iter(self):
+        """
+        Test thread iter
+        :return:    void
+        """
+
+        def thread_test():
+            with TestTestCase.thread_lock:
+                TestTestCase.thread_count += 1
+            i = TestTestCase.thread_overlapping_count
+            sleep(0.01)
+            TestTestCase.thread_overlapping_count = i + 1
+
+        done = []
+        for index in self._testCase.thread_iter(thread_test, 1000):
+            done.append(index)
+
+        self.assertEqual(1000, TestTestCase.thread_count)
+        self.assertGreater(1000, TestTestCase.thread_overlapping_count)
+
+        for i in range(1000):
+            self.assertIn(i, done)
+
+    def test_thread(self):
+        """
+        Test thread
+        :return:    void
+        """
+
+        def thread_test():
+            with TestTestCase.thread_lock:
+                TestTestCase.thread_count += 1
+            i = TestTestCase.thread_overlapping_count
+            sleep(0.01)
+            TestTestCase.thread_overlapping_count = i + 1
+
+        self._testCase.thread(thread_test, 1000)
+
+        self.assertEqual(1000, TestTestCase.thread_count)
+        self.assertGreater(1000, TestTestCase.thread_overlapping_count)
