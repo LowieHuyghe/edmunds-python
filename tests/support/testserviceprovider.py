@@ -21,7 +21,11 @@ class TestServiceProvider(TestCase):
         Test required abstract register method
         """
 
-        self.assert_is_instance(MyServiceProviderAbstractRegister(self.app), MyServiceProviderAbstractRegister)
+        provider = MyServiceProviderAbstractRegister(self.app)
+        self.assert_is_instance(provider, MyServiceProviderAbstractRegister)
+
+        # Call each method once (for test coverage as the 'pass' in the parent is not run)
+        provider.register()
 
 
 class MyServiceProviderNoAbstractRegister(ServiceProvider):
@@ -38,4 +42,4 @@ class MyServiceProviderAbstractRegister(ServiceProvider):
     """
 
     def register(self):
-        pass
+        super(MyServiceProviderAbstractRegister, self).register()
