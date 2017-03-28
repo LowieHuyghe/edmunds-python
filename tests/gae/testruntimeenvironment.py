@@ -12,6 +12,20 @@ class TestRuntimeEnvironment(GaeTestCase):
     Test the RuntimeEnvironment
     """
 
+    def tear_down(self):
+        """
+        Tear down the test case
+        """
+
+        super(TestRuntimeEnvironment, self).tear_down()
+
+        if 'CURRENT_VERSION_ID' in os.environ:
+            del os.environ['CURRENT_VERSION_ID']
+        if 'AUTH_DOMAIN' in os.environ:
+            del os.environ['AUTH_DOMAIN']
+        if 'SERVER_SOFTWARE' in os.environ:
+            del os.environ['SERVER_SOFTWARE']
+
     def test_is_gae(self):
         """
         Test is gae
