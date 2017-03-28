@@ -73,6 +73,13 @@ class TestFile(TestCase):
             "               'backup_count': 0,\n"
             "               'format': '%(message)s',\n"
             "           }, \n",
+            "           { \n",
+            "               'name': 'file2',\n",
+            "               'driver': File,\n",
+            "               'directory': '%s',\n" % self.logs_directory,
+            "               'prefix': '%s',\n" % self.prefix,
+            "               'level': WARNING,\n"
+            "           }, \n",
             "       ], \n",
             "   }, \n",
             "} \n",
