@@ -45,7 +45,7 @@ class Middleware(object):
         # Add middleware
         middleware = options.pop('middleware', None)
         if middleware is None:
-            return;
+            return
 
         # Validate
         for class_ in middleware:
