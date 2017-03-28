@@ -114,7 +114,7 @@ class TestCase(unittest.TestCase, ABC):
 
         # Wait for each thread to finish
         while len(threads) > 0:
-            for index in threads.keys():
+            for index in list(threads.keys()):
                 if not threads[index].isAlive():
                     yield index
                     del threads[index]
