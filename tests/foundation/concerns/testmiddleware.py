@@ -296,6 +296,7 @@ class MySecondApplicationMiddleware(ApplicationMiddleware):
 
         return super(MySecondApplicationMiddleware, self).handle(environment, start_response)
 
+
 class MyRequestMiddleware(RequestMiddleware):
     """
     Request Middleware class
