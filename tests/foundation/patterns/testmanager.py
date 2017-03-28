@@ -63,6 +63,10 @@ class TestManager(TestCase):
         self.assert_equal(dict_config['name'], dict_return[0])
         self.assert_equal(dict_config['dict'], dict_return[1])
 
+        # Test non-existing
+        with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
+            manager.get('non_existing')
+
     def test_all(self):
         """
         Test the all method
