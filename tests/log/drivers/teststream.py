@@ -34,6 +34,7 @@ class TestStream(TestCase):
             "               'driver': Stream,\n",
             "               'stream': StringIO(),\n",
             "               'level': WARNING,\n"
+            "               'format': '%(message)s',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",

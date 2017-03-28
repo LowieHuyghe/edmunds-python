@@ -69,6 +69,10 @@ class TestTimedFile(TestCase):
             "               'directory': '%s',\n" % self.logs_directory,
             "               'prefix': '%s',\n" % self.prefix,
             "               'level': WARNING,\n"
+            "               'when': 'h',\n"
+            "               'interval': 1,\n"
+            "               'backup_count': 0,\n"
+            "               'format': '%(message)s',\n"
             "           }, \n",
             "       ], \n",
             "   }, \n",
