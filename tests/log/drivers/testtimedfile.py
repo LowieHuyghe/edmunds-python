@@ -74,6 +74,13 @@ class TestTimedFile(TestCase):
             "               'backup_count': 0,\n"
             "               'format': '%(message)s',\n"
             "           }, \n",
+            "           { \n",
+            "               'name': 'timedfile2',\n",
+            "               'driver': TimedFile,\n",
+            "               'directory': '%s',\n" % self.logs_directory,
+            "               'prefix': '%s',\n" % self.prefix,
+            "               'level': WARNING,\n"
+            "           }, \n",
             "       ], \n",
             "   }, \n",
             "} \n",
