@@ -29,37 +29,43 @@ class BaseDriver(ABC):
         pass
 
     @abc.abstractmethod
-    def read_stream(self, path):
+    def read_stream(self, path, raise_errors=False):
         """
         Get a read stream to a certain path
-        :param path:    The path to the file
-        :type  path:    str
-        :return:        The write stream
-        :rtype:         Stream
+        :param path:            The path to the file
+        :type  path:            str
+        :param raise_errors:    Raise the errors
+        :type  raise_errors:    bool
+        :return:                The read stream
+        :rtype:                 Stream
         """
         pass
 
     @abc.abstractmethod
-    def copy(self, path, new_path):
+    def copy(self, path, new_path, raise_errors=False):
         """
         Copy a certain path
-        :param path:        The path to the file
-        :type  path:        str
-        :param new_path:    The path to the new file
-        :type  new_path:    str
-        :return:            Success
-        :rtype:             bool
+        :param path:            The path to the file
+        :type  path:            str
+        :param new_path:        The path to the new file
+        :type  new_path:        str
+        :param raise_errors:    Raise the errors
+        :type  raise_errors:    bool
+        :return:                Success
+        :rtype:                 bool
         """
         pass
 
     @abc.abstractmethod
-    def delete(self, path):
+    def delete(self, path, raise_errors=False):
         """
         Delete a certain path
-        :param path:    The path to the file
-        :type  path:    str
-        :return:        Success
-        :rtype:         bool
+        :param path:            The path to the file
+        :type  path:            str
+        :param raise_errors:    Raise the errors
+        :type  raise_errors:    bool
+        :return:                Success
+        :rtype:                 bool
         """
         pass
 

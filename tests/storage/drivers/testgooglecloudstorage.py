@@ -90,6 +90,11 @@ class TestGoogleCloudStorage(GaeTestCase):
         self.assert_true(app.fs().delete('nice2.txt'))
         self.assert_false(app.fs().exists('nice2.txt'))
 
+        # Read stream non existing
+        self.assert_false(app.fs().read_stream('nice2.txt'))
+        with self.assert_raises(gcs.NotFoundError):
+            app.fs().read_stream('nice2.txt', raise_errors=True)
+
         # Copy non existing
         self.assert_false(app.fs().copy('nice2.txt', 'nice.txt'))
         with self.assert_raises(gcs.NotFoundError):

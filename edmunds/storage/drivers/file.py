@@ -41,20 +41,29 @@ class File(BaseDriver):
 
         return open(path, 'w+')
 
-    def read_stream(self, path):
+    def read_stream(self, path, raise_errors=False):
         """
         Get a read stream to a certain path
-        :param path:    The path to the file
-        :type  path:    str
-        :return:        The write stream
-        :rtype:         Stream
+        :param path:            The path to the file
+        :type  path:            str
+        :param raise_errors:    Raise the errors
+        :type  raise_errors:    bool
+        :return:                The read stream
+        :rtype:                 Stream
         """
 
         path = self._get_processed_path(path)
 
-        return open(path, 'r')
+        try:
+            return open(path, 'r')
 
-    def copy(self, path, new_path, raise_errors = False):
+        except (IOError, OSError) as e:
+            if raise_errors:
+                raise e
+            else:
+                return None
+
+    def copy(self, path, new_path, raise_errors=False):
         """
         Copy a certain path
         :param path:            The path to the file
@@ -80,7 +89,7 @@ class File(BaseDriver):
             else:
                 return False
 
-    def delete(self, path, raise_errors = False):
+    def delete(self, path, raise_errors=False):
         """
         Delete a certain path
         :param path:            The path to the file
