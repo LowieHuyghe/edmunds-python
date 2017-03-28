@@ -57,7 +57,7 @@ class GoogleCloudStorage(BaseDriver):
 
         return gcs.open(path, 'r')
 
-    def copy(self, path, new_path, raise_errors = False):
+    def copy(self, path, new_path, raise_errors=False):
         """
         Copy a certain path
         :param path:            The path to the file
@@ -83,7 +83,7 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return False
 
-    def delete(self, path, raise_errors = False):
+    def delete(self, path, raise_errors=False):
         """
         Delete a certain path
         :param path:            The path to the file

@@ -1,6 +1,8 @@
 
 from tests.gae.gaetestcase import GaeTestCase
 import os
+if GaeTestCase.can_run():
+    import cloudstorage as gcs
 
 
 class TestGoogleCloudStorage(GaeTestCase):
@@ -87,3 +89,13 @@ class TestGoogleCloudStorage(GaeTestCase):
         self.assert_true(app.fs().exists('nice2.txt'))
         self.assert_true(app.fs().delete('nice2.txt'))
         self.assert_false(app.fs().exists('nice2.txt'))
+
+        # Copy non existing
+        self.assert_false(app.fs().copy('nice2.txt', 'nice.txt'))
+        with self.assert_raises(gcs.NotFoundError):
+            app.fs().copy('nice2.txt', 'nice.txt', raise_errors=True)
+
+        # Delete non existing
+        self.assert_false(app.fs().delete('nice2.txt'))
+        with self.assert_raises(gcs.NotFoundError):
+            app.fs().delete('nice2.txt', raise_errors=True)
