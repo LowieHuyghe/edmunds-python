@@ -132,7 +132,7 @@ class MyApplicationMiddlewareAbstractHandle(ApplicationMiddleware):
     Application Middleware class with handle method
     """
 
-    def handle(self, environment, startResponse):
+    def handle(self, environment, start_response):
         pass
 
 
@@ -141,11 +141,11 @@ class MyApplicationMiddleware(ApplicationMiddleware):
     Application Middleware class
     """
 
-    def handle(self, environment, startResponse):
+    def handle(self, environment, start_response):
 
         TestApplicationMiddleware.cache['timeline'].append(self.__class__.__name__)
 
-        return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+        return super(MyApplicationMiddleware, self).handle(environment, start_response)
 
 
 class MySecondApplicationMiddleware(ApplicationMiddleware):
@@ -153,8 +153,8 @@ class MySecondApplicationMiddleware(ApplicationMiddleware):
     Second Application Middleware class
     """
 
-    def handle(self, environment, startResponse):
+    def handle(self, environment, start_response):
 
         TestApplicationMiddleware.cache['timeline'].append(self.__class__.__name__)
 
-        return super(MySecondApplicationMiddleware, self).handle(environment, startResponse)
+        return super(MySecondApplicationMiddleware, self).handle(environment, start_response)

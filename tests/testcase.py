@@ -6,13 +6,14 @@ import os
 
 class TestCase(EdmundsTestCase):
 
-    def create_application(self, environment='testing'):
+    def create_application(self, environment='testing', config_dirs=None):
         """
         Create the application for testing
-        :param environment:
-        :return:  Application
+        :param environment: Environment
+        :param config_dirs: Config dirs
+        :return:            Application
         """
 
         os.environ['APP_ENV'] = environment
 
-        return Application('')
+        return Application('', config_dirs=config_dirs)

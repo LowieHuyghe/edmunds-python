@@ -241,3 +241,27 @@ class TestTestCase(unittest.TestCase):
         self.assertGreaterEqual(100, self._testCase.rand_int(0, 100))
         self.assertLessEqual(1, self._testCase.rand_int(1, 1000))
         self.assertGreaterEqual(1000, self._testCase.rand_int(0, 1000))
+
+    def test_temp(self):
+        """
+        Test temp directories and files
+        :return:    void
+        """
+
+        dir = self._testCase.temp_dir()
+        if not os.path.isdir(dir):
+            os.makedirs(dir)
+        if not os.path.isdir(dir):
+            raise RuntimeError('Temp dir still does not exist')
+
+        file = self._testCase.temp_file()
+        if not os.path.isfile(file):
+            open(file, 'a').close()
+
+        self.assertTrue(os.path.isdir(dir))
+        self.assertTrue(os.path.isfile(file))
+
+        self._testCase.tearDown()
+
+        self.assertFalse(os.path.isdir(dir))
+        self.assertFalse(os.path.isfile(file))

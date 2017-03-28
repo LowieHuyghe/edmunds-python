@@ -7,6 +7,8 @@ import time
 import unittest
 ABC = abc.ABCMeta('ABC', (object,), {})
 import edmunds.support.helpers as helpers
+import tempfile
+import shutil
 
 
 class TestCase(unittest.TestCase, ABC):
@@ -30,6 +32,10 @@ class TestCase(unittest.TestCase, ABC):
 
             self.app = self.create_application()
 
+        # Temp dirs and files
+        self._temp_files = []
+        self._temp_dirs = []
+
     def tear_down(self):
         """
         Tear down the test case
@@ -38,6 +44,14 @@ class TestCase(unittest.TestCase, ABC):
         # Remove env-testing-file
         if os.path.exists(self.env_testing_test_file):
             os.remove(self.env_testing_test_file)
+
+        # Clean temp files and dirs
+        for temp_file in self._temp_files:
+            if os.path.isfile(temp_file):
+                os.remove(temp_file)
+        for temp_dir in self._temp_dirs:
+            if os.path.isdir(temp_dir):
+                shutil.rmtree(temp_dir)
 
     @abc.abstractmethod
     def create_application(self):
@@ -125,6 +139,63 @@ class TestCase(unittest.TestCase, ABC):
         """
 
         return helpers.random_int(min, max)
+
+    def temp_file(self, only_path=False, suffix='', prefix='tmp'):
+        """
+        Get temp file
+        :param only_path:   Only return the path
+        :param suffix:      File suffix
+        :param prefix:      File prefix
+        :return:            Path to temp file
+        """
+
+        path = tempfile.mktemp(suffix=suffix, prefix=prefix)
+        if only_path and os.path.isfile(path):
+            os.remove(path)
+        self._temp_files.append(path)
+        return path
+
+    def write_temp_file(self, content, suffix='', prefix='tmp'):
+        """
+        Write to temp file
+        :param content: The content to write to file
+        :param suffix:  File suffix
+        :param prefix:  File prefix
+        :return:        The file path
+        """
+
+        path = self.temp_file(suffix=suffix, prefix=prefix)
+
+        with open(path, 'w') as file:
+            file.write(content)
+
+        return path
+
+    def temp_dir(self, only_path=False, suffix='', prefix='tmp'):
+        """
+        Get temp dir
+        :param only_path:   Only return the path
+        :param suffix:      File suffix
+        :param prefix:      File prefix
+        :return:            Path to temp dir
+        """
+
+        path = tempfile.mkdtemp(suffix=suffix, prefix=prefix)
+        if only_path and os.path.isdir(path):
+            shutil.rmtree(path)
+        self._temp_dirs.append(path)
+        return path
+
+    def directory(self):
+        """
+        Get the tests directory
+        :return:    Directory
+        """
+
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        tests_dir = os.path.join(current_dir, os.pardir, os.pardir, os.pardir, 'tests')
+        tests_dir = os.path.abspath(tests_dir)
+        return tests_dir
 
     def setUp(self):
         self.set_up()

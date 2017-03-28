@@ -21,7 +21,7 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
 
     config_class = Config
 
-    def __init__(self, import_name, config_dirs = None):
+    def __init__(self, import_name, config_dirs=None):
         """
         Initialize the application
         :param import_name:     Import name
