@@ -44,18 +44,27 @@ class GoogleCloudStorage(BaseDriver):
 
         return gcs.open(path, 'w')
 
-    def read_stream(self, path):
+    def read_stream(self, path, raise_errors=False):
         """
         Get a read stream to a certain path
-        :param path:    The path to the file
-        :type  path:    str
-        :return:        The write stream
-        :rtype:         Stream
+        :param path:            The path to the file
+        :type  path:            str
+        :param raise_errors:    Raise the errors
+        :type  raise_errors:    bool
+        :return:                The read stream
+        :rtype:                 Stream
         """
 
         path = self._get_processed_path(path)
 
-        return gcs.open(path, 'r')
+        try:
+            return gcs.open(path, 'r')
+
+        except (gcs.NotFoundError, gcs.AuthorizationError) as e:
+            if raise_errors:
+                raise e
+            else:
+                return None
 
     def copy(self, path, new_path, raise_errors=False):
         """
