@@ -97,6 +97,21 @@ class TestFile(TestCase):
         self.assert_true(app.fs().delete('nice2.txt'))
         self.assert_false(app.fs().exists('nice2.txt'))
 
+        # Read stream non existing
+        self.assert_false(app.fs().read_stream('nice2.txt'))
+        with self.assert_raises(IOError):
+            app.fs().read_stream('nice2.txt', raise_errors=True)
+
+        # Copy non existing
+        self.assert_false(app.fs().copy('nice2.txt', 'nice.txt'))
+        with self.assert_raises(IOError):
+            app.fs().copy('nice2.txt', 'nice.txt', raise_errors=True)
+
+        # Delete non existing
+        self.assert_false(app.fs().delete('nice2.txt'))
+        with self.assert_raises(OSError):
+            app.fs().delete('nice2.txt', raise_errors=True)
+
     def test_copy_error(self):
         """
         Test error scenario for copy
