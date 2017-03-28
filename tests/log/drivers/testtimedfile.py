@@ -16,6 +16,7 @@ class TestTimedFile(TestCase):
         super(TestTimedFile, self).set_up()
 
         self.prefix = self.rand_str(20) + '.'
+        self.prefix2 = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
         self.logs_directory = os.sep + 'logs' + os.sep
         self.clear_paths = []
@@ -78,7 +79,7 @@ class TestTimedFile(TestCase):
             "               'name': 'timedfile2',\n",
             "               'driver': TimedFile,\n",
             "               'directory': '%s',\n" % self.logs_directory,
-            "               'prefix': '%s',\n" % self.prefix,
+            "               'prefix': '%s',\n" % self.prefix2,
             "               'level': WARNING,\n"
             "           }, \n",
             "       ], \n",
