@@ -46,6 +46,8 @@ class TestGoogleCloudStorage(GaeTestCase):
             "               'driver': GoogleCloudStorage,\n",
             "               'directory': '%s',\n" % self.storage_directory,
             "               'prefix': '%s',\n" % self.prefix,
+            "               'files_path': 'files',\n",
+            "               'bucket': 'test_bucket',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",

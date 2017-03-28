@@ -53,6 +53,7 @@ class TestFile(TestCase):
             "               'driver': File,\n",
             "               'directory': '%s',\n" % self.storage_directory,
             "               'prefix': '%s',\n" % self.prefix,
+            "               'files_path': 'files',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
