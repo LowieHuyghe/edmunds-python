@@ -48,6 +48,7 @@ class TestGoogleAppEngine(GaeTestCase):
             "               'name': 'googleappengine2',\n",
             "               'driver': GoogleAppEngine,\n",
             "               'level': WARNING,\n"
+            "               'format': '%(message)s',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",

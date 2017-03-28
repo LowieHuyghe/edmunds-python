@@ -69,6 +69,9 @@ class TestFile(TestCase):
             "               'directory': '%s',\n" % self.logs_directory,
             "               'prefix': '%s',\n" % self.prefix,
             "               'level': WARNING,\n"
+            "               'max_bytes': 0,\n"
+            "               'backup_count': 0,\n"
+            "               'format': '%(message)s',\n"
             "           }, \n",
             "       ], \n",
             "   }, \n",
