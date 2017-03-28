@@ -35,14 +35,17 @@ class TestRuntimeEnvironment(GaeTestCase):
         env = RuntimeEnvironment()
 
         self.assert_true(env.is_gae())
+        self.assert_true(self.create_application().is_gae())
 
         self.testbed.deactivate()
 
         self.assert_false(env.is_gae())
+        self.assert_false(self.create_application().is_gae())
 
         self.testbed.activate()
 
         self.assert_true(env.is_gae())
+        self.assert_true(self.create_application().is_gae())
 
     def test_is_gae_env(self):
         """
