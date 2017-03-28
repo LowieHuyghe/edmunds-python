@@ -28,6 +28,8 @@ class TestStream(TestCase):
             "               'name': 'stream',\n",
             "               'driver': Stream,\n",
             "               'stream': StringIO(),\n",
+            "               'sort_by': ('time', 'calls'),\n",
+            "               'restrictions': (),\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
