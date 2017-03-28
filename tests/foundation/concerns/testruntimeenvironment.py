@@ -41,3 +41,11 @@ class TestRuntimeEnvironment(TestCase):
         self.assert_false(self.app.is_testing())
         self.assert_true(self.app.environment('production'))
         self.assert_true(self.app.is_production())
+
+    def test_is_gae(self):
+        """
+        Test is gae
+        :return:    void
+        """
+
+        self.assert_false(self.app.is_gae())
