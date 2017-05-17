@@ -203,77 +203,77 @@ class TestCase(unittest.TestCase, ABC):
     def tearDown(self):
         self.tear_down()
 
-    def assert_equal(self, a, b):
+    def assert_equal(self, a, b, msg=None):
         """
         a == b
         """
-        return self.assertEqual(a, b)
+        return self.assertEqual(a, b, msg=msg)
 
-    def assert_not_equal(self, a, b):
+    def assert_not_equal(self, a, b, msg=None):
         """
         a != b
         """
-        return self.assertNotEqual(a, b)
+        return self.assertNotEqual(a, b, msg=msg)
 
-    def assert_true(self, x):
+    def assert_true(self, x, msg=None):
         """
         bool(x) is True
         """
-        return self.assertTrue(x)
+        return self.assertTrue(x, msg=msg)
 
-    def assert_false(self, x):
+    def assert_false(self, x, msg=None):
         """
         bool(x) is False
         """
-        return self.assertFalse(x)
+        return self.assertFalse(x, msg=msg)
 
-    def assert_is(self, a, b):
+    def assert_is(self, a, b, msg=None):
         """
         a is b
         """
-        return self.assertIs(a, b)
+        return self.assertIs(a, b, msg=msg)
 
-    def assert_is_not(self, a, b):
+    def assert_is_not(self, a, b, msg=None):
         """
         a is not b
         """
-        return self.assertIsNot(a, b)
+        return self.assertIsNot(a, b, msg=msg)
 
-    def assert_is_none(self, x):
+    def assert_is_none(self, x, msg=None):
         """
         x is None
         """
-        return self.assertIsNone(x)
+        return self.assertIsNone(x, msg=msg)
 
-    def assert_is_not_none(self, x):
+    def assert_is_not_none(self, x, msg=None):
         """
         x is not None
         """
-        return self.assertIsNotNone(x)
+        return self.assertIsNotNone(x, msg=msg)
 
-    def assert_in(self, a, b):
+    def assert_in(self, a, b, msg=None):
         """
         a in b
         """
-        return self.assertIn(a, b)
+        return self.assertIn(a, b, msg=msg)
 
-    def assert_not_in(self, a, b):
+    def assert_not_in(self, a, b, msg=None):
         """
         a not in b
         """
-        return self.assertNotIn(a, b)
+        return self.assertNotIn(a, b, msg=msg)
 
-    def assert_is_instance(self, a, b):
+    def assert_is_instance(self, a, b, msg=None):
         """
         isinstance(a, b)
         """
-        return self.assertIsInstance(a, b)
+        return self.assertIsInstance(a, b, msg=msg)
 
-    def assert_not_is_instance(self, a, b):
+    def assert_not_is_instance(self, a, b, msg=None):
         """
         not isinstance(a, b)
         """
-        return self.assertNotIsInstance(a, b)
+        return self.assertNotIsInstance(a, b, msg=msg)
 
     def assert_raises(self, exc, *args, **kwds):
         """
@@ -289,87 +289,87 @@ class TestCase(unittest.TestCase, ABC):
             return self.assertRaisesRegex(exc, r, *args, **kwds)
         return self.assertRaisesRegexp(exc, r, *args, **kwds)
 
-    def assert_almost_equal(self, a, b):
+    def assert_almost_equal(self, a, b, msg=None):
         """
         round(a-b, 7) == 0
         """
-        return self.assertAlmostEqual(a, b)
+        return self.assertAlmostEqual(a, b, msg=msg)
 
-    def assert_not_almost_equal(self, a, b):
+    def assert_not_almost_equal(self, a, b, msg=None):
         """
         round(a-b, 7) != 0
         """
-        return self.assertNotAlmostEqual(a, b)
+        return self.assertNotAlmostEqual(a, b, msg=msg)
 
-    def assert_greater(self, a, b):
+    def assert_greater(self, a, b, msg=None):
         """
         a > b
         """
-        return self.assertGreater(a, b)
+        return self.assertGreater(a, b, msg=msg)
 
-    def assert_greater_equal(self, a, b):
+    def assert_greater_equal(self, a, b, msg=None):
         """
         a >= b
         """
-        return self.assertGreaterEqual(a, b)
+        return self.assertGreaterEqual(a, b, msg=msg)
 
-    def assert_less(self, a, b):
+    def assert_less(self, a, b, msg=None):
         """
         a < b
         """
-        return self.assertLess(a, b)
+        return self.assertLess(a, b, msg=msg)
 
-    def assert_less_equal(self, a, b):
+    def assert_less_equal(self, a, b, msg=None):
         """
         a <= b
         """
-        return self.assertLessEqual(a, b)
+        return self.assertLessEqual(a, b, msg=msg)
 
-    def assert_regexp_matches(self, s, r):
+    def assert_regexp_matches(self, s, r, msg=None):
         """
         r.search(s)
         """
         if sys.version_info >= (3, 0):
-            return self.assertRegex(s, r)
-        return self.assertRegexpMatches(s, r)
+            return self.assertRegex(s, r, msg=msg)
+        return self.assertRegexpMatches(s, r, msg=msg)
 
-    def assert_not_regexp_matches(self, s, r):
+    def assert_not_regexp_matches(self, s, r, msg=None):
         """
         not r.search(s)
         """
         if sys.version_info >= (3, 0):
-            return self.assertNotRegex(s, r)
-        return self.assertNotRegexpMatches(s, r)
+            return self.assertNotRegex(s, r, msg=msg)
+        return self.assertNotRegexpMatches(s, r, msg=msg)
 
-    def assert_multi_line_equal(self, a, b):
+    def assert_multi_line_equal(self, a, b, msg=None):
         """
         strings
         """
-        return self.assertMultiLineEqual(a, b)
+        return self.assertMultiLineEqual(a, b, msg=msg)
 
-    def assert_sequence_equal(self, a, b):
+    def assert_sequence_equal(self, a, b, msg=None):
         """
         sequences
         """
-        return self.assertSequenceEqual(a, b)
+        return self.assertSequenceEqual(a, b, msg=msg)
 
-    def assert_list_equal(self, a, b):
+    def assert_list_equal(self, a, b, msg=None):
         """
         lists
         """
-        return self.assertListEqual(a, b)
+        return self.assertListEqual(a, b, msg=msg)
 
-    def assert_tuple_equal(self, a, b):
+    def assert_tuple_equal(self, a, b, msg=None):
         """
         tuples
         """
-        return self.assertTupleEqual(a, b)
+        return self.assertTupleEqual(a, b, msg=msg)
 
-    def assert_dict_equal(self, a, b):
+    def assert_dict_equal(self, a, b, msg=None):
         """
         dicts
         """
-        return self.assertDictEqual(a, b)
+        return self.assertDictEqual(a, b, msg=msg)
 
     def skip(self, reason):
         """
@@ -377,7 +377,7 @@ class TestCase(unittest.TestCase, ABC):
         """
         return self.skipTest(reason)
 
-    def assert_equal_deep(self, expected, value, check_type=True):
+    def assert_equal_deep(self, expected, value, check_type=True, msg=None):
         """
         Assert equal deep
         :param expected:    The expected value
@@ -387,19 +387,19 @@ class TestCase(unittest.TestCase, ABC):
         """
 
         if isinstance(expected, dict):
-            self.assert_is_instance(value, dict)
+            self.assert_is_instance(value, dict, msg=msg)
 
             for i in range(0, len(expected)):
-                self.assert_equal_deep(sorted(expected)[i], sorted(value)[i], check_type=check_type)
-                self.assert_equal_deep(expected[sorted(expected)[i]], value[sorted(value)[i]], check_type=check_type)
+                self.assert_equal_deep(sorted(expected)[i], sorted(value)[i], check_type=check_type, msg=msg)
+                self.assert_equal_deep(expected[sorted(expected)[i]], value[sorted(value)[i]], check_type=check_type, msg=msg)
 
         elif isinstance(expected, list):
-            self.assert_is_instance(value, list)
+            self.assert_is_instance(value, list, msg=msg)
 
             for i in range(0, len(expected)):
-                self.assert_equal_deep(expected[i], value[i], check_type=check_type)
+                self.assert_equal_deep(expected[i], value[i], check_type=check_type, msg=msg)
 
         else:
-            self.assert_equal(expected, value)
+            self.assert_equal(expected, value, msg=msg)
             if check_type:
-                self.assert_is_instance(value, type(expected))
+                self.assert_is_instance(value, type(expected), msg=msg)
