@@ -22,3 +22,14 @@ class Input(MultiDict):
             data = dict()
 
         super(Input, self).__init__(data)
+
+    def validate(self, validator_class):
+        """
+        Validator class
+        :param validator_class: Validator class 
+        :return:                Validator
+        """
+
+        validator = validator_class(self)
+        validator.validate()
+        return validator
