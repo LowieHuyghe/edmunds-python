@@ -15,7 +15,7 @@ class Controller(object):
 
         self._app = app
         self._request = request
-        self._input = Input(self._request)
+        self.__input = None
 
     def initialize(self, **params):
         """
@@ -24,3 +24,24 @@ class Controller(object):
         :type  params:      dict
         """
         pass
+
+    @property
+    def _input(self):
+        """
+        Get input
+        :return:    Input
+        """
+
+        if self.__input is None:
+            self.__input = Input(self._request)
+        return self.__input
+
+    @_input.setter
+    def _input(self, input):
+        """
+        Set input
+        :param input:   Input 
+        :return:        void
+        """
+
+        self.__input = input
