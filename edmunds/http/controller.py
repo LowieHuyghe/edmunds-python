@@ -1,4 +1,8 @@
 
+from flask import request
+from edmunds.http.input import Input
+
+
 class Controller(object):
     """
     The Controller
@@ -10,6 +14,8 @@ class Controller(object):
         """
 
         self._app = app
+        self._request = request
+        self._input = Input(self._request)
 
     def initialize(self, **params):
         """
