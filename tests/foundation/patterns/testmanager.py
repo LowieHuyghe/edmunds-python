@@ -66,6 +66,7 @@ class TestManager(TestCase):
         # Test non-existing
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
             manager.get('non_existing')
+        self.assert_is_none(manager.get('non_existing', no_instance_error=False))
 
     def test_all(self):
         """
