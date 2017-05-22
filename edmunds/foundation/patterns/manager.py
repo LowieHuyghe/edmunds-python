@@ -23,19 +23,24 @@ class Manager(object):
         self._extend = {}
         self._load_lock = Lock()
 
-    def get(self, name=None):
+    def get(self, name=None, no_instance_error=True):
         """
         Get the instance
-        :param name:    The name of the instance
-        :type  name:    str
-        :return:        The driver
-        :rtype:         BaseDriver
+        :param name:                The name of the instance
+        :type  name:                str
+        :param no_instance_error:   The no instance error
+        :type  no_instance_error:   bool
+        :return:                    The driver
+        :rtype:                     BaseDriver
         """
 
         self._load()
 
         if len(self._instances) == 0:
-            raise RuntimeError('No instances declared.')
+            if no_instance_error:
+                raise RuntimeError('No instances declared.')
+            else:
+                return None
 
         if name is None:
             name = list(self._instances.keys())[0]
