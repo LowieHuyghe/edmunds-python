@@ -17,6 +17,7 @@
   - [Request Middleware](http/requestmiddleware.md)
   - [Routing](http/routing.md)
   - [Input and Validation](http/inputandvalidation.md)
+  - [Session](http/session.md)
 
 * Testing
   - [Getting Started](testing/gettingstarted.md)
