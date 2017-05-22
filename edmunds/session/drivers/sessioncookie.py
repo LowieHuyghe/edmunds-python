@@ -1,0 +1,3 @@
+
+class SessionCookie(object):
+    pass
