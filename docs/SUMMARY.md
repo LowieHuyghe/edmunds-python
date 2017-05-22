@@ -18,6 +18,7 @@
   - [Routing](http/routing.md)
   - [Input and Validation](http/inputandvalidation.md)
   - [Session](http/session.md)
+  - [Cookies](http/cookies.md)
 
 * Testing
   - [Getting Started](testing/gettingstarted.md)
