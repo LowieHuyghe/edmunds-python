@@ -66,7 +66,7 @@ class TestManager(TestCase):
         # Test non-existing
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
             manager.get('non_existing')
-        self.assert_is_none(manager.get('non_existing', no_instance_error=False))
+        self.assert_is_none(manager.get('non_existing', no_instance_error=True))
 
     def test_all(self):
         """
@@ -157,6 +157,7 @@ class TestManager(TestCase):
 
         with self.assert_raises_regexp(RuntimeError, 'No instances'):
             manager.get('test')
+        self.assert_is_none(manager.get('test', no_instance_error=True))
 
     def test_duplicate_instances(self):
         """

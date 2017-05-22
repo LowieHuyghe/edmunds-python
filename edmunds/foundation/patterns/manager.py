@@ -23,7 +23,7 @@ class Manager(object):
         self._extend = {}
         self._load_lock = Lock()
 
-    def get(self, name=None, no_instance_error=True):
+    def get(self, name=None, no_instance_error=False):
         """
         Get the instance
         :param name:                The name of the instance
@@ -37,16 +37,17 @@ class Manager(object):
         self._load()
 
         if len(self._instances) == 0:
-            if no_instance_error:
+            if not no_instance_error:
                 raise RuntimeError('No instances declared.')
-            else:
-                return None
+            return None
 
         if name is None:
             name = list(self._instances.keys())[0]
 
         if name not in self._instances:
-            raise RuntimeError('No instance declared named "%s"' % name)
+            if not no_instance_error:
+                raise RuntimeError('No instance declared named "%s"' % name)
+            return None
 
         return self._instances[name]
 
