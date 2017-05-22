@@ -19,7 +19,7 @@ class Controller(object):
         self.__input = None
         self._session = None
         if has_request_context():
-            self._session = app.session(no_instance_error=False)
+            self._session = app.session(no_instance_error=True)
         self._cookies = None
         if has_request_context():
             self._cookies = request.cookies

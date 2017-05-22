@@ -14,7 +14,7 @@ class Session(object):
 
         self._session_manager = SessionManager(self)
 
-    def session(self, name=None, no_instance_error=True):
+    def session(self, name=None, no_instance_error=False):
         """
         The session to use
         :param name:                The name of the session instance
