@@ -3,6 +3,7 @@ from tests.testcase import TestCase
 from edmunds.http.controller import Controller
 from edmunds.http.input import Input
 from flask import request, session
+from edmunds.cookie.cookies import Cookies
 
 
 class TestController(TestCase):
@@ -69,6 +70,19 @@ class TestController(TestCase):
             controller = MyController(app)
 
             self.assert_equal_deep(session, controller._session)
+
+    def test_cookies(self):
+        """
+        Test cookies
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+        # Test session
+        with self.app.test_request_context(rule):
+            controller = MyController(self.app)
+
+            self.assert_is_instance(controller._cookies, Cookies)
 
 
 class MyController(Controller):

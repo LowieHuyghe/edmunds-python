@@ -1,7 +1,8 @@
 
 from flask import request
 from edmunds.http.input import Input
-from flask import has_request_context
+from flask import has_request_context, make_response
+from edmunds.cookie.cookies import Cookies
 
 
 class Controller(object):
@@ -18,11 +19,13 @@ class Controller(object):
         self._request = request
         self.__input = None
         self._session = None
+        self._response = None
+        self._cookies = None
+
         if has_request_context():
             self._session = app.session(no_instance_error=True)
-        self._cookies = None
-        if has_request_context():
-            self._cookies = request.cookies
+            self._response = make_response()
+            self._cookies = Cookies(request.cookies, self._response)
 
     def initialize(self, **params):
         """
