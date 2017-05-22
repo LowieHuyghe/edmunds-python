@@ -167,3 +167,47 @@ class TestCookies(TestCase):
                         found_in_cookies = True
                         self.assert_in(actual_cookies[key], cookie)
                 self.assert_equal(key in new_cookies, found_in_cookies)
+
+    def test_cookies_always_delete(self):
+        """
+        Test cookies always delete
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Request context
+        with self.app.test_request_context(rule):
+            response = make_response()
+
+            cookies = Cookies({}, response)
+
+            # Set value and check headers
+            cookies['key1'] = 'value'
+            self.assert_equal(1, len(response.headers.get_all('Set-Cookie')))
+
+            # No headers should be set
+            del cookies['key1']
+            self.assert_equal(1, len(response.headers.get_all('Set-Cookie')))
+
+    def test_cookies_single_set(self):
+        """
+        Test cookies only set single key
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Request context
+        with self.app.test_request_context(rule):
+            response = make_response()
+
+            cookies = Cookies({}, response)
+
+            # Set value and check headers
+            cookies['key1'] = 'value1'
+            self.assert_equal(1, len(response.headers.get_all('Set-Cookie')))
+
+            # Set value a second time
+            cookies['key1'] = 'value2'
+            self.assert_equal(1, len(response.headers.get_all('Set-Cookie')))

@@ -1,5 +1,6 @@
 
 from collections import MutableMapping
+import re
 
 
 class Cookies(MutableMapping):
@@ -12,6 +13,7 @@ class Cookies(MutableMapping):
         """
 
         self._dict = dict(cookies)
+        self._given_keys = list(cookies.keys())
         self._response = response
 
     def set(self, key, value='', expires=None, **kwargs):
@@ -34,6 +36,7 @@ class Cookies(MutableMapping):
         :return:    void
         """
 
+        self._delete_cookie_header_if_set(k)
         self._response.set_cookie(k, v)
 
         self._dict[k] = v
@@ -47,16 +50,17 @@ class Cookies(MutableMapping):
 
         return self._dict[k]
 
-    def __delitem__(self, v):
+    def __delitem__(self, k):
         """
         Delete key
-        :param v:   Key
+        :param k:   Key
         :return:    void
         """
 
-        self._response.set_cookie(v, '', expires=0)
+        self._delete_cookie_header_if_set(k)
+        self._response.set_cookie(k, '', expires=0)
 
-        del self._dict[v]
+        del self._dict[k]
 
     def __iter__(self):
         """
@@ -72,3 +76,26 @@ class Cookies(MutableMapping):
         :return:    int
         """
         return len(self._dict)
+
+    def _delete_cookie_header_if_set(self, k):
+        """
+        Delete cookie header if set
+        :param k:   Key
+        :return:    Deleted key
+        """
+
+        key_already_set = False
+        set_cookies = self._response.headers.get_all('Set-Cookie')
+        regex_pattern = r'(^|\W)' + k + r'\s*=.*$'
+
+        for set_cookie in set_cookies:
+            if re.match(regex_pattern, set_cookie):
+                key_already_set = True
+                break
+        if key_already_set:
+            self._response.headers.remove('Set-Cookie')
+            for re_set_cookie in set_cookies:
+                if not re.match(regex_pattern, re_set_cookie):
+                    self._response.headers.add('Set-Cookie', re_set_cookie)
+
+        return key_already_set
