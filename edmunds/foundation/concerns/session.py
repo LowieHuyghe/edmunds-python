@@ -1,18 +1,8 @@
 
-from edmunds.session.sessionmanager import SessionManager
-
-
 class Session(object):
     """
     This class concerns session code for Application to extend from
     """
-
-    def _init_session(self):
-        """
-        Initialise concerning session
-        """
-
-        self._session_manager = SessionManager(self)
 
     def session(self, name=None, no_instance_error=False):
         """
@@ -24,4 +14,8 @@ class Session(object):
         :return:                    The session driver
         """
 
-        return self._session_manager.get(name, no_instance_error=no_instance_error)
+        # Enabled?
+        if not self.config('app.session.enabled', False):
+            return None
+
+        return self.extensions['edmunds.session'].get(name, no_instance_error=no_instance_error)

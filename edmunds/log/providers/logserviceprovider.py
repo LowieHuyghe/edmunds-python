@@ -13,9 +13,16 @@ class LogServiceProvider(ServiceProvider):
         Register the service provider
         """
 
+        # Enabled?
+        if not self.app.config('app.log.enabled', False):
+            return
+
         # Make manager and load instance
-        self._manager = LogManager(self.app)
+        manager = LogManager(self.app)
 
         # Add each instance
-        for instance in self._manager.all():
+        for instance in manager.all():
             self.app.logger.addHandler(instance)
+
+        # Assign to extensions
+        self.app.extensions['edmunds.log'] = manager
