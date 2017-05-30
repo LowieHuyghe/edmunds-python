@@ -1,18 +1,8 @@
 
-from edmunds.storage.storagemanager import StorageManager
-
-
 class Storage(object):
     """
     This class concerns storage code for Application to extend from
     """
-
-    def _init_storage(self):
-        """
-        Initialise concerning storage
-        """
-
-        self._storage_manager = StorageManager(self, self.root_path, 'storage')
 
     def fs(self, name=None):
         """
@@ -23,4 +13,4 @@ class Storage(object):
         :rtype:         Edmunds.Storage.Drivers.BaseDriver
         """
 
-        return self._storage_manager.get(name)
+        return self.extensions['edmunds.storage'].get(name)

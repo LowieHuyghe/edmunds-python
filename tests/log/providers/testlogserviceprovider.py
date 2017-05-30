@@ -1,6 +1,6 @@
 
 from tests.testcase import TestCase
-import edmunds.support.helpers as helpers
+from edmunds.log.logmanager import LogManager
 
 
 class TestLogServiceProvider(TestCase):
@@ -40,6 +40,9 @@ class TestLogServiceProvider(TestCase):
         # Create app
         app = self.create_application()
         stream = app.config('app.log.instances')[0]['stream']
+
+        # Test extension
+        self.assert_not_in('edmunds.log', app.extensions)
 
         # Add route
         rule = '/' + self.rand_str(20)
@@ -91,6 +94,11 @@ class TestLogServiceProvider(TestCase):
         # Create app
         app = self.create_application()
         stream = app.config('app.log.instances')[0]['stream']
+
+        # Test extension
+        self.assert_in('edmunds.log', app.extensions)
+        self.assert_is_not_none(app.extensions['edmunds.log'])
+        self.assert_is_instance(app.extensions['edmunds.log'], LogManager)
 
         # Add route
         rule = '/' + self.rand_str(20)
@@ -148,6 +156,11 @@ class TestLogServiceProvider(TestCase):
         app = self.create_application()
         stream = app.config('app.log.instances')[0]['stream']
         stream2 = app.config('app.log.instances')[1]['stream']
+
+        # Test extension
+        self.assert_in('edmunds.log', app.extensions)
+        self.assert_is_not_none(app.extensions['edmunds.log'])
+        self.assert_is_instance(app.extensions['edmunds.log'], LogManager)
 
         # Add route
         rule = '/' + self.rand_str(20)
