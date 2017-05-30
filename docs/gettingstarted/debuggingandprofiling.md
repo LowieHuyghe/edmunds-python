@@ -63,33 +63,33 @@ from Edmunds.Profiler.Drivers.BlackfireIo import BlackfireIo
 import sys
 
 APP = {
-	'debug': True,
-	'profiler':
-	{
-		'enabled': True,
-		'instances':
-		[
-			{
-				'name': 'stream',
-				'driver': Stream,
-				# 'stream': sys.stdout, 	# Optional, default: sys.stdout
-				# 'sort_by': ('calls'), 	# Optional, default: ('time', 'calls')
-				# 'restrictions': (), 		# Optional, default: ()
-			},
-			{
-				'name': 'callgraph',
-				'driver': CallGraph,
-				# 'directory': 'profs', 	# Optional, default: 'profs'
-				# 'prefix': 'Myapp.', 		# Optional, default: ''
-			},
-			{
-				'name': 'blackfireio',
-				'driver': BlackfireIo,
-				# 'directory': 'profs', 	# Optional, default: 'profs'
-				# 'prefix': 'Myapp.', 		# Optional, default: ''
-			},
-		],
-	},
+    'debug': True,
+    'profiler':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'stream',
+                'driver': Stream,
+                # 'stream': sys.stdout, 	# Optional, default: sys.stdout
+                # 'sort_by': ('calls'), 	# Optional, default: ('time', 'calls')
+                # 'restrictions': (), 		# Optional, default: ()
+            },
+            {
+                'name': 'callgraph',
+                'driver': CallGraph,
+                # 'directory': 'profs', 	# Optional, default: 'profs'
+                # 'prefix': 'Myapp.', 		# Optional, default: ''
+            },
+            {
+                'name': 'blackfireio',
+                'driver': BlackfireIo,
+                # 'directory': 'profs', 	# Optional, default: 'profs'
+                # 'prefix': 'Myapp.', 		# Optional, default: ''
+            },
+        ],
+    },
 }
 ```
 The instances will all be used for profiling, so you can have multiple at once.

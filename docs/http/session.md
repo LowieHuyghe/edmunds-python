@@ -7,17 +7,17 @@ To activate session, enabled it by adding instances to your settings:
 from edmunds.session.drivers.sessioncookie import SessionCookie
 
 APP = {
-	'session':
-	{
-		'enabled': True,
-		'instances':
-		[
-			{
-				'name': 'sessioncookie',
-				'driver': SessionCookie
-			},
-		],
-	},
+    'session':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'sessioncookie',
+                'driver': SessionCookie
+            },
+        ],
+    },
 }
 ```
 The instances will all be used for session, so you can have multiple at once.
