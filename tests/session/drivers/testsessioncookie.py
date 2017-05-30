@@ -52,6 +52,7 @@ class TestSessionCookie(TestCase):
             "SECRET_KEY = '%s'\n" % secret_key,
             "APP = { \n",
             "   'session': { \n",
+            "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
             "               'name': 'sessioncookie',\n",

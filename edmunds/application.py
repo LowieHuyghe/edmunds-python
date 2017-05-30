@@ -9,6 +9,8 @@ from edmunds.foundation.concerns.storage import Storage as ConcernsStorage
 from edmunds.foundation.concerns.session import Session as ConcernsSession
 from edmunds.exceptions.exceptionsserviceprovider import ExceptionsServiceProvider
 from edmunds.log.providers.logserviceprovider import LogServiceProvider
+from edmunds.session.providers.sessionserviceprovider import SessionServiceProvider
+from edmunds.storage.providers.storageserviceprovider import StorageServiceProvider
 from edmunds.config.config import Config
 from threading import Lock
 
@@ -34,16 +36,15 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
         super(Application, self).__init__(import_name)
 
         self._init_config(config_dirs)
-        self._init_storage()
         self._init_service_providers()
         self._init_middleware()
         self._init_request_routing()
         self._init_runtime_environment()
-        self._init_session()
 
+        self.register(StorageServiceProvider)
         self.register(ExceptionsServiceProvider)
-        if self.config('app.log.enabled', False):
-            self.register(LogServiceProvider)
+        self.register(LogServiceProvider)
+        self.register(SessionServiceProvider)
 
     def route(self, rule, **options):
         """
