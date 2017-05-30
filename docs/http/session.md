@@ -9,6 +9,7 @@ from edmunds.session.drivers.sessioncookie import SessionCookie
 APP = {
 	'session':
 	{
+		'enabled': True,
 		'instances':
 		[
 			{
