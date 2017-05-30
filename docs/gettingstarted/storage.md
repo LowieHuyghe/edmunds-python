@@ -13,27 +13,27 @@ from Edmunds.Storage.Drivers.File import File
 from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage
 
 APP = {
-	'storage':
-	{
-		'instances':
-		[
-			{
-				'name': 'file',
-				'driver': File,
-				# 'directory': '/storage', 	# Optional, default: '/storage'
-				# 'files_path': 'files', 	# Optional, default: 'files'
-				# 'prefix': 'Myapp.', 		# Optional, default: ''
-			},
-			{
-				'name': 'googlecloudstorage',
-				'driver': GoogleCloudStorage,
-				# 'bucket': 'mybucket', 	# Optional, default: default bucket
-				# 'directory': '/storage', 	# Optional, default: '/storage'
-				# 'files_path': 'files', 	# Optional, default: 'files'
-				# 'prefix': 'Myapp.', 		# Optional, default: ''
-			},
-		],
-	},
+    'storage':
+    {
+        'instances':
+        [
+            {
+                'name': 'file',
+                'driver': File,
+                # 'directory': '/storage', 	# Optional, default: '/storage'
+                # 'files_path': 'files', 	# Optional, default: 'files'
+                # 'prefix': 'Myapp.', 		# Optional, default: ''
+            },
+            {
+                'name': 'googlecloudstorage',
+                'driver': GoogleCloudStorage,
+                # 'bucket': 'mybucket', 	# Optional, default: default bucket
+                # 'directory': '/storage', 	# Optional, default: '/storage'
+                # 'files_path': 'files', 	# Optional, default: 'files'
+                # 'prefix': 'Myapp.', 		# Optional, default: ''
+            },
+        ],
+    },
 }
 ```
 The instances can be used for storage, so you can have multiple at once.

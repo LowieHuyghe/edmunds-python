@@ -12,16 +12,16 @@ Define your Service Provider like so:
 from Edmunds.Support.ServiceProvider import ServiceProvider
 
 class MyServiceProvider(ServiceProvider):
-	"""
-	My Service Provider
-	"""
+    """
+    My Service Provider
+    """
 
-	def register(self):
-		"""
-		Register the service provider
-		"""
-		# Load in your module
-		pass
+    def register(self):
+        """
+        Register the service provider
+        """
+        # Load in your module
+        pass
 ```
 
 

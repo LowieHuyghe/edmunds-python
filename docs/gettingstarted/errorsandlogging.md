@@ -67,56 +67,56 @@ from socket import SOCK_DGRAM
 import sys
 
 APP = {
-	'logging':
-	{
-		'enabled': True,
-		'instances':
-		[
-			{
-				'name': 'file',
-				'driver': File,
-				# 'directory': 'logs', 		# Optional, default: 'logs'
-				# 'prefix': 'Myapp.', 		# Optional, default: ''
-				# 'max_bytes': 0, 			# Optional, default: 0
-				# 'backup_count': 0, 		# Optional, default: 0
-				# 'level': WARNING, 		# Optional, default: WARNING
-				# 'format': '%(message)s', 	# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-			},
-			{
-				'name': 'timedfile',
-				'driver': TimedFile,
-				# 'directory': 'logs', 					# Optional, default: 'logs'
-				# 'prefix': 'Myapp.', 					# Optional, default: ''
-				# 'when': 'H', 							# Optional, default: 'D'
-				# 'interval': 12, 						# Optional, default: 1
-				# 'backup_count': 0, 					# Optional, default: 0
-				# 'level': WARNING, 					# Optional, default: WARNING
-				# 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-			},
-			{
-				'name': 'syslog',
-				'driver': SysLog,
-				# 'address': '/dev/log', 				# Optional, default: ('localhost', SYSLOG_UDP_PORT)
-				# 'facility': SysLogHandler.LOG_USER, 	# Optional, default: SysLogHandler.LOG_USER
-				# 'socktype': SOCK_DGRAM, 				# Optional, default: SOCK_DGRAM
-				# 'level': WARNING, 					# Optional, default: WARNING
-				# 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-			},
-			{
-				'name': 'stream',
-				'driver': Stream,
-				# 'stream': sys.stderr, 				# Optional, default: sys.stderr
-				# 'level': WARNING, 					# Optional, default: WARNING
-				# 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-			},
-			{
-				'name': 'googleappengine',
-				'driver': GoogleAppEngine,
-				# 'level': WARNING, 					# Optional, default: WARNING
-				# 'format': '%(message)s', 				# Optional, default: '%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'
-			},
-		],
-	},
+    'logging':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'file',
+                'driver': File,
+                # 'directory': 'logs', 		# Optional, default: 'logs'
+                # 'prefix': 'Myapp.', 		# Optional, default: ''
+                # 'max_bytes': 0, 			# Optional, default: 0
+                # 'backup_count': 0, 		# Optional, default: 0
+                # 'level': WARNING, 		# Optional, default: WARNING
+                # 'format': '%(message)s', 	# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+            },
+            {
+                'name': 'timedfile',
+                'driver': TimedFile,
+                # 'directory': 'logs', 					# Optional, default: 'logs'
+                # 'prefix': 'Myapp.', 					# Optional, default: ''
+                # 'when': 'H', 							# Optional, default: 'D'
+                # 'interval': 12, 						# Optional, default: 1
+                # 'backup_count': 0, 					# Optional, default: 0
+                # 'level': WARNING, 					# Optional, default: WARNING
+                # 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+            },
+            {
+                'name': 'syslog',
+                'driver': SysLog,
+                # 'address': '/dev/log', 				# Optional, default: ('localhost', SYSLOG_UDP_PORT)
+                # 'facility': SysLogHandler.LOG_USER, 	# Optional, default: SysLogHandler.LOG_USER
+                # 'socktype': SOCK_DGRAM, 				# Optional, default: SOCK_DGRAM
+                # 'level': WARNING, 					# Optional, default: WARNING
+                # 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+            },
+            {
+                'name': 'stream',
+                'driver': Stream,
+                # 'stream': sys.stderr, 				# Optional, default: sys.stderr
+                # 'level': WARNING, 					# Optional, default: WARNING
+                # 'format': '%(message)s', 				# Optional, default: '[%(asctime)s] %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+            },
+            {
+                'name': 'googleappengine',
+                'driver': GoogleAppEngine,
+                # 'level': WARNING, 					# Optional, default: WARNING
+                # 'format': '%(message)s', 				# Optional, default: '%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'
+            },
+        ],
+    },
 }
 ```
 The instances will all be used for logging, so you can have multiple at once.
