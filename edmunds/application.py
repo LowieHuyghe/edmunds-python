@@ -7,17 +7,27 @@ from edmunds.foundation.concerns.middleware import Middleware as ConcernsMiddlew
 from edmunds.foundation.concerns.requestrouting import RequestRouting as ConcernsRequestRouting
 from edmunds.foundation.concerns.storage import Storage as ConcernsStorage
 from edmunds.foundation.concerns.session import Session as ConcernsSession
+from edmunds.foundation.concerns.database import Database as ConcernsDatabase
 from edmunds.exceptions.exceptionsserviceprovider import ExceptionsServiceProvider
 from edmunds.log.providers.logserviceprovider import LogServiceProvider
 from edmunds.session.providers.sessionserviceprovider import SessionServiceProvider
 from edmunds.storage.providers.storageserviceprovider import StorageServiceProvider
+from edmunds.database.providers.databaseserviceprovider import DatabaseServiceProvider
 from edmunds.config.config import Config
 from threading import Lock
 
 _logger_lock = Lock()
 
 
-class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsServiceProviders, ConcernsMiddleware, ConcernsRequestRouting, ConcernsStorage, ConcernsSession):
+class Application(Flask,
+                  ConcernsConfig,
+                  ConcernsRuntimeEnvironment,
+                  ConcernsServiceProviders,
+                  ConcernsMiddleware,
+                  ConcernsRequestRouting,
+                  ConcernsStorage,
+                  ConcernsSession,
+                  ConcernsDatabase):
     """
     The Edmunds Application
     """
@@ -45,6 +55,7 @@ class Application(Flask, ConcernsConfig, ConcernsRuntimeEnvironment, ConcernsSer
         self.register(ExceptionsServiceProvider)
         self.register(LogServiceProvider)
         self.register(SessionServiceProvider)
+        self.register(DatabaseServiceProvider)
 
     def route(self, rule, **options):
         """

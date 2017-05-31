@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-import os
 from flask import session
 from flask.sessions import SecureCookieSession
 from werkzeug.local import LocalProxy
@@ -10,31 +9,6 @@ class TestSessionCookie(TestCase):
     """
     Test the SessionCookie
     """
-
-    def set_up(self):
-        """
-        Set up the test case
-        """
-
-        super(TestSessionCookie, self).set_up()
-
-        self.prefix = self.rand_str(20) + '.'
-        self.storage_directory = os.sep + 'storage' + os.sep
-        self.clear_paths = []
-
-    def tear_down(self):
-        """
-        Tear down the test case
-        """
-
-        super(TestSessionCookie, self).tear_down()
-
-        # Remove all profiler files
-        for directory in self.clear_paths:
-            for root, subdirs, files in os.walk(directory):
-                for file in files:
-                    if file.startswith(self.prefix):
-                        os.remove(os.path.join(root, file))
 
     def test_session_cookie(self):
         """

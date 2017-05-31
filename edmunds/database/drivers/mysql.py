@@ -1,0 +1,3 @@
+
+class MySql(object):
+    pass
