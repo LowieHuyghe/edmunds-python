@@ -12,6 +12,7 @@ class Database(object):
         :param no_instance_error:   Error when no instance
         :type  no_instance_error:   bool
         :return:                    The database driver
+        :rtype:                     sqlalchemy.engine.base.Engine
         """
 
         # Enabled?
