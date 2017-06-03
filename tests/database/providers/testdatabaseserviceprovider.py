@@ -74,8 +74,17 @@ class TestDatabaseServiceProvider(TestCase):
 
             self.write_config(new_config)
 
+            # Create app
+            app = self.create_application()
+
+            # Test extension
+            self.assert_in('edmunds.database', app.extensions)
+            self.assert_is_not_none(app.extensions['edmunds.database'])
+            self.assert_is_instance(app.extensions['edmunds.database'], DatabaseManager)
+
+            # Error on loading of config
             with self.assert_raises_regexp(RuntimeError, 'missing some configuration'):
-                self.create_application()
+                app.extensions['edmunds.database'].get()
 
     def test_register(self):
         """
