@@ -2,6 +2,7 @@
 from edmunds.foundation.patterns.manager import Manager
 from flask_sqlalchemy import SQLAlchemy
 from edmunds.database.drivers.mysql import MySql
+from threading import Lock
 
 
 class DatabaseManager(Manager):
@@ -33,8 +34,22 @@ class DatabaseManager(Manager):
         super(DatabaseManager, self).__init__(app, app.config('app.database.instances', []))
 
         self._files_path = 'database'
+        self._load_lock_sql_alchemy = Lock()
+
+    def _load(self):
+        """
+        Load all the instances
+        """
+
+        if self._instances is not None:
+            return
+        with self._load_lock_sql_alchemy:
+            if self._instances is not None:
+                return
 
         self._init_sql_alchemy()
+
+        return super(DatabaseManager, self)._load()
 
     def _init_sql_alchemy(self):
         """
