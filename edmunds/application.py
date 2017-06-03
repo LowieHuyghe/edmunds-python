@@ -16,8 +16,6 @@ from edmunds.database.providers.databaseserviceprovider import DatabaseServicePr
 from edmunds.config.config import Config
 from threading import Lock
 
-_logger_lock = Lock()
-
 
 class Application(Flask,
                   ConcernsConfig,
@@ -33,6 +31,7 @@ class Application(Flask,
     """
 
     config_class = Config
+    _logger_lock = Lock()
 
     def __init__(self, import_name, config_dirs=None):
         """
@@ -93,7 +92,7 @@ class Application(Flask,
         if not self.logger_name:
             if self._logger and self._logger.name == 'root':
                 return self._logger
-            with _logger_lock:
+            with Application._logger_lock:
                 if self._logger and self._logger.name == 'root':
                     return self._logger
                 from flask.logging import create_logger
