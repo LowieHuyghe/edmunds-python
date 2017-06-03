@@ -71,16 +71,16 @@ class Manager(object):
             if self._instances is not None:
                 return
 
-        instances = {}
+            instances = {}
 
-        for instance_config in self._instances_config:
-            name = instance_config['name']
-            if name in instances:
-                raise RuntimeError('Re-declaring instance with name "%s"' % name)
+            for instance_config in self._instances_config:
+                name = instance_config['name']
+                if name in instances:
+                    raise RuntimeError('Re-declaring instance with name "%s"' % name)
 
-            instances[name] = self._resolve(name)
+                instances[name] = self._resolve(name)
 
-        self._instances = instances
+            self._instances = instances
 
     def _reload(self):
         """

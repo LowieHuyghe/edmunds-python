@@ -47,9 +47,9 @@ class DatabaseManager(Manager):
             if self._instances is not None:
                 return
 
-        self._init_sql_alchemy()
+            self._init_sql_alchemy()
 
-        return super(DatabaseManager, self)._load()
+            return super(DatabaseManager, self)._load()
 
     def _init_sql_alchemy(self):
         """
