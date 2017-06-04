@@ -75,13 +75,18 @@ class DatabaseManager(Manager):
                     raise RuntimeError("Database-driver '%s' is missing some configuration ('user', 'pass', 'host' and 'table' are required)." % instances_config_item['name'])
 
                 driver = instances_config_item['driver'].__name__.lower()
-                mysql_user = instances_config_item['user']
-                mysql_pass = instances_config_item['pass']
-                mysql_host = instances_config_item['host']
-                mysql_table = instances_config_item['table']
-                mysql_port = instances_config_item['port'] if 'port' in instances_config_item else 3306
+                database_user = instances_config_item['user']
+                database_pass = instances_config_item['pass']
+                database_host = instances_config_item['host']
+                database_table = instances_config_item['table']
+                if 'port' in instances_config_item:
+                    database_port = instances_config_item['port']
+                elif instances_config_item['driver'] == PostgreSql:
+                    database_port = 5432
+                else:
+                    database_port = 3306
 
-                instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, mysql_user, mysql_pass, mysql_host, mysql_port, mysql_table)
+                instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, database_user, database_pass, database_host, database_port, database_table)
 
             if instances_config_item['driver'] == Sqlite:
                 if 'file' not in instances_config_item:
