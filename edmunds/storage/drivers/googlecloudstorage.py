@@ -40,7 +40,7 @@ class GoogleCloudStorage(BaseDriver):
         :rtype:         Stream
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         return gcs.open(path, 'w')
 
@@ -55,7 +55,7 @@ class GoogleCloudStorage(BaseDriver):
         :rtype:                 Stream
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         try:
             return gcs.open(path, 'r')
@@ -79,8 +79,8 @@ class GoogleCloudStorage(BaseDriver):
         :rtype:                 bool
         """
 
-        path = self._get_processed_path(path)
-        new_path = self._get_processed_path(new_path)
+        path = self.path(path)
+        new_path = self.path(new_path)
 
         try:
             gcs.copy2(path, new_path)
@@ -103,7 +103,7 @@ class GoogleCloudStorage(BaseDriver):
         :rtype:                 bool
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         try:
             gcs.delete(path)
@@ -124,7 +124,7 @@ class GoogleCloudStorage(BaseDriver):
         :rtype:         bool
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         try:
             gcs.stat(path)
@@ -133,7 +133,7 @@ class GoogleCloudStorage(BaseDriver):
         except gcs.NotFoundError as e:
             return False
 
-    def _get_processed_path(self, path):
+    def path(self, path):
         """
         Get the processed path
         :param path:    The path to the file

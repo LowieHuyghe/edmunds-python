@@ -79,3 +79,14 @@ class BaseDriver(ABC):
         :rtype:         bool
         """
         pass
+
+    @abc.abstractmethod
+    def path(self, path):
+        """
+        Get a processed path
+        :param path:    The path to the file
+        :type  path:    str
+        :return:        Absolute path to file
+        :rtype:         str
+        """
+        pass

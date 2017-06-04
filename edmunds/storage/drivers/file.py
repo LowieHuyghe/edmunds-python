@@ -37,7 +37,7 @@ class File(BaseDriver):
         :rtype:         Stream
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         return open(path, 'w+')
 
@@ -52,7 +52,7 @@ class File(BaseDriver):
         :rtype:                 Stream
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         try:
             return open(path, 'r')
@@ -76,8 +76,8 @@ class File(BaseDriver):
         :rtype:                 bool
         """
 
-        path = self._get_processed_path(path)
-        new_path = self._get_processed_path(new_path)
+        path = self.path(path)
+        new_path = self.path(new_path)
 
         try:
             shutil.copy2(path, new_path)
@@ -100,7 +100,7 @@ class File(BaseDriver):
         :rtype:                 bool
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         try:
             os.remove(path)
@@ -121,11 +121,11 @@ class File(BaseDriver):
         :rtype:         bool
         """
 
-        path = self._get_processed_path(path)
+        path = self.path(path)
 
         return os.path.isfile(path)
 
-    def _get_processed_path(self, path):
+    def path(self, path):
         """
         Get the processed path
         :param path:    The path to the file

@@ -53,3 +53,6 @@ class MyBaseDriver(BaseDriver):
 
     def exists(self, path):
         super(MyBaseDriver, self).exists(path)
+
+    def path(self, path):
+        super(MyBaseDriver, self).path(path)

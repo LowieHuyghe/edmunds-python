@@ -89,7 +89,7 @@ class TestTimedFile(TestCase):
 
         # Create app and fetch stream
         app = self.create_application()
-        directory = app.fs()._get_processed_path(self.logs_directory)
+        directory = app.fs().path(self.logs_directory)
         self.clear_paths.append(directory)
         self.assert_equal(self.logs_directory, app.config('app.log.instances')[0]['directory'])
         self.assert_equal(self.prefix, app.config('app.log.instances')[0]['prefix'])

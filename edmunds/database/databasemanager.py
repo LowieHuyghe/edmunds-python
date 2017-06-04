@@ -2,6 +2,8 @@
 from edmunds.foundation.patterns.manager import Manager
 from flask_sqlalchemy import SQLAlchemy
 from edmunds.database.drivers.mysql import MySql
+from edmunds.database.drivers.postgresql import PostgreSql
+from edmunds.database.drivers.sqlite import Sqlite
 from threading import Lock
 
 
@@ -63,20 +65,33 @@ class DatabaseManager(Manager):
         for instances_config_item in self._instances_config:
             instance_database_uri = None
 
-            if instances_config_item['driver'] == MySql:
+            if instances_config_item['driver'] == MySql \
+                    or instances_config_item['driver'] == PostgreSql:
+
                 if 'user' not in instances_config_item \
                         or 'pass' not in instances_config_item \
                         or 'host' not in instances_config_item \
                         or 'table' not in instances_config_item:
                     raise RuntimeError("Database-driver '%s' is missing some configuration ('user', 'pass', 'host' and 'table' are required)." % instances_config_item['name'])
 
+                driver = instances_config_item['driver'].__name__.lower()
                 mysql_user = instances_config_item['user']
                 mysql_pass = instances_config_item['pass']
                 mysql_host = instances_config_item['host']
                 mysql_table = instances_config_item['table']
                 mysql_port = instances_config_item['port'] if 'port' in instances_config_item else 3306
 
-                instance_database_uri = 'mysql://%s:%s@%s:%s/%s' % (mysql_user, mysql_pass, mysql_host, mysql_port, mysql_table)
+                instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, mysql_user, mysql_pass, mysql_host, mysql_port, mysql_table)
+
+            if instances_config_item['driver'] == Sqlite:
+                if 'file' not in instances_config_item:
+                    raise RuntimeError("Database-driver '%s' is missing some configuration ('file' is required)." % instances_config_item['name'])
+
+                sqlite_file = instances_config_item['file']
+                sqlite_storage_name = instances_config_item['storage'] if 'storage' in instances_config_item else None
+                sqlite_path = self._app.fs(name=sqlite_storage_name).path(sqlite_file)
+
+                instance_database_uri = 'sqlite://%s' % sqlite_path
 
             binds[instances_config_item['name']] = instance_database_uri
             if database_uri is None:
@@ -97,6 +112,39 @@ class DatabaseManager(Manager):
     def _create_my_sql(self, config):
         """
         Create my sql
+        :param config:  The config
+        :return:        SQLAlchemy Engine
+        :rtype:         sqlalchemy.engine.base.Engine
+        """
+
+        db = DatabaseManager.get_sql_alchemy_instance()
+        return db.get_engine(bind=config['name'])
+
+    def _create_postgre_sql(self, config):
+        """
+        Create PostgreSQL
+        :param config:  The config
+        :return:        SQLAlchemy Engine
+        :rtype:         sqlalchemy.engine.base.Engine
+        """
+
+        db = DatabaseManager.get_sql_alchemy_instance()
+        return db.get_engine(bind=config['name'])
+
+    def _create_oracle(self, config):
+        """
+        Create Oracle
+        :param config:  The config
+        :return:        SQLAlchemy Engine
+        :rtype:         sqlalchemy.engine.base.Engine
+        """
+
+        db = DatabaseManager.get_sql_alchemy_instance()
+        return db.get_engine(bind=config['name'])
+
+    def _create_sqlite(self, config):
+        """
+        Create SQLite
         :param config:  The config
         :return:        SQLAlchemy Engine
         :rtype:         sqlalchemy.engine.base.Engine

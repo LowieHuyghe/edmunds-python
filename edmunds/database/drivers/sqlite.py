@@ -1,0 +1,3 @@
+
+class Sqlite(object):
+    pass

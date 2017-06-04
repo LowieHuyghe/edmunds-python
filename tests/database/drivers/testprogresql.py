@@ -4,9 +4,9 @@ from sqlalchemy.engine.base import Engine
 from edmunds.database.databasemanager import DatabaseManager
 
 
-class TestMySql(TestCase):
+class TestPostgreSql(TestCase):
     """
-    Test MySql
+    Test PostgreSql
     """
 
     def test_missing_params(self):
@@ -16,14 +16,14 @@ class TestMySql(TestCase):
         """
 
         config = [
-            "from edmunds.database.drivers.mysql import MySql \n",
+            "from edmunds.database.drivers.postgresql import PostgreSql \n",
             "APP = { \n",
             "   'database': { \n",
             "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
-            "               'name': 'mysql',\n",
-            "               'driver': MySql,\n",
+            "               'name': 'postgresql',\n",
+            "               'driver': PostgreSql,\n",
             "               'user': 'root',\n",
             "               'pass': 'root',\n",
             "               'host': 'localhost',\n",
@@ -49,22 +49,22 @@ class TestMySql(TestCase):
             with self.assert_raises_regexp(RuntimeError, 'missing some configuration'):
                 app.database()
 
-    def test_my_sql(self):
+    def test_postgre_sql(self):
         """
-        Test MySql
+        Test PostgreSql
         :return:    void
         """
 
         # Write config
         self.write_config([
-            "from edmunds.database.drivers.mysql import MySql \n",
+            "from edmunds.database.drivers.postgresql import PostgreSql \n",
             "APP = { \n",
             "   'database': { \n",
             "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
-            "               'name': 'mysql',\n",
-            "               'driver': MySql,\n",
+            "               'name': 'postgresql',\n",
+            "               'driver': PostgreSql,\n",
             "               'user': 'root',\n",
             "               'pass': 'root',\n",
             "               'host': 'localhost',\n",
