@@ -66,7 +66,7 @@ class TestFile(TestCase):
 
         # Create app
         app = self.create_application()
-        directory = app.fs()._get_processed_path(None)
+        directory = app.fs().path(None)
         self.clear_paths.append(directory)
         self.assert_equal(self.storage_directory, app.config('app.storage.instances')[0]['directory'])
         self.assert_equal(self.prefix, app.config('app.storage.instances')[0]['prefix'])
@@ -145,7 +145,7 @@ class TestFile(TestCase):
 
         # Create app
         app = self.create_application()
-        directory = app.fs()._get_processed_path(None)
+        directory = app.fs().path(None)
         self.clear_paths.append(directory)
 
         # Write
@@ -195,7 +195,7 @@ class TestFile(TestCase):
 
         # Create app
         app = self.create_application()
-        directory = app.fs()._get_processed_path(None)
+        directory = app.fs().path(None)
         self.clear_paths.append(directory)
 
         # Write

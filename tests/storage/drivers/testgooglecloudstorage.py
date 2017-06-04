@@ -60,7 +60,7 @@ class TestGoogleCloudStorage(GaeTestCase):
 
         # Create app
         app = self.create_application()
-        directory = app.fs()._get_processed_path(self.storage_directory)
+        directory = app.fs().path(self.storage_directory)
         self.clear_paths.append(directory)
         self.assert_equal(self.storage_directory, app.config('app.storage.instances')[0]['directory'])
         self.assert_equal(self.prefix, app.config('app.storage.instances')[0]['prefix'])

@@ -4,9 +4,9 @@ from sqlalchemy.engine.base import Engine
 from edmunds.database.databasemanager import DatabaseManager
 
 
-class TestMySql(TestCase):
+class TestSqlite(TestCase):
     """
-    Test MySql
+    Test Sqlite
     """
 
     def test_missing_params(self):
@@ -16,24 +16,21 @@ class TestMySql(TestCase):
         """
 
         config = [
-            "from edmunds.database.drivers.mysql import MySql \n",
+            "from edmunds.database.drivers.sqlite import Sqlite \n",
             "APP = { \n",
             "   'database': { \n",
             "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
-            "               'name': 'mysql',\n",
-            "               'driver': MySql,\n",
-            "               'user': 'root',\n",
-            "               'pass': 'root',\n",
-            "               'host': 'localhost',\n",
-            "               'table': 'edmunds',\n",
+            "               'name': 'sqlite',\n",
+            "               'driver': Sqlite,\n",
+            "               'file': 'sqlite.bd',\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
             "} \n",
         ]
-        remove_lines = [8, 9, 10, 11]
+        remove_lines = [8]
 
         # Loop lines that should be individually removed
         for remove_line in remove_lines:
@@ -49,26 +46,32 @@ class TestMySql(TestCase):
             with self.assert_raises_regexp(RuntimeError, 'missing some configuration'):
                 app.database()
 
-    def test_my_sql(self):
+    def test_postgre_sql(self):
         """
-        Test MySql
+        Test Sqlite
         :return:    void
         """
 
         # Write config
         self.write_config([
-            "from edmunds.database.drivers.mysql import MySql \n",
+            "from edmunds.database.drivers.sqlite import Sqlite \n",
+            "from edmunds.storage.drivers.file import File \n",
             "APP = { \n",
             "   'database': { \n",
             "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
-            "               'name': 'mysql',\n",
-            "               'driver': MySql,\n",
-            "               'user': 'root',\n",
-            "               'pass': 'root',\n",
-            "               'host': 'localhost',\n",
-            "               'table': 'edmunds',\n",
+            "               'name': 'sqlite',\n",
+            "               'driver': Sqlite,\n",
+            "               'file': 'sqlite.db',\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "   'storage': { \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'file',\n",
+            "               'driver': File,\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
