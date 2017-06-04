@@ -71,7 +71,7 @@ class TestCallGraph(TestCase):
 
         # Create app and fetch stream
         app = self.create_application()
-        directory = app.fs()._get_processed_path(self.profs_directory)
+        directory = app.fs().path(self.profs_directory)
         self.clear_paths.append(directory)
         self.assert_equal(self.profs_directory, app.config('app.profiler.instances')[0]['directory'])
         self.assert_equal(self.prefix, app.config('app.profiler.instances')[0]['prefix'])
