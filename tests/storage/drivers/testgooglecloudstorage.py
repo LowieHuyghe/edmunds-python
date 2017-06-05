@@ -25,6 +25,7 @@ class TestGoogleCloudStorage(GaeTestCase):
 
         self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
+        self.bucket = 'test_bucket'
         self.clear_paths = []
 
     def test_google_cloud_storage(self):
@@ -47,7 +48,7 @@ class TestGoogleCloudStorage(GaeTestCase):
             "               'directory': '%s',\n" % self.storage_directory,
             "               'prefix': '%s',\n" % self.prefix,
             "               'files_path': 'files',\n",
-            "               'bucket': 'test_bucket',\n",
+            "               'bucket': '%s',\n" % self.bucket,
             "           }, \n",
             "       ], \n",
             "   }, \n",
@@ -106,3 +107,62 @@ class TestGoogleCloudStorage(GaeTestCase):
         self.assert_false(app.fs().delete('nice2.txt'))
         with self.assert_raises(gcs.NotFoundError):
             app.fs().delete('nice2.txt', raise_errors=True)
+
+    def test_path(self):
+        """
+        Test path function
+        :return:    void
+        """
+
+        # Write config
+        self.write_config([
+            "from edmunds.storage.drivers.googlecloudstorage import GoogleCloudStorage \n",
+            "from logging import WARNING \n",
+            "APP = { \n",
+            "   'storage': { \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'googlecloudstorage',\n",
+            "               'driver': GoogleCloudStorage,\n",
+            "               'directory': '%s',\n" % self.storage_directory,
+            "               'prefix': '%s',\n" % self.prefix,
+            "               'files_path': 'files',\n",
+            "               'bucket': '%s',\n" % self.bucket,
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "   'log': { \n",
+            "       'instances': [ \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+            ])
+
+        # Create app
+        app = self.create_application()
+        directory = os.path.join(os.sep + self.bucket, self.storage_directory[1:-1])
+
+        data = [
+            ('%s/files/' % directory, None),
+            ('%s/' % directory, '/'),
+
+            ('%s/files/%snice' % (directory, self.prefix), 'nice'),
+            ('%s/files/%snice.txt' % (directory, self.prefix), 'nice.txt'),
+            ('%s/files/sub/directory/%snice.txt' % (directory, self.prefix), 'sub/directory/nice.txt'),
+
+            ('%s/%snice' % (directory, self.prefix), '/nice'),
+            ('%s/%snice.txt' % (directory, self.prefix), '/nice.txt'),
+            ('%s/sub/directory/%snice.txt' % (directory, self.prefix), '/sub/directory/nice.txt'),
+
+            ('%s/files/nice/' % directory, 'nice/'),
+            ('%s/files/nice.txt/' % directory, 'nice.txt/'),
+            ('%s/files/sub/directory/nice.txt/' % directory, 'sub/directory/nice.txt/'),
+
+            ('%s/nice/' % directory, '/nice/'),
+            ('%s/nice.txt/' % directory, '/nice.txt/'),
+            ('%s/sub/directory/nice.txt/' % directory, '/sub/directory/nice.txt/'),
+        ]
+
+        for expected, given in data:
+            self.assert_equal(expected, app.fs().path(given))
+            self.assert_equal(expected, app.fs('googlecloudstorage').path(given))
