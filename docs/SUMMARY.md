@@ -12,6 +12,7 @@
   - [Debugging and Profiling](gettingstarted/debuggingandprofiling.md)
   - [Errors and Logging](gettingstarted/errorsandlogging.md)
   - [Storage](gettingstarted/storage.md)
+  - [Database](gettingstarted/database.md)
 
 * Http
   - [Request Middleware](http/requestmiddleware.md)
