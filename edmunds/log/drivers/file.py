@@ -49,4 +49,4 @@ class File(RotatingFileHandler):
 
         # self.encoding
         # self.mode
-        return self._app.fs().write_stream(self.baseFilename)
+        return self._app.fs().write_stream(self.baseFilename, append=True)
