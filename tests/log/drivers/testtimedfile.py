@@ -95,11 +95,19 @@ class TestTimedFile(TestCase):
         self.assert_equal(self.prefix, app.config('app.log.instances')[0]['prefix'])
 
         # Add route
-        rule = '/' + self.rand_str(20)
-        @app.route(rule)
-        def handle_route():
+        info_rule = '/' + self.rand_str(20)
+        @app.route(info_rule)
+        def handle_info_route():
             app.logger.info(info_string)
+            return ''
+        warning_rule = '/' + self.rand_str(20)
+        @app.route(warning_rule)
+        def handle_warning_route():
             app.logger.warning(warning_string)
+            return ''
+        error_rule = '/' + self.rand_str(20)
+        @app.route(error_rule)
+        def handle_error_route():
             app.logger.error(error_string)
             return ''
 
@@ -111,7 +119,9 @@ class TestTimedFile(TestCase):
             self.assert_false(self._is_in_log_files(app, directory, error_string))
 
             # Call route
-            c.get(rule)
+            c.get(info_rule)
+            c.get(warning_rule)
+            c.get(error_rule)
 
             # Check file
             self.assert_false(self._is_in_log_files(app, directory, info_string))
