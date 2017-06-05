@@ -70,4 +70,12 @@ success = app.fs().delete('file.txt')
 
 # Exists?
 does_not_exist = app.fs().exists('file.txt')
+
+# Path
+absolute_path = app.fs().path('file.txt')  # /abs_path_to_storage/files/file.txt
+absolute_path = app.fs().path('/file.txt')  # /abs_path_to_storage/file.txt
+absolute_path = app.fs().path('directory/')  # /abs_path_to_storage/files/directory/
+absolute_path = app.fs().path('/directory/')  # /abs_path_to_storage/directory/
+absolute_path = app.fs().path(None)  # /abs_path_to_storage/files/
+absolute_path = app.fs().path('/')  # /abs_path_to_storage/
 ```
