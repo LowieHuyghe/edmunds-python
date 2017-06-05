@@ -39,10 +39,6 @@ APP = {
 The instances can be used for storage, so you can have multiple at once.
 The first one will be used by default.
 
-If `directory` starts with a separator it will be handled differently:
-- `/mystorage` => `/root_path/mystorage`
-- `mystorage` => `/root_path/storage/mystorage`
-
 The available drivers are:
 - **File**: Store files using the default file-system.
 - **GoogleCloudStorage**: Store files using Google Cloud Storage.
@@ -55,6 +51,15 @@ You can use the handler like so:
 # Fetch the default driver, or by name
 driver = app.fs()
 driver = app.fs('googlecloudstorage')
+
+# Path
+# This function is used when processing the input of the other functions below
+absolute_path = app.fs().path('file.txt')  # /abs_path_to_storage/files/file.txt
+absolute_path = app.fs().path('/file.txt')  # /abs_path_to_storage/file.txt
+absolute_path = app.fs().path('directory/')  # /abs_path_to_storage/files/directory/
+absolute_path = app.fs().path('/directory/')  # /abs_path_to_storage/directory/
+absolute_path = app.fs().path(None)  # /abs_path_to_storage/files/
+absolute_path = app.fs().path('/')  # /abs_path_to_storage/
 
 # Write stream
 write_stream = app.fs().write_stream('file.txt')
@@ -70,12 +75,4 @@ success = app.fs().delete('file.txt')
 
 # Exists?
 does_not_exist = app.fs().exists('file.txt')
-
-# Path
-absolute_path = app.fs().path('file.txt')  # /abs_path_to_storage/files/file.txt
-absolute_path = app.fs().path('/file.txt')  # /abs_path_to_storage/file.txt
-absolute_path = app.fs().path('directory/')  # /abs_path_to_storage/files/directory/
-absolute_path = app.fs().path('/directory/')  # /abs_path_to_storage/directory/
-absolute_path = app.fs().path(None)  # /abs_path_to_storage/files/
-absolute_path = app.fs().path('/')  # /abs_path_to_storage/
 ```
