@@ -9,6 +9,42 @@ class TestSession(TestCase):
     Test the Session
     """
 
+    def test_not_enabled(self):
+        """
+        Test not enabled
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+        secret_key = self.rand_str(24)
+
+        # Write config
+        self.write_config([
+            "from edmunds.session.drivers.sessioncookie import SessionCookie \n",
+            "SECRET_KEY = '%s'\n" % secret_key,
+            "APP = { \n",
+            "   'session': { \n",
+            "       'enabled': False, \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'sessioncookie',\n",
+            "               'driver': SessionCookie,\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+            ])
+
+        # Create app
+        app = self.create_application()
+        self.assert_equal(secret_key, app.secret_key)
+
+        # Test session
+        with app.test_request_context(rule):
+            self.assert_is_none(app.session())
+            self.assert_is_none(app.session('sessioncookie'))
+            self.assert_is_none(app.session('sessioncookie2'))
+
     def test_loading_and_session(self):
         """
         Test loading and session function
