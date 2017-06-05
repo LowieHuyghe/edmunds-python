@@ -145,7 +145,7 @@ class File(BaseDriver):
             path = os.sep.join(path_parts)
 
         if path is None:
-            path = os.path.join(self._storage_path, self._files_path)
+            path = os.path.join(self._storage_path, self._files_path) + os.sep
         elif not path.startswith(os.sep):
             path = os.path.join(self._storage_path, self._files_path, path)
         else:

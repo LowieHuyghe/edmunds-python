@@ -212,3 +212,60 @@ class TestFile(TestCase):
 
             with self.assert_raises(IOError):
                 app.fs().delete('nice.txt', raise_errors=True)
+
+    def test_path(self):
+        """
+        Test path function
+        :return:    void
+        """
+
+        # Write config
+        self.write_config([
+            "from edmunds.storage.drivers.file import File \n",
+            "from logging import WARNING \n",
+            "APP = { \n",
+            "   'storage': { \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'file',\n",
+            "               'driver': File,\n",
+            "               'directory': '%s',\n" % self.storage_directory,
+            "               'prefix': '%s',\n" % self.prefix,
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "   'log': { \n",
+            "       'instances': [ \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+            ])
+
+        # Create app
+        app = self.create_application()
+        directory = os.path.join(app.root_path, self.storage_directory[1:-1])
+
+        data = [
+            ('%s/files/' % directory, None),
+            ('%s/' % directory, '/'),
+
+            ('%s/files/%snice' % (directory, self.prefix), 'nice'),
+            ('%s/files/%snice.txt' % (directory, self.prefix), 'nice.txt'),
+            ('%s/files/sub/directory/%snice.txt' % (directory, self.prefix), 'sub/directory/nice.txt'),
+
+            ('%s/%snice' % (directory, self.prefix), '/nice'),
+            ('%s/%snice.txt' % (directory, self.prefix), '/nice.txt'),
+            ('%s/sub/directory/%snice.txt' % (directory, self.prefix), '/sub/directory/nice.txt'),
+
+            ('%s/files/nice/' % directory, 'nice/'),
+            ('%s/files/nice.txt/' % directory, 'nice.txt/'),
+            ('%s/files/sub/directory/nice.txt/' % directory, 'sub/directory/nice.txt/'),
+
+            ('%s/nice/' % directory, '/nice/'),
+            ('%s/nice.txt/' % directory, '/nice.txt/'),
+            ('%s/sub/directory/nice.txt/' % directory, '/sub/directory/nice.txt/'),
+        ]
+
+        for expected, given in data:
+            self.assert_equal(expected, app.fs().path(given))
+            self.assert_equal(expected, app.fs('file').path(given))
