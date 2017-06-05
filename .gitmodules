@@ -4,3 +4,6 @@
 [submodule "setup"]
 	path = setup
 	url = https://github.com/LowieHuyghe/python-package-easier-setup-script.git
+[submodule "instance"]
+	path = instance
+	url = git@github.com:LowieHuyghe/edmunds-instance.git
