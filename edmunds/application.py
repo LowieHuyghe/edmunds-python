@@ -44,6 +44,8 @@ class Application(Flask,
 
         super(Application, self).__init__(import_name)
 
+        self.logger_name = 'edmunds.%s' % import_name
+
         self._init_config(config_dirs)
         self._init_service_providers()
         self._init_middleware()
@@ -80,24 +82,3 @@ class Application(Flask,
         decorator = self._post_handle_route_dispatching(decorator, rule, options)
 
         return decorator
-
-    @property
-    def logger(self):
-        """
-        Fetch logger property
-        Overriding this function because self.logger_name == '' is
-        not taken into account
-        """
-
-        if not self.logger_name:
-            if self._logger and self._logger.name == 'root':
-                return self._logger
-            with Application._logger_lock:
-                if self._logger and self._logger.name == 'root':
-                    return self._logger
-                from flask.logging import create_logger
-                self._logger = rv = create_logger(self)
-                return rv
-
-        else:
-            return super(Application, self).logger
