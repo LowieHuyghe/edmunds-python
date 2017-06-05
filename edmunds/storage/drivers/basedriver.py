@@ -18,13 +18,11 @@ class BaseDriver(ABC):
         self._app = app
 
     @abc.abstractmethod
-    def write_stream(self, path, append=False):
+    def write_stream(self, path):
         """
         Get a write stream to a certain path
         :param path:    The path to the file
         :type  path:    str
-        :param append:  Append to the file
-        :type  append:  bool
         :return:        The write stream
         :rtype:         Stream
         """
