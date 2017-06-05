@@ -136,17 +136,6 @@ class DatabaseManager(Manager):
         db = DatabaseManager.get_sql_alchemy_instance()
         return db.get_engine(bind=config['name'])
 
-    def _create_oracle(self, config):
-        """
-        Create Oracle
-        :param config:  The config
-        :return:        SQLAlchemy Engine
-        :rtype:         sqlalchemy.engine.base.Engine
-        """
-
-        db = DatabaseManager.get_sql_alchemy_instance()
-        return db.get_engine(bind=config['name'])
-
     def _create_sqlite(self, config):
         """
         Create SQLite
