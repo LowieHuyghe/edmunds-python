@@ -8,6 +8,40 @@ class TestDatabase(TestCase):
     Test the Database
     """
 
+    def test_not_enabled(self):
+        """
+        Test not enabled
+        :return:    void
+        """
+
+        # Write config
+        self.write_config([
+            "from edmunds.database.drivers.mysql import MySql \n",
+            "APP = { \n",
+            "   'database': { \n",
+            "       'enabled': False, \n",
+            "       'instances': [ \n",
+            "           { \n",
+            "               'name': 'mysql',\n",
+            "               'driver': MySql,\n",
+            "               'user': 'root',\n",
+            "               'pass': 'root',\n",
+            "               'host': 'localhost',\n",
+            "               'table': 'edmunds',\n",
+            "           }, \n",
+            "       ], \n",
+            "   }, \n",
+            "} \n",
+        ])
+
+        # Create app
+        app = self.create_application()
+
+        # Test database
+        self.assert_is_none(app.database())
+        self.assert_is_none(app.database('mysql'))
+        self.assert_is_none(app.database('mysql2'))
+
     def test_loading_and_database(self):
         """
         Test loading and database function
