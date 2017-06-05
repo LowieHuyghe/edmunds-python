@@ -28,20 +28,18 @@ class File(BaseDriver):
         self._files_path = files_path
         self._prefix = prefix
 
-    def write_stream(self, path, append=False):
+    def write_stream(self, path):
         """
         Get a write stream to a certain path
         :param path:    The path to the file
         :type  path:    str
-        :param append:  Append to the file
-        :type  append:  bool
         :return:        The write stream
         :rtype:         Stream
         """
 
         path = self.path(path)
 
-        return open(path, 'a' if append else 'w+')
+        return open(path, 'w+')
 
     def read_stream(self, path, raise_errors=False):
         """

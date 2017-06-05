@@ -31,19 +31,14 @@ class GoogleCloudStorage(BaseDriver):
         self._files_path = files_path
         self._prefix = prefix
 
-    def write_stream(self, path, append=False):
+    def write_stream(self, path):
         """
         Get a write stream to a certain path
         :param path:    The path to the file
         :type  path:    str
-        :param append:  Append to the file
-        :type  append:  bool
         :return:        The write stream
         :rtype:         Stream
         """
-
-        if append:
-            raise RuntimeError('Google Cloud Storage does not support modifying a file.')
 
         path = self.path(path)
 
