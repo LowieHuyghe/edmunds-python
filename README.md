@@ -1,4 +1,4 @@
-## Edmunds
+# Edmunds
 
 [![CircleCI](https://circleci.com/gh/LowieHuyghe/edmunds.svg?style=svg)](https://circleci.com/gh/LowieHuyghe/edmunds)
 [![Code Health](https://landscape.io/github/LowieHuyghe/edmunds/master/landscape.svg?style=flat)](https://landscape.io/github/LowieHuyghe/edmunds/master)
