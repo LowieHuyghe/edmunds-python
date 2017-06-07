@@ -26,6 +26,6 @@ class TestNoMigrateCommand(TestCase):
         self.assert_is_instance(command, Command)
 
         with mock.patch('sys.stdout', new_callable=StringIO) as output_stream:
-            with self.assert_raises(SystemExit):
+            with self.assert_raises_regexp(SystemExit, '1'):
                 command.run()
             self.assert_in('Database is not enabled in the application.', output_stream.getvalue())
