@@ -18,5 +18,21 @@ from edmunds.console.command import Option
 # matches: from flask_script import Option
 ```
 
-Further usage of the manager is described in the Flask-Script documentation:
+Usage of those classes is described in the Flask-Script documentation:
 * [Flask-Script](https://flask-script.readthedocs.io)
+
+### Register custom command
+
+`manage.py` runs by default the Manager located in `app.console`.  
+You can register your custom commands (located in `app.console.commands`)
+in the manager as described by the Flask-Script documentation:
+```python
+# ...
+from app.console.commands.helloworldcommand import HelloWorldCommand
+
+class Manager(EdmundsManager):
+    # ...
+    def add_default_commands(self):
+        # ...
+        self.add_command('helloworld', HelloWorldCommand())
+```
