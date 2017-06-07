@@ -28,8 +28,11 @@ class MigrateServiceProvider(ServiceProvider):
         self.app.extensions['edmunds.database.manager'] = migrate
 
         # Load all models
-        model_paths = self.app.config('app.models', [
-            os.path.join(self.app.root_path, 'app', 'models')
+        model_paths = self.app.config('app.database.models', [
+            os.path.join('app', 'models')
         ])
+        # Join with root_path
+        model_paths = list(map(lambda path: os.path.join(self.app.root_path, path), model_paths))
+        # Load all models
         for loader, name, is_pkg in walk_packages(path=model_paths):
             loader.find_module(name).load_module(name)
