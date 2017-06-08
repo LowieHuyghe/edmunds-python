@@ -6,6 +6,15 @@ Console usage is built in in Edmunds and uses Flask-Script.
 
 ## Usage
 
+Console-usage of your application has been integrated in `manage.py`.
+You can use it by calling it in your runtime-environment:
+```bash
+python manage.py --help
+python manage.py helloworld
+```
+
+### Customisation
+
 Edmunds has a mapping which matches the Flask-Script objects:
 ```python
 from edmunds.console.manager import Manager
