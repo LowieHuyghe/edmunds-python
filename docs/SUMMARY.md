@@ -13,6 +13,7 @@
   - [Errors and Logging](gettingstarted/errorsandlogging.md)
   - [Storage](gettingstarted/storage.md)
   - [Database](gettingstarted/database.md)
+  - [Migrations](gettingstarted/migrations.md)
   - [Console](gettingstarted/console.md)
 
 * Http
