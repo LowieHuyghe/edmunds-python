@@ -26,11 +26,13 @@ migration-service:
 from edmunds.database.model import db, Model
 
 class MyModel(Model):
+    # __bind_key__ = 'model_table'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
 ```
 Further documentation on how to declare your models can be found here:
 * [Flask-SQLAlchemy Models](http://flask-sqlalchemy.pocoo.org/2.2/models/)
+* [Multiple Databases (binds)](http://flask-sqlalchemy.pocoo.org/2.2/binds/)
 
 > Note: If you want to customize the package where the migrate-service looks
 > for models, you can override it in your config:
