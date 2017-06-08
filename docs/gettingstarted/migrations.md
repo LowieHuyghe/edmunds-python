@@ -17,8 +17,8 @@ Usage of Flask-Migrate documentation:
 
 ### Models
 
-Models are used by Flask-Migrate to describe your database structure.
-Add your model to `app.models` so they are picked up by the
+Models of SQLAlchemy are used by Flask-Migrate to describe your database
+structure. Add your model to `app.models` so they are picked up by the
 migration-service:
 ```python
 # app/models/mymodel.py
@@ -29,6 +29,8 @@ class MyModel(Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
 ```
+Further documentation on how to declare your models can be found here:
+* [Flask-SQLAlchemy Models](http://flask-sqlalchemy.pocoo.org/2.2/models/)
 
 > Note: If you want to customize the package where the migrate-service looks
 > for models, you can override it in your config:
