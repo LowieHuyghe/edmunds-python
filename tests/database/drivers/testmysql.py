@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 from sqlalchemy.engine.base import Engine
-from edmunds.database.databasemanager import DatabaseManager
 
 
 class TestMySql(TestCase):
@@ -82,3 +81,6 @@ class TestMySql(TestCase):
         engine = app.database()
         self.assert_is_not_none(engine)
         self.assert_is_instance(engine, Engine)
+
+        # Test SQLAlchemy config
+        self.assert_equal('mysql://root:root@localhost:3306/edmunds', app.config('SQLALCHEMY_DATABASE_URI'))

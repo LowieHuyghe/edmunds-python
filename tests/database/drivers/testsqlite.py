@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 from sqlalchemy.engine.base import Engine
-from edmunds.database.databasemanager import DatabaseManager
 
 
 class TestSqlite(TestCase):
@@ -85,3 +84,6 @@ class TestSqlite(TestCase):
         engine = app.database()
         self.assert_is_not_none(engine)
         self.assert_is_instance(engine, Engine)
+
+        # Test SQLAlchemy config
+        self.assert_equal('sqlite://%s' % app.fs().path('sqlite.db'), app.config('SQLALCHEMY_DATABASE_URI'))

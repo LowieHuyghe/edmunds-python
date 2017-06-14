@@ -1,7 +1,6 @@
 
 from tests.testcase import TestCase
 from sqlalchemy.engine.base import Engine
-from edmunds.database.databasemanager import DatabaseManager
 
 
 class TestPostgreSql(TestCase):
@@ -82,3 +81,6 @@ class TestPostgreSql(TestCase):
         engine = app.database()
         self.assert_is_not_none(engine)
         self.assert_is_instance(engine, Engine)
+
+        # Test SQLAlchemy config
+        self.assert_equal('postgresql://root:root@localhost:5432/edmunds', app.config('SQLALCHEMY_DATABASE_URI'))
