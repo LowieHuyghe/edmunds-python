@@ -128,7 +128,7 @@ class DatabaseManager(Manager):
         bind = config['name']
         if self._instances_config and self._instances_config[0]['name'] == config['name']:
             bind = None
-        return db.get_engine(bind=bind)
+        return db.get_engine(self._app, bind=bind)
 
     def _create_postgre_sql(self, config):
         """
@@ -143,7 +143,7 @@ class DatabaseManager(Manager):
         bind = config['name']
         if self._instances_config and self._instances_config[0]['name'] == config['name']:
             bind = None
-        return db.get_engine(bind=bind)
+        return db.get_engine(self._app, bind=bind)
 
     def _create_sqlite(self, config):
         """
@@ -158,4 +158,4 @@ class DatabaseManager(Manager):
         bind = config['name']
         if self._instances_config and self._instances_config[0]['name'] == config['name']:
             bind = None
-        return db.get_engine(bind=bind)
+        return db.get_engine(self._app, bind=bind)

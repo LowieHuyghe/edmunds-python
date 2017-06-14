@@ -1,6 +1,10 @@
 
-from edmunds.database.databasemanager import DatabaseManager
+import sqlalchemy.orm
+
+mapper = sqlalchemy.orm.mapper
+relationship = sqlalchemy.orm.relationship
+backref = sqlalchemy.orm.backref
 
 
-db = DatabaseManager.get_sql_alchemy_instance()
-Model = db.Model
+class Model(object):
+    pass
