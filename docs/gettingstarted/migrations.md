@@ -14,7 +14,7 @@ python manage.py db --help
 # Init for your project:
 python manage.py db init --multidb
 # Migrate the changes:
-python manage.py db migrate
+python manage.py db migrate -m "Added some tables"
 # Upgrade the databases:
 python manage.py db upgrade
 ```
