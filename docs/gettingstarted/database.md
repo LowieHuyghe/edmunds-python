@@ -53,6 +53,10 @@ The available drivers are:
 - **PostgreSql**: For PostgreSQL databases.
 - **SQLite**: For SQLite databases.
 
+> More in detail: the default instance will be used as `SQLALCHEMY_DATABASE_URI`
+> in SQLAlchemy. Other instances (not including the default instance) will
+> be added to `SQLALCHEMY_BINDS`.
+
 
 ## Usage
 

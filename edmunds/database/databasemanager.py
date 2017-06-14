@@ -98,9 +98,10 @@ class DatabaseManager(Manager):
 
                 instance_database_uri = 'sqlite://%s' % sqlite_path
 
-            binds[instances_config_item['name']] = instance_database_uri
             if database_uri is None:
                 database_uri = instance_database_uri
+            else:
+                binds[instances_config_item['name']] = instance_database_uri
 
         self._app.config.update({
             'SQLALCHEMY_DATABASE_URI': database_uri,
@@ -123,7 +124,11 @@ class DatabaseManager(Manager):
         """
 
         db = DatabaseManager.get_sql_alchemy_instance()
-        return db.get_engine(bind=config['name'])
+
+        bind = config['name']
+        if self._instances_config and self._instances_config[0]['name'] == config['name']:
+            bind = None
+        return db.get_engine(bind=bind)
 
     def _create_postgre_sql(self, config):
         """
@@ -134,7 +139,11 @@ class DatabaseManager(Manager):
         """
 
         db = DatabaseManager.get_sql_alchemy_instance()
-        return db.get_engine(bind=config['name'])
+
+        bind = config['name']
+        if self._instances_config and self._instances_config[0]['name'] == config['name']:
+            bind = None
+        return db.get_engine(bind=bind)
 
     def _create_sqlite(self, config):
         """
@@ -145,4 +154,8 @@ class DatabaseManager(Manager):
         """
 
         db = DatabaseManager.get_sql_alchemy_instance()
-        return db.get_engine(bind=config['name'])
+
+        bind = config['name']
+        if self._instances_config and self._instances_config[0]['name'] == config['name']:
+            bind = None
+        return db.get_engine(bind=bind)
