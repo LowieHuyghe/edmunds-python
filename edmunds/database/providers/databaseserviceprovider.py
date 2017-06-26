@@ -22,3 +22,14 @@ class DatabaseServiceProvider(ServiceProvider):
 
         # Assign to extensions
         self.app.extensions['edmunds.database'] = manager
+
+        # Make place to store sessions
+        self.app.extensions['edmunds.database.sessions'] = {}
+
+        # Tear down db sessions when request ends or app shuts down
+        @self.app.teardown_appcontext
+        def shutdown_session(exception=None):
+            # Remove all sessions
+            for key in self.app.extensions['edmunds.database.sessions']:
+                session = self.app.extensions['edmunds.database.sessions'][key]
+                session.remove()
