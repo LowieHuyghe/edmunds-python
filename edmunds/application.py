@@ -51,6 +51,7 @@ class Application(Flask,
         self._init_middleware()
         self._init_request_routing()
         self._init_runtime_environment()
+        self._init_database()
 
         self.register(StorageServiceProvider)
         self.register(ExceptionsServiceProvider)
