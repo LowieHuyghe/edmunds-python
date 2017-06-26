@@ -1,5 +1,5 @@
 
-from flask import Flask
+from flask import Flask, current_app as flask_current_app
 from edmunds.foundation.concerns.config import Config as ConcernsConfig
 from edmunds.foundation.concerns.runtimeenvironment import RuntimeEnvironment as ConcernsRuntimeEnvironment
 from edmunds.foundation.concerns.serviceproviders import ServiceProviders as ConcernsServiceProviders
@@ -15,6 +15,8 @@ from edmunds.storage.providers.storageserviceprovider import StorageServiceProvi
 from edmunds.database.providers.databaseserviceprovider import DatabaseServiceProvider
 from edmunds.config.config import Config
 from threading import Lock
+
+current_app = flask_current_app
 
 
 class Application(Flask,

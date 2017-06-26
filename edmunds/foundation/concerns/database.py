@@ -39,7 +39,7 @@ class Database(object):
         :param name:                The name of the database instance
         :param no_instance_error:   Error when no instance
         :return:                    Session
-        :rtype:                     sqlalchemy.orm.Session
+        :rtype:                     sqlalchemy.orm.scoping.scoped_session
         """
 
         # Enabled?
@@ -62,7 +62,7 @@ class Database(object):
                         Session = None
                     else:
                         # Make factory and scoped session
-                        Session = scoped_session(sessionmaker(bind=engine))
+                        Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
                     self.extensions['edmunds.database.sessions'][store_key] = Session
 
