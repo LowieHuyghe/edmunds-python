@@ -71,14 +71,14 @@ class DatabaseManager(Manager):
                 if 'user' not in instances_config_item \
                         or 'pass' not in instances_config_item \
                         or 'host' not in instances_config_item \
-                        or 'table' not in instances_config_item:
-                    raise RuntimeError("Database-driver '%s' is missing some configuration ('user', 'pass', 'host' and 'table' are required)." % instances_config_item['name'])
+                        or 'database' not in instances_config_item:
+                    raise RuntimeError("Database-driver '%s' is missing some configuration ('user', 'pass', 'host' and 'database' are required)." % instances_config_item['name'])
 
                 driver = instances_config_item['driver'].__name__.lower()
                 database_user = instances_config_item['user']
                 database_pass = instances_config_item['pass']
                 database_host = instances_config_item['host']
-                database_table = instances_config_item['table']
+                database_database = instances_config_item['database']
                 if 'port' in instances_config_item:
                     database_port = instances_config_item['port']
                 elif instances_config_item['driver'] == PostgreSql:
@@ -86,7 +86,7 @@ class DatabaseManager(Manager):
                 else:
                     database_port = 3306
 
-                instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, database_user, database_pass, database_host, database_port, database_table)
+                instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, database_user, database_pass, database_host, database_port, database_database)
 
             if instances_config_item['driver'] == Sqlite:
                 if 'file' not in instances_config_item:
