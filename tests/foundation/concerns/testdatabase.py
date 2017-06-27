@@ -1,6 +1,7 @@
 
 from tests.testcase import TestCase
 from sqlalchemy.engine.base import Engine
+from sqlalchemy.orm.scoping import scoped_session
 
 
 class TestDatabase(TestCase):
@@ -42,9 +43,14 @@ class TestDatabase(TestCase):
         self.assert_is_none(app.database('mysql'))
         self.assert_is_none(app.database('mysql2'))
 
-    def test_loading_and_database(self):
+        # Test session
+        self.assert_is_none(app.database_session())
+        self.assert_is_none(app.database_session('mysql'))
+        self.assert_is_none(app.database_session('mysql2'))
+
+    def test_loading_and_database_and_session(self):
         """
-        Test loading and database function
+        Test loading and database and session function
         :return:    void
         """
 
@@ -78,3 +84,11 @@ class TestDatabase(TestCase):
         self.assert_is_instance(app.database('mysql'), Engine)
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
             app.database('mysql2')
+
+        # Test session
+        self.assert_is_not_none(app.database_session())
+        self.assert_is_instance(app.database_session(), scoped_session)
+        self.assert_is_not_none(app.database_session('mysql'))
+        self.assert_is_instance(app.database_session('mysql'), scoped_session)
+        with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
+            app.database_session('mysql2')
