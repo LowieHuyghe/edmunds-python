@@ -1,7 +1,8 @@
 
 # Database
 
-Database usage is built in in Edmunds and uses Flask-SQLAlchemy.
+Database usage is built in in Edmunds and uses
+[Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/).
 
 ## Settings
 
@@ -66,11 +67,21 @@ You can request one like so:
 ```python
 # Fetch the default driver, or by name
 engine = app.database()
-engine = app.database('mysql')
+engine = app.database(name='mysql')
 ```
 
-Further usage of the database-engine are described in the SQLAlchemy
-documentation:
+Fetching a session can be done with `database_session`. You will receive a
+Session-class (sqlalchemy.orm.scoping.scoped_session) for session-usage:
+```python
+Session = app.database_session()
+Session = app.database_session(name='mysql')
+
+Session.add(user)
+Session.commit()
+```
+
+Further usage of the database-engine and -session are described in the
+SQLAlchemy documentation:
 * [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/)
 * [SQLAlchemy - Working with Engines and Connections](http://docs.sqlalchemy.org/en/latest/core/connections.html)
 * [SQLAlchemy - Session Basics](http://docs.sqlalchemy.org/en/latest/orm/session_basics.html)
