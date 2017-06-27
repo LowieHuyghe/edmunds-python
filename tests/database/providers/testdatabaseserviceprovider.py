@@ -2,7 +2,6 @@
 from tests.testcase import TestCase
 from edmunds.database.databasemanager import DatabaseManager
 from sqlalchemy.engine.base import Engine
-from sqlalchemy.util import ThreadLocalRegistry
 
 
 class TestDatabaseServiceProvider(TestCase):
