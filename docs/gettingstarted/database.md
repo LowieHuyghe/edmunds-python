@@ -24,7 +24,7 @@ APP = {
                 'user': 'root',
                 'pass': 'root',
                 'host': 'localhost',
-                'table': 'edmunds',
+                'database': 'edmunds',
                 # 'port': '3306', 	# Optional, default: '3306'
             },
             {
@@ -33,7 +33,7 @@ APP = {
                 'user': 'root',
                 'pass': 'root',
                 'host': 'localhost',
-                'table': 'edmunds',
+                'database': 'edmunds',
                 # 'port': '5432', 	# Optional, default: '5432'
             },
             {
