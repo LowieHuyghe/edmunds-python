@@ -86,6 +86,9 @@ class TestDatabase(TestCase):
             app.database('mysql2')
         self.assert_is_none(app.database('mysql2', no_instance_error=True))
 
+        self.assert_equal_deep(app.database(), app.database())
+        self.assert_equal_deep(app.database(), app.database('mysql'))
+
         # Test session
         self.assert_is_not_none(app.database_session())
         self.assert_is_instance(app.database_session(), scoped_session)
@@ -94,3 +97,6 @@ class TestDatabase(TestCase):
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
             app.database_session('mysql2')
         self.assert_is_none(app.database_session('mysql2', no_instance_error=True))
+
+        self.assert_equal_deep(app.database_session(), app.database_session())
+        self.assert_equal_deep(app.database_session(), app.database_session('mysql'))
