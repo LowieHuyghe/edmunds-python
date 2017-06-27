@@ -49,7 +49,12 @@ class Database(object):
         # Make extension key
         store_key = name
         if store_key is None:
-            store_key = '__default__'
+            # Use default driver for name
+            database_instances = self.config('app.database.instances', [])
+            if database_instances:
+                store_key = database_instances[0]['name']
+            else:
+                store_key = '__default__'
 
         # Add key to extensions dictionary
         if store_key not in self.extensions['edmunds.database.sessions']:
@@ -65,5 +70,10 @@ class Database(object):
                         Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
                     self.extensions['edmunds.database.sessions'][store_key] = Session
+
+        # Raise error if already requested before with no_instance_error=True
+        if self.extensions['edmunds.database.sessions'][store_key] is None \
+                and not no_instance_error:
+            raise RuntimeError('No instance declared named "%s"' % name)
 
         return self.extensions['edmunds.database.sessions'][store_key]
