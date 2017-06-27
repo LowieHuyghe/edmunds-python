@@ -16,11 +16,12 @@ class Model(object):
     __table__ = None
 
     @classmethod
-    def session(cls, name=None):
+    def session(cls, name=None, no_instance_error=False):
         """
         Session
-        :param name:    Name of the bind 
-        :return:        sqlalchemy.orm.scoping.scoped_session
+        :param name:                Name of the bind 
+        :param no_instance_error:   No error when name does not exist 
+        :return:                    sqlalchemy.orm.scoping.scoped_session
         """
 
         if name is None \
@@ -31,15 +32,19 @@ class Model(object):
                 and cls.__table__.info['bind_key']:
             name = cls.__table__.info['bind_key']
 
-        return current_app.database_session(name=name)
+        return current_app.database_session(name=name, no_instance_error=no_instance_error)
 
     @classmethod
-    def query(cls, name=None):
+    def query(cls, name=None, no_instance_error=False):
         """
         Query
-        :param name:    Name of the bind 
-        :return:        sqlalchemy.orm.scoping.query
+        :param name:                Name of the bind 
+        :param no_instance_error:   No error when name does not exist
+        :return:                    sqlalchemy.orm.scoping.query
         """
 
-        Session = cls.session(name=name)
+        Session = cls.session(name=name, no_instance_error=no_instance_error)
+        if Session is None:
+            return None
+
         return Session.query(cls)

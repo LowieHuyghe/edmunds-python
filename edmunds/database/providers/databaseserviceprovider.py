@@ -32,4 +32,5 @@ class DatabaseServiceProvider(ServiceProvider):
             # Remove all sessions
             for key in self.app.extensions['edmunds.database.sessions']:
                 session = self.app.extensions['edmunds.database.sessions'][key]
-                session.remove()
+                if session is not None:
+                    session.remove()
