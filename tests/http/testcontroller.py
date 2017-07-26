@@ -4,6 +4,7 @@ from edmunds.http.controller import Controller
 from edmunds.http.input import Input
 from edmunds.globals import request, session
 from edmunds.cookie.cookies import Cookies
+from flask.wrappers import Response
 
 
 class TestController(TestCase):
@@ -34,7 +35,38 @@ class TestController(TestCase):
             self.assert_is_instance(controller, MyController)
             self.assert_equal(controller._app, self.app)
             self.assert_equal(controller._request, request)
+
+    def test_input(self):
+        """
+        Test input
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Call route
+        with self.app.test_request_context(rule):
+            controller = MyController(self.app)
+
             self.assert_is_instance(controller._input, Input)
+            controller._input = rule
+            self.assert_equal_deep(rule, controller._input)
+
+    def test_response(self):
+        """
+        Test response
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Call route
+        with self.app.test_request_context(rule):
+            controller = MyController(self.app)
+
+            self.assert_is_instance(controller._response, Response)
+            controller._response = rule
+            self.assert_equal_deep(rule, controller._response)
 
     def test_session(self):
         """
@@ -71,6 +103,8 @@ class TestController(TestCase):
             controller = MyController(app)
 
             self.assert_equal_deep(session, controller._session)
+            controller._session = rule
+            self.assert_equal_deep(rule, controller._session)
 
     def test_cookies(self):
         """
@@ -84,6 +118,8 @@ class TestController(TestCase):
             controller = MyController(self.app)
 
             self.assert_is_instance(controller._cookies, Cookies)
+            controller._cookies = rule
+            self.assert_equal_deep(rule, controller._cookies)
 
 
 class MyController(Controller):
