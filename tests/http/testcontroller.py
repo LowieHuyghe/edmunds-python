@@ -2,7 +2,7 @@
 from tests.testcase import TestCase
 from edmunds.http.controller import Controller
 from edmunds.http.input import Input
-from flask import request, session
+from edmunds.globals import request, session
 from edmunds.cookie.cookies import Cookies
 
 
