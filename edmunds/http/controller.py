@@ -1,7 +1,7 @@
 
-from flask import request
+from edmunds.globals import request
 from edmunds.http.input import Input
-from flask import has_request_context, make_response
+from edmunds.globals import has_request_context, make_response
 from edmunds.cookie.cookies import Cookies
 
 

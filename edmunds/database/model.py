@@ -1,5 +1,5 @@
 
-from edmunds.application import current_app
+from edmunds.globals import current_app
 import sqlalchemy.orm
 
 

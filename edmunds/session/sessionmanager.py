@@ -1,7 +1,7 @@
 
 from edmunds.foundation.patterns.manager import Manager
 import os
-from flask import session
+from edmunds.globals import session
 
 
 class SessionManager(Manager):

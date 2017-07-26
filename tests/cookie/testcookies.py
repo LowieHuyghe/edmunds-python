@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.cookie.cookies import Cookies
-from flask import make_response
+from edmunds.globals import make_response
 
 
 class TestCookies(TestCase):
