@@ -19,6 +19,7 @@
 * Http
   - [Request Middleware](http/requestmiddleware.md)
   - [Routing](http/routing.md)
+  - [Request](http/request.md)
   - [Input and Validation](http/inputandvalidation.md)
   - [Session](http/session.md)
   - [Cookies](http/cookies.md)
