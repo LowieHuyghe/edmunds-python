@@ -1,7 +1,7 @@
 
 from edmunds.globals import request
 from edmunds.http.input import Input
-from edmunds.globals import has_request_context, make_response
+from edmunds.globals import make_response
 from edmunds.cookie.cookies import Cookies
 
 
@@ -18,14 +18,9 @@ class Controller(object):
         self._app = app
         self._request = request
         self.__input = None
-        self._session = None
-        self._response = None
-        self._cookies = None
-
-        if has_request_context():
-            self._session = app.session(no_instance_error=True)
-            self._response = make_response()
-            self._cookies = Cookies(request.cookies, self._response)
+        self.__session = None
+        self.__response = None
+        self.__cookies = None
 
     def initialize(self, **params):
         """
@@ -55,3 +50,69 @@ class Controller(object):
         """
 
         self.__input = input
+
+    @property
+    def _session(self):
+        """
+        Get session
+        :return:    Session
+        """
+
+        if self.__session is None:
+            self.__session = self._app.session(no_instance_error=True)
+
+        return self.__session
+
+    @_session.setter
+    def _session(self, session):
+        """
+        Set session
+        :param session:     Session 
+        :return:            void
+        """
+
+        self.__session = session
+
+    @property
+    def _response(self):
+        """
+        Get response
+        :return:    Response
+        """
+
+        if self.__response is None:
+            self.__response = make_response()
+
+        return self.__response
+
+    @_response.setter
+    def _response(self, response):
+        """
+        Set response
+        :param response:    Response 
+        :return:            void
+        """
+
+        self.__response = response
+
+    @property
+    def _cookies(self):
+        """
+        Get cookies
+        :return:    Cookies
+        """
+
+        if self.__cookies is None:
+            self.__cookies = Cookies(self._request.cookies, self._response)
+
+        return self.__cookies
+
+    @_cookies.setter
+    def _cookies(self, cookies):
+        """
+        Set cookies
+        :param cookies:    Cookies 
+        :return:            void
+        """
+
+        self.__cookies = cookies
