@@ -1,6 +1,6 @@
 
 from tests.testcase import TestCase
-from flask import session
+from edmunds.globals import session
 from flask.sessions import SecureCookieSession
 from werkzeug.local import LocalProxy
 

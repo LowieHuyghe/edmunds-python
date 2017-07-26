@@ -1,6 +1,6 @@
 
 import edmunds.support.helpers as helpers
-from flask import request as flask_request
+from edmunds.globals import request as app_request
 
 
 class RequestRouting(object):
@@ -63,7 +63,7 @@ class RequestRouting(object):
 
         # Make handler
         def handler(**kwargs):
-            return self.dispatch(flask_request)
+            return self.dispatch(app_request)
 
         # Call decorator
         decorator(handler)
@@ -82,7 +82,7 @@ class RequestRouting(object):
 
         # Assign current request
         if request is None:
-            request = flask_request
+            request = app_request
 
         # Fetch rule
         rule = request.url_rule.rule

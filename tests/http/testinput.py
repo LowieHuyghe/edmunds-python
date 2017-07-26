@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.http.input import Input
-from flask import request
+from edmunds.globals import request
 from edmunds.encoding.encoding import Encoding
 from werkzeug.datastructures import FileStorage
 from edmunds.validation.validator import Validator

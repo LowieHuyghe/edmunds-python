@@ -1,5 +1,5 @@
 
-from flask import has_request_context
+from edmunds.globals import has_request_context
 from werkzeug.datastructures import MultiDict
 
 

@@ -1,5 +1,5 @@
 
-from flask import g, _request_ctx_stack
+from edmunds.globals import g, _request_ctx_stack
 
 
 class Middleware(object):

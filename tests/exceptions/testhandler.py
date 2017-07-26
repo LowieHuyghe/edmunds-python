@@ -2,7 +2,7 @@
 from tests.testcase import TestCase
 from edmunds.exceptions.handler import Handler as EdmundsHandler
 from werkzeug.exceptions import default_exceptions, HTTPException
-from flask import abort
+from edmunds.globals import abort
 
 
 class TestHandler(TestCase):

@@ -13,7 +13,7 @@ you would access them separately.
 
 ```python
 from edmunds.http.input import Input
-from flask import request
+from edmunds.globals import request
 
 input = Input(request)
 username = input['username']
