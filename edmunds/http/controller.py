@@ -3,6 +3,7 @@ from edmunds.globals import request
 from edmunds.http.input import Input
 from edmunds.globals import make_response
 from edmunds.cookie.cookies import Cookies
+from threading import Lock
 
 
 class Controller(object):
@@ -18,9 +19,13 @@ class Controller(object):
         self._app = app
         self._request = request
         self.__input = None
+        self.__input_lock = Lock()
         self.__session = None
+        self.__session_lock = Lock()
         self.__response = None
+        self.__response_lock = Lock()
         self.__cookies = None
+        self.__cookies_lock = Lock()
 
     def initialize(self, **params):
         """
@@ -38,7 +43,9 @@ class Controller(object):
         """
 
         if self.__input is None:
-            self.__input = Input(self._request)
+            with self.__input_lock:
+                if self.__input is None:
+                    self.__input = Input(self._request)
         return self.__input
 
     @_input.setter
@@ -49,7 +56,8 @@ class Controller(object):
         :return:        void
         """
 
-        self.__input = input
+        with self.__input_lock:
+            self.__input = input
 
     @property
     def _session(self):
@@ -59,7 +67,9 @@ class Controller(object):
         """
 
         if self.__session is None:
-            self.__session = self._app.session(no_instance_error=True)
+            with self.__session_lock:
+                if self.__session is None:
+                    self.__session = self._app.session(no_instance_error=True)
 
         return self.__session
 
@@ -71,7 +81,8 @@ class Controller(object):
         :return:            void
         """
 
-        self.__session = session
+        with self.__session_lock:
+            self.__session = session
 
     @property
     def _response(self):
@@ -81,7 +92,9 @@ class Controller(object):
         """
 
         if self.__response is None:
-            self.__response = make_response()
+            with self.__response_lock:
+                if self.__response is None:
+                    self.__response = make_response()
 
         return self.__response
 
@@ -93,7 +106,8 @@ class Controller(object):
         :return:            void
         """
 
-        self.__response = response
+        with self.__response_lock:
+            self.__response = response
 
     @property
     def _cookies(self):
@@ -103,7 +117,9 @@ class Controller(object):
         """
 
         if self.__cookies is None:
-            self.__cookies = Cookies(self._request.cookies, self._response)
+            with self.__cookies_lock:
+                if self.__cookies is None:
+                    self.__cookies = Cookies(self._request.cookies, self._response)
 
         return self.__cookies
 
@@ -115,4 +131,5 @@ class Controller(object):
         :return:            void
         """
 
-        self.__cookies = cookies
+        with self.__cookies_lock:
+            self.__cookies = cookies
