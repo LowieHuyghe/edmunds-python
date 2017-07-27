@@ -1,7 +1,7 @@
 
 from flask.wrappers import Response as FlaskResponse
 from edmunds.encoding.encoding import Encoding
-from edmunds.globals import render_template, redirect, send_file
+from edmunds.globals import render_template, redirect, send_file, jsonify
 
 
 class Response(FlaskResponse):
@@ -99,6 +99,13 @@ class Response(FlaskResponse):
 
         rendered = render_template(template, template_assigns)
         self.content(rendered)
+
+    def json(self):
+        """
+        Make it a json response
+        :return:    void
+        """
+        self._apply_response(jsonify(**self._assigns))
 
     def redirect(self, location, code=302):
         """
