@@ -8,10 +8,10 @@ machine:
   post:
     - pyenv versions
     - pyenv global 2.7.12 3.4.4 3.5.3 3.6.2
-    - "[ -d ~/virtualenvs/venv-2.7.12 ] || virtualenv -p $( which python2.7.12 ) ~/virtualenvs/venv-2.7.12"
-    - "[ -d ~/virtualenvs/venv-3.4.4 ] || virtualenv -p $( which python3.4.4 ) ~/virtualenvs/venv-3.4.4"
-    - "[ -d ~/virtualenvs/venv-3.5.3 ] || virtualenv -p $( which python3.5.3 ) ~/virtualenvs/venv-3.5.3"
-    - "[ -d ~/virtualenvs/venv-3.6.2 ] || virtualenv -p $( which python3.6.2 ) ~/virtualenvs/venv-3.6.2"
+    - "[ -d ~/virtualenvs/venv-2.7.12 ] || virtualenv -p $( which python2.7 ) ~/virtualenvs/venv-2.7.12"
+    - "[ -d ~/virtualenvs/venv-3.4.4 ] || virtualenv -p $( which python3.4 ) ~/virtualenvs/venv-3.4.4"
+    - "[ -d ~/virtualenvs/venv-3.5.3 ] || virtualenv -p $( which python3.5 ) ~/virtualenvs/venv-3.5.3"
+    - "[ -d ~/virtualenvs/venv-3.6.2 ] || virtualenv -p $( which python3.6 ) ~/virtualenvs/venv-3.6.2"
 
   environment:
     PYTHONPATH: /opt/google-cloud-sdk/platform/google_appengine:/opt/google-cloud-sdk/platform/google_appengine/lib/yaml/lib
