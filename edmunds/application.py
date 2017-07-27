@@ -15,6 +15,7 @@ from edmunds.storage.providers.storageserviceprovider import StorageServiceProvi
 from edmunds.database.providers.databaseserviceprovider import DatabaseServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
+from edmunds.http.response import Response
 from threading import Lock
 
 
@@ -32,6 +33,7 @@ class Application(Flask,
     """
 
     request_class = Request
+    response_class = Response
     config_class = Config
     _logger_lock = Lock()
 
