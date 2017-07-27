@@ -6,6 +6,7 @@ general:
 
 machine:
   post:
+    - pyenv versions
     - pyenv global 2.7.12 3.4.4 3.5.2 3.6.0
     - "[ -d ~/virtualenvs/venv-2.7 ] || virtualenv -p $( which python2.7 ) ~/virtualenvs/venv-2.7"
     - "[ -d ~/virtualenvs/venv-3.4 ] || virtualenv -p $( which python3.4 ) ~/virtualenvs/venv-3.4"
