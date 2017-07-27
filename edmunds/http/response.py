@@ -26,26 +26,32 @@ class Response(FlaskResponse):
         Assign value
         :param key:     Key for the value
         :param value:   Value for the key
-        :return:        void
+        :return:        Response
+        :rtype:         Response
         """
         self._assigns[key] = value
+        return self
 
     def header(self, key, value, **kw):
         """
         Assign header
         :param key:     The header key
         :param value:   The header value
-        :return:        void
+        :return:        Response
+        :rtype:         Response
         """
         self.headers.set(key, value, **kw)
+        return self
 
     def delete_header(self, key):
         """
         Delete header
         :param key: Key to delete
-        :return:    void
+        :return:    Response
+        :rtype:     Response
         """
         self.headers.remove(key)
+        return self
 
     def cookie(self, key, value='', max_age=None, expires=None, path='/', domain=None, secure=False, httponly=False):
         """Sets a cookie. The parameters are the same as in the cookie `Morsel`
@@ -68,14 +74,33 @@ class Response(FlaskResponse):
         :param httponly: disallow JavaScript to access the cookie.  This is an
                          extension to the cookie standard and probably not
                          supported by all browsers.
+        :return:        Response
+        :rtype:         Response
         """
         self.set_cookie(key, value, max_age, expires, path, domain, secure, httponly)
+        return self
+
+    def delete_cookie(self, key, path='/', domain=None):
+        """
+        Delete a cookie.  Fails silently if key doesn't exist.
+
+        :param key: the key (name) of the cookie to be deleted.
+        :param path: if the cookie that should be deleted was limited to a
+                     path, the path has to be defined here.
+        :param domain: if the cookie that should be deleted was limited to a
+                       domain, that domain has to be defined here.
+        :return:        Response
+        :rtype:         Response
+        """
+        super(Response, self).delete_cookie(key, path, domain)
+        return self
 
     def content(self, content):
         """
         Set content
-        :param content: content 
-        :return:        void
+        :param content: content
+        :return:        Response
+        :rtype:         Response
         """
         if content is None:
             self.response = []
@@ -83,13 +108,15 @@ class Response(FlaskResponse):
             self.set_data(content)
         else:
             self.response = content
+        return self
 
     def render(self, template, extra_assigns=None):
         """
         Render template as response
         :param template:            The template
         :param extra_assigns:   Optional extra assigns
-        :return:                void
+        :return:                Response
+        :rtype:                 Response
         """
         if extra_assigns is None:
             template_assigns = self._assigns
@@ -99,22 +126,27 @@ class Response(FlaskResponse):
 
         rendered = render_template(template, template_assigns)
         self.content(rendered)
+        return self
 
     def json(self):
         """
         Make it a json response
-        :return:    void
+        :return:        Response
+        :rtype:         Response
         """
         self._apply_response(jsonify(**self._assigns))
+        return self
 
     def redirect(self, location, code=302):
         """
         Redirect
         :param location:    Location to redirect to 
         :param code:        Status code
-        :return:            void
+        :return:            Response
+        :rtype:             Response
         """
         self._apply_response(redirect(location, code=code))
+        return self
 
     def file(self, filename_or_fp, mimetype=None, as_attachment=False,
              attachment_filename=None, add_etags=True,
@@ -192,10 +224,13 @@ class Response(FlaskResponse):
         :param last_modified: set the ``Last-Modified`` header to this value,
             a :class:`~datetime.datetime` or timestamp.
             If a file was passed, this overrides its mtime.
+        :return:        Response
+        :rtype:         Response
         """
         self._apply_response(send_file(filename_or_fp, mimetype, as_attachment,
                                        attachment_filename, add_etags,
                                        cache_timeout, conditional, last_modified))
+        return self
 
     def _apply_response(self, response_obj):
         """
