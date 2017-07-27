@@ -40,6 +40,7 @@ class Controller(object):
         """
         Get input
         :return:    Input
+        :type:      edmunds.http.input.Input
         """
 
         if self.__input is None:
@@ -89,6 +90,7 @@ class Controller(object):
         """
         Get response
         :return:    Response
+        :rtype:     edmunds.http.response.Response
         """
 
         if self.__response is None:
