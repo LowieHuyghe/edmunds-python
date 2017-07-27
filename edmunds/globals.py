@@ -10,7 +10,8 @@ from flask import current_app as flask_current_app, \
     _app_ctx_stack as flask__app_ctx_stack, \
     render_template as flask_render_template, \
     redirect as flask_redirect, \
-    send_file as flask_send_file
+    send_file as flask_send_file, \
+    jsonify as flask_jsonify
 
 
 current_app = flask_current_app
@@ -25,3 +26,4 @@ _app_ctx_stack = flask__app_ctx_stack
 render_template = flask_render_template
 redirect = flask_redirect
 send_file = flask_send_file
+jsonify = flask_jsonify
