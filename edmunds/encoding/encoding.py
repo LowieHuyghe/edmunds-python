@@ -85,6 +85,17 @@ class Encoding(object):
         return processed_value
 
     @staticmethod
+    def get_text_type():
+        """
+        Get text type
+        :return:    class
+        """
+        if sys.version_info < (3, 0):
+            return unicode
+        else:
+            return str
+
+    @staticmethod
     def _is_ascii(value):
         """
         Check if ascii

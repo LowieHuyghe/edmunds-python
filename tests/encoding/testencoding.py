@@ -97,3 +97,14 @@ class TestEncoding(TestCase):
         }
 
         self.assert_equal_deep(expected, Encoding.to_unicode(value))
+
+    def test_get_text_type(self):
+        """
+        Test get text type
+        :return:    void
+        """
+
+        if sys.version_info < (3, 0):
+            self.assert_equal(unicode, Encoding.get_text_type())
+        else:
+            self.assert_equal(str, Encoding.get_text_type())
