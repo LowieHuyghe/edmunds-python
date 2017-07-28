@@ -91,3 +91,53 @@ class TestResponseHelper(TestCase):
         self.assert_equal(2, len(helper.assigns))
         self.assert_in(key1, helper.assigns)
         self.assert_equal(value1_2, helper.assigns[key1])
+
+    def test_headers(self):
+        """
+        Test headers
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+        key1 = self.rand_str(20)
+        value1 = self.rand_str(20)
+        value1_2 = self.rand_str(20)
+        key2 = self.rand_str(20)
+        value2 = self.rand_str(20)
+
+        # Empty
+        self.assert_equal(0, len(helper.headers))
+
+        # Assign one
+        helper.header(key1, value1)
+        self.assert_equal(1, len(helper.headers))
+        self.assert_in(key1, helper.headers)
+        self.assert_equal(value1, helper.headers[key1])
+
+        # Assign second
+        helper.header(key2, value2)
+        self.assert_equal(2, len(helper.headers))
+        self.assert_in(key2, helper.headers)
+        self.assert_equal(value2, helper.headers[key2])
+
+        # Override
+        helper.header(key1, value1_2)
+        self.assert_equal(2, len(helper.headers))
+        self.assert_in(key1, helper.headers)
+        self.assert_equal(value1_2, helper.headers[key1])
+
+        # Check responses
+        with self.app.test_request_context(rule):
+            responses = [
+                helper.raw(''),
+                helper.render(self.template),
+                helper.json(),
+                helper.redirect('/'),
+                helper.file(self.template_file)
+            ]
+            for response in responses:
+                self.assert_in(key1, response.headers)
+                self.assert_equal(value1_2, response.headers[key1])
+                self.assert_in(key2, response.headers)
+                self.assert_equal(value2, response.headers[key2])
