@@ -2,6 +2,7 @@
 from werkzeug.datastructures import Headers
 from edmunds.globals import render_template, redirect, send_file, jsonify, make_response
 from threading import Lock
+from edmunds.application import Application
 
 
 class ResponseHelper(object):
@@ -164,7 +165,7 @@ class ResponseHelper(object):
         :return:            Response
         :rtype:             edmunds.http.response.Response
         """
-        return self._apply_data(redirect(location))
+        return self._apply_data(redirect(location, Response=Application.response_class))
 
     def file(self, filename_or_fp, mimetype=None, as_attachment=False,
              attachment_filename=None, add_etags=True,
