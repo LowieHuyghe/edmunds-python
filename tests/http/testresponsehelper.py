@@ -18,9 +18,7 @@ class TestResponseHelper(TestCase):
         """
         super(TestResponseHelper, self).set_up()
 
-        self.template_source = '{{ value1 }}' \
-                               '{{ value2 }}' \
-                               '{{ value3 }}'
+        self.template_source = '{{ value1 }} {{ value2 }} {{ value3 }}'
         self.template = Template(self.template_source)
         self.template_file = self.write_temp_file(self.template_source)
 
@@ -200,3 +198,56 @@ class TestResponseHelper(TestCase):
                 self.assert_in('%s=%s;' % (key2, value2), cookie_headers[1][1])
                 self.assert_in('%s=%s;' % (key1, value1_2), cookie_headers[2][1])
                 self.assert_in('%s=;' % key2, cookie_headers[3][1])
+
+    def test_raw(self):
+        """
+        Test raw
+        :return:    void 
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+
+        with self.app.test_request_context(rule):
+            response = helper.raw(self.template_source)
+
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_equal(1, len(response.response))
+            self.assert_equal(self.template_source, response.response[0])
+
+    def test_render(self):
+        """
+        Test render
+        :return:    void 
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+        value1 = self.rand_str(20)
+        value2 = self.rand_str(20)
+        value3 = self.rand_str(20)
+
+        incomplete_result = '%s  %s' % (value1, value3)
+        alternate_result = '%s %s %s' % (value1, value2, value3)
+
+        with self.app.test_request_context(rule):
+            # Assign normal way
+            helper.assign('value1', value1)
+            helper.assign('value3', value3)
+
+            # Fetch response
+            response = helper.render(self.template)
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_equal(1, len(response.response))
+            self.assert_equal(incomplete_result, response.response[0])
+
+            # Fetch response with extra assign
+            response = helper.render(self.template, {'value2': value2})
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_equal(1, len(response.response))
+            self.assert_equal(alternate_result, response.response[0])
