@@ -24,10 +24,3 @@ class MaxMindWebService(BaseDriver):
         :rtype:     geoip2.models.City
         """
         return self._client.insights(ip)
-
-    def close(self):
-        """
-        Close the reader
-        :return:    void
-        """
-        pass
