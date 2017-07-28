@@ -331,4 +331,4 @@ class TestResponseHelper(TestCase):
             # Check
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
-            self.assert_in(rule, response.response[0])
+            self.assert_in(rule, Encoding.normalize(response.response[0]))
