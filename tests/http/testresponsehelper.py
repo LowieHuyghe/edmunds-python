@@ -6,6 +6,9 @@ from edmunds.http.responsehelper import ResponseHelper
 from jinja2 import Template
 import json
 from edmunds.encoding.encoding import Encoding
+from werkzeug.wsgi import FileWrapper
+import sys
+import io
 
 
 class TestResponseHelper(TestCase):
@@ -45,7 +48,9 @@ class TestResponseHelper(TestCase):
             self.assert_equal(default, helper.render(self.template).status_code)
             self.assert_equal(default, helper.json().status_code)
             self.assert_equal(default_redirect, helper.redirect('/').status_code)
-            self.assert_equal(default, helper.file(self.template_file).status_code)
+            file_response = helper.file(self.template_file)
+            self.assert_equal(default, file_response.status_code)
+            file_response.close()
 
             # Set & check
             helper.status(status)
@@ -56,7 +61,9 @@ class TestResponseHelper(TestCase):
             self.assert_equal(status, helper.render(self.template).status_code)
             self.assert_equal(status, helper.json().status_code)
             self.assert_equal(status, helper.redirect('/').status_code)
-            self.assert_equal(status, helper.file(self.template_file).status_code)
+            file_response = helper.file(self.template_file)
+            self.assert_equal(status, file_response.status_code)
+            file_response.close()
 
     def test_assigns(self):
         """
@@ -141,6 +148,7 @@ class TestResponseHelper(TestCase):
                 self.assert_equal(value1_2, response.headers[key1])
                 self.assert_in(key2, response.headers)
                 self.assert_equal(value2, response.headers[key2])
+            responses[4].close()
 
     def test_cookies(self):
         """
@@ -200,6 +208,7 @@ class TestResponseHelper(TestCase):
                 self.assert_in('%s=%s;' % (key2, value2), cookie_headers[1][1])
                 self.assert_in('%s=%s;' % (key1, value1_2), cookie_headers[2][1])
                 self.assert_in('%s=;' % key2, cookie_headers[3][1])
+            responses[4].close()
 
     def test_raw(self):
         """
@@ -332,3 +341,29 @@ class TestResponseHelper(TestCase):
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
             self.assert_in(rule, Encoding.normalize(response.response[0]))
+
+    def test_file(self):
+        """
+        Test file
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+
+        with self.app.test_request_context(rule):
+            # Redirect response
+            response = helper.file(self.template_file)
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_is_instance(response.response, FileWrapper)
+            if sys.version_info < (3, 0):
+                self.assert_is_instance(response.response.file, file)
+                self.assert_in(self.template_source, response.response.file)
+            else:
+                self.assert_is_instance(response.response.file, io.BufferedReader)
+                self.assert_in(self.template_source, Encoding.normalize(response.response.file.read()))
+            self.assert_equal(self.template_file, response.response.file.name)
+
+            response.close()
