@@ -13,6 +13,7 @@ from edmunds.log.providers.logserviceprovider import LogServiceProvider
 from edmunds.session.providers.sessionserviceprovider import SessionServiceProvider
 from edmunds.storage.providers.storageserviceprovider import StorageServiceProvider
 from edmunds.database.providers.databaseserviceprovider import DatabaseServiceProvider
+from edmunds.localization.location.providers.locationserviceprovider import LocationServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
@@ -62,6 +63,7 @@ class Application(Flask,
         self.register(LogServiceProvider)
         self.register(SessionServiceProvider)
         self.register(DatabaseServiceProvider)
+        self.register(LocationServiceProvider)
 
     def route(self, rule, **options):
         """
