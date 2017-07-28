@@ -3,7 +3,6 @@ from tests.testcase import TestCase
 from edmunds.http.controller import Controller
 from edmunds.http.input import Input
 from edmunds.globals import request, session
-from edmunds.cookie.cookies import Cookies
 from edmunds.http.responsehelper import ResponseHelper
 
 
@@ -105,21 +104,6 @@ class TestController(TestCase):
             self.assert_equal_deep(session, controller._session)
             controller._session = rule
             self.assert_equal_deep(rule, controller._session)
-
-    def test_cookies(self):
-        """
-        Test cookies
-        :return:    void
-        """
-
-        rule = '/' + self.rand_str(20)
-        # Test session
-        with self.app.test_request_context(rule):
-            controller = MyController(self.app)
-
-            self.assert_is_instance(controller._cookies, Cookies)
-            controller._cookies = rule
-            self.assert_equal_deep(rule, controller._cookies)
 
 
 class MyController(Controller):
