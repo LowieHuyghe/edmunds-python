@@ -17,11 +17,3 @@ class BaseDriver(ABC):
         :rtype:     geoip2.models.City
         """
         pass
-
-    @abc.abstractmethod
-    def close(self):
-        """
-        Close the connection/reader/...
-        :return:    void
-        """
-        pass

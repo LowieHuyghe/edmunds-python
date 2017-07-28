@@ -1,6 +1,7 @@
 
 from geoip2.database import Reader
 from edmunds.localization.location.drivers.basedriver import BaseDriver
+import atexit
 
 
 class MaxMindEnterpriseDatabase(BaseDriver):
@@ -15,6 +16,9 @@ class MaxMindEnterpriseDatabase(BaseDriver):
         """
         self._reader = Reader(database)
 
+        # Close reader when app closes down
+        atexit.register(lambda: self._reader.close())
+
     def insights(self, ip):
         """
         Get insights in ip
@@ -23,10 +27,3 @@ class MaxMindEnterpriseDatabase(BaseDriver):
         :rtype:     geoip2.models.City
         """
         return self._reader.enterprise(ip)
-
-    def close(self):
-        """
-        Close the reader
-        :return:    void
-        """
-        self._reader.close()
