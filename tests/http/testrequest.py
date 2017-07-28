@@ -1,7 +1,7 @@
 
-
 from tests.testcase import TestCase
 from edmunds.http.request import Request
+from flask.wrappers import Request as FlaskRequest
 from edmunds.globals import request
 from werkzeug.local import LocalProxy
 
@@ -24,3 +24,4 @@ class TestRequest(TestCase):
             self.assert_is_not_none(request)
             self.assert_is_instance(request, LocalProxy)
             self.assert_is_instance(request._get_current_object(), Request)
+            self.assert_is_instance(request._get_current_object(), FlaskRequest)
