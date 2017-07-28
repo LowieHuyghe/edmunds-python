@@ -3,6 +3,7 @@ from edmunds.globals import request
 from edmunds.http.input import Input
 from edmunds.globals import make_response
 from edmunds.cookie.cookies import Cookies
+from edmunds.http.responsehelper import ResponseHelper
 from threading import Lock
 
 
@@ -89,14 +90,14 @@ class Controller(object):
     def _response(self):
         """
         Get response
-        :return:    Response
-        :rtype:     edmunds.http.response.Response
+        :return:    Response Helper
+        :rtype:     edmunds.http.responsehelper.ResponseHelper
         """
 
         if self.__response is None:
             with self.__response_lock:
                 if self.__response is None:
-                    self.__response = make_response()
+                    self.__response = ResponseHelper()
 
         return self.__response
 
@@ -104,7 +105,7 @@ class Controller(object):
     def _response(self, response):
         """
         Set response
-        :param response:    Response 
+        :param response:    Response Helper
         :return:            void
         """
 
