@@ -4,6 +4,8 @@ from edmunds.http.response import Response
 from flask.wrappers import Response as FlaskResponse
 from edmunds.http.responsehelper import ResponseHelper
 from jinja2 import Template
+import json
+from edmunds.encoding.encoding import Encoding
 
 
 class TestResponseHelper(TestCase):
@@ -214,7 +216,7 @@ class TestResponseHelper(TestCase):
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
             self.assert_equal(1, len(response.response))
-            self.assert_equal(self.template_source, response.response[0])
+            self.assert_equal(self.template_source, Encoding.normalize(response.response[0]))
 
     def test_render(self):
         """
@@ -242,7 +244,7 @@ class TestResponseHelper(TestCase):
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
             self.assert_equal(1, len(response.response))
-            self.assert_equal(incomplete_result, response.response[0])
+            self.assert_equal(incomplete_result, Encoding.normalize(response.response[0]))
 
             # Fetch response with extra assign
             response = helper.render(self.template, {'value2': value2})
@@ -250,7 +252,7 @@ class TestResponseHelper(TestCase):
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
             self.assert_equal(1, len(response.response))
-            self.assert_equal(alternate_result, response.response[0])
+            self.assert_equal(alternate_result, Encoding.normalize(response.response[0]))
 
     def test_render_template(self):
         """
@@ -277,3 +279,39 @@ class TestResponseHelper(TestCase):
 
             # Fetch rendered template
             self.assert_equal(alternate_result, helper.render_template(self.template, {'value2': value2}))
+
+    def test_json(self):
+        """
+        Test json response
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+        key1 = self.rand_str(20)
+        value1 = self.rand_str(20)
+        key2 = self.rand_str(20)
+        value2 = self.rand_str(20)
+
+        with self.app.test_request_context(rule):
+            # Empty json response
+            response = helper.json()
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_equal('{}', Encoding.normalize(response.response[0]))
+
+            # Assign
+            helper.assign(key1, value1)
+            helper.assign(key2, value2)
+            # Json response
+            response = helper.json()
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            response_json = Encoding.normalize(json.loads(response.response[0]))
+            self.assert_equal(2, len(response_json))
+            self.assert_in(key1, response_json)
+            self.assert_equal(value1, response_json[key1])
+            self.assert_in(key2, response_json)
+            self.assert_equal(value2, response_json[key2])
