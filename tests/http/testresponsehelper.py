@@ -193,7 +193,7 @@ class TestResponseHelper(TestCase):
                 helper.file(self.template_file)
             ]
             for response in responses:
-                cookie_headers = filter(lambda header: isinstance(header, tuple) and header[0] == 'Set-Cookie', response.headers)
+                cookie_headers = list(filter(lambda header: isinstance(header, tuple) and header[0] == 'Set-Cookie', response.headers))
 
                 self.assert_equal(4, len(cookie_headers))
                 self.assert_in('%s=%s;' % (key1, value1), cookie_headers[0][1])
