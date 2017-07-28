@@ -315,3 +315,20 @@ class TestResponseHelper(TestCase):
             self.assert_equal(value1, response_json[key1])
             self.assert_in(key2, response_json)
             self.assert_equal(value2, response_json[key2])
+
+    def test_redirect(self):
+        """
+        Test redirect
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+
+        with self.app.test_request_context(rule):
+            # Redirect response
+            response = helper.redirect(rule)
+            # Check
+            self.assert_is_instance(response, Response)
+            self.assert_is_instance(response, FlaskResponse)
+            self.assert_in(rule, response.response[0])
