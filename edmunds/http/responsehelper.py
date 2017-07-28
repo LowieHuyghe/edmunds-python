@@ -10,7 +10,7 @@ class ResponseHelper(object):
         """
         Constructor 
         """
-        self.status = None
+        self._status = None
         self.assigns = dict()
         self.headers = Headers()
         self.__cookie_response = None
@@ -23,7 +23,7 @@ class ResponseHelper(object):
         :return:        Response
         :rtype:         ResponseHelper
         """
-        self.status = status
+        self._status = status
         return self
 
     def assign(self, key, value):
@@ -145,7 +145,7 @@ class ResponseHelper(object):
             template_assigns = self.assigns.copy()
             template_assigns.update(extra_assigns)
 
-        return render_template(template, template_assigns)
+        return render_template(template, **template_assigns)
 
     def json(self):
         """
@@ -155,15 +155,14 @@ class ResponseHelper(object):
         """
         return self._apply_data(jsonify(**self.assigns))
 
-    def redirect(self, location, code=302):
+    def redirect(self, location):
         """
         Redirect response
-        :param location:    Location to redirect to 
-        :param code:        Status code
+        :param location:    Location to redirect to
         :return:            Response
         :rtype:             edmunds.http.response.Response
         """
-        return self._apply_data(redirect(location, code=code))
+        return self._apply_data(redirect(location))
 
     def file(self, filename_or_fp, mimetype=None, as_attachment=False,
              attachment_filename=None, add_etags=True,
@@ -257,9 +256,11 @@ class ResponseHelper(object):
         :rtype:                 edmunds.http.response.Response
         """
         # Status
-        if self.status is not None:
-            response_obj.status = self.status
+        if self._status is not None:
+            response_obj.status_code = self._status
         # Headers
         response_obj.headers.extend(self.headers)
         # Cookies
         response_obj.headers.extend(self._cookie_response.headers)
+
+        return response_obj

@@ -3,12 +3,60 @@ from tests.testcase import TestCase
 from edmunds.http.response import Response
 from flask.wrappers import Response as FlaskResponse
 from edmunds.http.responsehelper import ResponseHelper
+from jinja2 import Template
 
 
 class TestResponseHelper(TestCase):
     """
     Test ResponseHelper
     """
+
+    def set_up(self):
+        """
+        Set up
+        :return:    void 
+        """
+        super(TestResponseHelper, self).set_up()
+
+        self.template_source = '{{ value1 }}' \
+                               '{{ value2 }}' \
+                               '{{ value3 }}'
+        self.template = Template(self.template_source)
+        self.template_file = self.write_temp_file(self.template_source)
+
+    def test_status(self):
+        """
+        Test status
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+        default = 200
+        default_redirect = 302
+        status = 105
+
+        with self.app.test_request_context(rule):
+            # None
+            self.assert_is_none(helper._status)
+
+            # Check responses
+            self.assert_equal(default, helper.raw('').status_code)
+            self.assert_equal(default, helper.render(self.template).status_code)
+            self.assert_equal(default, helper.json().status_code)
+            self.assert_equal(default_redirect, helper.redirect('/').status_code)
+            self.assert_equal(default, helper.file(self.template_file).status_code)
+
+            # Set & check
+            helper.status(status)
+            self.assert_equal(status, helper._status)
+
+            # Check responses
+            self.assert_equal(status, helper.raw('').status_code)
+            self.assert_equal(status, helper.render(self.template).status_code)
+            self.assert_equal(status, helper.json().status_code)
+            self.assert_equal(status, helper.redirect('/').status_code)
+            self.assert_equal(status, helper.file(self.template_file).status_code)
 
     def test_assigns(self):
         """
