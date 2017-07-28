@@ -4,7 +4,7 @@ from edmunds.http.controller import Controller
 from edmunds.http.input import Input
 from edmunds.globals import request, session
 from edmunds.cookie.cookies import Cookies
-from flask.wrappers import Response
+from edmunds.http.responsehelper import ResponseHelper
 
 
 class TestController(TestCase):
@@ -64,7 +64,7 @@ class TestController(TestCase):
         with self.app.test_request_context(rule):
             controller = MyController(self.app)
 
-            self.assert_is_instance(controller._response, Response)
+            self.assert_is_instance(controller._response, ResponseHelper)
             controller._response = rule
             self.assert_equal_deep(rule, controller._response)
 
