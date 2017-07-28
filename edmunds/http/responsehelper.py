@@ -1,6 +1,7 @@
 
 from werkzeug.datastructures import Headers
 from edmunds.globals import render_template, redirect, send_file, jsonify, make_response
+from threading import Lock
 
 
 class ResponseHelper(object):
@@ -12,7 +13,8 @@ class ResponseHelper(object):
         self.status = None
         self.assigns = dict()
         self.headers = Headers()
-        self._cookie_response = make_response()
+        self.__cookie_response = None
+        self.__cookie_response_lock = Lock()
 
     def status(self, status):
         """
@@ -55,6 +57,18 @@ class ResponseHelper(object):
         """
         self.headers.remove(key)
         return self
+
+    @property
+    def _cookie_response(self):
+        """
+        Get cookie response
+        :return:    Response
+        """
+        if self.__cookie_response is None:
+            with self.__cookie_response_lock:
+                if self.__cookie_response is None:
+                    self.__cookie_response = make_response()
+        return self.__cookie_response
 
     def cookie(self, key, value='', max_age=None, expires=None, path='/', domain=None, secure=False, httponly=False):
         """Sets a cookie. The parameters are the same as in the cookie `Morsel`
