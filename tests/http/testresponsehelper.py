@@ -141,3 +141,62 @@ class TestResponseHelper(TestCase):
                 self.assert_equal(value1_2, response.headers[key1])
                 self.assert_in(key2, response.headers)
                 self.assert_equal(value2, response.headers[key2])
+
+    def test_cookies(self):
+        """
+        Test cookies
+        :return:    void
+        """
+
+        helper = ResponseHelper()
+        rule = '/' + self.rand_str(20)
+        key1 = self.rand_str(20)
+        value1 = self.rand_str(20)
+        value1_2 = self.rand_str(20)
+        key2 = self.rand_str(20)
+        value2 = self.rand_str(20)
+
+        with self.app.test_request_context(rule):
+            # Empty
+            self.assert_equal(0, len(helper._cookie_response.headers))
+
+            # Assign one
+            helper.cookie(key1, value1)
+            self.assert_equal(1, len(helper._cookie_response.headers))
+            self.assert_equal('Set-Cookie', helper._cookie_response.headers[0][0])
+            self.assert_in('%s=%s;' % (key1, value1), helper._cookie_response.headers[0][1])
+
+            # Assign second
+            helper.cookie(key2, value2)
+            self.assert_equal(2, len(helper._cookie_response.headers))
+            self.assert_equal('Set-Cookie', helper._cookie_response.headers[1][0])
+            self.assert_in('%s=%s;' % (key2, value2), helper._cookie_response.headers[1][1])
+
+            # Override (NOT)
+            helper.cookie(key1, value1_2)
+            self.assert_equal(3, len(helper._cookie_response.headers))
+            self.assert_equal('Set-Cookie', helper._cookie_response.headers[2][0])
+            self.assert_in('%s=%s;' % (key1, value1_2), helper._cookie_response.headers[2][1])
+
+            # Delete
+            helper.delete_cookie(key2)
+            self.assert_equal(4, len(helper._cookie_response.headers))
+            self.assert_equal('Set-Cookie', helper._cookie_response.headers[3][0])
+            self.assert_in('%s=;' % key2, helper._cookie_response.headers[3][1])
+
+            # Check responses
+            responses = [
+                helper.raw(''),
+                helper.render(self.template),
+                helper.json(),
+                helper.redirect('/'),
+                helper.file(self.template_file)
+            ]
+            for response in responses:
+                cookie_headers = filter(lambda header: isinstance(header, tuple) and header[0] == 'Set-Cookie', response.headers)
+
+                self.assert_equal(4, len(cookie_headers))
+                self.assert_in('%s=%s;' % (key1, value1), cookie_headers[0][1])
+                self.assert_in('%s=%s;' % (key2, value2), cookie_headers[1][1])
+                self.assert_in('%s=%s;' % (key1, value1_2), cookie_headers[2][1])
+                self.assert_in('%s=;' % key2, cookie_headers[3][1])

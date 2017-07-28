@@ -67,7 +67,9 @@ class ResponseHelper(object):
         if self.__cookie_response is None:
             with self.__cookie_response_lock:
                 if self.__cookie_response is None:
-                    self.__cookie_response = make_response()
+                    response = make_response()
+                    response.headers.clear()
+                    self.__cookie_response = response
         return self.__cookie_response
 
     def cookie(self, key, value='', max_age=None, expires=None, path='/', domain=None, secure=False, httponly=False):
