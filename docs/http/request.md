@@ -1,7 +1,7 @@
 
 # Request
 
-Request are available for usage when in request context.
+Request is available for usage when in request context.
 
 
 ## Usage

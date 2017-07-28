@@ -22,6 +22,7 @@
   - [Request](http/request.md)
   - [Input and Validation](http/inputandvalidation.md)
   - [Session](http/session.md)
+  - [Response](http/response.md)
 
 * Testing
   - [Getting Started](testing/gettingstarted.md)
