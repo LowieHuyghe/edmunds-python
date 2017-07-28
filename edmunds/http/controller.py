@@ -1,8 +1,6 @@
 
 from edmunds.globals import request
 from edmunds.http.input import Input
-from edmunds.globals import make_response
-from edmunds.cookie.cookies import Cookies
 from edmunds.http.responsehelper import ResponseHelper
 from threading import Lock
 
@@ -25,8 +23,6 @@ class Controller(object):
         self.__session_lock = Lock()
         self.__response = None
         self.__response_lock = Lock()
-        self.__cookies = None
-        self.__cookies_lock = Lock()
 
     def initialize(self, **params):
         """
@@ -111,28 +107,3 @@ class Controller(object):
 
         with self.__response_lock:
             self.__response = response
-
-    @property
-    def _cookies(self):
-        """
-        Get cookies
-        :return:    Cookies
-        """
-
-        if self.__cookies is None:
-            with self.__cookies_lock:
-                if self.__cookies is None:
-                    self.__cookies = Cookies(self._request.cookies, self._response)
-
-        return self.__cookies
-
-    @_cookies.setter
-    def _cookies(self, cookies):
-        """
-        Set cookies
-        :param cookies:    Cookies 
-        :return:            void
-        """
-
-        with self.__cookies_lock:
-            self.__cookies = cookies
