@@ -3,6 +3,7 @@ from edmunds.foundation.patterns.manager import Manager
 from edmunds.localization.location.drivers.maxmindcitydatabase import MaxMindCityDatabase
 from edmunds.localization.location.drivers.maxmindenterprisedatabase import MaxMindEnterpriseDatabase
 from edmunds.localization.location.drivers.maxmindwebservice import MaxMindWebService
+from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine
 
 
 class LocationManager(Manager):
@@ -24,8 +25,8 @@ class LocationManager(Manager):
         Create MaxMind City Database driver
         :param config:  The config
         :type  config:  dict
-        :return:    Driver
-        :rtype:     edmunds.localization.location.drivers.maxmindcitydatabase.MaxMindCityDatabase
+        :return:        Driver
+        :rtype:         edmunds.localization.location.drivers.maxmindcitydatabase.MaxMindCityDatabase
         """
 
         if 'database' not in config:
@@ -39,8 +40,8 @@ class LocationManager(Manager):
         Create MaxMind Enterprise Database driver
         :param config:  The config
         :type  config:  dict
-        :return:    Driver
-        :rtype:     edmunds.localization.location.drivers.maxmindenterprisedatabase.MaxMindEnterpriseDatabase
+        :return:        Driver
+        :rtype:         edmunds.localization.location.drivers.maxmindenterprisedatabase.MaxMindEnterpriseDatabase
         """
 
         if 'database' not in config:
@@ -54,8 +55,8 @@ class LocationManager(Manager):
         Create MaxMind Enterprise Database driver
         :param config:  The config
         :type  config:  dict
-        :return:    Driver
-        :rtype:     edmunds.localization.location.drivers.maxmindwebservice.MaxMindWebService
+        :return:        Driver
+        :rtype:         edmunds.localization.location.drivers.maxmindwebservice.MaxMindWebService
         """
 
         if 'user_id' not in config \
@@ -65,3 +66,14 @@ class LocationManager(Manager):
         user_id = config['user_id']
         license_key = config['license_key']
         return MaxMindWebService(user_id, license_key)
+
+    def create_google_app_engine_driver(self, config):
+        """
+        Create Google App Engine driver
+        :param config:  The config
+        :type  config:  dict
+        :return:        Driver
+        :rtype:         edmunds.localization.location.drivers.googleappengine.GoogleAppEngine
+        """
+
+        return GoogleAppEngine()
