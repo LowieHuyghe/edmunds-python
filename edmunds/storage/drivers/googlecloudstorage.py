@@ -31,13 +31,15 @@ class GoogleCloudStorage(BaseDriver):
         self._files_path = files_path
         self._prefix = prefix
 
-    def write_stream(self, path, append=False):
+    def write_stream(self, path, append=False, prefix=None):
         """
         Get a write stream to a certain path
         :param path:    The path to the file
         :type  path:    str
         :param append:  Append to the file
         :type  append:  bool
+        :param prefix:  The prefix
+        :type  prefix:  str
         :return:        The write stream
         :rtype:         Stream
         """
@@ -45,22 +47,24 @@ class GoogleCloudStorage(BaseDriver):
         if append:
             raise RuntimeError('Google Cloud Storage does not support modifying a file.')
 
-        path = self.path(path)
+        path = self.path(path, prefix=prefix)
 
         return gcs.open(path, 'w')
 
-    def read_stream(self, path, raise_errors=False):
+    def read_stream(self, path, raise_errors=False, prefix=None):
         """
         Get a read stream to a certain path
         :param path:            The path to the file
         :type  path:            str
         :param raise_errors:    Raise the errors
         :type  raise_errors:    bool
+        :param prefix:          The prefix
+        :type  prefix:          str
         :return:                The read stream
         :rtype:                 Stream
         """
 
-        path = self.path(path)
+        path = self.path(path, prefix=prefix)
 
         try:
             return gcs.open(path, 'r')
@@ -71,7 +75,7 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return None
 
-    def copy(self, path, new_path, raise_errors=False):
+    def copy(self, path, new_path, raise_errors=False, prefix=None):
         """
         Copy a certain path
         :param path:            The path to the file
@@ -80,11 +84,13 @@ class GoogleCloudStorage(BaseDriver):
         :type  new_path:        str
         :param raise_errors:    Raise the errors
         :type  raise_errors:    bool
+        :param prefix:          The prefix
+        :type  prefix:          str
         :return:                Success
         :rtype:                 bool
         """
 
-        path = self.path(path)
+        path = self.path(path, prefix=prefix)
         new_path = self.path(new_path)
 
         try:
@@ -97,18 +103,20 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return False
 
-    def delete(self, path, raise_errors=False):
+    def delete(self, path, raise_errors=False, prefix=None):
         """
         Delete a certain path
         :param path:            The path to the file
         :type  path:            str
         :param raise_errors:    Raise the errors
         :type  raise_errors:    bool
+        :param prefix:          The prefix
+        :type  prefix:          str
         :return:                Success
         :rtype:                 bool
         """
 
-        path = self.path(path)
+        path = self.path(path, prefix=prefix)
 
         try:
             gcs.delete(path)
@@ -120,16 +128,18 @@ class GoogleCloudStorage(BaseDriver):
             else:
                 return False
 
-    def exists(self, path):
+    def exists(self, path, prefix=None):
         """
         Check if a certain path exists
         :param path:    The path to the file
         :type  path:    str
+        :param prefix:  The prefix
+        :type  prefix:  str
         :return:        Exists
         :rtype:         bool
         """
 
-        path = self.path(path)
+        path = self.path(path, prefix=prefix)
 
         try:
             gcs.stat(path)
