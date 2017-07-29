@@ -17,7 +17,7 @@ class TestGoogleAppEngine(TestCase):
         """
         super(TestGoogleAppEngine, self).set_up()
 
-        self.write_config([
+        self.config = [
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
@@ -32,8 +32,7 @@ class TestGoogleAppEngine(TestCase):
             "       }, \n",
             "   }, \n",
             "} \n",
-        ])
-        self.app = self.create_application()
+        ]
 
     def test_insights_outside_context(self):
         """
@@ -43,8 +42,12 @@ class TestGoogleAppEngine(TestCase):
 
         ip = '127.0.0.1'
 
+        # Write config and create app
+        self.write_config(self.config)
+        app = self.create_application()
+
         # Fetch driver
-        driver = self.app.localization().location()
+        driver = app.localization().location()
         self.assert_is_instance(driver, GoogleAppEngine)
 
         # Insights outside context
@@ -61,12 +64,16 @@ class TestGoogleAppEngine(TestCase):
         other_ip = '127.0.0.2'
         rule = '/' + self.rand_str(20)
 
+        # Write config and create app
+        self.write_config(self.config)
+        app = self.create_application()
+
         # Fetch driver
-        driver = self.app.localization().location()
+        driver = app.localization().location()
         self.assert_is_instance(driver, GoogleAppEngine)
 
         # Within context no headers
-        with self.app.test_request_context(rule, environ_base={'REMOTE_ADDR': ip}):
+        with app.test_request_context(rule, environ_base={'REMOTE_ADDR': ip}):
             with self.assert_raises_regexp(RuntimeError, 'Can only use GoogleAppEngine-location-driver for looking up location of request-ip \(=%s\) \(lookup=%s\)' % (ip, other_ip)):
                 driver.insights(other_ip)
 
@@ -80,12 +87,16 @@ class TestGoogleAppEngine(TestCase):
         rule = '/' + self.rand_str(20)
         environ_base={'REMOTE_ADDR': ip}
 
+        # Write config and create app
+        self.write_config(self.config)
+        app = self.create_application()
+
         # Fetch driver
-        driver = self.app.localization().location()
+        driver = app.localization().location()
         self.assert_is_instance(driver, GoogleAppEngine)
 
         # Within context no headers
-        with self.app.test_request_context(rule, environ_base=environ_base):
+        with app.test_request_context(rule, environ_base=environ_base):
             city = driver.insights(ip)
             self.assert_is_instance(city, CityModel)
 
@@ -126,12 +137,16 @@ class TestGoogleAppEngine(TestCase):
             'X-AppEngine-CityLatLong': '%s,%s' % (latitude, longitude),
         }
 
+        # Write config and create app
+        self.write_config(self.config)
+        app = self.create_application()
+
         # Fetch driver
-        driver = self.app.localization().location()
+        driver = app.localization().location()
         self.assert_is_instance(driver, GoogleAppEngine)
 
         # Within context no headers
-        with self.app.test_request_context(rule, environ_base=environ_base, headers=headers):
+        with app.test_request_context(rule, environ_base=environ_base, headers=headers):
             city = driver.insights(ip)
             self.assert_is_instance(city, CityModel)
 
