@@ -4,28 +4,23 @@ from edmunds.localization.localizationmanager import LocalizationManager
 from edmunds.localization.location.locationmanager import LocationManager
 
 
-class TestLocalizationServiceProvider(TestCase):
+class TestLocationServiceProvider(TestCase):
     """
-    Test the Localization Service Provider
+    Test the Location Service Provider
     """
 
-    def test_provider(self):
+    def test_provider_not_defined(self):
         """
-        Test provider
+        Test provider not defined
         :return:    void
         """
-
-        # Test extension
-        self.assert_in('edmunds.localization', self.app.extensions)
-        self.assert_is_not_none(self.app.extensions['edmunds.localization'])
-        self.assert_is_instance(self.app.extensions['edmunds.localization'], LocalizationManager)
 
         # Should also have registered location-manager
         self.assert_not_in('edmunds.localization.location', self.app.extensions)
 
-    def test_provider_with_submanagers_disabled(self):
+    def test_provider_disabled(self):
         """
-        Test the provider with submanagers disabled
+        Test the provider disabled
         :return:    void
         """
 
@@ -50,17 +45,12 @@ class TestLocalizationServiceProvider(TestCase):
         # Create app
         app = self.create_application()
 
-        # Test extension
-        self.assert_in('edmunds.localization', app.extensions)
-        self.assert_is_not_none(app.extensions['edmunds.localization'])
-        self.assert_is_instance(app.extensions['edmunds.localization'], LocalizationManager)
-
         # Should not have registered location-manager
         self.assert_not_in('edmunds.localization.location', app.extensions)
 
-    def test_provider_with_submanagers(self):
+    def test_provider(self):
         """
-        Test the provider with submanagers
+        Test the provider
         :return:    void
         """
 
@@ -84,11 +74,6 @@ class TestLocalizationServiceProvider(TestCase):
 
         # Create app
         app = self.create_application()
-
-        # Test extension
-        self.assert_in('edmunds.localization', app.extensions)
-        self.assert_is_not_none(app.extensions['edmunds.localization'])
-        self.assert_is_instance(app.extensions['edmunds.localization'], LocalizationManager)
 
         # Should also have registered location-manager
         self.assert_in('edmunds.localization.location', app.extensions)
