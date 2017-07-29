@@ -2,6 +2,7 @@
 from edmunds.localization.location.drivers.basedriver import BaseDriver
 from edmunds.globals import request
 from geoip2.models import City
+from tzwhere import tzwhere
 
 
 class GoogleAppEngine(BaseDriver):
@@ -60,5 +61,10 @@ class GoogleAppEngine(BaseDriver):
                 'latitude': latitude,
                 'longitude': longitude,
             }
+
+            timezone = tzwhere.tzwhere().tzNameAt(latitude, longitude)
+            timezone = timezone if timezone else None
+            if timezone:
+                raw_response['location']['time_zone'] = timezone
 
         return City(raw_response)
