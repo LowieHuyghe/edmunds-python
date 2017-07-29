@@ -83,11 +83,13 @@ class BaseDriver(ABC):
         pass
 
     @abc.abstractmethod
-    def path(self, path):
+    def path(self, path, prefix=None):
         """
         Get a processed path
         :param path:    The path to the file
         :type  path:    str
+        :param prefix:  The prefix
+        :type  prefix:  str
         :return:        Absolute path to file
         :rtype:         str
         """
