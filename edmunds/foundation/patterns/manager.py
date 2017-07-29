@@ -31,7 +31,7 @@ class Manager(object):
         :param no_instance_error:   The no instance error
         :type  no_instance_error:   bool
         :return:                    The driver
-        :rtype:                     edmunds.localization.location.drivers.basedriver.BaseDriver
+        :rtype:                     edmunds.localization.location.drivers.base
         """
 
         self._load()
