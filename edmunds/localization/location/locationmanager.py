@@ -4,6 +4,7 @@ from edmunds.localization.location.drivers.maxmindcitydatabase import MaxMindCit
 from edmunds.localization.location.drivers.maxmindenterprisedatabase import MaxMindEnterpriseDatabase
 from edmunds.localization.location.drivers.maxmindwebservice import MaxMindWebService
 from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine
+import os
 
 
 class LocationManager(Manager):
@@ -20,6 +21,8 @@ class LocationManager(Manager):
 
         super(LocationManager, self).__init__(app, app.config('app.localization.location.instances', []))
 
+        self._location_path = os.path.join(os.sep, 'localization', 'location')
+
     def _create_max_mind_city_database(self, config):
         """
         Create MaxMind City Database driver
@@ -33,6 +36,12 @@ class LocationManager(Manager):
             raise RuntimeError("MaxMindCityDatabase-driver '%s' is missing some configuration ('database' is required)." % config['name'])
 
         database = config['database']
+
+        # Check if absolute or relative path
+        if not database.startswith(os.sep):
+            database = os.path.join(self._location_path, database)
+        database = self._app.fs().path(database, prefix='')
+
         return MaxMindCityDatabase(database)
 
     def _create_max_mind_enterprise_database(self, config):
@@ -48,6 +57,12 @@ class LocationManager(Manager):
             raise RuntimeError("MaxMindEnterpriseDatabase-driver '%s' is missing some configuration ('database' is required)." % config['name'])
 
         database = config['database']
+
+        # Check if absolute or relative path
+        if not database.startswith(os.sep):
+            database = os.path.join(self._location_path, database)
+        database = self._app.fs().path(database, prefix='')
+
         return MaxMindEnterpriseDatabase(database)
 
     def _create_max_mind_web_service(self, config):

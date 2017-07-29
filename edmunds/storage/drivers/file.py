@@ -127,21 +127,26 @@ class File(BaseDriver):
 
         return os.path.isfile(path)
 
-    def path(self, path):
+    def path(self, path, prefix=None):
         """
         Get the processed path
         :param path:    The path to the file
         :type  path:    str
+        :param prefix:  The prefix
+        :type  prefix:  str
         :return:        The processed path to the file
         :rtype:         str
         """
 
-        if path is not None and self._prefix != '' and not path.endswith(os.sep):
+        if prefix is None:
+            prefix = self._prefix
+
+        if path is not None and prefix != '' and not path.endswith(os.sep):
             path_parts = path.split(os.sep)
 
             filename = path_parts.pop()
-            if not filename.startswith(self._prefix):
-                filename = self._prefix + filename
+            if not filename.startswith(prefix):
+                filename = prefix + filename
             path_parts.append(filename)
 
             path = os.sep.join(path_parts)
