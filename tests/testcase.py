@@ -11,7 +11,7 @@ class TestCase(EdmundsTestCase):
         Create the application for testing
         :param environment: Environment
         :param config_dirs: Config dirs
-        :return:            Application
+        :return:            edmunds.application.Application
         """
 
         os.environ['APP_ENV'] = environment
