@@ -20,5 +20,5 @@ class TestVisitor(TestCase):
 
         # Call route
         with self.app.test_request_context(rule):
-            visitor = Visitor(request)
+            visitor = Visitor(self.app, request)
             self.assert_is_instance(visitor.client, UserAgent)

@@ -122,7 +122,7 @@ class Controller(object):
         if self.__visitor is None:
             with self.__visitor_lock:
                 if self.__visitor is None:
-                    self.__visitor = Visitor(self._request)
+                    self.__visitor = Visitor(self._app, self._request)
 
         return self.__visitor
 
