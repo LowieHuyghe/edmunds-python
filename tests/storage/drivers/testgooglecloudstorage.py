@@ -143,26 +143,28 @@ class TestGoogleCloudStorage(GaeTestCase):
         directory = os.path.join(os.sep + self.bucket, self.storage_directory[1:-1])
 
         data = [
-            ('%s/files/' % directory, None),
-            ('%s/' % directory, '/'),
+            ('%s/files/' % directory, '%s/files/' % directory, None),
+            ('%s/' % directory, '%s/' % directory, '/'),
 
-            ('%s/files/%snice' % (directory, self.prefix), 'nice'),
-            ('%s/files/%snice.txt' % (directory, self.prefix), 'nice.txt'),
-            ('%s/files/sub/directory/%snice.txt' % (directory, self.prefix), 'sub/directory/nice.txt'),
+            ('%s/files/%snice' % (directory, self.prefix), '%s/files/nice' % directory, 'nice'),
+            ('%s/files/%snice.txt' % (directory, self.prefix), '%s/files/nice.txt' % directory, 'nice.txt'),
+            ('%s/files/sub/directory/%snice.txt' % (directory, self.prefix), '%s/files/sub/directory/nice.txt' % directory, 'sub/directory/nice.txt'),
 
-            ('%s/%snice' % (directory, self.prefix), '/nice'),
-            ('%s/%snice.txt' % (directory, self.prefix), '/nice.txt'),
-            ('%s/sub/directory/%snice.txt' % (directory, self.prefix), '/sub/directory/nice.txt'),
+            ('%s/%snice' % (directory, self.prefix), '%s/nice' % directory, '/nice'),
+            ('%s/%snice.txt' % (directory, self.prefix), '%s/nice.txt' % directory, '/nice.txt'),
+            ('%s/sub/directory/%snice.txt' % (directory, self.prefix), '%s/sub/directory/nice.txt' % directory, '/sub/directory/nice.txt'),
 
-            ('%s/files/nice/' % directory, 'nice/'),
-            ('%s/files/nice.txt/' % directory, 'nice.txt/'),
-            ('%s/files/sub/directory/nice.txt/' % directory, 'sub/directory/nice.txt/'),
+            ('%s/files/nice/' % directory, '%s/files/nice/' % directory, 'nice/'),
+            ('%s/files/nice.txt/' % directory, '%s/files/nice.txt/' % directory, 'nice.txt/'),
+            ('%s/files/sub/directory/nice.txt/' % directory, '%s/files/sub/directory/nice.txt/' % directory, 'sub/directory/nice.txt/'),
 
-            ('%s/nice/' % directory, '/nice/'),
-            ('%s/nice.txt/' % directory, '/nice.txt/'),
-            ('%s/sub/directory/nice.txt/' % directory, '/sub/directory/nice.txt/'),
+            ('%s/nice/' % directory, '%s/nice/' % directory, '/nice/'),
+            ('%s/nice.txt/' % directory, '%s/nice.txt/' % directory, '/nice.txt/'),
+            ('%s/sub/directory/nice.txt/' % directory, '%s/sub/directory/nice.txt/' % directory, '/sub/directory/nice.txt/'),
         ]
 
-        for expected, given in data:
+        for expected, expected_no_prefix, given in data:
             self.assert_equal(expected, app.fs().path(given))
             self.assert_equal(expected, app.fs('googlecloudstorage').path(given))
+            self.assert_equal(expected_no_prefix, app.fs().path(given, prefix=''))
+            self.assert_equal(expected_no_prefix, app.fs('googlecloudstorage').path(given, prefix=''))
