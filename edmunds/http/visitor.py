@@ -47,8 +47,7 @@ class Visitor(object):
             with self.__location_lock:
                 if self.__location is None:
                     localization_manager = self._app.localization()
-                    location_manager = localization_manager.location()
-                    location_driver = location_manager.get()
+                    location_driver = localization_manager.location()
                     ip = self._request.remote_addr
                     self.__location = location_driver.insights(ip)
         return self.__location
