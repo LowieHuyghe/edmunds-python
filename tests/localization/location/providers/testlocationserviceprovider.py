@@ -1,6 +1,5 @@
 
 from tests.testcase import TestCase
-from edmunds.localization.localizationmanager import LocalizationManager
 from edmunds.localization.location.locationmanager import LocationManager
 
 

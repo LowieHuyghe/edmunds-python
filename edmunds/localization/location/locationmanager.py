@@ -18,9 +18,9 @@ class LocationManager(Manager):
         :type  app:     Application
         """
 
-        super(LocationManager, self).__init__(app, app.config('app.location.instances', []))
+        super(LocationManager, self).__init__(app, app.config('app.localization.location.instances', []))
 
-    def create_max_mind_city_database_driver(self, config):
+    def _create_max_mind_city_database(self, config):
         """
         Create MaxMind City Database driver
         :param config:  The config
@@ -35,7 +35,7 @@ class LocationManager(Manager):
         database = config['database']
         return MaxMindCityDatabase(database)
 
-    def create_max_mind_enterprise_database_driver(self, config):
+    def _create_max_mind_enterprise_database(self, config):
         """
         Create MaxMind Enterprise Database driver
         :param config:  The config
@@ -50,7 +50,7 @@ class LocationManager(Manager):
         database = config['database']
         return MaxMindEnterpriseDatabase(database)
 
-    def create_max_mind_web_service_driver(self, config):
+    def _create_max_mind_web_service(self, config):
         """
         Create MaxMind Enterprise Database driver
         :param config:  The config
@@ -67,7 +67,7 @@ class LocationManager(Manager):
         license_key = config['license_key']
         return MaxMindWebService(user_id, license_key)
 
-    def create_google_app_engine_driver(self, config):
+    def _create_google_app_engine(self, config):
         """
         Create Google App Engine driver
         :param config:  The config

@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.localization.localizationmanager import LocalizationManager
-from edmunds.localization.location.locationmanager import LocationManager
+from edmunds.localization.location.drivers.basedriver import BaseDriver as LocationBaseDriver
 
 
 class TestLocalizationManager(TestCase):
@@ -84,4 +84,4 @@ class TestLocalizationManager(TestCase):
 
         # with settings for the manager
         self.assert_is_not_none(manager.location())
-        self.assert_is_instance(manager.location(), LocationManager)
+        self.assert_is_instance(manager.location(), LocationBaseDriver)
