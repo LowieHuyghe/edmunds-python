@@ -41,10 +41,11 @@ class Number(object):
         """
         return format_percent(value, locale=self._locale)
 
-    def scientific(self, value):
+    def scientific(self, value, format=None):
         """
         Format scientific value
         :param value:   The value to format
+        :param format:  The format
         :return:        The formatted value
         """
-        return format_scientific(value, locale=self._locale)
+        return format_scientific(value, format=format, locale=self._locale)
