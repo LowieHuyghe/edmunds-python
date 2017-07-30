@@ -335,6 +335,10 @@ class TestLocalizationManager(TestCase):
             ('nl',      'Nl'),
             ('en',      'EN_'),
             ('en',      'en_'),
+            ('en',      'en__EN'),
+            (None,      '*'),
+            (None,      '12'),
+            (None,      '&@'),
             (None,      '_en'),
             (None,      '_EN'),
             (None,      '_'),
@@ -365,3 +369,28 @@ class TestLocalizationManager(TestCase):
         ]
         for expected, given in data:
             self.assert_list_equal(expected, manager._append_backup_languages_to_locale_strings(given))
+
+    def test_get_browser_accept_locale_strings(self):
+        """
+        Test _get_browser_accept_locale_strings
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        data = [
+            (['fr_CH', 'fr', 'en', 'de'], 'fr-CH, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5'),
+            (['en_US', 'en'], 'en-US,en;q=0.5'),
+            (['da', 'en_GB', 'en'], 'da, en-gb;q=0.8, en;q=0.7'),
+            (['da', 'en_GB', 'en'], 'da;q=1, en-gb;q=0.8, en;q=0.7'),
+        ]
+        for expected, given in data:
+            with app.test_request_context(rule, environ_base={'HTTP_ACCEPT_LANGUAGE': given}):
+                self.assert_list_equal(expected, manager._get_browser_accept_locale_strings())

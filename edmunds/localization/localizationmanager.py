@@ -5,6 +5,7 @@ from edmunds.localization.localization.models.time import Time
 from babel.core import Locale
 from babel.dates import get_timezone
 from edmunds.globals import request
+import re
 
 
 class LocalizationManager(object):
@@ -180,6 +181,10 @@ class LocalizationManager(object):
         :return:                Normalized locale string
         """
         if not locale_string:
+            return None
+
+        # Check if valid
+        if not re.match(r'^[a-zA-Z_\-]+$', locale_string):
             return None
 
         # Change separator and split
