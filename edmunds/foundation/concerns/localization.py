@@ -11,4 +11,8 @@ class Localization(object):
         :rtype:     edmunds.localization.localizationmanager.LocalizationManager
         """
 
+        # Enabled?
+        if not self.config('app.localization.enabled', False):
+            return
+
         return self.extensions['edmunds.localization']

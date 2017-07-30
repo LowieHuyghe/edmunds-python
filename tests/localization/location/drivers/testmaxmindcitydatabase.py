@@ -22,6 +22,11 @@ class TestMaxMindCityDatabase(TestCase):
             "from edmunds.storage.drivers.file import File as StorageFile \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': True, \n",
             "           'instances': [ \n",
@@ -52,7 +57,7 @@ class TestMaxMindCityDatabase(TestCase):
         :return:    void
         """
 
-        remove_lines = [10]
+        remove_lines = [15]
 
         # Loop lines that should be individually removed
         for remove_line in remove_lines:

@@ -14,8 +14,23 @@ class TestLocationServiceProvider(TestCase):
         :return:    void
         """
 
-        # Should also have registered location-manager
-        self.assert_not_in('edmunds.localization.location', self.app.extensions)
+        # Write config
+        self.write_config([
+            "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        # Create app
+        app = self.create_application()
+
+        self.assert_not_in('edmunds.localization.location', app.extensions)
 
     def test_provider_disabled(self):
         """
@@ -28,6 +43,11 @@ class TestLocationServiceProvider(TestCase):
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': False, \n",
             "           'instances': [ \n",
@@ -58,6 +78,11 @@ class TestLocationServiceProvider(TestCase):
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': True, \n",
             "           'instances': [ \n",

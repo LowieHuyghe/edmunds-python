@@ -48,6 +48,12 @@ class Visitor(object):
         if self.__location is None:
             with self.__location_lock:
                 if self.__location is None:
+                    # Enabled?
+                    if not self._app.config('app.localization.enabled', False):
+                        raise RuntimeError('Location can not be used as localization is not enabled!')
+                    if not self._app.config('app.localization.location.enabled', False):
+                        raise RuntimeError('Location can not be used as it is not enabled!')
+
                     localization_manager = self._app.localization()
                     location_driver = localization_manager.location()
                     ip = self._request.remote_addr
@@ -65,6 +71,10 @@ class Visitor(object):
         if self.__localization is None:
             with self.__localization_lock:
                 if self.__localization is None:
+                    # Enabled?
+                    if not self._app.config('app.localization.enabled', False):
+                        raise RuntimeError('Localization can not be used as it is not enabled!')
+
                     localization_manager = self._app.localization()
                     location = self.location
                     self.__localization = localization_manager.localization(location)

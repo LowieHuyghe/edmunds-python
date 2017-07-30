@@ -15,6 +15,10 @@ class LocalizationServiceProvider(ServiceProvider):
         Register the service provider
         """
 
+        # Enabled?
+        if not self.app.config('app.localization.enabled', False):
+            return
+
         # Register other providers
         self.app.register(LocationServiceProvider)
 

@@ -99,6 +99,16 @@ class TestConfig(TestCase):
             "       }, \n",
             "   }, \n",
             "} \n",
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'fallback': 'en', \n",
+            "       'locale': { \n",
+            "           'supported': [ \n",
+            "              'en' \n",
+            "           ] \n",
+            "       } \n",
+            "   } \n",
+            "} \n",
         ]
 
         data = [

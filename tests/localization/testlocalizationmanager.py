@@ -9,13 +9,54 @@ class TestLocalizationManager(TestCase):
     Test the Localization Manager
     """
 
+    def test_not_defined(self):
+        """
+        Test not defined
+        :return:    void
+        """
+
+        self.assert_is_none(self.app.localization())
+
+    def test_not_enabled(self):
+        """
+        Test not defined
+        :return:    void
+        """
+
+        # Write location settings
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': False, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
+        # Fetch manager
+        self.assert_is_none(app.localization())
+
     def test_location_not_defined(self):
         """
         Test location not defined
         :return:    void
         """
 
-        manager = self.app.localization()
+        # Write location settings
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
+        manager = app.localization()
         self.assert_is_instance(manager, LocalizationManager)
 
         # No settings for the manager
@@ -32,6 +73,11 @@ class TestLocalizationManager(TestCase):
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': False, \n",
             "           'instances': [ \n",
@@ -64,6 +110,11 @@ class TestLocalizationManager(TestCase):
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': True, \n",
             "           'instances': [ \n",
