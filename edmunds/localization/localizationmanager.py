@@ -91,13 +91,7 @@ class LocalizationManager(object):
 
         # Add to list
         preferred_locale_strings = browser_locales[:]
-
-        # Add languages without territory as backup (de_DE -> de)
-        for browser_locale in browser_locales:
-            if '_' in browser_locale:
-                browser_locale_language, = browser_locale.split('_')
-                if browser_locale_language:
-                    preferred_locale_strings.append(browser_locale_language)
+        preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
 
         return preferred_locale_strings
 
@@ -113,13 +107,10 @@ class LocalizationManager(object):
         user_agent_locale = request.user_agent.language
         user_agent_locale = self._normalize_locale(user_agent_locale)
 
+        # Add to list
         if user_agent_locale:
-            # Add to list
             preferred_locale_strings.append(user_agent_locale)
-            # Add language without territory as backup (de_DE -> de)
-            if '_' in user_agent_locale:
-                user_agent_language, = user_agent_locale.split('_')
-                preferred_locale_strings.append(user_agent_language)
+            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
 
         return preferred_locale_strings
 
@@ -135,24 +126,18 @@ class LocalizationManager(object):
         # Config Fallback
         config_fallback_locale = self._app.config('app.localization.locale.fallback', None)
         config_fallback_locale = self._normalize_locale(config_fallback_locale)
+        # Add to list
         if config_fallback_locale:
-            # Add to list
             preferred_locale_strings.append(config_fallback_locale)
-            # Add language without territory as backup (de_DE -> de)
-            if '_' in config_fallback_locale:
-                config_fallback_language, = config_fallback_locale.split('_')
-                preferred_locale_strings.append(config_fallback_language)
+            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
 
         # Ultimate Fallback
         ultimate_fallback_locale = 'en_US'
         ultimate_fallback_locale = self._normalize_locale(ultimate_fallback_locale)
+        # Add to list
         if ultimate_fallback_locale:
-            # Add to list
             preferred_locale_strings.append(ultimate_fallback_locale)
-            # Add language without territory as backup (de_DE -> de)
-            if '_' in ultimate_fallback_locale:
-                ultimate_fallback_language, = ultimate_fallback_locale.split('_')
-                preferred_locale_strings.append(ultimate_fallback_language)
+            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
 
         return preferred_locale_strings
 
@@ -185,3 +170,29 @@ class LocalizationManager(object):
 
         # Return
         return locale_string
+
+    def _append_backup_languages_to_locale_strings(self, locale_strings):
+        """
+        Append languages to locale strings
+        :param locale_strings:  List of locales (ex: [de_DE, de_BE fr_FR])
+        :return:                List with appended languages (ex: [de_DE, de_BE, de, fr_FR, fr]
+        """
+
+        complete_locale_strings = []
+
+        last_language = None
+
+        for locale_string in locale_strings:
+            complete_locale_strings.append(locale_string)
+
+            if '_' not in locale_string:
+                last_language = locale_string
+            else:
+                locale_language, = locale_string.split('_')
+                if last_language != locale_language:
+                    complete_locale_strings.append(last_language)
+                    last_language = locale_language
+        if last_language:
+            complete_locale_strings.append(last_language)
+
+        return complete_locale_strings
