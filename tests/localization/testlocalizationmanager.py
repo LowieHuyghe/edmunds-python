@@ -24,8 +24,8 @@ class TestLocalizationManager(TestCase):
             "   'localization': { \n",
             "       'enabled': True, \n",
             "       'locale': { \n",
-            "           'fallback': 'en', \n",
-            "           'supported': ['en'], \n",
+            "           'fallback': 'en_us', \n",
+            "           'supported': ['en', 'nl_be', 'fr'], \n",
             "       }, \n",
             "       'time_zone_fallback': 'Europe/Brussels', \n",
             "       'location': { \n",
@@ -286,3 +286,82 @@ class TestLocalizationManager(TestCase):
         self.assert_is_not_none(time_zone)
         self.assert_is_instance(time_zone, DstTzInfo)
         self.assert_equal('Europe/Berlin', time_zone.zone)
+
+    def test_get_fallback_locale_strings(self):
+        """
+        Test _get_fallback_locale_strings
+        :return:    void
+        """
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        self.assert_list_equal(['en_US', 'en'], manager._get_fallback_locale_strings())
+
+    def test_get_supported_locale_strings(self):
+        """
+        Test _get_supported_locale_strings
+        :return:    void
+        """
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        self.assert_list_equal(['en', 'nl_BE', 'fr'], manager._get_supported_locale_strings())
+
+    def test_normalize_locale(self):
+        """
+        Test _normalize_locale
+        :return:    void
+        """
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        data = [
+            ('nl_BE',   'NL_be'),
+            ('nl',      'Nl'),
+            ('en',      'EN_'),
+            ('en',      'en_'),
+            (None,      '_en'),
+            (None,      '_EN'),
+            (None,      '_'),
+            (None,      ''),
+        ]
+        for expected, given in data:
+            self.assert_equal(expected, manager._normalize_locale(given))
+
+    def test_append_backup_languages_to_locale_strings(self):
+        """
+        Test _append_backup_languages_to_locale_strings
+        :return:    void
+        """
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        data = [
+            (['nl_BE', 'nl_NL', 'nl'],  ['nl_BE', 'nl_NL']),
+            (['nl_BE', 'nl_NL', 'nl'],  ['nl_BE', 'nl_NL', 'nl']),
+            (['nl_BE', 'nl'],           ['nl_BE']),
+            (['nl'],                    ['nl']),
+            ([],                        []),
+        ]
+        for expected, given in data:
+            self.assert_list_equal(expected, manager._append_backup_languages_to_locale_strings(given))
