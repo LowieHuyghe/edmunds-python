@@ -20,6 +20,11 @@ class TestMaxMindWebService(TestCase):
             "from edmunds.localization.location.drivers.maxmindwebservice import MaxMindWebService \n",
             "APP = { \n",
             "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
             "       'location': { \n",
             "           'enabled': True, \n",
             "           'instances': [ \n",
@@ -41,7 +46,7 @@ class TestMaxMindWebService(TestCase):
         :return:    void
         """
 
-        remove_lines = [9, 10]
+        remove_lines = [14, 15]
 
         # Loop lines that should be individually removed
         for remove_line in remove_lines:
