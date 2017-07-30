@@ -58,7 +58,7 @@ class TestLocalizationServiceProvider(TestCase):
             "} \n",
         ])
         # Create app
-        with self.assert_raises_regexp(RuntimeError, 'There are no supported locales defined'):
+        with self.assert_raises_regexp(RuntimeError, 'No valid supported locales defined'):
             self.create_application()
 
     def test_provider_no_fallback(self):
@@ -78,7 +78,7 @@ class TestLocalizationServiceProvider(TestCase):
             "} \n",
         ])
         # Create app
-        with self.assert_raises_regexp(RuntimeError, 'There are no fallback locales defined'):
+        with self.assert_raises_regexp(RuntimeError, 'No valid fallback locale defined'):
             self.create_application()
 
     def test_provider_no_supported_fallback(self):
