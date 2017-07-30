@@ -394,3 +394,30 @@ class TestLocalizationManager(TestCase):
         for expected, given in data:
             with app.test_request_context(rule, environ_base={'HTTP_ACCEPT_LANGUAGE': given}):
                 self.assert_list_equal(expected, manager._get_browser_accept_locale_strings())
+
+    def test_get_user_agent_locale_strings(self):
+        """
+        Test _get_user_agent_locale_strings
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        data = [
+            (['tr_TR', 'tr'], 'Mozilla/5.0 (Linux; U; Android 2.2.2; tr-tr; GM FOX Build/HuaweiU8350) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'),
+            (['nl_BE', 'nl'], 'Mozilla/5.0 (Linux; U; Android 2.3.4; nl-be; GT-S5670 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'),
+            (['en_US', 'en'], 'Mozilla/5.0 (SAMSUNG; SAMSUNG-GT-S7233E/S723EJVKB1; U; Bada/1.0; en-us) AppleWebKit/533.1 (KHTML, like Gecko) Dolfin/2.0 Mobile WQVGA SMM-MMS/1.2.0 OPN-B'),
+            (['de_DE', 'de'], 'Mozilla/5.0 (X11; U; Linux x86_64; de-de) AppleWebKit/537.36 (KHTML, like Gecko)  Chrome/30.0.1599.114 Safari/537.36 Puffin/3.7.0.177AP'),
+            ([], 'Mozilla/5.0 (Series40; NokiaC2-02/07.63; Profile/MIDP-2.1 Configuration/CLDC-1.1) Gecko/20100401 S40OviBrowser/5.0.0.0.31'),
+            ([], 'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; ASU2JS; rv:11.0) like Gecko'),
+        ]
+        for expected, given in data:
+            with app.test_request_context(rule, environ_base={'HTTP_USER_AGENT': given}):
+                self.assert_list_equal(expected, manager._get_user_agent_locale_strings())
