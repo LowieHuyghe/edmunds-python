@@ -4,6 +4,7 @@ from edmunds.localization.localizationmanager import LocalizationManager
 from edmunds.localization.location.drivers.basedriver import BaseDriver as LocationBaseDriver
 from pytz.tzinfo import DstTzInfo
 from geoip2.models import City
+from babel.core import Locale
 
 
 class TestLocalizationManager(TestCase):
@@ -390,6 +391,9 @@ class TestLocalizationManager(TestCase):
             (['en_US', 'en'], 'en-US,en;q=0.5'),
             (['da', 'en_GB', 'en'], 'da, en-gb;q=0.8, en;q=0.7'),
             (['da', 'en_GB', 'en'], 'da;q=1, en-gb;q=0.8, en;q=0.7'),
+            ([], '*;q=0.7'),
+            ([], '*'),
+            ([], ''),
         ]
         for expected, given in data:
             with app.test_request_context(rule, environ_base={'HTTP_ACCEPT_LANGUAGE': given}):
@@ -421,3 +425,57 @@ class TestLocalizationManager(TestCase):
         for expected, given in data:
             with app.test_request_context(rule, environ_base={'HTTP_USER_AGENT': given}):
                 self.assert_list_equal(expected, manager._get_user_agent_locale_strings())
+
+    def test_get_locale(self):
+        """
+        Test _get_locale
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        data = [
+            (('fr', 'CH'), ('fr', None), (
+                'fr-CH, fr;q=0.9, de;q=0.7, *;q=0.5',
+                'Mozilla/5.0 (Linux; U; Android 2.2.2; nl-be; GM FOX Build/HuaweiU8350) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1'
+            )),
+            (('fr', None), ('fr', None), (
+                'fr;q=0.5',
+                'Mozilla/5.0 (SAMSUNG; SAMSUNG-GT-S7233E/S723EJVKB1; U; Bada/1.0; nl-be) AppleWebKit/533.1 (KHTML, like Gecko) Dolfin/2.0 Mobile WQVGA SMM-MMS/1.2.0 OPN-B'
+            )),
+            (('nl', 'BE'), ('nl', 'BE'), (
+                '*;q=0.7',
+                'Mozilla/5.0 (SAMSUNG; SAMSUNG-GT-S7233E/S723EJVKB1; U; Bada/1.0; nl-be) AppleWebKit/533.1 (KHTML, like Gecko) Dolfin/2.0 Mobile WQVGA SMM-MMS/1.2.0 OPN-B'
+            )),
+            (('fr', None), ('fr', None), (
+                'fr;q=0.5',
+                'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; ASU2JS; rv:11.0) like Gecko'
+            )),
+            (('en', 'US'), ('en', None), (
+                '*;q=0.7',
+                'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; ASU2JS; rv:11.0) like Gecko'
+            )),
+        ]
+        for (language, territory), (language_sup, territory_sup), (browser_accept_language, user_agent) in data:
+            environ_base = {
+                'HTTP_ACCEPT_LANGUAGE': browser_accept_language,
+                'HTTP_USER_AGENT': user_agent
+            }
+            with app.test_request_context(rule, environ_base=environ_base):
+                # Not supported
+                locale = manager._get_locale(False)
+                self.assert_is_instance(locale, Locale)
+                self.assert_equal(language, locale.language)
+                self.assert_equal(territory, locale.territory)
+                # Supported
+                locale = manager._get_locale(True)
+                self.assert_is_instance(locale, Locale)
+                self.assert_equal(language_sup, locale.language)
+                self.assert_equal(territory_sup, locale.territory)
