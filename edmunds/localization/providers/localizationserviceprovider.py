@@ -35,7 +35,7 @@ class LocalizationServiceProvider(ServiceProvider):
         :return:        void
         """
 
-        supported_locales = self._app.config('app.localization.locale.supported', [])
+        supported_locales = self.app.config('app.localization.locale.supported', [])
         if not supported_locales:
             raise RuntimeError("There are no supported locales defined in 'app.localization.locale.supported'!")
 
