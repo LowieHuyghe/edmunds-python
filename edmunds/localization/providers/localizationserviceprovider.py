@@ -49,4 +49,6 @@ class LocalizationServiceProvider(ServiceProvider):
 
         supported_locale = Locale.negotiate(supported_locales, fallback_locale_strings, '_')
         if not supported_locale:
-            raise RuntimeError('Could not find supported locale even with fallback! (supported: %s; fallback: %s)' % (','.join(supported_locales), ','.join(fallback_locale_strings)))
+            supported_string = ','.join(supported_locales)
+            fallback_string = ','.join(fallback_locale_strings)
+            raise RuntimeError('Could not find supported locale even with fallback! (supported: %s; fallback: %s)' % (supported_string, fallback_string))
