@@ -5,12 +5,25 @@ from babel.core import Locale
 from babel.dates import get_timezone
 from datetime import date, datetime, time
 from edmunds.encoding.encoding import Encoding
+from pytz.tzinfo import DstTzInfo
 
 
 class TestTime(TestCase):
     """
     Test Time model
     """
+
+    def test_general(self):
+        """
+        Test general
+        :return:    void
+        """
+
+        locale = Locale.parse('nl_BE', sep='_')
+        time_zone = get_timezone('Europe/Brussels')
+        time_obj = Time(locale=locale, time_zone=time_zone)
+
+        self.assert_is_instance(time_obj.time_zone, DstTzInfo)
 
     def test_time(self):
         """
