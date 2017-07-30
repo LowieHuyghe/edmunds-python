@@ -218,11 +218,12 @@ class LocalizationManager(object):
             complete_locale_strings.append(locale_string)
 
             if '_' not in locale_string:
-                last_language = locale_string
+                last_language = None
             else:
                 locale_language = locale_string.split('_')[0]
                 if last_language != locale_language:
-                    complete_locale_strings.append(last_language)
+                    if last_language:
+                        complete_locale_strings.append(last_language)
                     last_language = locale_language
         if last_language:
             complete_locale_strings.append(last_language)
