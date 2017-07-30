@@ -131,14 +131,6 @@ class LocalizationManager(object):
             preferred_locale_strings.append(config_fallback_locale)
             preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
 
-        # Ultimate Fallback
-        ultimate_fallback_locale = 'en_US'
-        ultimate_fallback_locale = self._normalize_locale(ultimate_fallback_locale)
-        # Add to list
-        if ultimate_fallback_locale:
-            preferred_locale_strings.append(ultimate_fallback_locale)
-            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
-
         return preferred_locale_strings
 
     def _normalize_locale(self, locale_string):

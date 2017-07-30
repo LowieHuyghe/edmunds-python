@@ -40,6 +40,68 @@ class TestLocalizationServiceProvider(TestCase):
         self.assert_not_in('edmunds.localization', app.extensions)
         self.assert_not_in('edmunds.localization.location', app.extensions)
 
+    def test_provider_no_supported_languages(self):
+        """
+        Test with no supported languages
+        :return:    void
+        """
+        # Write config
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': [], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        # Create app
+        with self.assert_raises_regexp(RuntimeError, 'There are no supported locales defined'):
+            self.create_application()
+
+    def test_provider_no_fallback(self):
+        """
+        Test with no fallback
+        :return:    void
+        """
+        # Write config
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        # Create app
+        with self.assert_raises_regexp(RuntimeError, 'There are no fallback locales defined'):
+            self.create_application()
+
+    def test_provider_no_supported_fallback(self):
+        """
+        Test with no supported fallback
+        :return:    void
+        """
+        # Write config
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'de', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        # Create app
+        with self.assert_raises_regexp(RuntimeError, 'Could not find supported locale even with fallback'):
+            self.create_application()
+
     def test_provider_with_no_submanagers_defined(self):
         """
         Test provider
