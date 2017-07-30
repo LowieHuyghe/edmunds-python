@@ -15,26 +15,15 @@ class TestLocalization(TestCase):
         :return:    void
         """
 
-        rule = '/' + self.rand_str(20)
-
         # Write config
         self.write_config([
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
             "APP = { \n",
             "   'localization': { \n",
-            "       'enabled': True, \n",
+            "       'enabled': False, \n",
             "       'locale': { \n",
             "           'fallback': 'en', \n",
             "           'supported': ['en'], \n",
-            "       }, \n",
-            "       'location': { \n",
-            "           'enabled': False, \n",
-            "           'instances': [ \n",
-            "               { \n",
-            "                   'name': 'gae',\n",
-            "                   'driver': GoogleAppEngine,\n",
-            "               }, \n",
-            "           ], \n",
             "       }, \n",
             "   }, \n",
             "} \n",
@@ -43,18 +32,11 @@ class TestLocalization(TestCase):
         # Create app
         app = self.create_application()
 
-        # Test session
-        with app.test_request_context(rule):
-            self.assert_is_not_none(app.localization())
-            self.assert_is_instance(app.localization(), LocalizationManager)
+        self.assert_is_none(app.localization())
 
-            self.assert_is_none(app.localization().location())
-            self.assert_is_none(app.localization().location('gae'))
-            self.assert_is_none(app.localization().location('gae2'))
-
-    def test_loading_and_session(self):
+    def test_enabled(self):
         """
-        Test loading and session function
+        Test enabled
         :return:    void
         """
 
