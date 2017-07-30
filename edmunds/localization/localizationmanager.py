@@ -43,9 +43,9 @@ class LocalizationManager(object):
         :return: edmunds.localization.localization.models.localization.Localization
         """
         locale = self._get_locale(False)
-        timezone = self._get_time_zone(location)
+        time_zone = self._get_time_zone(location)
         number = Number(locale)
-        time = Time(locale, timezone)
+        time = Time(locale, time_zone)
 
         return Localization(locale, number, time)
 
