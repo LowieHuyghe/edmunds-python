@@ -128,7 +128,7 @@ class TestGoogleAppEngine(TestCase):
 
         ip = '127.0.0.1'
         rule = '/' + self.rand_str(20)
-        environ_base={'REMOTE_ADDR': ip}
+        environ_base = {'REMOTE_ADDR': ip}
         country_iso = 'BE'
         region_iso = 'WV'
         city_name = 'Berlin'
