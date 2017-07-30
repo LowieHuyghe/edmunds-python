@@ -1,5 +1,5 @@
 
-from babel.dates import format_date, format_datetime, format_time, format_interval
+from babel.dates import format_date, format_datetime, format_time, format_interval, LC_TIME
 
 
 class Time(object):
@@ -9,17 +9,20 @@ class Time(object):
     MEDIUM = 'medium'
     SHORT = 'short'
 
-    def __init__(self, locale=None, timezone=None):
+    def __init__(self, locale=None, time_zone=None):
         """
         Constructor
         :param locale:      The locale to use
         :type locale:       babel.core.Locale
-        :param timezone:    The time zone
-        :type timezone:     pytz.tzinfo.DstTzInfo
+        :param time_zone:   The time zone
+        :type time_zone:    pytz.tzinfo.DstTzInfo
         """
 
-        self._locale = locale
-        self.timezone = timezone
+        if locale is not None:
+            self._locale = locale
+        else:
+            self._locale = LC_TIME
+        self.time_zone = time_zone
 
     def date(self, date, format=MEDIUM):
         """
@@ -37,7 +40,7 @@ class Time(object):
         :param format:  The format 
         :return:        Formatted datetime
         """
-        return format_datetime(datetime, format=format, locale=self._locale, tzinfo=self.timezone)
+        return format_datetime(datetime, format=format, locale=self._locale, tzinfo=self.time_zone)
 
     def time(self, time, format=MEDIUM):
         """
@@ -46,7 +49,7 @@ class Time(object):
         :param format:  The format 
         :return:        Formatted time
         """
-        return format_time(time, format=format, locale=self._locale, tzinfo=self.timezone)
+        return format_time(time, format=format, locale=self._locale, tzinfo=self.time_zone)
 
     def interval(self, start_datetime, end_datetime, skeleton=None):
         """
@@ -56,4 +59,4 @@ class Time(object):
         :param skeleton:        The "skeleton format" to use for formatting
         :return:                The formatted interval
         """
-        return format_interval(start_datetime, end_datetime, skeleton=skeleton, locale=self._locale, tzinfo=self.timezone)
+        return format_interval(start_datetime, end_datetime, skeleton=skeleton, locale=self._locale, tzinfo=self.time_zone)
