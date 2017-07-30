@@ -24,5 +24,8 @@
   - [Session](http/session.md)
   - [Response](http/response.md)
 
+* Localization
+  - [Localization](localization/localization.md)
+
 * Testing
   - [Getting Started](testing/gettingstarted.md)
