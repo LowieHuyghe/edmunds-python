@@ -41,14 +41,39 @@ class LocalizationManager(object):
         :type location:     geoip2.models.City
         :return: edmunds.localization.localization.models.localization.Localization
         """
-        locale = self._locale(False)
-        timezone = get_timezone(zone=location.location.time_zone)
+        locale = self._get_locale(False)
+        timezone = self._get_time_zone(location)
         number = Number(locale)
         time = Time(locale, timezone)
 
         return Localization(locale, number, time)
 
-    def _locale(self, from_supported_locales):
+    def _get_time_zone(self, location=None):
+        """
+        Get timezone
+        :param location:    The location
+        :type location:     geoip2.models.City
+        :return:            The time zone
+        :rtype:             pytz.tzinfo.DstTzInfo
+        """
+
+        if location:
+            time_zone_string = location.location.time_zone
+            try:
+                return get_timezone(time_zone_string)
+            except LookupError:
+                pass
+
+        time_zone_string = self._app.config('app.localization.time_zone_fallback', None)
+        if time_zone_string:
+            try:
+                return get_timezone(time_zone_string)
+            except LookupError:
+                pass
+
+        raise RuntimeError("No valid fallback time zone defined! ('app.localization.time_zone_fallback')")
+
+    def _get_locale(self, from_supported_locales):
         """
         Get locale
         :param from_supported_locales:  Only return locale that is supported according to config
@@ -67,9 +92,7 @@ class LocalizationManager(object):
         if not preferred_locale_strings:
             raise RuntimeError('No preferred locales to use, even with fallback!')
         elif from_supported_locales:
-            supported_locales = self._app.config('app.localization.locale.supported', [])
-            if not supported_locales:
-                raise RuntimeError('No supported locales to use!')
+            supported_locales = self._get_supported_locale_strings()
             wanted_locale = Locale.negotiate(preferred_locale_strings, supported_locales, sep='_')
             if not wanted_locale:
                 raise RuntimeError('Could not find supported locale even with fallback! (%s; %s; %s)' % (','.join(browser_accept_locale_strings), ','.join(user_agent_locale_strings), ','.join(fallback_locale_strings)))
@@ -117,7 +140,7 @@ class LocalizationManager(object):
     def _get_fallback_locale_strings(self):
         """
         Get fallback locale strings
-        :return:    void
+        :return:    list
         """
 
         # Make list
@@ -130,8 +153,25 @@ class LocalizationManager(object):
         if config_fallback_locale:
             preferred_locale_strings.append(config_fallback_locale)
             preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
+        else:
+            raise RuntimeError("No valid fallback locale defined! ('app.localization.locale.fallback')")
 
         return preferred_locale_strings
+
+    def _get_supported_locale_strings(self):
+        """
+        Get supported locale string
+        :return:    list
+        """
+
+        supported_locales = self._app.config('app.localization.locale.supported', [])
+        supported_locales = list(map(self._normalize_locale, supported_locales))
+        supported_locales = list(filter(lambda x: x, supported_locales))
+
+        if not supported_locales:
+            raise RuntimeError("No valid supported locales defined! ('app.localization.locale.supported')")
+
+        return supported_locales
 
     def _normalize_locale(self, locale_string):
         """
