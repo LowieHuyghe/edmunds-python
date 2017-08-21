@@ -1,6 +1,5 @@
 
-import abc
-ABC = abc.ABCMeta('ABC', (object,), {})
+from edmunds.globals import abc, ABC
 
 
 class BaseDriver(ABC):
