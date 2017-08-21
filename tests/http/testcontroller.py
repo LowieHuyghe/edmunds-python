@@ -2,9 +2,8 @@
 from tests.testcase import TestCase
 from edmunds.http.controller import Controller
 from edmunds.http.input import Input
-from edmunds.globals import request, session
+from edmunds.globals import request, session, visitor
 from edmunds.http.responsehelper import ResponseHelper
-from edmunds.http.visitor import Visitor
 
 
 class TestController(TestCase):
@@ -30,11 +29,14 @@ class TestController(TestCase):
 
         # Call route
         with self.app.test_request_context(rule):
+            self.app.preprocess_request()
+
             controller = MyController(self.app)
 
             self.assert_is_instance(controller, MyController)
             self.assert_equal(controller._app, self.app)
             self.assert_equal(controller._request, request)
+            self.assert_equal(controller._visitor, visitor)
 
     def test_input(self):
         """
@@ -67,22 +69,6 @@ class TestController(TestCase):
             self.assert_is_instance(controller._response, ResponseHelper)
             controller._response = rule
             self.assert_equal_deep(rule, controller._response)
-
-    def test_visitor(self):
-        """
-        Test visitor
-        :return:    void
-        """
-
-        rule = '/' + self.rand_str(20)
-
-        # Call route
-        with self.app.test_request_context(rule):
-            controller = MyController(self.app)
-
-            self.assert_is_instance(controller._visitor, Visitor)
-            controller._visitor = rule
-            self.assert_equal_deep(rule, controller._visitor)
 
     def test_session(self):
         """
