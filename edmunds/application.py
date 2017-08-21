@@ -15,6 +15,7 @@ from edmunds.session.providers.sessionserviceprovider import SessionServiceProvi
 from edmunds.storage.providers.storageserviceprovider import StorageServiceProvider
 from edmunds.database.providers.databaseserviceprovider import DatabaseServiceProvider
 from edmunds.localization.providers.localizationserviceprovider import LocalizationServiceProvider
+from edmunds.http.providers.httpserviceprovider import HttpServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
@@ -60,6 +61,7 @@ class Application(Flask,
         self._init_runtime_environment()
         self._init_database()
 
+        self.register(HttpServiceProvider)
         self.register(StorageServiceProvider)
         self.register(ExceptionsServiceProvider)
         self.register(LogServiceProvider)

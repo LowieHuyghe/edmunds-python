@@ -1,11 +1,10 @@
 
-import abc
 import os
 import sys
 import threading
 import time
 import unittest
-ABC = abc.ABCMeta('ABC', (object,), {})
+from edmunds.globals import abc, ABC
 import edmunds.support.helpers as helpers
 import tempfile
 import shutil

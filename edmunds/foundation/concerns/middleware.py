@@ -1,5 +1,5 @@
 
-from edmunds.globals import g, _request_ctx_stack
+from edmunds.globals import g, request
 
 
 class Middleware(object):
@@ -96,7 +96,7 @@ class Middleware(object):
             if 'request_middleware' not in g:
                 g.request_middleware = []
 
-                url_rule = _request_ctx_stack.top.request.url_rule
+                url_rule = request.url_rule
                 if url_rule is not None:
                     rule = url_rule.rule
 
