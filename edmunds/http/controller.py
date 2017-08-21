@@ -1,8 +1,7 @@
 
-from edmunds.globals import request
+from edmunds.globals import request, visitor
 from edmunds.http.input import Input
 from edmunds.http.responsehelper import ResponseHelper
-from edmunds.http.visitor import Visitor
 from threading import Lock
 
 
@@ -18,14 +17,13 @@ class Controller(object):
 
         self._app = app
         self._request = request
+        self._visitor = visitor
         self.__input = None
         self.__input_lock = Lock()
         self.__session = None
         self.__session_lock = Lock()
         self.__response = None
         self.__response_lock = Lock()
-        self.__visitor = None
-        self.__visitor_lock = Lock()
 
     def initialize(self, **params):
         """
@@ -110,29 +108,3 @@ class Controller(object):
 
         with self.__response_lock:
             self.__response = response
-
-    @property
-    def _visitor(self):
-        """
-        Get visitor
-        :return:    Visitor
-        :rtype:     edmunds.http.visitor.Visitor
-        """
-
-        if self.__visitor is None:
-            with self.__visitor_lock:
-                if self.__visitor is None:
-                    self.__visitor = Visitor(self._app, self._request)
-
-        return self.__visitor
-
-    @_visitor.setter
-    def _visitor(self, visitor):
-        """
-        Set visitor
-        :param visitor:     Visitor
-        :return:            void
-        """
-
-        with self.__visitor_lock:
-            self.__visitor = visitor
