@@ -2,6 +2,7 @@
 from edmunds.localization.localization.models.localization import Localization
 from edmunds.localization.localization.models.number import Number
 from edmunds.localization.localization.models.time import Time
+from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
 from babel.core import Locale
 from babel.dates import get_timezone
 from edmunds.globals import request
@@ -35,19 +36,51 @@ class LocalizationManager(object):
         # Return driver
         return self._app.extensions['edmunds.localization.location'].get(name, no_instance_error=no_instance_error)
 
-    def localization(self, location=None):
+    def localization(self, location=None, given_locale_strings=None):
         """
         Return localization
-        :param location:    The location
-        :type location:     geoip2.models.City
-        :return: edmunds.localization.localization.models.localization.Localization
+        :param location:                The location
+        :type location:                 geoip2.models.City
+        :param given_locale_strings:    List of given locale strings to determine locale
+        :type given_locale_strings:     list
+        :return:                        Localization instance
+        :rtype:                         edmunds.localization.localization.models.localization.Localization
         """
-        locale = self._get_locale(False)
+        locale = self._get_locale(False, given_locale_strings=given_locale_strings)
         time_zone = self._get_time_zone(location)
         number = Number(locale)
         time = Time(locale, time_zone)
 
         return Localization(locale, number, time)
+
+    def translator(self, name=None, no_instance_error=False, given_locale_strings=None):
+        """
+        Return translator
+        :param name:                    The name of the session instance
+        :type  name:                    str
+        :param no_instance_error:       Error when no instance
+        :type  no_instance_error:       bool
+        :param given_locale_strings:    List of given locale strings to determine locale
+        :type given_locale_strings:     list
+        :return:                        Translator
+        :rtype:                         edmunds.localization.translations.models.translatorwrapper.TranslatorWrapper
+        """
+
+        # Enabled?
+        if not self._app.config('app.localization.translations.enabled', False):
+            return None
+
+        # Fetch translator
+        translator = self._app.extensions['edmunds.localization.translations'].get(name, no_instance_error=no_instance_error)
+        if translator is None:
+            return None
+
+        # Fetch locale
+        locale = self._get_locale(True, given_locale_strings=given_locale_strings)
+        if locale is None:
+            raise RuntimeError('Could not find locale even with fallback!')
+
+        return TranslatorWrapper(translator, locale)
 
     def _get_time_zone(self, location=None):
         """
@@ -74,20 +107,23 @@ class LocalizationManager(object):
 
         raise RuntimeError("No valid fallback time zone defined! ('app.localization.time_zone_fallback')")
 
-    def _get_locale(self, from_supported_locales):
+    def _get_locale(self, from_supported_locales, given_locale_strings=None):
         """
         Get locale
         :param from_supported_locales:  Only return locale that is supported according to config
         :type from_supported_locales:   bool
+        :param given_locale_strings:    List of given locale strings to determine locale
+        :type given_locale_strings:     list
         :return:                        Locale
         :rtype:                         babel.core.Locale
         """
 
         # List with all client locales
+        given_locale_strings = self._get_processed_given_locale_strings(given_locale_strings)
         browser_accept_locale_strings = self._get_browser_accept_locale_strings()
         user_agent_locale_strings = self._get_user_agent_locale_strings()
         fallback_locale_strings = self._get_fallback_locale_strings()
-        preferred_locale_strings = browser_accept_locale_strings + user_agent_locale_strings + fallback_locale_strings
+        preferred_locale_strings = given_locale_strings + browser_accept_locale_strings + user_agent_locale_strings + fallback_locale_strings
 
         # Only supported
         if not preferred_locale_strings:
@@ -96,12 +132,30 @@ class LocalizationManager(object):
             supported_locales = self._get_supported_locale_strings()
             wanted_locale = Locale.negotiate(preferred_locale_strings, supported_locales, sep='_')
             if not wanted_locale:
-                raise RuntimeError('Could not find supported locale even with fallback! (%s; %s; %s)' % (','.join(browser_accept_locale_strings), ','.join(user_agent_locale_strings), ','.join(fallback_locale_strings)))
+                raise RuntimeError('Could not find supported locale even with fallback! (%s; %s; %s; %s)' % (','.join(given_locale_strings), ','.join(browser_accept_locale_strings), ','.join(user_agent_locale_strings), ','.join(fallback_locale_strings)))
         else:
             wanted_locale = preferred_locale_strings[0]
 
         # Process
         return Locale.parse(wanted_locale, sep='_')
+
+    def _get_processed_given_locale_strings(self, given_locale_strings):
+        """
+        Get processed given locale strings
+        :param given_locale_strings:    List of given locale strings to determine locale
+        :type given_locale_strings:     list
+        :return:    list
+        """
+        if not given_locale_strings:
+            return []
+
+        given_locale_strings = list(map(self._normalize_locale, given_locale_strings))
+        given_locale_strings = list(filter(lambda x: x, given_locale_strings))
+
+        # Append backup languages
+        given_locale_strings = self._append_backup_languages_to_locale_strings(given_locale_strings)
+
+        return given_locale_strings
 
     def _get_browser_accept_locale_strings(self):
         """
@@ -113,58 +167,54 @@ class LocalizationManager(object):
         browser_locales = list(map(self._normalize_locale, browser_locales))
         browser_locales = list(filter(lambda x: x, browser_locales))
 
-        # Add to list
-        preferred_locale_strings = browser_locales[:]
-        preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
+        # Append backup languages
+        browser_locales = self._append_backup_languages_to_locale_strings(browser_locales)
 
-        return preferred_locale_strings
+        return browser_locales
 
     def _get_user_agent_locale_strings(self):
         """
         Get user agent locale strings
         :return:    list
         """
-        # Make list
-        preferred_locale_strings = []
-
         # User Agent
         user_agent_locale = request.user_agent.language
         user_agent_locale = self._normalize_locale(user_agent_locale)
 
-        # Add to list
-        if user_agent_locale:
-            preferred_locale_strings.append(user_agent_locale)
-            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
+        # Return list of locale strings
+        if not user_agent_locale:
+            return []
 
-        return preferred_locale_strings
+        # Append backup languages
+        user_agent_locales = [user_agent_locale]
+        user_agent_locales = self._append_backup_languages_to_locale_strings(user_agent_locales)
+
+        return user_agent_locales
 
     def _get_fallback_locale_strings(self):
         """
         Get fallback locale strings
         :return:    list
         """
-
-        # Make list
-        preferred_locale_strings = []
-
         # Config Fallback
         config_fallback_locale = self._app.config('app.localization.locale.fallback', None)
         config_fallback_locale = self._normalize_locale(config_fallback_locale)
-        # Add to list
-        if config_fallback_locale:
-            preferred_locale_strings.append(config_fallback_locale)
-            preferred_locale_strings = self._append_backup_languages_to_locale_strings(preferred_locale_strings)
-        else:
+
+        # Throw error if no fallback
+        if not config_fallback_locale:
             raise RuntimeError("No valid fallback locale defined! ('app.localization.locale.fallback')")
 
-        return preferred_locale_strings
+        # Append backup languages
+        config_fallback_locales = [config_fallback_locale]
+        config_fallback_locales = self._append_backup_languages_to_locale_strings(config_fallback_locales)
+
+        return config_fallback_locales
 
     def _get_supported_locale_strings(self):
         """
         Get supported locale string
         :return:    list
         """
-
         supported_locales = self._app.config('app.localization.locale.supported', [])
         supported_locales = list(map(self._normalize_locale, supported_locales))
         supported_locales = list(filter(lambda x: x, supported_locales))
