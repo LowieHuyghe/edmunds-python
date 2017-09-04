@@ -17,13 +17,13 @@ class TranslationsManager(Manager):
 
         super(TranslationsManager, self).__init__(app, app.config('app.localization.translations.instances', []))
 
-    def _create_local_translator(self, config):
+    def _create_config_translator(self, config):
         """
-        Create Local Translator
+        Create Config Translator
         :param config:  The config
         :type  config:  dict
         :return:        Driver
-        :rtype:         edmunds.localization.translations.drivers.maxmindcitydatabase.MaxMindCityDatabase
+        :rtype:         edmunds.localization.translations.drivers.configtranslator.ConfigTranslator
         """
 
         return ConfigTranslator()
