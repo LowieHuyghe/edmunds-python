@@ -66,6 +66,8 @@ class SentenceFiller(object):
         args = list(map(lambda arg: self._fill_in_params(arg, params), args))
 
         method_name = '_fill_in_%s_function' % name
+        if not hasattr(self, method_name):
+            raise TranslationError('Using non-existing function "%s".' % name)
         func = getattr(self, method_name)(args, options)
 
         return func
