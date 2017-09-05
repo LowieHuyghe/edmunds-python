@@ -59,7 +59,7 @@ class SentenceFiller(object):
 
         name = match_dict['name']
         options = match_dict['options'].split(self.function_option_separator)
-        if 'args' in match_dict:
+        if 'args' in match_dict and match_dict['args'] is not None:
             args = match_dict['args'].split(self.function_arg_separator)
         else:
             args = []
@@ -104,7 +104,7 @@ class SentenceFiller(object):
         """
 
         if len(args) != 1:
-            raise TranslationError('Plural-function only allows one argument.')
+            raise TranslationError('Plural-function requires exactly one argument.')
 
         try:
             count = int(args[0])
