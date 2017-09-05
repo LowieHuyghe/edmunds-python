@@ -1,7 +1,7 @@
 
 import re
 import math
-from edmunds.localization.translations.exceptions.translationerror import TranslationError
+from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
 
 
 class SentenceFiller(object):
@@ -50,7 +50,7 @@ class SentenceFiller(object):
         args_options_regex = '^(?P<name>[a-zA-Z_]+)(?:%s(?P<args>.+?))?%s(?P<options>.+?)$' % (self.function_args_separator, self.function_option_separator)
         match = re.match(args_options_regex, func)
         if match is None:
-            raise TranslationError('Function "%s" was not valid.' % func)
+            raise SentenceFillerError('Function "%s" was not valid.' % func)
 
         match_dict = match.groupdict()
 
@@ -64,7 +64,7 @@ class SentenceFiller(object):
 
         method_name = '_fill_in_%s_function' % name
         if not hasattr(self, method_name):
-            raise TranslationError('Using non-existing function "%s".' % name)
+            raise SentenceFillerError('Using non-existing function "%s".' % name)
         func = getattr(self, method_name)(args, options)
 
         return func
@@ -85,7 +85,7 @@ class SentenceFiller(object):
         def fill_in_param(param):
             if param in params:
                 return '%s' % params[param]
-            raise TranslationError('Param "%s" could not be replaced.' % param)
+            raise SentenceFillerError('Param "%s" could not be replaced.' % param)
 
         value = re.sub(param_regex, lambda param: fill_in_param(param.group(1)), value)
 
@@ -103,12 +103,12 @@ class SentenceFiller(object):
         """
 
         if len(args) != 1:
-            raise TranslationError('Plural-function requires exactly one argument.')
+            raise SentenceFillerError('Plural-function requires exactly one argument.')
 
         try:
             count = int(args[0])
         except ValueError:
-            raise TranslationError('Plural-function argument was not an integer.')
+            raise SentenceFillerError('Plural-function argument was not an integer.')
 
         if count > len(options):
             return options[-1]
@@ -130,10 +130,10 @@ class SentenceFiller(object):
         """
 
         if len(args) != 1:
-            raise TranslationError('Gender-function requires exactly one argument.')
+            raise SentenceFillerError('Gender-function requires exactly one argument.')
 
         if len(options) != 2:
-            raise TranslationError('Gender-function requires exactly two options.')
+            raise SentenceFillerError('Gender-function requires exactly two options.')
 
         gender = '%s' % args[0]
         gender = gender.upper()
@@ -143,4 +143,4 @@ class SentenceFiller(object):
         elif gender == 'F':
             return options[1]
 
-        raise TranslationError('Using unknown gender "%s".' % gender)
+        raise SentenceFillerError('Using unknown gender "%s".' % gender)

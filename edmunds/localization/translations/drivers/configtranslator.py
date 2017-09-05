@@ -1,5 +1,6 @@
 
 from edmunds.localization.translations.drivers.basedriver import BaseDriver
+from edmunds.localization.translations.exceptions.translationerror import TranslationError
 
 
 class ConfigTranslator(BaseDriver):
@@ -19,4 +20,11 @@ class ConfigTranslator(BaseDriver):
         :return:            The translation
         :type:              str
         """
-        pass
+
+        config_key = 'app.localization.translations.strings.%s.%s' % (locale, key)
+        sentence = self.app.config(config_key)
+
+        if sentence is None:
+            raise TranslationError('Could not find the sentence for locale "%s" and key "%s".' % (locale, key))
+
+        return self.sentence_filler.fill_in(sentence, params=parameters)
