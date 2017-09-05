@@ -30,15 +30,12 @@ class SentenceFiller(object):
         if params is None:
             params = {}
 
-        try:
-            func_regex = '%s((?!%s).+?)%s' % (self.function_delimiter, self.function_delimiter, self.function_delimiter)
-            sentence = re.sub(func_regex, lambda func: self._fill_in_function(func.group(1), params), sentence)
+        func_regex = '%s((?!%s).+?)%s' % (self.function_delimiter, self.function_delimiter, self.function_delimiter)
+        sentence = re.sub(func_regex, lambda func: self._fill_in_function(func.group(1), params), sentence)
 
-            sentence = self._fill_in_params(sentence, params)
+        sentence = self._fill_in_params(sentence, params)
 
-            return sentence
-        except TranslationError as e:
-            raise TranslationError('Could not fill in sentence "%s": %s' % (sentence, e.message))
+        return sentence
 
     def _fill_in_function(self, func, params):
         """
@@ -87,7 +84,7 @@ class SentenceFiller(object):
 
         def fill_in_param(param):
             if param in params:
-                return str(params[param])
+                return '%s' % params[param]
             raise TranslationError('Param "%s" could not be replaced.' % param)
 
         value = re.sub(param_regex, lambda param: fill_in_param(param.group(1)), value)
@@ -120,3 +117,30 @@ class SentenceFiller(object):
             return options[0]
 
         return options[count - 1]
+
+    def _fill_in_gender_function(self, args, options):
+        """
+        Fill in a gender function
+        :param args:    Arguments
+        :type args:     list
+        :param options: Options
+        :type options:  list
+        :return:        The correct option
+        :rtype:         str
+        """
+
+        if len(args) != 1:
+            raise TranslationError('Gender-function requires exactly one argument.')
+
+        if len(options) != 2:
+            raise TranslationError('Gender-function requires exactly two options.')
+
+        gender = '%s' % args[0]
+        gender = gender.upper()
+
+        if gender == 'M':
+            return options[0]
+        elif gender == 'F':
+            return options[1]
+
+        raise TranslationError('Using unknown gender "%s".' % gender)
