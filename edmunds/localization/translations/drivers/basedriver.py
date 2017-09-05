@@ -7,14 +7,17 @@ class BaseDriver(ABC):
     The base driver for translations-drivers
     """
 
-    def __init__(self, sentence_filler):
+    def __init__(self, app, sentence_filler):
         """
         Constructor
+        :param app:             The application
+        :type app:              edmunds.application.Application
         :param sentence_filler: The sentence filler
         :type sentence_filler:  edmunds.localization.translations.sentencefiller.SentenceFiller
         """
         super(BaseDriver, self).__init__()
 
+        self.app = app
         self.sentence_filler = sentence_filler
 
     @abc.abstractmethod
