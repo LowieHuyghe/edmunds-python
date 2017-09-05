@@ -1,6 +1,7 @@
 
 import re
 import math
+from edmunds.localization.translations.exceptions.translationerror import TranslationError
 
 
 class SentenceFiller(object):
@@ -29,12 +30,15 @@ class SentenceFiller(object):
         if params is None:
             params = {}
 
-        func_regex = '%s((?!%s).+?)%s' % (self.function_delimiter, self.function_delimiter, self.function_delimiter)
-        sentence = re.sub(func_regex, lambda func: self._fill_in_function(func.group(1), params), sentence)
+        try:
+            func_regex = '%s((?!%s).+?)%s' % (self.function_delimiter, self.function_delimiter, self.function_delimiter)
+            sentence = re.sub(func_regex, lambda func: self._fill_in_function(func.group(1), params), sentence)
 
-        sentence = self._fill_in_params(sentence, params)
+            sentence = self._fill_in_params(sentence, params)
 
-        return sentence
+            return sentence
+        except TranslationError as e:
+            raise TranslationError('Could not fill in sentence "%s": %s' % (sentence, e.message))
 
     def _fill_in_function(self, func, params):
         """
@@ -48,6 +52,9 @@ class SentenceFiller(object):
 
         args_options_regex = '^(?P<name>[a-zA-Z_]+)(?:%s(?P<args>.+?))?%s(?P<options>.+?)$' % (self.function_args_separator, self.function_option_separator)
         match = re.match(args_options_regex, func)
+        if match is None:
+            raise TranslationError('Function "%s" was not valid.' % func)
+
         match_dict = match.groupdict()
 
         name = match_dict['name']
@@ -79,7 +86,7 @@ class SentenceFiller(object):
         def fill_in_param(param):
             if param in params:
                 return str(params[param])
-            raise RuntimeError('SHIT2')
+            raise TranslationError('Param "%s" could not be replaced.' % param)
 
         value = re.sub(param_regex, lambda param: fill_in_param(param.group(1)), value)
 
@@ -96,8 +103,13 @@ class SentenceFiller(object):
         :rtype:         str
         """
 
-        count = float(args[0])
-        count = int(math.ceil(count))
+        if len(args) != 1:
+            raise TranslationError('Plural-function only allows one argument.')
+
+        try:
+            count = int(args[0])
+        except ValueError:
+            raise TranslationError('Plural-function argument was not an integer.')
 
         if count > len(options):
             return options[-1]
