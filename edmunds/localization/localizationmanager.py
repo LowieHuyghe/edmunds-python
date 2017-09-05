@@ -79,8 +79,11 @@ class LocalizationManager(object):
         locale = self._get_locale(True, given_locale_strings=given_locale_strings)
         if locale is None:
             raise RuntimeError('Could not find locale even with fallback!')
+        locale_fallback = self._get_locale(True, only_fallback_locales=True)
+        if locale_fallback is None:
+            raise RuntimeError('Could not find fallback locale!')
 
-        return TranslatorWrapper(translator, locale)
+        return TranslatorWrapper(self._app, translator, locale, locale_fallback)
 
     def _get_time_zone(self, location=None):
         """
@@ -107,21 +110,27 @@ class LocalizationManager(object):
 
         raise RuntimeError("No valid fallback time zone defined! ('app.localization.time_zone_fallback')")
 
-    def _get_locale(self, from_supported_locales, given_locale_strings=None):
+    def _get_locale(self, from_supported_locales, given_locale_strings=None, only_fallback_locales=False):
         """
         Get locale
         :param from_supported_locales:  Only return locale that is supported according to config
         :type from_supported_locales:   bool
         :param given_locale_strings:    List of given locale strings to determine locale
         :type given_locale_strings:     list
+        :param only_fallback_locales:   Only use fallback locales, No browser accept ot user agent locales.
+        :type only_fallback_locales:    bool
         :return:                        Locale
         :rtype:                         babel.core.Locale
         """
 
         # List with all client locales
         given_locale_strings = self._get_processed_given_locale_strings(given_locale_strings)
-        browser_accept_locale_strings = self._get_browser_accept_locale_strings()
-        user_agent_locale_strings = self._get_user_agent_locale_strings()
+        if not only_fallback_locales:
+            browser_accept_locale_strings = self._get_browser_accept_locale_strings()
+            user_agent_locale_strings = self._get_user_agent_locale_strings()
+        else:
+            browser_accept_locale_strings = []
+            user_agent_locale_strings = []
         fallback_locale_strings = self._get_fallback_locale_strings()
         preferred_locale_strings = given_locale_strings + browser_accept_locale_strings + user_agent_locale_strings + fallback_locale_strings
 
