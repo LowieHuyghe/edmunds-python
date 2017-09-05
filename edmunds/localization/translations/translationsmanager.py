@@ -1,6 +1,7 @@
 
 from edmunds.foundation.patterns.manager import Manager
 from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
+from edmunds.localization.translations.sentencefiller import SentenceFiller
 
 
 class TranslationsManager(Manager):
@@ -26,4 +27,5 @@ class TranslationsManager(Manager):
         :rtype:         edmunds.localization.translations.drivers.configtranslator.ConfigTranslator
         """
 
-        return ConfigTranslator()
+        sentence_filler = SentenceFiller()
+        return ConfigTranslator(sentence_filler)
