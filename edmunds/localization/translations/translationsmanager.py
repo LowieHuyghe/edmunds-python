@@ -28,4 +28,4 @@ class TranslationsManager(Manager):
         """
 
         sentence_filler = SentenceFiller()
-        return ConfigTranslator(sentence_filler)
+        return ConfigTranslator(self._app, sentence_filler)

@@ -1,0 +1,3 @@
+
+class SentenceFillerError(RuntimeError):
+    pass
