@@ -46,12 +46,7 @@ class LocalizationManager(object):
         :return:                        Localization instance
         :rtype:                         edmunds.localization.localization.models.localization.Localization
         """
-        locale = self._get_locale(False, given_locale_strings=given_locale_strings)
-        time_zone = self._get_time_zone(location)
-        number = Number(locale)
-        time = Time(locale, time_zone)
-
-        return Localization(locale, number, time)
+        return self._get_localization(False, location=location, given_locale_strings=given_locale_strings)
 
     def translator(self, name=None, no_instance_error=False, given_locale_strings=None):
         """
@@ -76,14 +71,35 @@ class LocalizationManager(object):
             return None
 
         # Fetch locale
-        locale = self._get_locale(True, given_locale_strings=given_locale_strings)
-        if locale is None:
+        localization = self._get_localization(True, given_locale_strings=given_locale_strings)
+        if localization is None or localization.locale is None:
             raise RuntimeError('Could not find locale even with fallback!')
-        locale_fallback = self._get_locale(True, only_fallback_locales=True)
-        if locale_fallback is None:
+        localization_fallback = self._get_localization(True, only_fallback_locales=True)
+        if localization_fallback is None or localization_fallback.locale is None:
             raise RuntimeError('Could not find fallback locale!')
 
-        return TranslatorWrapper(self._app, translator, locale, locale_fallback)
+        return TranslatorWrapper(self._app, translator, localization, localization_fallback)
+
+    def _get_localization(self, from_supported_locales, location=None, given_locale_strings=None, only_fallback_locales=False):
+        """
+        Return localization
+        :param from_supported_locales:  Only return locale that is supported according to config
+        :type from_supported_locales:   bool
+        :param location:                The location
+        :type location:                 geoip2.models.City
+        :param given_locale_strings:    List of given locale strings to determine locale
+        :type given_locale_strings:     list
+        :param only_fallback_locales:   Only use fallback locales, No browser accept ot user agent locales.
+        :type only_fallback_locales:    bool
+        :return:                        Localization instance
+        :rtype:                         edmunds.localization.localization.models.localization.Localization
+        """
+        locale = self._get_locale(from_supported_locales, given_locale_strings=given_locale_strings, only_fallback_locales=only_fallback_locales)
+        time_zone = self._get_time_zone(location)
+        number = Number(locale)
+        time = Time(locale, time_zone)
+
+        return Localization(locale, number, time)
 
     def _get_time_zone(self, location=None):
         """

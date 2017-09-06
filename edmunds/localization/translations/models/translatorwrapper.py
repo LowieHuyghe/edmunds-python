@@ -5,23 +5,23 @@ from edmunds.localization.translations.exceptions.sentencefillererror import Sen
 
 class TranslatorWrapper(object):
 
-    def __init__(self, app, translator, locale, locale_fallback):
+    def __init__(self, app, translator, localization, localization_fallback):
         """
         Constructor
-        :param app:             The application
-        :type app:              edmunds.application.Application
-        :param translator:      The translator-driver
-        :type translator:       edmunds.localization.translations.drivers.basedriver.BaseDriver
-        :param locale:          The locale
-        :type locale:           babel.core.Locale
-        :param locale_fallback: The fallback locale
-        :type locale_fallback:  babel.core.Locale
+        :param app:                     The application
+        :type app:                      edmunds.application.Application
+        :param translator:              The translator-driver
+        :type translator:               edmunds.localization.translations.drivers.basedriver.BaseDriver
+        :param localization:            The localization
+        :type localization:             edmunds.localization.localization.models.localization.Localization
+        :param localization_fallback:   The fallback localization
+        :type localization_fallback:    edmunds.localization.localization.models.localization.Localization
         """
 
         self.app = app
         self.translator = translator
-        self.locale = locale
-        self.locale_fallback = locale_fallback
+        self.localization = localization
+        self.localization_fallback = localization_fallback
 
     def get(self, key, parameters=None):
         """
@@ -35,10 +35,10 @@ class TranslatorWrapper(object):
         """
 
         try:
-            return self.translator.get(self.locale, key, parameters=parameters)
+            return self.translator.get(self.localization, key, parameters=parameters)
         except TranslationError as e:
             self.app.logger.error(e)
         except SentenceFillerError as e:
             self.app.logger.error(e)
 
-        return self.translator.get(self.locale_fallback, key, parameters=parameters)
+        return self.translator.get(self.localization_fallback, key, parameters=parameters)

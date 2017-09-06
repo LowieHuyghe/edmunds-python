@@ -21,16 +21,16 @@ class BaseDriver(ABC):
         self.sentence_filler = sentence_filler
 
     @abc.abstractmethod
-    def get(self, locale, key, parameters=None):
+    def get(self, localization, key, parameters=None):
         """
         Get translation
-        :param locale:      Locale to use for translations
-        :type locale:       babel.core.Locale
-        :param key:         Key of translation
-        :type key:          str
-        :param parameters:  Parameters used to complete the translation
-        :type parameters:   dict
-        :return:            The translation
-        :type:              str
+        :param localization:    Localization to use for translations
+        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :param key:             Key of translation
+        :type key:              str
+        :param parameters:      Parameters used to complete the translation
+        :type parameters:       dict
+        :return:                The translation
+        :type:                  str
         """
         pass
