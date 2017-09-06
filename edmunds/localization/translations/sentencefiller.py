@@ -1,7 +1,7 @@
 
 import re
-import math
 from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
+from datetime import date, datetime, time
 
 
 class SentenceFiller(object):
@@ -16,35 +16,39 @@ class SentenceFiller(object):
     parameter_start_delimiter = '{'
     parameter_end_delimiter = '}'
 
-    def fill_in(self, sentence, params=None):
+    def fill_in(self, localization, sentence, params=None):
         """
         Fill in the sentence
-        :param sentence:    The sentence to fill in
-        :type sentence:     str
-        :param params:      The params to fill the sentence with
-        :type params:       dict
-        :return:            Filled in sentence
-        :rtype:             str
+        :param localization:    Localization to use for translations
+        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :param sentence:        The sentence to fill in
+        :type sentence:         str
+        :param params:          The params to fill the sentence with
+        :type params:           dict
+        :return:                Filled in sentence
+        :rtype:                 str
         """
 
         if params is None:
             params = {}
 
         func_regex = '%s((?!%s).+?)%s' % (self.function_delimiter, self.function_delimiter, self.function_delimiter)
-        sentence = re.sub(func_regex, lambda func: self._fill_in_function(func.group(1), params), sentence)
+        sentence = re.sub(func_regex, lambda func: self._fill_in_function(localization, func.group(1), params), sentence)
 
-        sentence = self._fill_in_params(sentence, params)
+        sentence = self._fill_in_params(localization, sentence, params, True)
 
         return sentence
 
-    def _fill_in_function(self, func, params):
+    def _fill_in_function(self, localization, func, params):
         """
         Fill in function
-        :param func:    Function to fill in
-        :type func:     str
-        :param params:  The params to fill the sentence with
-        :type params:   dict
-        :return:        filled in function
+        :param localization:    Localization to use for translations
+        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :param func:            Function to fill in
+        :type func:             str
+        :param params:          The params to fill the sentence with
+        :type params:           dict
+        :return:                filled in function
         """
 
         args_options_regex = '^(?P<name>[a-zA-Z_]+)(?:%s(?P<args>.+?))?%s(?P<options>.+?)$' % (self.function_args_separator, self.function_option_separator)
@@ -60,7 +64,7 @@ class SentenceFiller(object):
             args = match_dict['args'].split(self.function_arg_separator)
         else:
             args = []
-        args = list(map(lambda arg: self._fill_in_params(arg, params), args))
+        args = list(map(lambda arg: self._fill_in_params(localization, arg, params, False), args))
 
         method_name = '_fill_in_%s_function' % name
         if not hasattr(self, method_name):
@@ -69,22 +73,38 @@ class SentenceFiller(object):
 
         return func
 
-    def _fill_in_params(self, value, params):
+    def _fill_in_params(self, localization, value, params, apply_localization):
         """
         Fill in params
-        :param value:   The value to fill in
-        :type value:    str
-        :param params:  The params to fill in with
-        :type params:   dict
-        :return:        The filled in value
-        :rtype:         str
+        :param localization:        Localization to use for translations
+        :type localization:         edmunds.localization.localization.models.localization.Localization
+        :param value:               The value to fill in
+        :type value:                str
+        :param params:              The params to fill in with
+        :type params:               dict
+        :param apply_localization:  The apply_localization to fill in with
+        :type apply_localization:   bool
+        :return:                    The filled in value
+        :rtype:                     str
         """
 
         param_regex = '%s([a-zA-Z_]+?)%s' % (self.parameter_start_delimiter, self.parameter_end_delimiter)
 
         def fill_in_param(param):
             if param in params:
+                param_value = params[param]
+                # Format values to the correct format
+                if apply_localization:
+                    if type(param_value) == int or type(param_value) == float:
+                        return localization.number.number(param_value)
+                    if type(param_value) == date:
+                        return localization.time.date(param_value)
+                    if type(param_value) == datetime:
+                        return localization.time.datetime(param_value)
+                    if type(param_value) == time:
+                        return localization.time.time(param_value)
                 return '%s' % params[param]
+
             raise SentenceFillerError('Param "%s" could not be replaced.' % param)
 
         value = re.sub(param_regex, lambda param: fill_in_param(param.group(1)), value)
