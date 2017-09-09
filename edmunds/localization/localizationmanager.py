@@ -70,11 +70,14 @@ class LocalizationManager(object):
         if translator is None:
             return None
 
+        # Timezone is not used in the translator so no need to fetch location
+        location = None
+
         # Fetch locale
-        localization = self._get_localization(True, given_locale_strings=given_locale_strings)
+        localization = self._get_localization(True, location=location, given_locale_strings=given_locale_strings)
         if localization is None or localization.locale is None:
             raise RuntimeError('Could not find locale even with fallback!')
-        localization_fallback = self._get_localization(True, only_fallback_locales=True)
+        localization_fallback = self._get_localization(True, location=location, only_fallback_locales=True)
         if localization_fallback is None or localization_fallback.locale is None:
             raise RuntimeError('Could not find fallback locale!')
 
