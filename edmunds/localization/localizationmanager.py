@@ -48,13 +48,15 @@ class LocalizationManager(object):
         """
         return self._get_localization(False, location=location, given_locale_strings=given_locale_strings)
 
-    def translator(self, name=None, no_instance_error=False, given_locale_strings=None):
+    def translator(self, name=None, no_instance_error=False, location=None, given_locale_strings=None):
         """
         Return translator
         :param name:                    The name of the session instance
         :type  name:                    str
         :param no_instance_error:       Error when no instance
         :type  no_instance_error:       bool
+        :param location:                The location
+        :type location:                 geoip2.models.City
         :param given_locale_strings:    List of given locale strings to determine locale
         :type given_locale_strings:     list
         :return:                        Translator
@@ -69,9 +71,6 @@ class LocalizationManager(object):
         translator = self._app.extensions['edmunds.localization.translations'].get(name, no_instance_error=no_instance_error)
         if translator is None:
             return None
-
-        # Timezone is not used in the translator so no need to fetch location
-        location = None
 
         # Fetch locale
         localization = self._get_localization(True, location=location, given_locale_strings=given_locale_strings)
