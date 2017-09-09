@@ -21,6 +21,7 @@ class TestSentenceFiller(TestCase):
         """
 
         sentence_filler = SentenceFiller()
+        utc_tz = get_timezone('UTC')
 
         data = [
             ('nl_BE', '', '', None, 'Europe/Brussels'),
@@ -44,12 +45,18 @@ class TestSentenceFiller(TestCase):
             # Date
             ('nl_BE', 'Next appointment is 7 jun. 1992.', 'Next appointment is {date}.', {'date': date(1992, 6, 7)}, 'Europe/Brussels'),
             ('en', 'Next appointment is Jun 7, 1992.', 'Next appointment is {date}.', {'date': date(1992, 6, 7)}, 'Europe/Brussels'),
+            ('nl_BE', 'Next appointment is 7 jun. 1992.', 'Next appointment is {date}.', {'date': date(1992, 6, 7)}, 'Asia/Chongqing'),
+            ('en', 'Next appointment is Jun 7, 1992.', 'Next appointment is {date}.', {'date': date(1992, 6, 7)}, 'Asia/Chongqing'),
             # DateTime
-            ('nl_BE', 'Next appointment is 9 mei 1992 07:26:13.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13)}, 'Europe/Brussels'),
-            ('en', 'Next appointment is May 9, 1992, 7:26:13 AM.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13)}, 'Europe/Brussels'),
+            ('nl_BE', 'Next appointment is 9 mei 1992 07:26:13.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13, tzinfo=utc_tz)}, 'Europe/Brussels'),
+            ('en', 'Next appointment is May 9, 1992, 7:26:13 AM.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13, tzinfo=utc_tz)}, 'Europe/Brussels'),
+            ('nl_BE', 'Next appointment is 9 mei 1992 13:26:13.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13, tzinfo=utc_tz)}, 'Asia/Chongqing'),
+            ('en', 'Next appointment is May 9, 1992, 1:26:13 PM.', 'Next appointment is {datetime}.', {'datetime': datetime(1992, 5, 9, 5, 26, 13, tzinfo=utc_tz)}, 'Asia/Chongqing'),
             # Time
-            ('nl_BE', 'Next appointment is 05:26:13.', 'Next appointment is {time}.', {'time': time(5, 26, 13)}, 'Europe/Brussels'),
-            ('en', 'Next appointment is 5:26:13 AM.', 'Next appointment is {time}.', {'time': time(5, 26, 13)}, 'Europe/Brussels'),
+            ('nl_BE', 'Next appointment is 05:26:13.', 'Next appointment is {time}.', {'time': time(5, 26, 13, tzinfo=utc_tz)}, 'Europe/Brussels'),
+            ('en', 'Next appointment is 5:26:13 AM.', 'Next appointment is {time}.', {'time': time(5, 26, 13, tzinfo=utc_tz)}, 'Europe/Brussels'),
+            ('nl_BE', 'Next appointment is 05:26:13.', 'Next appointment is {time}.', {'time': time(5, 26, 13, tzinfo=utc_tz)}, 'Asia/Chongqing'),
+            ('en', 'Next appointment is 5:26:13 AM.', 'Next appointment is {time}.', {'time': time(5, 26, 13, tzinfo=utc_tz)}, 'Asia/Chongqing'),
             # Strings
             ('nl_BE', 'Divide that by 4 and you get 3.5.', 'Divide that by 4 and you get {float}.', {'float': '3.5'}, 'Europe/Brussels'),
             ('en', 'Divide that by 4 and you get 3.5.', 'Divide that by 4 and you get {float}.', {'float': '3.5'}, 'Europe/Brussels'),
