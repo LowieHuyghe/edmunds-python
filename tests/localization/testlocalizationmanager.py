@@ -186,7 +186,7 @@ class TestLocalizationManager(TestCase):
         self.assert_is_instance(manager, LocalizationManager)
 
         with self.assert_raises_regexp(RuntimeError, 'No valid fallback time zone defined'):
-            manager._get_time_zone()
+            manager._get_time_zone(None)
 
     def test_time_zone_invalid(self):
         """
@@ -223,7 +223,7 @@ class TestLocalizationManager(TestCase):
         self.assert_is_instance(manager, LocalizationManager)
 
         with self.assert_raises_regexp(RuntimeError, 'No valid fallback time zone defined'):
-            manager._get_time_zone()
+            manager._get_time_zone(None)
 
     def test_time_zone_no_location(self):
         """
@@ -238,7 +238,7 @@ class TestLocalizationManager(TestCase):
         manager = app.localization()
         self.assert_is_instance(manager, LocalizationManager)
 
-        time_zone = manager._get_time_zone()
+        time_zone = manager._get_time_zone(None)
         self.assert_is_not_none(time_zone)
         self.assert_is_instance(time_zone, DstTzInfo)
         self.assert_equal('Europe/Brussels', time_zone.zone)
@@ -499,7 +499,7 @@ class TestLocalizationManager(TestCase):
         self.assert_is_instance(manager, LocalizationManager)
 
         with app.test_request_context(rule):
-            localization = manager.localization()
+            localization = manager.localization(None)
             self.assert_is_instance(localization, Localization)
             self.assert_is_instance(localization.time, Time)
             self.assert_is_instance(localization.number, Number)
