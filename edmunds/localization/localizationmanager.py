@@ -36,7 +36,7 @@ class LocalizationManager(object):
         # Return driver
         return self._app.extensions['edmunds.localization.location'].get(name, no_instance_error=no_instance_error)
 
-    def localization(self, location=None, given_locale_strings=None):
+    def localization(self, location, given_locale_strings=None):
         """
         Return localization
         :param location:                The location
@@ -48,17 +48,17 @@ class LocalizationManager(object):
         """
         return self._get_localization(False, location=location, given_locale_strings=given_locale_strings)
 
-    def translator(self, name=None, no_instance_error=False, location=None, given_locale_strings=None):
+    def translator(self, location, given_locale_strings=None, name=None, no_instance_error=False):
         """
         Return translator
-        :param name:                    The name of the session instance
-        :type  name:                    str
-        :param no_instance_error:       Error when no instance
-        :type  no_instance_error:       bool
         :param location:                The location
         :type location:                 geoip2.models.City
         :param given_locale_strings:    List of given locale strings to determine locale
         :type given_locale_strings:     list
+        :param name:                    The name of the session instance
+        :type  name:                    str
+        :param no_instance_error:       Error when no instance
+        :type  no_instance_error:       bool
         :return:                        Translator
         :rtype:                         edmunds.localization.translations.models.translatorwrapper.TranslatorWrapper
         """
@@ -82,7 +82,7 @@ class LocalizationManager(object):
 
         return TranslatorWrapper(self._app, translator, localization, localization_fallback)
 
-    def _get_localization(self, from_supported_locales, location=None, given_locale_strings=None, only_fallback_locales=False):
+    def _get_localization(self, from_supported_locales, location, given_locale_strings=None, only_fallback_locales=False):
         """
         Return localization
         :param from_supported_locales:  Only return locale that is supported according to config
@@ -103,7 +103,7 @@ class LocalizationManager(object):
 
         return Localization(locale, number, time)
 
-    def _get_time_zone(self, location=None):
+    def _get_time_zone(self, location):
         """
         Get timezone
         :param location:    The location
