@@ -7,6 +7,7 @@ from edmunds.localization.localization.models.time import Time
 from babel.core import Locale
 from babel.dates import get_timezone
 from datetime import date, datetime, time
+from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
 
 
 class TestSentenceFiller(TestCase):
@@ -109,3 +110,56 @@ class TestSentenceFiller(TestCase):
             time_instance = Time(locale, time_zone)
             localization = Localization(locale, number, time_instance)
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
+
+    def test_plural_function_errors(self):
+        """
+        Test plural function errors
+        :return:    void
+        """
+
+        sentence_filler = SentenceFiller()
+
+        data = [
+            ('nl_BE', 'I have got 0 eggs in my hand.', 'I have got --plural:{eggs},{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 0}),
+            ('bo', 'I have got 0 egg in my hand.', 'I have got --plural__{eggs} egg-- in my hand.', {'eggs': 0}),
+            ('ar', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs},{eggs},{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 0}),
+        ]
+
+        for locale_str, expected, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Plural-function requires exactly one argument.'):
+                sentence_filler.fill_in(localization, given, params=params)
+
+        data = [
+            ('nl_BE', 'I have got 0 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 'eggs'}),
+            ('bo', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': time(2, 5, 6)}),
+            ('ar', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': date(1992, 5, 9)}),
+        ]
+
+        for locale_str, expected, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Plural-function argument was not an integer.'):
+                sentence_filler.fill_in(localization, given, params=params)
+
+        data = [
+            ('nl_BE', 'I have got 0 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': 0}),
+            ('bo', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 0}),
+            ('ar', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs}-- in my hand.', {'eggs': 0}),
+        ]
+
+        for locale_str, expected, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Plural-function requires exactly \d+ options for locale \w+.'):
+                sentence_filler.fill_in(localization, given, params=params)

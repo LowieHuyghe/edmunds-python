@@ -105,6 +105,10 @@ class SentenceFiller(object):
                         return localization.time.datetime(param_value)
                     if type(param_value) == time:
                         return localization.time.time(param_value)
+
+                if type(param_value) == tuple or type(param_value) == dict:
+                    raise SentenceFillerError('Invalid param type %s found for "%s".' % (type(param_value), param))
+
                 return '%s' % params[param]
 
             raise SentenceFillerError('Param "%s" could not be replaced.' % param)
@@ -135,10 +139,8 @@ class SentenceFiller(object):
             raise SentenceFillerError('Plural-function argument was not an integer.')
 
         npurals, expression = get_plural(localization.locale)
-        if npurals > len(options):
-            raise SentenceFillerError('Plural-function requires %i options for %s.' % (npurals, localization.locale))
-        if npurals < len(options):
-            raise SentenceFillerError('Plural-function requires only %i options for %s.' % (npurals, localization.locale))
+        if npurals != len(options):
+            raise SentenceFillerError('Plural-function requires exactly %i options for locale %s.' % (npurals, localization.locale))
 
         func = c2py(expression)
         result = func(count)
