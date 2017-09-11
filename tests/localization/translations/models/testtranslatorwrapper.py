@@ -3,6 +3,7 @@ from tests.testcase import TestCase
 from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
 from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
 from edmunds.localization.translations.exceptions.translationerror import TranslationError
+from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
 import os
 
 
@@ -164,6 +165,47 @@ class TestTranslatorWrapper(TestCase):
 
                 self.assert_equal(expected, driver.get(key, params))
                 self.assert_true(self._is_in_log_files(app, directory, 'Could not find the sentence for locale "%s" and key "%s".' % (locale_str, key)))
+
+    def test_get_filler_error(self):
+        """
+        Test get filler error
+        :return:    void
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Write config and create app
+        self.write_config(self.config)
+        app = self.create_application()
+        directory = app.fs().path(self.logs_directory)
+        self.clear_paths.append(directory)
+
+        fallback_locale_str = app.config('app.localization.locale.fallback')
+        supported_locale_str = app.config('app.localization.locale.supported')
+        data = [
+            ('en', 'beautiful', {}),
+            ('nl', 'beautiful', {}),
+            ('nl_BE', 'beautiful', {}),
+        ]
+
+        for locale_str, key, params in data:
+            with app.test_request_context(rule):
+                # Fetch driver
+                driver = app.localization().translator(None, given_locale_strings=[locale_str])
+                self.assert_is_instance(driver, TranslatorWrapper)
+                self.assert_is_instance(driver.translator, ConfigTranslator)
+
+                with self.assert_raises_regexp(SentenceFillerError, 'Param "name" could not be replaced. \(locale "%s" and key "%s"\)' % (fallback_locale_str, key)):
+                    driver.get(key, params)
+
+                locale_str_error = locale_str
+                if locale_str_error not in supported_locale_str:
+                    locale_str_error = locale_str[:2]
+                if locale_str_error not in supported_locale_str:
+                    locale_str_error = fallback_locale_str
+
+                locale_error = 'Param "name" could not be replaced. (locale "%s" and key "%s")' % (locale_str_error, key)
+                self.assert_true(self._is_in_log_files(app, directory, locale_error), msg=locale_error)
 
     def test_get(self):
         """
