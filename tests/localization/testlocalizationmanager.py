@@ -8,6 +8,8 @@ from edmunds.localization.localization.models.localization import Localization
 from edmunds.localization.localization.models.number import Number
 from edmunds.localization.localization.models.time import Time
 from babel.core import Locale
+from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
+from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
 
 
 class TestLocalizationManager(TestCase):
@@ -24,6 +26,7 @@ class TestLocalizationManager(TestCase):
 
         self.valid_config = [
             "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
+            "from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator \n",
             "APP = { \n",
             "   'localization': { \n",
             "       'enabled': True, \n",
@@ -40,6 +43,24 @@ class TestLocalizationManager(TestCase):
             "                   'driver': GoogleAppEngine,\n",
             "               }, \n",
             "           ], \n",
+            "       }, \n",
+            "       'translations': { \n",
+            "           'enabled': True, \n",
+            "           'instances': [ \n",
+            "               { \n",
+            "                   'name': 'configtranslator',\n",
+            "                   'driver': ConfigTranslator,\n",
+            "               }, \n",
+            "           ], \n",
+            "           'strings': { \n",
+            "               'en': { \n",
+            "                   'beautiful': 'This is a beautiful translation. Is it not, {name}?', \n",
+            "                   'smashing': 'A smashing sentence!', \n",
+            "               }, \n",
+            "               'nl': { \n",
+            "                   'beautiful': 'Dit is een prachtige vertaling. Nietwaar, {name}?', \n",
+            "               }, \n",
+            "           }, \n",
             "       }, \n",
             "   }, \n",
             "} \n",
@@ -505,3 +526,86 @@ class TestLocalizationManager(TestCase):
             self.assert_is_instance(localization.number, Number)
             self.assert_is_instance(localization.locale, Locale)
             self.assert_is_instance(localization.rtl, bool)
+
+    def test_translator_not_defined(self):
+        """
+        Test translator not defined
+        :return:    void
+        """
+
+        # Write translator settings
+        self.write_config([
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        # No settings for the manager
+        self.assert_is_none(manager.translator(None))
+
+    def test_translator_disabled(self):
+        """
+        Test translator disabled
+        :return:    void
+        """
+
+        # Write translator settings
+        self.write_config([
+            "from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator \n",
+            "APP = { \n",
+            "   'localization': { \n",
+            "       'enabled': True, \n",
+            "       'locale': { \n",
+            "           'fallback': 'en', \n",
+            "           'supported': ['en'], \n",
+            "       }, \n",
+            "       'translations': { \n",
+            "           'enabled': False, \n",
+            "           'instances': [ \n",
+            "               { \n",
+            "                   'name': 'configtranslator',\n",
+            "                   'driver': ConfigTranslator,\n",
+            "               }, \n",
+            "           ], \n",
+            "       }, \n",
+            "   }, \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        # with settings for the manager
+        self.assert_is_none(manager.translator(None))
+
+    def test_translator(self):
+        """
+        Translator
+        :return:    None
+        """
+
+        rule = '/' + self.rand_str(20)
+
+        # Write location settings
+        self.write_config(self.valid_config)
+        app = self.create_application()
+        # New manager
+        manager = app.localization()
+        self.assert_is_instance(manager, LocalizationManager)
+
+        with app.test_request_context(rule):
+            translator = manager.translator(None)
+            self.assert_is_instance(translator, TranslatorWrapper)
+            self.assert_is_instance(translator.translator, ConfigTranslator)
