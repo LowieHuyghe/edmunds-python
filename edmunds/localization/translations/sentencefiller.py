@@ -2,6 +2,8 @@
 import re
 from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
 from datetime import date, datetime, time
+from babel.messages.plurals import get_plural
+from gettext import c2py
 
 
 class SentenceFiller(object):
@@ -69,7 +71,7 @@ class SentenceFiller(object):
         method_name = '_fill_in_%s_function' % name
         if not hasattr(self, method_name):
             raise SentenceFillerError('Using non-existing function "%s".' % name)
-        func = getattr(self, method_name)(args, options)
+        func = getattr(self, method_name)(localization, args, options)
 
         return func
 
@@ -111,15 +113,17 @@ class SentenceFiller(object):
 
         return value
 
-    def _fill_in_plural_function(self, args, options):
+    def _fill_in_plural_function(self, localization, args, options):
         """
         Fill in a plural function
-        :param args:    Arguments
-        :type args:     list
-        :param options: Options
-        :type options:  list
-        :return:        The correct option
-        :rtype:         str
+        :param localization:    Localization to use for translations
+        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :param args:            Arguments
+        :type args:             list
+        :param options:         Options
+        :type options:          list
+        :return:                The correct option
+        :rtype:                 str
         """
 
         if len(args) != 1:
@@ -130,23 +134,28 @@ class SentenceFiller(object):
         except ValueError:
             raise SentenceFillerError('Plural-function argument was not an integer.')
 
-        if count > len(options):
-            return options[-1]
+        npurals, expression = get_plural(localization.locale)
+        if npurals > len(options):
+            raise SentenceFillerError('Plural-function requires %i options for %s.' % (npurals, localization.locale))
+        if npurals < len(options):
+            raise SentenceFillerError('Plural-function requires only %i options for %s.' % (npurals, localization.locale))
 
-        if count <= 0:
-            return options[0]
+        func = c2py(expression)
+        result = func(count)
 
-        return options[count - 1]
+        return options[result]
 
-    def _fill_in_gender_function(self, args, options):
+    def _fill_in_gender_function(self, localization, args, options):
         """
         Fill in a gender function
-        :param args:    Arguments
-        :type args:     list
-        :param options: Options
-        :type options:  list
-        :return:        The correct option
-        :rtype:         str
+        :param localization:    Localization to use for translations
+        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :param args:            Arguments
+        :type args:             list
+        :param options:         Options
+        :type options:          list
+        :return:                The correct option
+        :rtype:                 str
         """
 
         if len(args) != 1:
