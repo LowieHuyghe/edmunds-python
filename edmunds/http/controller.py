@@ -13,6 +13,8 @@ class Controller(object):
     def __init__(self, app):
         """
         Initialize the controller
+        :param app: The application
+        :type  app: edmunds.application.Application
         """
 
         self._app = app

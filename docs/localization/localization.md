@@ -7,11 +7,12 @@ customized to his/her language, unit-system, currency,...
 
 ## Configuration
 
+This is an example configuration. See related localization-documentation for
+more information.
+
 ```python
 from edmunds.localization.location.drivers.maxmindcitydatabase import MaxMindCityDatabase
-from edmunds.localization.location.drivers.maxmindenterprisedatabase import MaxMindEnterpriseDatabase
-from edmunds.localization.location.drivers.maxmindwebservice import MaxMindWebService
-from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine
+from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
 
 APP = {
     'localization': {
@@ -21,39 +22,74 @@ APP = {
             'fallback': 'en_US',
             'supported': ['en_US', 'en', 'nl_BE', 'nl'],
         },
+        'time_zone_fallback': 'Europe/Brussels',
         
         'location': {
             'enabled': True,
             'instances': [
                 {
-                    'name': 'gae',
-                    'driver': GoogleAppEngine,
-                },
-                {
                     'name': 'maxmindcitydb',
                     'driver': MaxMindCityDatabase,
                     'database': 'maxmind_city_db.mmdb'
                 },
-                {
-                    'name': 'maxmindenterprisedb',
-                    'driver': MaxMindEnterpriseDatabase,
-                    'database': 'maxmind_enterprise_db.mmdb'
-                },
-                {
-                    'name': 'maxmindweb',
-                    'driver': MaxMindWebService,
-                    'user_id': '1',
-                    'license_key': 'license_key'
+            ],
+        },
+        
+        'translations': {
+            'enabled': True,
+            'instances': [
+                   {
+                    'name': 'configtranslator',
+                    'driver': ConfigTranslator,
                 },
             ],
         },
     },
 }
 ```
-The location service only works with the first defined instance.
 
-The available drivers are:
-- **MaxMindCityDatabase**: Using MaxMind City Database
-- **MaxMindEnterpriseDatabase**: Using MaxMind Enterprise Database
-- **MaxMindWebService**: Using MaxMind Web Service
-- **GoogleAppEngine**: Based on specific Google App Engine headers
+## Usage
+
+The general localization will be shown here. Other usages will be shown in the
+related localization-documentation.
+
+> Note: Localization will be more accurate when the location of the user
+> is available.
+
+```python
+from edmunds.http.controller import Controller
+from datetime import time, date
+
+class MyController(Controller):
+    def login(self):
+        
+        # Usage through the visitor object
+        
+        time_str = self._visitor.localization.time.time(time(14, 3, 2))
+        date_str = self._visitor.localization.time.date(date(1992, 6, 7))
+        # ...
+        cost = self._visitor.localization.number.currency(4.56, 'EUR')
+        number = self._visitor.localization.number.number(3456.64)
+        # ...
+        is_rtl = self._visitor.localization.rtl
+        locale = self._visitor.localization.locale
+        # ...
+        
+        
+        # Usage through the app/manager
+        
+        localization_manager = self._app.localization()
+        location_driver = localization_manager.location()
+        location = location_driver.insights(self._request.remote_addr)
+        localization_model = localization_manager.localization(location)
+        
+        time_str = localization_model.time.time(time(14, 3, 2))
+        date_str = localization_model.time.date(date(1992, 6, 7))
+        # ...
+        cost = localization_model.number.currency(4.56, 'EUR')
+        number = localization_model.number.number(3456.64)
+        # ...
+        is_rtl = localization_model.rtl
+        locale = localization_model.locale
+        # ...
+```

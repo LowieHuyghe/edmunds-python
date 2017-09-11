@@ -26,6 +26,8 @@
 
 * Localization
   - [Localization](localization/localization.md)
+  - [Location](localization/location.md)
+  - [Translations](localization/translations.md)
 
 * Testing
   - [Getting Started](testing/gettingstarted.md)
