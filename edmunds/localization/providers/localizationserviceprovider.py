@@ -1,5 +1,6 @@
 
 from edmunds.localization.location.providers.locationserviceprovider import LocationServiceProvider
+from edmunds.localization.translations.providers.translationsserviceprovider import TranslationsServiceProvider
 from edmunds.localization.localizationmanager import LocalizationManager
 from edmunds.support.serviceprovider import ServiceProvider
 from babel.core import Locale
@@ -21,6 +22,7 @@ class LocalizationServiceProvider(ServiceProvider):
 
         # Register other providers
         self.app.register(LocationServiceProvider)
+        self.app.register(TranslationsServiceProvider)
 
         # Make manager and load instance
         manager = LocalizationManager(self.app)
