@@ -78,6 +78,42 @@ class TestSentenceFiller(TestCase):
 
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
 
+    def test_param_errors(self):
+        """
+        Test param errors
+        :return:    void
+        """
+
+        sentence_filler = SentenceFiller()
+
+        data = [
+            ('nl_BE', 'Have an invalid parameter: {param}.', {'param': {'value': 1}}),
+            ('bo', 'Have another invalid parameter: {param}.', {'param': (1, 2, 3)}),
+        ]
+
+        for locale_str, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Invalid param type .*? found for "\w+"'):
+                sentence_filler.fill_in(localization, given, params=params)
+
+        data = [
+            ('ar', 'Irreplaceable parameter: {param}.', {'param_a': {'value': 1}}),
+            ('bo', 'Have another irreplaceable parameter: {param}.', {'param_b': (1, 2, 3)}),
+        ]
+
+        for locale_str, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Param "param" could not be replaced.'):
+                sentence_filler.fill_in(localization, given, params=params)
+
     def test_plural_function(self):
         """
         Test plural function
