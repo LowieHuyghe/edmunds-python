@@ -189,7 +189,7 @@ class TestSentenceFiller(TestCase):
             localization = Localization(locale, number, time_instance)
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
 
-    def test_gender_function(self):
+    def test_gender_function_errors(self):
         """
         Test gender function
         :return:    void
