@@ -31,4 +31,4 @@ class ConfigTranslator(BaseDriver):
         try:
             return self.sentence_filler.fill_in(localization, sentence, params=parameters)
         except SentenceFillerError as e:
-            raise SentenceFillerError('%s (locale "%s" and key "%s")' % (e.message, localization.locale, key))
+            raise SentenceFillerError('%s (locale "%s" and key "%s")' % (e, localization.locale, key))
