@@ -76,3 +76,36 @@ class TestSentenceFiller(TestCase):
             localization = Localization(locale, number, time_instance)
 
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
+
+    def test_plural_function(self):
+        """
+        Test plural function
+        :return:    void
+        """
+
+        sentence_filler = SentenceFiller()
+
+        data = [
+            ('nl_BE', 'I have got 0 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 0}),
+            ('nl_BE', 'I have got 1 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 1}),
+            ('nl_BE', 'I have got 2 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 2}),
+            ('nl_BE', 'I have got 3 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs-- in my hand.', {'eggs': 3}),
+            ('bo', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': 0}),
+            ('bo', 'I have got 1 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': 1}),
+            ('bo', 'I have got 2 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': 2}),
+            ('bo', 'I have got 3 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg-- in my hand.', {'eggs': 3}),
+            ('ar', 'I have got 0 egg in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 0}),
+            ('ar', 'I have got 1 eggs in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 1}),
+            ('ar', 'I have got 2 eggz in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 2}),
+            ('ar', 'I have got 3 eggk in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 3}),
+            ('ar', 'I have got 101 eggl in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 101}),
+            ('ar', 'I have got 11 eggo in my hand.', 'I have got --plural:{eggs}__{eggs} egg__{eggs} eggs__{eggs} eggz__{eggs} eggk__{eggs} eggl__{eggs} eggo-- in my hand.', {'eggs': 11}),
+        ]
+
+        for locale_str, expected, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
