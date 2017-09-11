@@ -114,6 +114,47 @@ class TestSentenceFiller(TestCase):
             with self.assert_raises_regexp(SentenceFillerError, 'Param "param" could not be replaced.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
+    def test_function_errors(self):
+        """
+        Test function errors
+        :return:    void
+        """
+
+        sentence_filler = SentenceFiller()
+
+        data = [
+            ('nl_BE', 'This is an invalid function --plura l__option 1__option 2__--.', {}),
+            ('bo', 'This is an invalid function --plu(ral__option 1__option 2__--.', {}),
+            ('ar', 'This is an invalid function --plu-ral__option 1__option 2__--.', {}),
+            ('nl_BE', 'This is an invalid function --plura*l__option 1__option 2__--.', {}),
+            ('bo', 'This is an invalid function --plu2ral__option 1__option 2__--.', {}),
+            ('ar', 'This is an invalid function --pl^ural__option 1__option 2__--.', {}),
+        ]
+
+        for locale_str, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Function ".*?" was not valid.'):
+                sentence_filler.fill_in(localization, given, params=params)
+
+        data = [
+            ('nl_BE', 'This is an invalid function --plurale__option 1__option 2__--.', {}),
+            ('bo', 'This is an invalid function --plura__option 1__option 2__--.', {}),
+            ('ar', 'This is an invalid function --plur_al__option 1__option 2__--.', {}),
+        ]
+
+        for locale_str, given, params in data:
+            locale = Locale.parse(locale_str, sep='_')
+            time_zone = get_timezone('Europe/Brussels')
+            number = Number(locale)
+            time_instance = Time(locale, time_zone)
+            localization = Localization(locale, number, time_instance)
+            with self.assert_raises_regexp(SentenceFillerError, 'Using non-existing function "\w+".'):
+                sentence_filler.fill_in(localization, given, params=params)
+
     def test_plural_function(self):
         """
         Test plural function
