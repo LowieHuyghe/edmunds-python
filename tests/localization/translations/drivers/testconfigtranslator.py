@@ -2,9 +2,10 @@
 from tests.testcase import TestCase
 from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
 from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
+from edmunds.localization.translations.exceptions.translationerror import TranslationError
 
 
-class TestConfigTranslatorError(TestCase):
+class TestConfigTranslator(TestCase):
     """
     Test the Config Translator
     """
@@ -14,7 +15,7 @@ class TestConfigTranslatorError(TestCase):
         Set up test
         :return:    void
         """
-        super(TestConfigTranslatorError, self).set_up()
+        super(TestConfigTranslator, self).set_up()
 
         self.config = [
             "from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator \n",
@@ -76,33 +77,8 @@ class TestConfigTranslatorError(TestCase):
                 self.assert_is_instance(driver, TranslatorWrapper)
                 self.assert_is_instance(driver.translator, ConfigTranslator)
 
-                with self.assert_raises_regexp(RuntimeError, 'Could not find the sentence for locale "%s" and key "%s".' % (fallback_locale_str, key)):
+                with self.assert_raises_regexp(TranslationError, 'Could not find the sentence for locale "%s" and key "%s".' % (fallback_locale_str, key)):
                     driver.get(key, params)
-
-    def test_get_untranslated_key(self):
-        """
-        Test get untranslated key
-        :return:    void
-        """
-
-        rule = '/' + self.rand_str(20)
-
-        # Write config and create app
-        self.write_config(self.config)
-        app = self.create_application()
-
-        data = [
-            ('nl', 'A smashing sentence!', 'smashing', {}),
-        ]
-
-        for locale_str, expected, key, params in data:
-            with app.test_request_context(rule):
-                # Fetch driver
-                driver = app.localization().translator(None, given_locale_strings=[locale_str])
-                self.assert_is_instance(driver, TranslatorWrapper)
-                self.assert_is_instance(driver.translator, ConfigTranslator)
-
-                self.assert_equal(expected, driver.get(key, params))
 
     def test_get(self):
         """
