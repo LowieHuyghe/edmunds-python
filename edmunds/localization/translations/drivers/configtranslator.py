@@ -1,6 +1,7 @@
 
 from edmunds.localization.translations.drivers.basedriver import BaseDriver
 from edmunds.localization.translations.exceptions.translationerror import TranslationError
+from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
 
 
 class ConfigTranslator(BaseDriver):
@@ -27,4 +28,7 @@ class ConfigTranslator(BaseDriver):
         if sentence is None:
             raise TranslationError('Could not find the sentence for locale "%s" and key "%s".' % (localization.locale, key))
 
-        return self.sentence_filler.fill_in(localization, sentence, params=parameters)
+        try:
+            return self.sentence_filler.fill_in(localization, sentence, params=parameters)
+        except SentenceFillerError as e:
+            raise SentenceFillerError('%s (locale "%s" and key "%s")' % (e.message, localization.locale, key))
