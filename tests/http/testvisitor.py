@@ -4,7 +4,7 @@ from edmunds.http.visitor import Visitor
 from edmunds.globals import request
 from user_agents.parsers import UserAgent
 from geoip2.models import City
-from edmunds.localization.localization.models.localization import Localization
+from edmunds.localization.localization.models.localizator import Localizator
 
 
 class TestVisitor(TestCase):
@@ -44,7 +44,7 @@ class TestVisitor(TestCase):
 
         visitor = Visitor(app, request)
         with self.assert_raises_regexp(RuntimeError, 'Localization can not be used as it is not enabled'):
-            visitor.localization
+            visitor.localizator
         with self.assert_raises_regexp(RuntimeError, 'Location can not be used as localization is not enabled'):
             visitor.location
 
@@ -117,5 +117,5 @@ class TestVisitor(TestCase):
         # Call route
         with app.test_request_context(rule):
             visitor = Visitor(app, request)
-            self.assert_is_instance(visitor.localization, Localization)
+            self.assert_is_instance(visitor.localizator, Localizator)
             self.assert_is_instance(visitor.location, City)

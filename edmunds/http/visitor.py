@@ -20,8 +20,8 @@ class Visitor(object):
         self.__client_lock = Lock()
         self.__location = None
         self.__location_lock = Lock()
-        self.__localization = None
-        self.__localization_lock = Lock()
+        self.__localizator = None
+        self.__localizator_lock = Lock()
 
     @property
     def client(self):
@@ -61,21 +61,21 @@ class Visitor(object):
         return self.__location
 
     @property
-    def localization(self):
+    def localizator(self):
         """
-        Get localization information
-        :return:    Localization info
-        :rtype:     edmunds.localization.localization.models.localization.Localization
+        Get localizator
+        :return:    Localizator
+        :rtype:     edmunds.localization.localization.models.localizator.Localizator
         """
 
-        if self.__localization is None:
-            with self.__localization_lock:
-                if self.__localization is None:
+        if self.__localizator is None:
+            with self.__localizator_lock:
+                if self.__localizator is None:
                     # Enabled?
                     if not self._app.config('app.localization.enabled', False):
                         raise RuntimeError('Localization can not be used as it is not enabled!')
 
                     localization_manager = self._app.localization()
                     location = self.location
-                    self.__localization = localization_manager.localization(location)
-        return self.__localization
+                    self.__localizator = localization_manager.localizator(location)
+        return self.__localizator

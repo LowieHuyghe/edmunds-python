@@ -25,7 +25,7 @@ class BaseDriver(ABC):
         """
         Get translation
         :param localization:    Localization to use for translations
-        :type localization:     edmunds.localization.localization.models.localization.Localization
+        :type localization:     edmunds.localization.localization.models.localizator.Localizator
         :param key:             Key of translation
         :type key:              str
         :param parameters:      Parameters used to complete the translation

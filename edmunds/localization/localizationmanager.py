@@ -1,5 +1,5 @@
 
-from edmunds.localization.localization.models.localization import Localization
+from edmunds.localization.localization.models.localizator import Localizator
 from edmunds.localization.localization.models.number import Number
 from edmunds.localization.localization.models.time import Time
 from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
@@ -36,17 +36,17 @@ class LocalizationManager(object):
         # Return driver
         return self._app.extensions['edmunds.localization.location'].get(name, no_instance_error=no_instance_error)
 
-    def localization(self, location, given_locale_strings=None):
+    def localizator(self, location, given_locale_strings=None):
         """
-        Return localization
+        Return localizator
         :param location:                The location
         :type location:                 geoip2.models.City
         :param given_locale_strings:    List of given locale strings to determine locale
         :type given_locale_strings:     list
-        :return:                        Localization instance
-        :rtype:                         edmunds.localization.localization.models.localization.Localization
+        :return:                        Localizator instance
+        :rtype:                         edmunds.localization.localization.models.localizator.Localizator
         """
-        return self._get_localization(False, location=location, given_locale_strings=given_locale_strings)
+        return self._get_localizator(False, location=location, given_locale_strings=given_locale_strings)
 
     def translator(self, location, given_locale_strings=None, name=None, no_instance_error=False):
         """
@@ -73,18 +73,18 @@ class LocalizationManager(object):
             return None
 
         # Fetch locale
-        localization = self._get_localization(True, location=location, given_locale_strings=given_locale_strings)
-        if localization is None or localization.locale is None:
+        localizator = self._get_localizator(True, location=location, given_locale_strings=given_locale_strings)
+        if localizator is None or localizator.locale is None:
             raise RuntimeError('Could not find locale even with fallback!')
-        localization_fallback = self._get_localization(True, location=location, only_fallback_locales=True)
-        if localization_fallback is None or localization_fallback.locale is None:
+        localizator_fallback = self._get_localizator(True, location=location, only_fallback_locales=True)
+        if localizator_fallback is None or localizator_fallback.locale is None:
             raise RuntimeError('Could not find fallback locale!')
 
-        return TranslatorWrapper(self._app, translator, localization, localization_fallback)
+        return TranslatorWrapper(self._app, translator, localizator, localizator_fallback)
 
-    def _get_localization(self, from_supported_locales, location, given_locale_strings=None, only_fallback_locales=False):
+    def _get_localizator(self, from_supported_locales, location, given_locale_strings=None, only_fallback_locales=False):
         """
-        Return localization
+        Return localizator
         :param from_supported_locales:  Only return locale that is supported according to config
         :type from_supported_locales:   bool
         :param location:                The location
@@ -94,14 +94,14 @@ class LocalizationManager(object):
         :param only_fallback_locales:   Only use fallback locales, No browser accept ot user agent locales.
         :type only_fallback_locales:    bool
         :return:                        Localization instance
-        :rtype:                         edmunds.localization.localization.models.localization.Localization
+        :rtype:                         edmunds.localization.localization.models.localizator.Localizator
         """
         locale = self._get_locale(from_supported_locales, given_locale_strings=given_locale_strings, only_fallback_locales=only_fallback_locales)
         time_zone = self._get_time_zone(location)
         number = Number(locale)
         time = Time(locale, time_zone)
 
-        return Localization(locale, number, time)
+        return Localizator(locale, number, time)
 
     def _get_time_zone(self, location):
         """
