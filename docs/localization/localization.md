@@ -65,14 +65,14 @@ class MyController(Controller):
         
         # Usage through the visitor object
         
-        time_str = self._visitor.localization.time.time(time(14, 3, 2))
-        date_str = self._visitor.localization.time.date(date(1992, 6, 7))
+        time_str = self._visitor.localizator.time.time(time(14, 3, 2))
+        date_str = self._visitor.localizator.time.date(date(1992, 6, 7))
         # ...
-        cost = self._visitor.localization.number.currency(4.56, 'EUR')
-        number = self._visitor.localization.number.number(3456.64)
+        cost = self._visitor.localizator.number.currency(4.56, 'EUR')
+        number = self._visitor.localizator.number.number(3456.64)
         # ...
-        is_rtl = self._visitor.localization.rtl
-        locale = self._visitor.localization.locale
+        is_rtl = self._visitor.localizator.rtl
+        locale = self._visitor.localizator.locale
         # ...
         
         
@@ -81,15 +81,15 @@ class MyController(Controller):
         localization_manager = self._app.localization()
         location_driver = localization_manager.location()
         location = location_driver.insights(self._request.remote_addr)
-        localization_model = localization_manager.localization(location)
+        localizator_model = localization_manager.localizator(location)
         
-        time_str = localization_model.time.time(time(14, 3, 2))
-        date_str = localization_model.time.date(date(1992, 6, 7))
+        time_str = localizator_model.time.time(time(14, 3, 2))
+        date_str = localizator_model.time.date(date(1992, 6, 7))
         # ...
-        cost = localization_model.number.currency(4.56, 'EUR')
-        number = localization_model.number.number(3456.64)
+        cost = localizator_model.number.currency(4.56, 'EUR')
+        number = localizator_model.number.number(3456.64)
         # ...
-        is_rtl = localization_model.rtl
-        locale = localization_model.locale
+        is_rtl = localizator_model.rtl
+        locale = localizator_model.locale
         # ...
 ```
