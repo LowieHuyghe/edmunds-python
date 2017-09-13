@@ -12,10 +12,10 @@ class TranslatorWrapper(object):
         :type app:                      edmunds.application.Application
         :param translator:              The translator-driver
         :type translator:               edmunds.localization.translations.drivers.basedriver.BaseDriver
-        :param localizator:            The localizator
-        :type localizator:             edmunds.localization.localization.models.localizator.Localizator
-        :param localizator_fallback:   The fallback localizator
-        :type localizator_fallback:    edmunds.localization.localization.models.localizator.Localizator
+        :param localizator:             The localizator
+        :type localizator:              edmunds.localization.localization.models.localizator.Localizator
+        :param localizator_fallback:    The fallback localizator
+        :type localizator_fallback:     edmunds.localization.localization.models.localizator.Localizator
         """
 
         self.app = app
