@@ -1,5 +1,5 @@
 
-class Localizator(object):
+class Localization(object):
 
     def __init__(self, locale, number, time):
         """

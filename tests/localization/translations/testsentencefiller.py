@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.localization.translations.sentencefiller import SentenceFiller
-from edmunds.localization.localization.models.localizator import Localizator
+from edmunds.localization.localization.models.localization import Localization
 from edmunds.localization.localization.models.number import Number
 from edmunds.localization.localization.models.time import Time
 from babel.core import Locale
@@ -74,7 +74,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone(time_zone_str)
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
 
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
 
@@ -96,7 +96,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Invalid param type .*? found for "\w+"'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -110,7 +110,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Param "param" could not be replaced.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -136,7 +136,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Function ".*?" was not valid.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -151,7 +151,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Using non-existing function "\w+".'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -185,7 +185,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
 
     def test_plural_function_errors(self):
@@ -207,7 +207,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Plural-function requires exactly one argument.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -222,7 +222,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Plural-function argument was not an integer.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -237,7 +237,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Plural-function requires exactly \d+ options for locale \w+.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -263,7 +263,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             self.assert_equal(expected, sentence_filler.fill_in(localization, given, params=params))
 
     def test_gender_function_errors(self):
@@ -285,7 +285,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Gender-function requires exactly one argument.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -299,7 +299,7 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Gender-function requires exactly two options.'):
                 sentence_filler.fill_in(localization, given, params=params)
 
@@ -313,6 +313,6 @@ class TestSentenceFiller(TestCase):
             time_zone = get_timezone('Europe/Brussels')
             number = Number(locale)
             time_instance = Time(locale, time_zone)
-            localization = Localizator(locale, number, time_instance)
+            localization = Localization(locale, number, time_instance)
             with self.assert_raises_regexp(SentenceFillerError, 'Using unknown gender "[\w\d\s]+".'):
                 sentence_filler.fill_in(localization, given, params=params)

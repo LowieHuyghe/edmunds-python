@@ -1,9 +1,13 @@
 
 from tests.testcase import TestCase
 from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
-from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
 from edmunds.localization.translations.exceptions.translationerror import TranslationError
 from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
+from edmunds.localization.localization.models.time import Time
+from edmunds.localization.localization.models.number import Number
+from edmunds.localization.localization.models.localization import Localization
+from babel.core import Locale
+from babel.dates import get_timezone
 
 
 class TestConfigTranslator(TestCase):
@@ -61,23 +65,26 @@ class TestConfigTranslator(TestCase):
         # Write config and create app
         self.write_config(self.config)
         app = self.create_application()
-        fallback_locale_str = app.config('app.localization.locale.fallback')
 
         data = [
             ('en', 'beautiful', {}),
             ('nl', 'beautiful', {}),
-            ('nl_BE', 'beautiful', {}),
         ]
 
         for locale_str, key, params in data:
             with app.test_request_context(rule):
-                # Fetch driver
-                driver = app.localization().translator(None, given_locale_strings=[locale_str])
-                self.assert_is_instance(driver, TranslatorWrapper)
-                self.assert_is_instance(driver.translator, ConfigTranslator)
+                locale = Locale.parse(locale_str, sep='_')
+                time_zone = get_timezone('Europe/Brussels')
+                time_obj = Time(locale=locale, time_zone=time_zone)
+                number_obj = Number(locale=locale)
+                localization_obj = Localization(locale=locale, number=number_obj, time=time_obj)
 
-                with self.assert_raises_regexp(SentenceFillerError, 'Param "name" could not be replaced. \(locale "%s" and key "%s"\)' % (fallback_locale_str, key)):
-                    driver.get(key, params)
+                # Fetch driver
+                driver = app.localization().translator()
+                self.assert_is_instance(driver, ConfigTranslator)
+
+                with self.assert_raises_regexp(SentenceFillerError, 'Param "name" could not be replaced. \(locale "%s" and key "%s"\)' % (locale_str, key)):
+                    driver.get(localization_obj, key, params)
 
     def test_get_errors(self):
         """
@@ -91,24 +98,31 @@ class TestConfigTranslator(TestCase):
         self.write_config(self.config)
         app = self.create_application()
 
-        fallback_locale_str = app.config('app.localization.locale.fallback')
         data = [
             ('en', 'unknownkey1', {}),
             ('nl', 'unknownkey2', {}),
             ('nl_BE', 'unknownkey3', {}),
             ('bo', 'unknownkey1', {}),
             ('ar', 'unknownkey2', {}),
+            ('nl', 'smashing', {}),
+            ('nl_BE', 'smashing', {}),
+            ('nl_BE', 'beautiful', {'name': 'Steve'}),
         ]
 
         for locale_str, key, params in data:
             with app.test_request_context(rule):
-                # Fetch driver
-                driver = app.localization().translator(None, given_locale_strings=[locale_str])
-                self.assert_is_instance(driver, TranslatorWrapper)
-                self.assert_is_instance(driver.translator, ConfigTranslator)
+                locale = Locale.parse(locale_str, sep='_')
+                time_zone = get_timezone('Europe/Brussels')
+                time_obj = Time(locale=locale, time_zone=time_zone)
+                number_obj = Number(locale=locale)
+                localization_obj = Localization(locale=locale, number=number_obj, time=time_obj)
 
-                with self.assert_raises_regexp(TranslationError, 'Could not find the sentence for locale "%s" and key "%s".' % (fallback_locale_str, key)):
-                    driver.get(key, params)
+                # Fetch driver
+                driver = app.localization().translator()
+                self.assert_is_instance(driver, ConfigTranslator)
+
+                with self.assert_raises_regexp(TranslationError, 'Could not find the sentence for locale "%s" and key "%s".' % (locale_str, key)):
+                    driver.get(localization_obj, key, params)
 
     def test_get(self):
         """
@@ -124,18 +138,20 @@ class TestConfigTranslator(TestCase):
 
         data = [
             ('en', 'A smashing sentence!', 'smashing', {}),
-            ('nl', 'A smashing sentence!', 'smashing', {}),
-            ('nl_BE', 'A smashing sentence!', 'smashing', {}),
             ('en', 'This is a beautiful translation. Is it not, Steve?', 'beautiful', {'name': 'Steve'}),
             ('nl', 'Dit is een prachtige vertaling. Nietwaar, Steve?', 'beautiful', {'name': 'Steve'}),
-            ('nl_BE', 'Dit is een prachtige vertaling. Nietwaar, Steve?', 'beautiful', {'name': 'Steve'}),
         ]
 
         for locale_str, expected, key, params in data:
             with app.test_request_context(rule):
-                # Fetch driver
-                driver = app.localization().translator(None, given_locale_strings=[locale_str])
-                self.assert_is_instance(driver, TranslatorWrapper)
-                self.assert_is_instance(driver.translator, ConfigTranslator)
+                locale = Locale.parse(locale_str, sep='_')
+                time_zone = get_timezone('Europe/Brussels')
+                time_obj = Time(locale=locale, time_zone=time_zone)
+                number_obj = Number(locale=locale)
+                localization_obj = Localization(locale=locale, number=number_obj, time=time_obj)
 
-                self.assert_equal(expected, driver.get(key, params))
+                # Fetch driver
+                driver = app.localization().translator()
+                self.assert_is_instance(driver, ConfigTranslator)
+
+                self.assert_equal(expected, driver.get(localization_obj, key, params))
