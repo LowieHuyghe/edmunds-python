@@ -4,8 +4,7 @@ from edmunds.http.visitor import Visitor
 from edmunds.globals import request
 from user_agents.parsers import UserAgent
 from geoip2.models import City
-from edmunds.localization.localization.models.localizator import Localizator
-from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
+from edmunds.localization.localization.localizator import Localizator
 
 
 class TestVisitor(TestCase):
@@ -50,8 +49,6 @@ class TestVisitor(TestCase):
                 visitor.localizator
             with self.assert_raises_regexp(RuntimeError, 'Location can not be used as localization is not enabled'):
                 visitor.location
-            with self.assert_raises_regexp(RuntimeError, 'Translations can not be used as localization is not enabled'):
-                visitor.translator
 
     def test_location_not_enabled(self):
         """
@@ -101,59 +98,8 @@ class TestVisitor(TestCase):
             self.assert_is_instance(visitor.localizator, Localizator)
             with self.assert_raises_regexp(RuntimeError, 'Location can not be used as it is not enabled'):
                 visitor.location
-            self.assert_is_instance(visitor.translator, TranslatorWrapper)
 
-    def test_translations_not_enabled(self):
-        """
-        Test translations not enabled
-        :return:    void
-        """
-
-        rule = '/' + self.rand_str(20)
-
-        # Write location settings
-        self.write_config([
-            "from edmunds.localization.location.drivers.googleappengine import GoogleAppEngine \n",
-            "from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator \n",
-            "APP = { \n",
-            "   'localization': { \n",
-            "       'enabled': True, \n",
-            "       'locale': { \n",
-            "           'fallback': 'en', \n",
-            "           'supported': ['en'], \n",
-            "       }, \n",
-            "       'location': { \n",
-            "           'enabled': True, \n",
-            "           'instances': [ \n",
-            "               { \n",
-            "                   'name': 'gae',\n",
-            "                   'driver': GoogleAppEngine,\n",
-            "               }, \n",
-            "           ], \n",
-            "       }, \n",
-            "       'time_zone_fallback': 'Europe/Brussels', \n",
-            "       'translations': { \n",
-            "           'enabled': False, \n",
-            "           'instances': [ \n",
-            "               { \n",
-            "                   'name': 'configtranslator',\n",
-            "                   'driver': ConfigTranslator,\n",
-            "               }, \n",
-            "           ], \n",
-            "       }, \n",
-            "   }, \n",
-            "} \n",
-        ])
-        app = self.create_application()
-
-        with app.test_request_context(rule):
-            visitor = Visitor(app, request)
-            self.assert_is_instance(visitor.localizator, Localizator)
-            self.assert_is_instance(visitor.location, City)
-            with self.assert_raises_regexp(RuntimeError, 'Translations can not be used as it is not enabled'):
-                visitor.translator
-
-    def test_localization_and_location_and_translator(self):
+    def test_localization_and_location(self):
         """
         Test location
         :return:    void
@@ -201,4 +147,3 @@ class TestVisitor(TestCase):
             visitor = Visitor(app, request)
             self.assert_is_instance(visitor.localizator, Localizator)
             self.assert_is_instance(visitor.location, City)
-            self.assert_is_instance(visitor.translator, TranslatorWrapper)
