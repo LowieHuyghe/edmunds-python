@@ -4,12 +4,11 @@ from edmunds.localization.localizationmanager import LocalizationManager
 from edmunds.localization.location.drivers.basedriver import BaseDriver as LocationBaseDriver
 from pytz.tzinfo import DstTzInfo
 from geoip2.models import City
-from edmunds.localization.localization.models.localizator import Localizator
+from edmunds.localization.localization.localizator import Localizator
 from edmunds.localization.localization.models.number import Number
 from edmunds.localization.localization.models.time import Time
 from babel.core import Locale
 from edmunds.localization.translations.drivers.configtranslator import ConfigTranslator
-from edmunds.localization.translations.models.translatorwrapper import TranslatorWrapper
 
 
 class TestLocalizationManager(TestCase):
@@ -520,7 +519,7 @@ class TestLocalizationManager(TestCase):
         self.assert_is_instance(manager, LocalizationManager)
 
         with app.test_request_context(rule):
-            localizator = manager.localizator(None)
+            localizator = manager.localizator(None, None)
             self.assert_is_instance(localizator, Localizator)
             self.assert_is_instance(localizator.time, Time)
             self.assert_is_instance(localizator.number, Number)
@@ -607,5 +606,4 @@ class TestLocalizationManager(TestCase):
 
         with app.test_request_context(rule):
             translator = manager.translator(None)
-            self.assert_is_instance(translator, TranslatorWrapper)
-            self.assert_is_instance(translator.translator, ConfigTranslator)
+            self.assert_is_instance(translator, ConfigTranslator)

@@ -22,8 +22,6 @@ class Visitor(object):
         self.__location_lock = Lock()
         self.__localizator = None
         self.__localizator_lock = Lock()
-        self.__translator = None
-        self.__translator_lock = Lock()
 
     @property
     def client(self):
@@ -67,7 +65,7 @@ class Visitor(object):
         """
         Get localizator
         :return:    Localizator
-        :rtype:     edmunds.localization.localization.models.localizator.Localizator
+        :rtype:     edmunds.localization.localization.localizator.Localizator
         """
 
         if self.__localizator is None:
@@ -78,34 +76,10 @@ class Visitor(object):
                         raise RuntimeError('Localization can not be used as it is not enabled!')
 
                     localization_manager = self._app.localization()
+                    translator = localization_manager.translator()
                     if self._app.config('app.localization.location.enabled', False):
                         location = self.location
                     else:
                         location = None
-                    self.__localizator = localization_manager.localizator(location)
+                    self.__localizator = localization_manager.localizator(location, translator)
         return self.__localizator
-
-    @property
-    def translator(self):
-        """
-        Get translator
-        :return:    Translator
-        :rtype:     edmunds.localization.translations.models.translatorwrapper.TranslatorWrapper
-        """
-
-        if self.__translator is None:
-            with self.__translator_lock:
-                if self.__translator is None:
-                    # Enabled?
-                    if not self._app.config('app.localization.enabled', False):
-                        raise RuntimeError('Translations can not be used as localization is not enabled!')
-                    if not self._app.config('app.localization.translations.enabled', False):
-                        raise RuntimeError('Translations can not be used as it is not enabled!')
-
-                    localization_manager = self._app.localization()
-                    if self._app.config('app.localization.location.enabled', False):
-                        location = self.location
-                    else:
-                        location = None
-                    self.__translator = localization_manager.translator(location)
-        return self.__translator

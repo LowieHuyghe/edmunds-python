@@ -22,7 +22,7 @@ class SentenceFiller(object):
         """
         Fill in the sentence
         :param localization:    Localization to use for translations
-        :type localization:     edmunds.localization.localization.models.localizator.Localizator
+        :type localization:     edmunds.localization.localization.models.localization.Localization
         :param sentence:        The sentence to fill in
         :type sentence:         str
         :param params:          The params to fill the sentence with
@@ -45,7 +45,7 @@ class SentenceFiller(object):
         """
         Fill in function
         :param localization:    Localization to use for translations
-        :type localization:     edmunds.localization.localization.models.localizator.Localizator
+        :type localization:     edmunds.localization.localization.models.localization.Localization
         :param func:            Function to fill in
         :type func:             str
         :param params:          The params to fill the sentence with
@@ -79,7 +79,7 @@ class SentenceFiller(object):
         """
         Fill in params
         :param localization:        Localization to use for translations
-        :type localization:         edmunds.localization.localization.models.localizator.Localizator
+        :type localization:         edmunds.localization.localization.models.localization.Localization
         :param value:               The value to fill in
         :type value:                str
         :param params:              The params to fill in with
@@ -121,7 +121,7 @@ class SentenceFiller(object):
         """
         Fill in a plural function
         :param localization:    Localization to use for translations
-        :type localization:     edmunds.localization.localization.models.localizator.Localizator
+        :type localization:     edmunds.localization.localization.models.localization.Localization
         :param args:            Arguments
         :type args:             list
         :param options:         Options
@@ -151,7 +151,7 @@ class SentenceFiller(object):
         """
         Fill in a gender function
         :param localization:    Localization to use for translations
-        :type localization:     edmunds.localization.localization.models.localizator.Localizator
+        :type localization:     edmunds.localization.localization.models.localization.Localization
         :param args:            Arguments
         :type args:             list
         :param options:         Options
