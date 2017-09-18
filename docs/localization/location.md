@@ -17,8 +17,8 @@ APP = {
         'enabled': True,
         
         'locale': {
-            'fallback': 'en_US',
-            'supported': ['en_US', 'en', 'nl_BE', 'nl'],
+            'fallback': 'en',
+            'supported': ['en', 'en_US', 'nl'],
         },
         'time_zone_fallback': 'Europe/Brussels',
         
@@ -50,7 +50,6 @@ APP = {
     },
 }
 ```
-The location service only works with the first defined instance.
 
 The available drivers are:
 - **MaxMindCityDatabase**: Using MaxMind City Database
@@ -67,6 +66,7 @@ class MyController(Controller):
     def login(self):
         
         # Usage through the visitor object
+        # Note: Visitor will use the first location driver!
         
         country_iso = self._visitor.location.country.iso_code
         city_name = self._visitor.location.city.name
