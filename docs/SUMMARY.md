@@ -27,6 +27,7 @@
 * Localization
   - [Localization](localization/localization.md)
   - [Location](localization/location.md)
+  - [Formatting](localization/formatting.md)
   - [Translations](localization/translations.md)
 
 * Testing

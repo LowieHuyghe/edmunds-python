@@ -4,6 +4,24 @@
 Localization is used to tailor an experience for the user that is totally
 customized to his/her language, unit-system, currency,...
 
+Accuracy in localization is achieved using different sources and factors:
+* Locale is determined based on (first = highest priority):
+  - Given locale (fixed locale set on client side. given as argument.)
+  - Browser accept languages
+  - User agent
+  - Fallback locale set in config
+* Location is determined on the client ip address using the given drivers.
+* Time-zone is determined based on (first = highest priority):
+  - Location
+  - Fallback time-zone set in config
+
+The locale will determine how values are formatted and which translations
+are shown to the user. The locales are processed for usage and will comply
+to the following rules:
+* Locales specifying a region will also be processed without region
+(nl_NL => nl_NL, nl)
+* Only supported locales will be used.
+
 
 ## Configuration
 
@@ -19,8 +37,8 @@ APP = {
         'enabled': True,
         
         'locale': {
-            'fallback': 'en_US',
-            'supported': ['en_US', 'en', 'nl_BE', 'nl'],
+            'fallback': 'en',
+            'supported': ['en', 'en_US', 'nl'],
         },
         'time_zone_fallback': 'Europe/Brussels',
         
