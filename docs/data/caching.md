@@ -69,7 +69,7 @@ You can request one like so:
 ```python
 # Fetch the default driver, or by name
 driver = app.cache()
-driver = app.cache(name='mysql')
+driver = app.cache(name='memcached')
 ```
 
 Further usage of the cache-driver is described in the Werkzeug documentation:
