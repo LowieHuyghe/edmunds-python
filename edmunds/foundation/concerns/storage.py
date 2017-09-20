@@ -10,7 +10,7 @@ class Storage(object):
         :param name:    The name of the storage instance
         :type  name:    str
         :return:        The file system
-        :rtype:         Edmunds.Storage.Drivers.BaseDriver
+        :rtype:         edmunds.storage.drivers.basedriver.BaseDriver
         """
 
         return self.extensions['edmunds.storage'].get(name)

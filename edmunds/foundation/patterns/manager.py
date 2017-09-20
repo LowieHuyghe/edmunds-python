@@ -12,7 +12,7 @@ class Manager(object):
         """
         Initiate the manager
         :param app:                 The application
-        :type  app:                 Application
+        :type  app:                 edmunds.application.Application
         :param instances_config:    Config for the instances
         :type  instances_config:    list
         """
