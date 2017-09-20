@@ -20,9 +20,9 @@ class TestMemcachedInGae(GaeTestCase):
 
         self.testbed.init_memcache_stub()
 
-    def test_memcached(self):
+    def test_memcached_in_gae(self):
         """
-        Test the memcached
+        Test the memcached in Google App Engine
         """
 
         # Write config
