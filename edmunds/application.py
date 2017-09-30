@@ -18,6 +18,7 @@ from edmunds.database.providers.databaseserviceprovider import DatabaseServicePr
 from edmunds.localization.providers.localizationserviceprovider import LocalizationServiceProvider
 from edmunds.cache.providers.cacheserviceprovider import CacheServiceProvider
 from edmunds.http.providers.httpserviceprovider import HttpServiceProvider
+from edmunds.auth.providers.authserviceprovider import AuthServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
@@ -72,6 +73,7 @@ class Application(Flask,
         self.register(DatabaseServiceProvider)
         self.register(CacheServiceProvider)
         self.register(LocalizationServiceProvider)
+        self.register(AuthServiceProvider)
 
     def route(self, rule, **options):
         """
