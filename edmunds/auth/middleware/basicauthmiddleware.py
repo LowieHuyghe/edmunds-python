@@ -1,9 +1,9 @@
 
-from edmunds.auth.middleware.basemiddleware import BaseMiddleware
+from edmunds.http.requestmiddleware import RequestMiddleware
 from flask_security import http_auth_required
 
 
-class BasicAuthMiddleware(BaseMiddleware):
+class BasicAuthMiddleware(RequestMiddleware):
     """
     Basic Authentication Middleware
     """
