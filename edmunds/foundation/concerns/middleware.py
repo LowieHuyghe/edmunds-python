@@ -48,7 +48,11 @@ class Middleware(object):
             return
 
         # Validate
-        for class_ in middleware:
+        for entry in middleware:
+            if isinstance(entry, tuple):
+                class_ = entry[0]
+            else:
+                class_ = entry
             assert hasattr(class_, 'before')
             assert hasattr(class_, 'after')
 
@@ -101,12 +105,18 @@ class Middleware(object):
                     rule = url_rule.rule
 
                     if rule in self._request_middleware_by_rule:
-                        for class_ in self._request_middleware_by_rule[rule]:
-                            g.request_middleware.append(class_(self))
+                        for entry in self._request_middleware_by_rule[rule]:
+                            if isinstance(entry, tuple):
+                                class_ = entry[0]
+                                args_ = entry[1:]
+                            else:
+                                class_ = entry
+                                args_ = []
+                            g.request_middleware.append((class_(self), args_))
 
             # loop middleware
-            for middleware in g.request_middleware:
-                rv = middleware.before()
+            for middleware, args_ in g.request_middleware:
+                rv = middleware.before(*args_)
                 if rv is not None:
                     return rv
 
@@ -118,8 +128,8 @@ class Middleware(object):
         def after_request(response):
 
             # loop middleware reversed
-            for middleware in g.request_middleware[::-1]:
-                response = middleware.after(response)
+            for middleware, args_ in g.request_middleware[::-1]:
+                response = middleware.after(response, *args_)
 
             # return response
             return response
