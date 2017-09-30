@@ -1,9 +1,9 @@
 
-from edmunds.auth.middleware.basemiddleware import BaseMiddleware
+from edmunds.http.requestmiddleware import RequestMiddleware
 from flask_security import login_required
 
 
-class SessionAuthMiddleware(BaseMiddleware):
+class SessionAuthMiddleware(RequestMiddleware):
     """
     Session Authentication Middleware
     """
