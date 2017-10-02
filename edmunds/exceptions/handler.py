@@ -43,7 +43,7 @@ class Handler(object):
         if isinstance(exception, HTTPException):
             status_code = exception.code
 
-        if self.app.debug:
+        if self.app.debug and status_code - (status_code % 100) == 500:
             raise exception
         else:
             return str(status_code), status_code
