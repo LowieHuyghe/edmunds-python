@@ -6,4 +6,4 @@
 	url = https://github.com/LowieHuyghe/python-package-easier-setup-script.git
 [submodule "edmunds-instance"]
 	path = edmunds-instance
-	url = git@github.com:LowieHuyghe/edmunds-instance.git
+	url = https://github.com/LowieHuyghe/edmunds-instance.git
