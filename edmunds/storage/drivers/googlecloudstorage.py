@@ -69,9 +69,9 @@ class GoogleCloudStorage(BaseDriver):
         try:
             return gcs.open(path, 'r')
 
-        except (gcs.NotFoundError, gcs.AuthorizationError) as e:
+        except (gcs.NotFoundError, gcs.AuthorizationError):
             if raise_errors:
-                raise e
+                raise
             else:
                 return None
 
@@ -97,9 +97,9 @@ class GoogleCloudStorage(BaseDriver):
             gcs.copy2(path, new_path)
             return True
 
-        except (gcs.NotFoundError, gcs.AuthorizationError) as e:
+        except (gcs.NotFoundError, gcs.AuthorizationError):
             if raise_errors:
-                raise e
+                raise
             else:
                 return False
 
@@ -122,9 +122,9 @@ class GoogleCloudStorage(BaseDriver):
             gcs.delete(path)
             return True
 
-        except gcs.NotFoundError as e:
+        except gcs.NotFoundError:
             if raise_errors:
-                raise e
+                raise
             else:
                 return False
 

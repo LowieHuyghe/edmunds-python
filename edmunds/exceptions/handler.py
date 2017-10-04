@@ -1,5 +1,6 @@
 
 from werkzeug.exceptions import HTTPException
+import sys
 
 
 class Handler(object):
@@ -44,6 +45,10 @@ class Handler(object):
             status_code = exception.code
 
         if self.app.debug and status_code - (status_code % 100) == 500:
+            if sys.version_info < (3, 0):
+                exc_type, exc_value, tb = sys.exc_info()
+                if exc_value is exception:
+                    raise exc_type, exc_value, tb
             raise exception
         else:
             return str(status_code), status_code
