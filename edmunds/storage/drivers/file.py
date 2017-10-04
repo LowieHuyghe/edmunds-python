@@ -63,9 +63,9 @@ class File(BaseDriver):
         try:
             return open(path, 'r')
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError):
             if raise_errors:
-                raise e
+                raise
             else:
                 return None
 
@@ -91,9 +91,9 @@ class File(BaseDriver):
             shutil.copy2(path, new_path)
             return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError):
             if raise_errors:
-                raise e
+                raise
             else:
                 return False
 
@@ -116,9 +116,9 @@ class File(BaseDriver):
             os.remove(path)
             return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError):
             if raise_errors:
-                raise e
+                raise
             else:
                 return False
 
