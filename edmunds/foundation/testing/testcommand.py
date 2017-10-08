@@ -51,4 +51,6 @@ class TestCommand(Command):
         while len(argv) and argv[0] != 'test':
             del argv[0]
 
-        nose.run(argv=argv)
+        success = nose.run(argv=argv)
+        if not success:
+            sys.exit(1)
