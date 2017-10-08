@@ -189,10 +189,11 @@ class Config(FlaskConfig):
 
         for key in new:
             value = new[key]
+            key_str = '%s' % key
 
             if isinstance(value, dict):
-                self._flatten_dict(value, processed_new, prefix_key + key.upper() + '_')
+                self._flatten_dict(value, processed_new, prefix_key + key_str.upper() + '_')
             else:
-                processed_new[prefix_key + key.upper()] = value
+                processed_new[prefix_key + key_str.upper()] = value
 
         return processed_new
