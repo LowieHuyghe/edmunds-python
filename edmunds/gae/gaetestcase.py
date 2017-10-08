@@ -36,7 +36,7 @@ class GaeTestCase(TestCase):
         Tear down the test case
         """
 
-        super(GaeTestCase, self).set_up()
+        super(GaeTestCase, self).tear_down()
 
         try:
             self.testbed.deactivate()
