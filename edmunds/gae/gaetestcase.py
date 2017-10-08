@@ -1,5 +1,5 @@
 
-from tests.testcase import TestCase
+from edmunds.foundation.testing.testcase import TestCase
 import sys
 def gae_can_run():
     return sys.version_info < (3, 0)
