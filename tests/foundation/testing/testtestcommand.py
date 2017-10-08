@@ -23,8 +23,12 @@ class TestTestCommand(TestCase):
         command = TestCommand()
         self.assert_is_instance(command, Command)
 
-        with mock.patch('nose.run', return_value=None):
+        with mock.patch('nose.run', return_value=True):
             command.run()
+
+        with mock.patch('nose.run', return_value=False):
+            with self.assert_raises(SystemExit):
+                command.run()
 
     def test_options(self):
         """
