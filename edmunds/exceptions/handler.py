@@ -1,6 +1,7 @@
 
 from werkzeug.exceptions import HTTPException
 import sys
+from six import reraise
 
 
 class Handler(object):
@@ -48,7 +49,7 @@ class Handler(object):
             if sys.version_info < (3, 0):
                 exc_type, exc_value, tb = sys.exc_info()
                 if exc_value is exception:
-                    raise exc_type, exc_value, tb
+                    reraise(exc_type, exc_value, tb)
             raise exception
         else:
             return str(status_code), status_code
