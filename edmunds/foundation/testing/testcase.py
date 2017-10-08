@@ -66,6 +66,8 @@ class TestCase(unittest.TestCase, ABC):
         :type  config:      str|list
         :param overwrite:   Overwrite the current config
         :type  overwrite:   bool
+        :return:            The file written to
+        :rtype:             str
         """
 
         if not os.path.exists(self.env_testing_test_file):
@@ -79,6 +81,8 @@ class TestCase(unittest.TestCase, ABC):
             else:
                 f.write(config)
             f.write('\n')
+
+        return self.env_testing_test_file
 
     def thread(self, target, count=1000):
         """
