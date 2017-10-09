@@ -17,4 +17,3 @@ Babel==2.5.1
 redis==2.10.6
 python-memcached==1.58
 Flask-Security==3.0.0
-future==0.16.0

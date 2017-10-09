@@ -1,7 +1,7 @@
 
 from werkzeug.exceptions import HTTPException
 import sys
-from future.utils import reraise
+from six import reraise
 
 
 class Handler(object):
