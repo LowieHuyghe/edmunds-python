@@ -252,5 +252,5 @@ class MyHandler(EdmundsHandler):
 
         TestHandler.cache['timeline'].append(exception)
 
-        rendered_exception, status_code = super(MyHandler, self).render(exception)
-        return 'rendered', status_code
+        response = super(MyHandler, self).render(exception)
+        return 'rendered', response.code
