@@ -44,12 +44,17 @@ class Handler(object):
         status_code = 500
         if isinstance(exception, HTTPException):
             status_code = exception.code
+        is_error_code = status_code - (status_code % 100) == 500
 
-        if self.app.debug and status_code - (status_code % 100) == 500:
+        if self.app.debug and is_error_code:
             if sys.version_info < (3, 0):
                 exc_type, exc_value, tb = sys.exc_info()
                 if exc_value is exception:
                     reraise(exc_type, exc_value, tb)
             raise exception
+        elif isinstance(exception, HTTPException):
+            return exception.get_response()
+        elif self.app.testing and is_error_code:
+            return str(status_code), '%s' % exception
         else:
             return str(status_code), status_code
