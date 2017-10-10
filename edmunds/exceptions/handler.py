@@ -55,6 +55,6 @@ class Handler(object):
         elif isinstance(exception, HTTPException):
             return exception.get_response()
         elif self.app.testing and is_error_code:
-            return str(status_code), '%s' % exception
+            return '%s' % exception, status_code
         else:
             return str(status_code), status_code
