@@ -2,7 +2,7 @@
 from edmunds.localization.location.drivers.basedriver import BaseDriver
 from edmunds.globals import request
 from geoip2.models import City
-from timezonefinder import TimezoneFinder
+from timezonefinderL import TimezoneFinder
 from edmunds.encoding.encoding import Encoding
 
 
