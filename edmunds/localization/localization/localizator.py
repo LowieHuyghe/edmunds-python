@@ -4,6 +4,7 @@ from edmunds.localization.localization.models.time import Time
 from edmunds.localization.localization.models.localization import Localization
 from edmunds.localization.translations.exceptions.translationerror import TranslationError
 from edmunds.localization.translations.exceptions.sentencefillererror import SentenceFillerError
+import sys
 
 
 class Localizator(object):
@@ -93,8 +94,8 @@ class Localizator(object):
         try:
             return self._translator.get(self._supported_localization, key, parameters=parameters)
         except TranslationError as e:
-            self._app.logger.error(e)
+            self._app.logger.error(e, exc_info=sys.exc_info())
         except SentenceFillerError as e:
-            self._app.logger.error(e)
+            self._app.logger.error(e, exc_info=sys.exc_info())
 
         return self._translator.get(self._fallback_localization, key, parameters=parameters)

@@ -1,5 +1,5 @@
 
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, InternalServerError
 import sys
 from six import reraise
 
@@ -40,21 +40,19 @@ class Handler(object):
         :return:            The response
         """
 
-        # Determine status code
-        status_code = 500
-        if isinstance(exception, HTTPException):
-            status_code = exception.code
-        is_error_code = status_code - (status_code % 100) == 500
+        if not isinstance(exception, HTTPException):
+            http_exception = InternalServerError()
+        else:
+            http_exception = exception
+        is_server_error = http_exception.code - (http_exception.code % 100) == 500
 
-        if self.app.debug and is_error_code:
+        if self.app.debug and is_server_error:
             if sys.version_info < (3, 0):
                 exc_type, exc_value, tb = sys.exc_info()
                 if exc_value is exception:
                     reraise(exc_type, exc_value, tb)
             raise exception
-        elif isinstance(exception, HTTPException):
-            return exception.get_response()
-        elif self.app.testing and is_error_code:
-            return '%s' % exception, status_code
         else:
-            return str(status_code), status_code
+            if self.app.testing and is_server_error and isinstance(exception, Exception):
+                http_exception.description = '%s' % exception
+            return http_exception.get_response()
