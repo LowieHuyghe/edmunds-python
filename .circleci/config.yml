@@ -37,14 +37,14 @@ jobs:
 workflows:
     version: 2
 
-    2.7:
+    run-2.7:
       jobs:
         - prep-2.7
         - test-2.7:
           requires:
             - prep-2.7
 
-    3.6:
+    run-3.6:
       jobs:
         - prep-3.6
         - test-3.6:
