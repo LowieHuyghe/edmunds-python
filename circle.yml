@@ -1,0 +1,51 @@
+
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  post:
+    - pyenv versions
+    - pyenv global 2.7.12 3.4.4 3.5.3 3.6.2
+    - "[ -d ~/virtualenvs/venv-2.7.12 ] || virtualenv -p $( which python2.7 ) ~/virtualenvs/venv-2.7.12"
+    - "[ -d ~/virtualenvs/venv-3.4.4 ] || virtualenv -p $( which python3.4 ) ~/virtualenvs/venv-3.4.4"
+    - "[ -d ~/virtualenvs/venv-3.5.3 ] || virtualenv -p $( which python3.5 ) ~/virtualenvs/venv-3.5.3"
+    - "[ -d ~/virtualenvs/venv-3.6.2 ] || virtualenv -p $( which python3.6 ) ~/virtualenvs/venv-3.6.2"
+
+  environment:
+    PYTHONPATH: /opt/google-cloud-sdk/platform/google_appengine:/opt/google-cloud-sdk/platform/google_appengine/lib/yaml/lib
+
+dependencies:
+  cache_directories:
+    - /opt/google-cloud-sdk
+    - /opt/circleci/nodejs/v4.2.6/lib/node_modules
+
+  override:
+    - ~/virtualenvs/venv-2.7.12/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.4.4/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.5.3/bin/pip install -r requirements.txt
+    - ~/virtualenvs/venv-3.6.2/bin/pip install -r requirements.txt
+
+    - pip install codecov
+
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update
+    - sudo /opt/google-cloud-sdk/bin/gcloud --quiet components install app-engine-python
+
+    - ~/virtualenvs/venv-3.6.2/bin/python setup.py docs_install
+
+test:
+  override:
+    - ~/virtualenvs/venv-2.7.12/bin/coverage run --source=edmunds setup.py test
+    - ~/virtualenvs/venv-3.4.4/bin/coverage run --append --source=edmunds setup.py test
+    - ~/virtualenvs/venv-3.5.3/bin/coverage run --append --source=edmunds setup.py test
+    - ~/virtualenvs/venv-3.6.2/bin/coverage run --append --source=edmunds setup.py test
+
+  post:
+    - codecov
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - ~/virtualenvs/venv-3.6.2/bin/python setup.py docs_publish
