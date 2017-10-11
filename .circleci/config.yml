@@ -41,12 +41,12 @@ workflows:
       jobs:
         - prep-2.7
         - test-2.7:
-          requires:
-            - prep-2.7
+            requires:
+              - prep-2.7
 
     run-3.6:
       jobs:
         - prep-3.6
         - test-3.6:
-          requires:
-            - prep-3.6
+            requires:
+              - prep-3.6
