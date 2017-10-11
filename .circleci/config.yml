@@ -1,0 +1,52 @@
+version: 2
+
+jobs:
+
+  prep-2.7:
+      docker:
+        - image: lowieh/docker-python-gcp:latest
+      steps:
+        - checkout
+        - run: pip2.7 install -r requirements.txt
+  test-2.7:
+      docker:
+        - image: lowieh/docker-python-gcp:latest
+      steps:
+        - run: coverage run --append --source=app manage.py test
+
+  prep-3.6:
+      docker:
+        - image: lowieh/docker-python-gcp:latest
+      steps:
+        - checkout
+        - run: pip3.6 install -r requirements.txt
+  test-3.6:
+      docker:
+        - image: lowieh/docker-python-gcp:latest
+      steps:
+        - run: coverage run --append --source=app manage.py test
+
+  codecov:
+      docker:
+        - image: lowieh/docker-python-gcp:latest
+      steps:
+        - run: pip install codecov
+        - run: codecov
+
+
+workflows:
+    version: 2
+
+    2.7:
+      jobs:
+        - prep-2.7
+        - test-2.7:
+          requires:
+            - prep-2.7
+
+    3.6:
+      jobs:
+        - prep-3.6
+        - test-3.6:
+          requires:
+            - prep-3.6
