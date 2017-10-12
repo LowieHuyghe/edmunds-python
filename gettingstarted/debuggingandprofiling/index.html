@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Debugging and Profiling - Edmunds</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Debugging and Profiling";
+    var mkdocs_page_input_path = "gettingstarted/debuggingandprofiling.md";
+    var mkdocs_page_url = "/gettingstarted/debuggingandprofiling/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Edmunds</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Core Concepts</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/applicationmiddleware/">Application Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/serviceproviders/">Service Providers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Getting Started</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../installation/">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../configuration/">Configuration</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Debugging and Profiling</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#debugging-and-profiling">Debugging and Profiling</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#debugging">Debugging</a></li>
+        
+            <li><a class="toctree-l4" href="#profiling">Profiling</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../errorsandlogging/">Errors and Logging</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../console/">Console</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Http</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../http/requestmiddleware/">Request Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/routing/">Routing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/request/">Request</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/inputandvalidation/">Input and Validation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/session/">Session</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/response/">Response</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/visitor/">Visitor</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Data</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data/storage/">Storage</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/database/">Database</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/migrations/">Migrations</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/orm/">ORM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/caching/">Caching</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Localization</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../localization/localization/">Localization</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/location/">Location</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/formatting/">Formatting</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/translations/">Translations</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Testing</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../testing/gettingstarted/">Getting Started</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Edmunds</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Getting Started &raquo;</li>
+        
+      
+    
+    <li>Debugging and Profiling</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="debugging-and-profiling">Debugging and Profiling</h1>
+<p>When all hell breaks loose or your application is underperforming, debugging and profiling is the answer.</p>
+<h2 id="debugging">Debugging</h2>
+<p>Debugging your application can be done in several ways. Using your IDE, <code>pdb</code>, <code>pudb</code>,... There are many options, but here <code>pdb</code> and <code>pudb</code> will be explained.</p>
+<h3 id="pdb">Pdb</h3>
+<p><a href="https://docs.python.org/2/library/pdb.html">Pdb, the python debugger</a>, is a minimal debugger that comes straight out of the box in python. It runs in the terminal and has a minimal interface.</p>
+<h4 id="start-pdb">Start pdb</h4>
+<pre><code class="bash">python -m pdb main.py
+</code></pre>
+
+<h4 id="debug-with-pdb">Debug with pdb</h4>
+<p>Add breakpoints like so:</p>
+<pre><code class="python">from pdb import set_trace
+set_trace()
+</code></pre>
+
+<p>More debug-options can be found in the <a href="https://docs.python.org/2/library/pdb.html">documentation</a>.</p>
+<h3 id="pudb">Pudb</h3>
+<p><a href="https://pypi.python.org/pypi/pudb">Pudb</a> is a more interactive debugger. It runs in the terminal and has a nice interface which displays the code, stack, variables,...</p>
+<h4 id="install-pudb">Install pudb</h4>
+<ol>
+<li>Download the <code>tar.gz</code> from <a href="https://pypi.python.org/pypi/pudb">PyPi</a></li>
+<li>Run <code>./setup.py install</code></li>
+</ol>
+<h4 id="start-pudb">Start pudb</h4>
+<pre><code class="bash">pudb main.py
+</code></pre>
+
+<h4 id="debug-with-pudb">Debug with pudb</h4>
+<pre><code class="python">from pudb import set_trace
+set_trace()
+</code></pre>
+
+<p>More debug-options can be found in the <a href="https://pypi.python.org/pypi/pudb">documentation</a>.</p>
+<h2 id="profiling">Profiling</h2>
+<p>Edmunds comes with profiling built in. You can activate it in your settings:</p>
+<pre><code class="python">from Edmunds.Profiler.Drivers.CallGraph import CallGraph
+from Edmunds.Profiler.Drivers.Stream import Stream
+from Edmunds.Profiler.Drivers.BlackfireIo import BlackfireIo
+import sys
+
+APP = {
+    'debug': True,
+    'profiler':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'stream',
+                'driver': Stream,
+                # 'stream': sys.stdout,     # Optional, default: sys.stdout
+                # 'sort_by': ('calls'),     # Optional, default: ('time', 'calls')
+                # 'restrictions': (),       # Optional, default: ()
+            },
+            {
+                'name': 'callgraph',
+                'driver': CallGraph,
+                # 'directory': 'profs',     # Optional, default: 'profs'
+                # 'prefix': 'Myapp.',       # Optional, default: ''
+            },
+            {
+                'name': 'blackfireio',
+                'driver': BlackfireIo,
+                # 'directory': 'profs',     # Optional, default: 'profs'
+                # 'prefix': 'Myapp.',       # Optional, default: ''
+            },
+        ],
+    },
+}
+</code></pre>
+
+<p>The instances will all be used for profiling, so you can have multiple at once.</p>
+<p>The available drivers are:
+- <strong>Stream</strong>: Print output in the given stream.
+- <strong>CallGraph</strong>: Outputs in CallGraph-format to open in a viewer.
+- <strong>BlackfireIo</strong>: Output in BlackfireIo-format to upload to <a href="https://blackfire.io/">Blackfire.io</a>.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../errorsandlogging/" class="btn btn-neutral float-right" title="Errors and Logging">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../configuration/" class="btn btn-neutral" title="Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../configuration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../errorsandlogging/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>ORM - Edmunds</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "ORM";
+    var mkdocs_page_input_path = "data/orm.md";
+    var mkdocs_page_url = "/data/orm/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Edmunds</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Core Concepts</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/applicationmiddleware/">Application Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/serviceproviders/">Service Providers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Getting Started</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/installation/">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/configuration/">Configuration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/debuggingandprofiling/">Debugging and Profiling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/errorsandlogging/">Errors and Logging</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/console/">Console</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Http</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../http/requestmiddleware/">Request Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/routing/">Routing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/request/">Request</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/inputandvalidation/">Input and Validation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/session/">Session</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/response/">Response</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/visitor/">Visitor</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Data</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../storage/">Storage</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../database/">Database</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../migrations/">Migrations</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">ORM</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#orm">ORM</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#defining-and-mapping-models">Defining and mapping models</a></li>
+        
+            <li><a class="toctree-l4" href="#insert-update-delete">Insert, Update, Delete</a></li>
+        
+            <li><a class="toctree-l4" href="#querying">Querying</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../caching/">Caching</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Localization</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../localization/localization/">Localization</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/location/">Location</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/formatting/">Formatting</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/translations/">Translations</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Testing</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../testing/gettingstarted/">Getting Started</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Edmunds</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Data &raquo;</li>
+        
+      
+    
+    <li>ORM</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="orm">ORM</h1>
+<p>Object-Relational Mapping is implemented using
+<a href="http://flask-sqlalchemy.pocoo.org/">Flask-SQLAlchemy</a>.</p>
+<p>Edmunds uses the 'Classical Mappings'-way of SQLAlchemy. Here you define
+your tables and model separately and map them together afterwards. This
+gives you more freedom.</p>
+<h2 id="defining-and-mapping-models">Defining and mapping models</h2>
+<p>First off you need to define your models. After defining the model-class
+you can map it to the table using the <code>mapper</code>:</p>
+<pre><code class="python">from app.database.tables.userstable import UsersTable
+from app.database.tables.tagstable import TagsTable
+from app.database.tables.userstagstable import UserTagsTable
+from edmunds.database.model import Model, mapper, relationship
+
+# app/database/models/user.py
+from app.database.models.tag import Tag
+
+class User(Model):
+    __table__ = UsersTable
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '&lt;User name=&quot;%s&quot; id=&quot;%s&quot;/&gt;' % (self.name, self.id)
+
+mapper(User, UsersTable, properties={
+    'tags': relationship(Tag, backref='users', secondary=UserTagsTable)
+})
+
+# app/database/models/tag.py
+class Tag(Model):
+    __table__ = TagsTable
+
+    def __init__(self, name):
+        self.name = name
+
+mapper(Tag, TagsTable)
+</code></pre>
+
+<h2 id="insert-update-delete">Insert, Update, Delete</h2>
+<p>The actions work the same way as Flask-SQLAlchemy does:</p>
+<pre><code class="python">session = User.session()
+peter = User(name='peter')
+
+# Inserting
+session.add(peter)
+session.commit()
+print peter.id
+
+# Updating
+peter.name = 'peter verkest'
+session.commit()
+
+# Deleting
+session.delete(peter)
+session.commit()
+</code></pre>
+
+<p>Further documentation:
+<em> <a href="http://flask-sqlalchemy.pocoo.org/2.1/queries">Flask-SQLAlchemy Select, Insert, Delete</a>
+</em> <a href="http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#adding-and-updating-objects">SQLAlchemy Adding and Updating Objects</a></p>
+<blockquote>
+<p>Note: These actions are handy, but not efficient when running in bulk.
+Take a look at this <a href="https://stackoverflow.com/questions/270879/efficiently-updating-database-using-sqlalchemy-orm">StackOverflow-question</a>.</p>
+</blockquote>
+<h2 id="querying">Querying</h2>
+<p>Querying works the same way as defined in Flask-SQLAlchemy, with the small
+difference that the <code>query</code>-class-property is now a class-method. This is
+so you can query on different database-instance if required. By default
+the database-instance defined in <code>bind_key</code> of the <code>__table__</code>-table is
+used. The second fallback is the default database-instance.</p>
+<pre><code class="python">users = User.query().all()  # Would default to UsersTable.info['bind_key'] or default instance
+peter = User.query(name='mysql').filter_by(name='peter').first()  # Uses database-instance with name 'mysql'
+</code></pre>
+
+<p>Further documentation on querying:
+<em> <a href="http://flask-sqlalchemy.pocoo.org/2.1/queries/#querying-records">Flask-SQLAlchemy Querying Records</a>
+</em> <a href="http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying">SQLAlchemy Querying</a></p>
+<blockquote>
+<p>Tip: <code>ModelClass.session()</code> works the same way as <code>ModelClass.query()</code>
+does, but returns the result of <code>app.database_session()</code> with the given
+database-instance by name.</p>
+</blockquote>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../caching/" class="btn btn-neutral float-right" title="Caching">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../migrations/" class="btn btn-neutral" title="Migrations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../migrations/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../caching/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

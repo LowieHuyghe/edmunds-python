@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    
+    <url>
+     <loc>/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+        
+    <url>
+     <loc>/coreconcepts/applicationmiddleware/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/coreconcepts/serviceproviders/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/gettingstarted/installation/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/gettingstarted/configuration/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/gettingstarted/debuggingandprofiling/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/gettingstarted/errorsandlogging/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/gettingstarted/console/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/http/requestmiddleware/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/routing/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/request/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/inputandvalidation/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/session/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/response/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/http/visitor/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/data/storage/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/data/database/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/data/migrations/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/data/orm/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/data/caching/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/localization/localization/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/localization/location/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/localization/formatting/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/localization/translations/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/testing/gettingstarted/</loc>
+     <lastmod>2017-10-12</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+</urlset>

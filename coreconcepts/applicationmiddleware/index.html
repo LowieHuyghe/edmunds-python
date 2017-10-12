@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Application Middleware - Edmunds</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Application Middleware";
+    var mkdocs_page_input_path = "coreconcepts/applicationmiddleware.md";
+    var mkdocs_page_url = "/coreconcepts/applicationmiddleware/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Edmunds</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Core Concepts</span>
+    <ul class="subnav">
+                <li class=" current">
+                    
+    <a class="current" href="./">Application Middleware</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#application-middleware">Application Middleware</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#application-middleware_1">Application Middleware</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../serviceproviders/">Service Providers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Getting Started</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/installation/">Installation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/configuration/">Configuration</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/debuggingandprofiling/">Debugging and Profiling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/errorsandlogging/">Errors and Logging</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../gettingstarted/console/">Console</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Http</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../http/requestmiddleware/">Request Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/routing/">Routing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/request/">Request</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/inputandvalidation/">Input and Validation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/session/">Session</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/response/">Response</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/visitor/">Visitor</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Data</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data/storage/">Storage</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/database/">Database</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/migrations/">Migrations</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/orm/">ORM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/caching/">Caching</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Localization</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../localization/localization/">Localization</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/location/">Location</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/formatting/">Formatting</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/translations/">Translations</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Testing</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../testing/gettingstarted/">Getting Started</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Edmunds</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Core Concepts &raquo;</li>
+        
+      
+    
+    <li>Application Middleware</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="application-middleware">Application Middleware</h1>
+<p>Application Middleware is the proper way of layering your application. Middleware can be used to add functionality to your application when processing calls. The middleware gets called each time your application is called.</p>
+<h2 id="application-middleware_1">Application Middleware</h2>
+<h3 id="define">Define</h3>
+<p>Define your Application Middleware like so:</p>
+<pre><code class="python">from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+
+class MyApplicationMiddleware(ApplicationMiddleware):
+    &quot;&quot;&quot;
+    My Application Middleware
+    &quot;&quot;&quot;
+
+    def handle(self, environment, startResponse):
+        &quot;&quot;&quot;
+        Handle the middleware
+        :param environment:     The environment
+        :type  environment:     Environment
+        :param startResponse:   The response
+        :type  startResponse:   Response
+        &quot;&quot;&quot;
+
+        return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+</code></pre>
+
+<blockquote>
+<p>Note: Application Middleware is th equivalent of the Flask Middleware using wsgi_app-wrappers.</p>
+</blockquote>
+<h3 id="register">Register</h3>
+<p>Register the Application Middleware once it needs to be loaded:</p>
+<pre><code class="python">from app.Foundation.MyApplicationMiddleware import MyApplicationMiddleware
+
+app.middleware(MyApplicationMiddleware)
+</code></pre>
+
+<p>This way the handle-function of your Application Middleware is called.</p>
+<blockquote>
+<p>Note: Application Middleware can only be registered once.</p>
+</blockquote>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../serviceproviders/" class="btn btn-neutral float-right" title="Service Providers">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../.." class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../serviceproviders/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+  <title>Configuration - Edmunds</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Configuration";
+    var mkdocs_page_input_path = "gettingstarted/configuration.md";
+    var mkdocs_page_url = "/gettingstarted/configuration/";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Edmunds</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../..">Introduction</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Core Concepts</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/applicationmiddleware/">Application Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../coreconcepts/serviceproviders/">Service Providers</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Getting Started</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../installation/">Installation</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Configuration</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#configuration">Configuration</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#handling-configuration">Handling configuration</a></li>
+        
+            <li><a class="toctree-l4" href="#configuration-files">Configuration-files</a></li>
+        
+        </ul>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../debuggingandprofiling/">Debugging and Profiling</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../errorsandlogging/">Errors and Logging</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../console/">Console</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Http</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../http/requestmiddleware/">Request Middleware</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/routing/">Routing</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/request/">Request</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/inputandvalidation/">Input and Validation</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/session/">Session</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/response/">Response</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../http/visitor/">Visitor</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Data</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../data/storage/">Storage</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/database/">Database</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/migrations/">Migrations</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/orm/">ORM</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../data/caching/">Caching</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Localization</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../localization/localization/">Localization</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/location/">Location</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/formatting/">Formatting</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../../localization/translations/">Translations</a>
+                </li>
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">Testing</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <a class="" href="../../testing/gettingstarted/">Getting Started</a>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Edmunds</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Getting Started &raquo;</li>
+        
+      
+    
+    <li>Configuration</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="configuration">Configuration</h1>
+<p>Configuration is key to setting up an application.</p>
+<h2 id="handling-configuration">Handling configuration</h2>
+<p>Handling configuration is based upon the config-handling of Laravel. Original Flask-configuration-handling also still works.<br />
+The keys used to fetch the values are mapped to the original keys specified in the files like so:</p>
+<pre><code>APP_ENV &gt; app.env
+SECRET_KEY &gt; secret.key
+DATABASE = {
+    'mysql': {
+        'user' &gt; database.mysql.user
+    }
+}
+</code></pre>
+
+<p>Fetching a value:</p>
+<pre><code class="python">value = app.config('database.mysql.ip')
+</code></pre>
+
+<p>Updating values at runtime:</p>
+<pre><code class="python">app.config({
+    'database.mysql.ip': 'localhost',
+})
+</code></pre>
+
+<h2 id="configuration-files">Configuration-files</h2>
+<p>Configuring the application can be done in several places. There is the main configuration for the generic configuration of the application. And there is the environment specific configuration.</p>
+<h3 id="syntax">Syntax</h3>
+<p>The default syntax in Flask configuration-files states that only key-value pares can be assigned and fetched:</p>
+<pre><code class="python">APP_AUTHOR_NAME = 'Edmunds'
+APP_AUTHOR_AGE = 'Unknown'
+</code></pre>
+
+<p>With Edmunds it is possible to use the following syntax with the same result:</p>
+<pre><code class="python">APP = {
+    'author': {
+        'name': 'Edmunds',
+        'age': 'Unknown',
+    },
+}
+</code></pre>
+
+<p>This allows for cleaner configuration-files. The Edmunds-syntax will be processed and converted to the Flask-syntax, which results in the same input as the Flask-example.</p>
+<h3 id="main-configuration">Main configuration</h3>
+<p>The main configuration is located in the <code>config</code>-directory. There it is separated by namespace. Example structure:</p>
+<pre><code>config
+  &gt; app.py
+  &gt; database.py
+  &gt; session.py
+</code></pre>
+
+<p>The configuration-key starts with an ALL-CAPS key that defines the namespace. Further division is done with dictionaries. Example of a possible <code>session.py</code>:</p>
+<pre><code class="python">SESSION = {
+    'ttl': 3600,
+    'driver': 'memcache',
+    'memcache': {
+        'ip': '178.234.87.34'
+    },
+}
+</code></pre>
+
+<h3 id="environment-configuration">Environment configuration</h3>
+<p>Some configuration is specific to the runtime environment. It depends on the machine it is running on, or on the current environment (local, production or testing). This configuration is not included in the git-repository, which makes it ideal for security sensitive configuration (like the app-secret).</p>
+<p>The environment configuration is specified in the <code>.env.py</code>-files in the root of the project. An example of an <code>.env.py</code>-file:</p>
+<pre><code class="python">APP_ENV = 'local'
+SECRET_KEY = 'aFBHjD8SHhqj71LEEmoxc8bLH4lzUTr'
+</code></pre>
+
+<p>The current environment given in the above example (<code>APP_ENV</code>) will try to load more specific configuration in <code>.env.local.py</code>. This allows you to use separate databases or caching (for example) depending on the current environment. Example of an <code>.env.local.py</code>-file:</p>
+<pre><code class="python">DATABASE = {
+    'mysql': {
+        'ip': '172.0.0.1',
+        'user': 'myuser',
+        'pass': 'mypass',
+    },
+}
+</code></pre>
+
+<h4 id="specifying-the-current-environment">Specifying the current environment</h4>
+<p>The current environment is set with the <code>APP_ENV</code>-key. The first way to do this is in the <code>.env.py</code>-file as explained before. The second way is by settings an environment-variable <code>APP_ENV</code> before creating the application. For example:</p>
+<pre><code class="bash">export APP_ENV=production
+</code></pre>
+
+<p>This will load <code>.env.production.py</code> when loading up the application.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../debuggingandprofiling/" class="btn btn-neutral float-right" title="Debugging and Profiling">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../installation/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../installation/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../debuggingandprofiling/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../../js/theme.js"></script>
+
+</body>
+</html>
