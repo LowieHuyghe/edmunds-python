@@ -124,19 +124,19 @@ workflows:
 
   test:
     jobs:
-      - test-2.7
+      - test-2.7:
           filters:
             branches:
               ignore: gh-pages
-      - test-3.4
+      - test-3.4:
           filters:
             branches:
               ignore: gh-pages
-      - test-3.5
+      - test-3.5:
           filters:
             branches:
               ignore: gh-pages
-      - test-3.6
+      - test-3.6:
           filters:
             branches:
               ignore: gh-pages
