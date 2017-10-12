@@ -113,7 +113,7 @@ jobs:
         branches:
           only: master
       docker:
-        - image: lowieh/docker-python-gcp:3.6
+        - image: python:3.6
       steps:
         - checkout
         - run: pip install mkdocs
