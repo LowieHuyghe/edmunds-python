@@ -76,6 +76,8 @@ jobs:
             command: |
               python -m venv venv
               . venv/bin/activate
+              # Update setuptools to avoid this issue: https://github.com/linsomniac/python-memcached/issues/103
+              pip install -U setuptools
               pip install -r requirements.txt
         - save_cache:
             key: deps-test-3.6-{{ .Branch }}-{{ checksum "requirements.txt" }}
