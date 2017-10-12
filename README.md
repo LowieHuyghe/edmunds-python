@@ -6,7 +6,7 @@ Example:
 ```ini-config-file
 [General]
 name: mypackage
-version: 0.0.1
+version: scm
 description: My package
 long_description: file://README.md
 url: https://github.com/LowieHuyghe/my-package
