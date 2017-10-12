@@ -118,7 +118,7 @@ jobs:
           command: |
             rm -rf site
             mkdir -p site/.circleci
-            cp .circleci/gh-pages.config.xml site/.circleci/config.xml
+            cp .circleci/gh-pages.config.yml site/.circleci/config.yml
       - deploy:
           command: |
             git config --global user.name "CircleCI"
