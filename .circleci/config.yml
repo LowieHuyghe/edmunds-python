@@ -116,6 +116,8 @@ jobs:
       - run: pip install mkdocs
       - deploy:
           command: |
+            git config --global user.name "CircleCI"
+            git config --global user.email "sayhi@circleci.com"
             mkdocs gh-deploy
 
 
