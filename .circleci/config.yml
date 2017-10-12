@@ -114,11 +114,16 @@ jobs:
     steps:
       - checkout
       - run: pip install mkdocs
+      - run:
+          command: |
+            rm -rf site
+            mkdir -p site/.circleci
+            cp .circleci/gh-pages.config.xml site/.circleci/config.xml
       - deploy:
           command: |
             git config --global user.name "CircleCI"
             git config --global user.email "sayhi@circleci.com"
-            mkdocs gh-deploy
+            mkdocs gh-deploy --dirty
 
 
 workflows:
@@ -126,22 +131,10 @@ workflows:
 
   test:
     jobs:
-      - test-2.7:
-          filters:
-            branches:
-              ignore: gh-pages
-      - test-3.4:
-          filters:
-            branches:
-              ignore: gh-pages
-      - test-3.5:
-          filters:
-            branches:
-              ignore: gh-pages
-      - test-3.6:
-          filters:
-            branches:
-              ignore: gh-pages
+      - test-2.7
+      - test-3.4
+      - test-3.5
+      - test-3.6
       - update-docs:
           filters:
             branches:
