@@ -45,7 +45,7 @@ workflows:
 
   test-2.7:
     jobs:
-      - test-2.7:
+      - test-2.7
 
   test-3.6:
     jobs:
