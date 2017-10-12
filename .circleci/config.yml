@@ -105,7 +105,7 @@ workflows:
       - test-3.4
       - test-3.5
       - test-3.6
-      - codecov
+      - codecov:
           requires:
             - test-2.7
             - test-3.4
