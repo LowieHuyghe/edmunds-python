@@ -125,9 +125,21 @@ workflows:
   test:
     jobs:
       - test-2.7
+          filters:
+            branches:
+              ignore: gh-pages
       - test-3.4
+          filters:
+            branches:
+              ignore: gh-pages
       - test-3.5
+          filters:
+            branches:
+              ignore: gh-pages
       - test-3.6
+          filters:
+            branches:
+              ignore: gh-pages
       - update-docs:
           filters:
             branches:
