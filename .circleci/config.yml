@@ -137,7 +137,7 @@ jobs:
             python setup.py sdist
       - deploy:
           command: |
-            twine upload -u TWINE_USERNAME -p TWINE_PASSWORD dist/*
+            twine upload -u "$TWINE_USERNAME" -p "$TWINE_PASSWORD" dist/*
 
 
 workflows:
