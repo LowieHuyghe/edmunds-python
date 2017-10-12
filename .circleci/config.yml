@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  ignore-me:
+  build:
     filters:
       branches:
         ignore: gh-pages
