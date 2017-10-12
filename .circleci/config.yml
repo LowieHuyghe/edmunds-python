@@ -1,7 +1,9 @@
 version: 2
 
 jobs:
-  job:
+  ignore-me:
     filters:
       branches:
         ignore: gh-pages
+    steps:
+      - run: echo "ignore me"
