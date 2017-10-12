@@ -7,11 +7,17 @@ jobs:
         - image: lowieh/docker-python-gcp:2.7
       steps:
         - checkout
+        - restore_cache:
+            key: deps-test-2.7-{{ .Branch }}-{{ checksum "requirements.txt" }}
         - run:
             command: |
-              python -m venv venv
+              python -m virtualenv venv
               . venv/bin/activate
               pip install -r requirements.txt
+        - save_cache:
+            key: deps-test-2.7-{{ .Branch }}-{{ checksum "requirements.txt" }}
+            paths:
+              - "venv"
         - run:
             command: |
               . venv/bin/activate
@@ -22,11 +28,17 @@ jobs:
         - image: lowieh/docker-python-gcp:3.6
       steps:
         - checkout
+        - restore_cache:
+            key: deps-test-3.6-{{ .Branch }}-{{ checksum "requirements.txt" }}
         - run:
             command: |
               python -m venv venv
               . venv/bin/activate
               pip install -r requirements.txt
+        - save_cache:
+            key: deps-test-3.6-{{ .Branch }}-{{ checksum "requirements.txt" }}
+            paths:
+              - "venv"
         - run:
             command: |
               . venv/bin/activate
