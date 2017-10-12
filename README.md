@@ -48,7 +48,10 @@ my_command-description: This is my command
 2. Add this project as a squashed subtree:
 
  ```bash
-git subtree add -P setup --squash git@github.com:LowieHuyghe/python-simplified-setup-py.git master
+git subtree add --prefix setup git@github.com:LowieHuyghe/python-simplified-setup-py.git master --squash
+
+# To update:
+git subtree pull --prefix setup git@github.com:LowieHuyghe/python-simplified-setup-py.git master --squash
 ```
 3. Copy the example-files to your project
 
