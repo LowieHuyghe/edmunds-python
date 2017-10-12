@@ -5,6 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/LowieHuyghe/edmunds/badges/gpa.svg)](https://codeclimate.com/github/LowieHuyghe/edmunds)
 [![codecov](https://codecov.io/gh/LowieHuyghe/edmunds/branch/master/graph/badge.svg)](https://codecov.io/gh/LowieHuyghe/edmunds)
 [![Updates](https://pyup.io/repos/github/LowieHuyghe/edmunds/shield.svg)](https://pyup.io/repos/github/LowieHuyghe/edmunds/)
+[![PyPI](https://img.shields.io/pypi/v/edmunds-framework.svg)](https://pypi.python.org/pypi/edmunds-framework)
 
 Edmunds is a Python framework for building web applications
 with a firm base to start from. Edmunds takes away the pain of
