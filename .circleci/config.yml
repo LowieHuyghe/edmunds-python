@@ -125,6 +125,20 @@ jobs:
             git config --global user.email "sayhi@circleci.com"
             mkdocs gh-deploy --dirty
 
+  deploy-to-pypi:
+    docker:
+      - image: python:3.6
+    steps:
+      - checkout
+      - run: pip install setuptools_scm twine
+      - run:
+          command: |
+            rm -rf dist
+            python setup.py sdist
+      - deploy:
+          command: |
+            twine upload -u TWINE_USERNAME -p TWINE_PASSWORD dist/*
+
 
 workflows:
   version: 2
@@ -144,3 +158,37 @@ workflows:
             - test-3.4
             - test-3.5
             - test-3.6
+
+  deploy:
+    jobs:
+      - test-2.7:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+      - test-3.4:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+      - test-3.5:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+      - test-3.6:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+      - update-docs:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+          requires:
+            - test-2.7
+            - test-3.4
+            - test-3.5
+            - test-3.6
+      - deploy-to-pypi:
+          filters:
+            tags:
+              only: /v\d+\.\d+\.\d+/
+          requires:
+            - update-docs
