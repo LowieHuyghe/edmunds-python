@@ -180,6 +180,10 @@ class EasierSetup(object):
         # General
         self._process_argument(setup_arguments, 'name', 'general', 'name', str)
         self._process_argument(setup_arguments, 'version', 'general', 'version', str)
+        # Support setuptools_scm
+        if 'scm' in setup_arguments['version']:
+            from setuptools_scm import get_version
+            setup_arguments['version'] = get_version(root=self.base_path)
         self._process_argument(setup_arguments, 'description', 'general', 'description', str)
         self._process_argument(setup_arguments, 'long_description', 'general', 'long_description', str)
         self._process_argument(setup_arguments, 'url', 'general', 'url', str)
