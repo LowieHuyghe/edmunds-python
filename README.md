@@ -1,17 +1,54 @@
-# Python Package Easier Setup Script
+# Simplified setup.py for Python Packages
 
-An easier python setup script. Keep your `setup.py` organized with a simple ini-config-file.
+A Simplified setup.py for Python Packages! Keep your `setup.py` organized with a simple ini-config-file.
 
-Example: [setup.config.ini](https://github.com/LowieHuyghe/python-package-easier-setup-script/blob/master/setup.config.example.ini)
+Example:
+```ini-config-file
+[General]
+name: mypackage
+version: 0.0.1
+description: My package
+long_description: file://README.md
+url: https://github.com/LowieHuyghe/my-package
+license: MIT
+keywords: my, package
+requirements: file://requirements.txt
+
+[Author]
+name: Lowie Huyghe
+email: iam@lowiehuyghe.com
+
+[Classifiers]
+status: 3
+programming_languages: Python 2, Python 2.7, Python 3, Python 3.3, Python 3.4, Python 3.5
+audiences: Developers
+topics: Build Tools
+license: MIT
+
+[Setup]
+requirements: setuptools_scm
+
+[Tests]
+requirements: mock, nose
+suite: nose.collector
+
+[Packages]
+include: mypackage*
+exclude: tests*
+
+[Commands]
+my_command: ./bin/my-command.sh
+my_command-description: This is my command
+```
 
 
 ## Installation
 
-1. `cd` into your project directory
-2. Add the project as a submodule:
+1. Go to your project directory
+2. Add this project as a squashed subtree:
 
  ```bash
-git submodule add git@github.com:LowieHuyghe/python-package-easier-setup-script.git setup
+git subtree add -P setup --squash git@github.com:LowieHuyghe/python-simplified-setup-py.git master
 ```
 3. Copy the example-files to your project
 
