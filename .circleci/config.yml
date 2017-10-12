@@ -22,7 +22,7 @@ jobs:
         - run:
             command: |
               . venv/bin/activate
-              python setup.py test --with-coverage --cover-erase --cover-package=edmunds
+              coverage run --source=edmunds setup.py test
         - run:
             command: |
               . venv/bin/activate
@@ -48,7 +48,7 @@ jobs:
         - run:
             command: |
               . venv/bin/activate
-              python setup.py test --with-coverage --cover-erase --cover-package=edmunds
+              coverage run --source=edmunds setup.py test
         - run:
             command: |
               . venv/bin/activate
@@ -74,7 +74,7 @@ jobs:
         - run:
             command: |
               . venv/bin/activate
-              python setup.py test --with-coverage --cover-erase --cover-package=edmunds
+              coverage run --source=edmunds setup.py test
         - run:
             command: |
               . venv/bin/activate
@@ -102,7 +102,7 @@ jobs:
         - run:
             command: |
               . venv/bin/activate
-              python setup.py test --with-coverage --cover-erase --cover-package=edmunds
+              coverage run --source=edmunds setup.py test
         - run:
             command: |
               . venv/bin/activate
