@@ -93,7 +93,7 @@ jobs:
         - image: lowieh/docker-python-gcp:3.6
       steps:
         - run: pip install codecov
-        - run: codecov
+        - run: codecov --required --commit $CIRCLE_SHA1 --branch $CIRCLE_BRANCH --build $CIRCLE_BUILD_NUM
 
 
 workflows:
