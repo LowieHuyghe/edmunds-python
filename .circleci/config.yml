@@ -7,26 +7,30 @@ jobs:
         - image: lowieh/docker-python-gcp:2.7
       steps:
         - checkout
-        - run: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-        - run: |
-            . venv/bin/activate
-            coverage run --append --source=app setup.py test
+        - run:
+            command: |
+              python -m venv venv
+              . venv/bin/activate
+              pip install -r requirements.txt
+        - run:
+            command: |
+              . venv/bin/activate
+              coverage run --append --source=app setup.py test
 
   test-3.6:
       docker:
         - image: lowieh/docker-python-gcp:3.6
       steps:
         - checkout
-        - run: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-        - run: |
-            . venv/bin/activate
-            coverage run --append --source=app setup.py test
+        - run:
+            command: |
+              python -m venv venv
+              . venv/bin/activate
+              pip install -r requirements.txt
+        - run:
+            command: |
+              . venv/bin/activate
+              coverage run --append --source=app setup.py test
 
   codecov:
       docker:
