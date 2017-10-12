@@ -1,5 +1,4 @@
 
-
 # Imports
 import os
 from setup.easiersetup import EasierSetup
