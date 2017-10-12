@@ -117,7 +117,9 @@ jobs:
       steps:
         - checkout
         - run: pip install mkdocs
-        - deploy: mkdocs gh-deploy
+        - deploy:
+            command: |
+              mkdocs gh-deploy
 
 
 workflows:
