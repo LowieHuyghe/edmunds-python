@@ -1,17 +1,11 @@
 
-# Update submodules
-from subprocess import Popen
-Popen('git submodule update --init --recursive', shell=True).wait()
-
-
 # Imports
 import os
-from setup.setup import Setup
+from setup.easiersetup import EasierSetup
 
 
 # Construct and setup
-Setup(
+EasierSetup(
     os.path.abspath(os.path.dirname(__file__)),
-    'setup.classifiers.txt',
     'setup.config.ini'
 ).setup()
