@@ -159,6 +159,13 @@ class EasierSetup(object):
                 value_path = os.path.join(self.base_path, value[len('file://'):])
                 with open(value_path, 'r') as value_file:
                     value = value_file.read()
+                if value_path.lower().endswith('.md'):
+                    try:
+                        import pypandoc
+                        value = pypandoc.convert_text(value_path, 'rst', format='md')
+                        value = value.replace("\r", "")
+                    except ImportError:
+                        print("Pandoc not found. Markdown to reStructuredText conversion failed.")
         elif value_type == list:
             if value.startswith('file://'):
                 value_path = os.path.join(self.base_path, value[len('file://'):])
