@@ -134,7 +134,7 @@ jobs:
           command: |
             apt-get update
             apt-get install -y pandoc
-      - run: pip install setuptools_scm pandoc twine
+      - run: pip install setuptools_scm pypandoc twine
       - run:
           command: |
             rm -rf dist
