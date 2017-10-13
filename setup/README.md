@@ -58,6 +58,7 @@ git subtree pull --prefix setup git@github.com:LowieHuyghe/python-simplified-set
  ```bash
 cp ./setup/setup.example.py ./setup.py
 cp ./setup/setup.config.example.ini ./setup.config.ini
+cp ./setup/MANIFEST.example.in ./MANIFEST.in
 ```
 4. Change `setup.config.ini` to your likings:
   * Setup-kwargs that expect plain string:
