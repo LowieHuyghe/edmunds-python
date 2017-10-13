@@ -152,7 +152,9 @@ class EasierSetup(object):
 
         value = self.config[config_section][config_key]
 
-        if value_type == str:
+        if value_type == bool:
+            value = value.strip().lower() == 'true'
+        elif value_type == str:
             if value.startswith('file://'):
                 value_path = os.path.join(self.base_path, value[len('file://'):])
                 with open(value_path, 'r') as value_file:
@@ -217,6 +219,9 @@ class EasierSetup(object):
         self._process_argument(packages_arguments, 'include', 'packages', 'include', list)
         if packages_arguments:
             setup_arguments['packages'] = setuptools.find_packages(**packages_arguments)
+
+        # Package Data
+        self._process_argument(setup_arguments, 'include_package_data', 'package data', 'include', bool)
 
         # Commands
         commands = dict()
