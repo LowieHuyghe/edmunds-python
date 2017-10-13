@@ -164,23 +164,33 @@ workflows:
       - test-2.7:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
       - test-3.4:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
       - test-3.5:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
       - test-3.6:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
       - update-docs:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
           requires:
             - test-2.7
             - test-3.4
@@ -189,6 +199,8 @@ workflows:
       - deploy-to-pypi:
           filters:
             tags:
-              only: /v\d+\.\d+\.\d+/
+              only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              ignore: /.*/
           requires:
             - update-docs
