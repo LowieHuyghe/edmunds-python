@@ -162,7 +162,7 @@ class EasierSetup(object):
                 if value_path.lower().endswith('.md'):
                     try:
                         import pypandoc
-                        value = pypandoc.convert_text(value_path, 'rst', format='md')
+                        value = pypandoc.convert_text(value, 'rst', format='md')
                         value = value.replace("\r", "")
                     except ImportError:
                         print("Pandoc not found. Markdown to reStructuredText conversion failed.")
