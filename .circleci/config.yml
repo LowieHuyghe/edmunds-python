@@ -24,29 +24,15 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run --source=edmunds setup.py test
-#     Test edmunds-instance in python 2.7
+#     Test package in python 2.7
       - run:
           command: |
-            git submodule sync
-            git submodule update --init --recursive
-      - restore_cache:
-          key: deps-instance-test-2.7-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
+            rm -rf dist
+            python setup.py sdist
       - run:
           command: |
-            cd edmunds-instance
-            python -m virtualenv venv
             . venv/bin/activate
-            pip install setuptools_scm
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps-instance-test-2.7-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-          paths:
-            - "edmunds-instance/venv"
-      - run:
-          command: |
-            cd edmunds-instance
-            . venv/bin/activate
-            python manage.py test
+            pip install dist/*.tar.gz
 #     Send results to codecov in python 2.7
       - run:
           command: |
@@ -243,7 +229,7 @@ jobs:
             python setup.py sdist
       - deploy:
           command: |
-            twine upload -u "$TWINE_USERNAME" -p "$TWINE_PASSWORD" dist/*
+            twine upload -u "$TWINE_USERNAME" -p "$TWINE_PASSWORD" dist/*.tar.gz
 
 
 workflows:
