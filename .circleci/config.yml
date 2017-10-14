@@ -27,6 +27,7 @@ jobs:
 #     Test package in python 2.7
       - run:
           command: |
+            . venv/bin/activate
             rm -rf dist
             python setup.py sdist
       - run:
