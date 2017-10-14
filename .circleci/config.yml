@@ -36,6 +36,7 @@ jobs:
             cd edmunds-instance
             python -m virtualenv venv
             . venv/bin/activate
+            pip install setuptools_scm
             pip install -r requirements.txt
       - save_cache:
           key: deps-instance-test-2.7-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
