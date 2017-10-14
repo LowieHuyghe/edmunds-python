@@ -29,11 +29,7 @@ jobs:
           command: |
             git submodule sync
             git submodule update --init --recursive
-      - run:
-          command: |
-            pwd
-            ls
-            cd "$CIRCLE_WORKING_DIRECTORY/edmunds-instance"
+      - run: cd edmunds-instance
       - restore_cache:
           key: deps-instance-test-2.7-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
@@ -48,10 +44,9 @@ jobs:
             - "venv-instance"
       - run:
           command: |
-            pwd
             . venv-instance/bin/activate
             python manage.py test
-      - run: cd "$CIRCLE_WORKING_DIRECTORY/edmunds-instance"
+      - run: cd ..
 #     Send results to codecov in python 2.7
       - run:
           command: |
