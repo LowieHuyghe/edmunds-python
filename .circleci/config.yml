@@ -62,29 +62,16 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run --source=edmunds setup.py test
-#     Test edmunds-instance in python 3.4
+#     Test package in python 3.4
       - run:
           command: |
-            git submodule sync
-            git submodule update --init --recursive
-      - restore_cache:
-          key: deps-instance-test-3.4-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-      - run:
-          command: |
-            cd edmunds-instance
-            python -m venv venv
             . venv/bin/activate
-            pip install setuptools_scm
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps-instance-test-3.4-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-          paths:
-            - "edmunds-instance/venv"
+            rm -rf dist
+            python setup.py sdist
       - run:
           command: |
-            cd edmunds-instance
             . venv/bin/activate
-            python manage.py test
+            pip install dist/*.tar.gz
 #     Send results to codecov in python 3.4
       - run:
           command: |
@@ -113,29 +100,16 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run --source=edmunds setup.py test
-#     Test edmunds-instance in python 3.5
+#     Test package in python 3.5
       - run:
           command: |
-            git submodule sync
-            git submodule update --init --recursive
-      - restore_cache:
-          key: deps-instance-test-3.5-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-      - run:
-          command: |
-            cd edmunds-instance
-            python -m venv venv
             . venv/bin/activate
-            pip install setuptools_scm
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps-instance-test-3.5-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-          paths:
-            - "edmunds-instance/venv"
+            rm -rf dist
+            python setup.py sdist
       - run:
           command: |
-            cd edmunds-instance
             . venv/bin/activate
-            python manage.py test
+            pip install dist/*.tar.gz
 #     Send results to codecov in python 3.5
       - run:
           command: |
@@ -166,31 +140,16 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run --source=edmunds setup.py test
-#     Test edmunds-instance in python 3.6
+#     Test package in python 3.6
       - run:
           command: |
-            git submodule sync
-            git submodule update --init --recursive
-      - restore_cache:
-          key: deps-instance-test-3.6-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-      - run:
-          command: |
-            cd edmunds-instance
-            python -m venv venv
             . venv/bin/activate
-            # Update setuptools to avoid this issue: https://github.com/linsomniac/python-memcached/issues/103
-            pip install -U setuptools
-            pip install setuptools_scm
-            pip install -r requirements.txt
-      - save_cache:
-          key: deps-instance-test-3.6-{{ .Branch }}-{{ checksum "edmunds-instance/requirements.txt" }}
-          paths:
-            - "edmunds-instance/venv"
+            rm -rf dist
+            python setup.py sdist
       - run:
           command: |
-            cd edmunds-instance
             . venv/bin/activate
-            python manage.py test
+            pip install dist/*.tar.gz
 #     Send results to codecov in python 3.6
       - run:
           command: |
