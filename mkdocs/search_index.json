@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/",
-            "text": "Edmunds\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEdmunds is a Python framework for building web applications\nwith a firm base to start from. Edmunds takes away the pain of\nbootstrap code so you can kickoff with the things that really\nmatter.\n\n\nDocumentation\n\n\nSee: \nhttps://lowiehuyghe.github.io/edmunds/",
+            "text": "Edmunds\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEdmunds is a Python framework for building web applications\nwith a firm base to start from. Edmunds takes away the pain of\nbootstrap code so you can kickoff with the things that really\nmatter.\n\n\nGetting Started\n\n\n\n\nDownload an Edmunds Instance to kick-start your project: \nhttps://github.com/LowieHuyghe/edmunds-instance/archive/master.zip\n\n\nUnzip it and rename it after your project.\n\n\nSetup you virtual environment for your project\n(see \nThe Hitchhiker's guide to Python\n).\n\n\nActivate your project's virtual environment\n\n\nInstall the required package setuptools_scm: \npip install setuptools_scm\n\n\nInstall all other dependencies: \npip install -r requirements.txt\n\n\nTry starting it up! \npython main.py\n\n\n\n\nFurther Documentation\n\n\nSee: \nhttps://lowiehuyghe.github.io/edmunds/",
             "title": "Introduction"
         },
         {
@@ -11,9 +11,14 @@
             "title": "Edmunds"
         },
         {
-            "location": "/#documentation",
+            "location": "/#getting-started",
+            "text": "Download an Edmunds Instance to kick-start your project:  https://github.com/LowieHuyghe/edmunds-instance/archive/master.zip  Unzip it and rename it after your project.  Setup you virtual environment for your project\n(see  The Hitchhiker's guide to Python ).  Activate your project's virtual environment  Install the required package setuptools_scm:  pip install setuptools_scm  Install all other dependencies:  pip install -r requirements.txt  Try starting it up!  python main.py",
+            "title": "Getting Started"
+        },
+        {
+            "location": "/#further-documentation",
             "text": "See:  https://lowiehuyghe.github.io/edmunds/",
-            "title": "Documentation"
+            "title": "Further Documentation"
         },
         {
             "location": "/coreconcepts/applicationmiddleware/",
