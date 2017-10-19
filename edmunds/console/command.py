@@ -1,11 +1,26 @@
 
-from flask_script import Command as FlaskCommand
-from flask_script import Option as FlaskOption
+from edmunds.globals import ABC, abc
 
 
-class Command(FlaskCommand):
-    pass
+class Command(ABC):
 
+    def __init__(self, name, app):
+        """
+        Init command
+        :param name:    Name of the command
+        :type name:     str
+        :param app:     The application
+        :type app:      edmunds.application.Application
+        """
+        super(Command, self).__init__()
 
-class Option(FlaskOption):
-    pass
+        self.name = name
+        self.app = app
+
+    @abc.abstractmethod
+    def run(self, *args, **kwargs):
+        """
+        Object
+        :return:    void
+        """
+        pass
