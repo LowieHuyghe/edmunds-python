@@ -1,0 +1,20 @@
+version: 2
+
+jobs:
+
+  ignore-me:
+    docker:
+      - image: python:3.6
+    steps:
+      - run: echo "ignore me"
+
+
+workflows:
+  version: 2
+
+  ignore-me:
+    jobs:
+      - ignore-me:
+          filters:
+            branches:
+              ignore: gh-pages

@@ -1,9 +1,3 @@
-[submodule "bin/gitbook"]
-	path = bin/gitbook
-	url = https://github.com/LowieHuyghe/python-package-gitbook-tools.git
-[submodule "setup"]
-	path = setup
-	url = https://github.com/LowieHuyghe/python-package-easier-setup-script.git
 [submodule "edmunds-instance"]
 	path = edmunds-instance
 	url = https://github.com/LowieHuyghe/edmunds-instance.git
