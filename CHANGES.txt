@@ -1,0 +1,8 @@
+Edmunds Change Log
+
+v0.2.24  (2017-09-15)
+
+- Added Edmunds to PyPi
+- Updated CircleCI to 2.0
+- Improved docs on how to get started
+- BugFixes

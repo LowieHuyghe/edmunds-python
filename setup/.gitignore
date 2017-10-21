@@ -87,13 +87,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-# OS X
-.DS_Store
-
-# IDEs
-*.sublime-*
-.idea/
-
-# MkDocs
-site
