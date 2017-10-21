@@ -16,4 +16,4 @@ class TestUserTable(TestCase):
 
         self.assert_is_not_none(UserTable)
         self.assert_is_instance(UserTable, test_table.__class__)
-        self.assert_equal_deep('user', UserTable.name)
+        self.assert_equal('user', UserTable.name)

@@ -16,4 +16,4 @@ class TestRoleTable(TestCase):
 
         self.assert_is_not_none(RoleTable)
         self.assert_is_instance(RoleTable, test_table.__class__)
-        self.assert_equal_deep('role', RoleTable.name)
+        self.assert_equal('role', RoleTable.name)
