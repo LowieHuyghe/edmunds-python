@@ -47,7 +47,7 @@ class TestCommand(Command):
             type_mapping = {
                 'string': str,
                 'int': int,
-                'long': long,
+                'long': int,
                 'float': float,
                 # 'complex': str,
                 # 'choice': str,
