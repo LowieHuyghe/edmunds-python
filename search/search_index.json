@@ -207,28 +207,33 @@
         },
         {
             "location": "/gettingstarted/console/",
-            "text": "Console\n\n\nConsole usage is built in in Edmunds and uses Flask-Script.\n\n\nUsage\n\n\nConsole-usage of your application has been integrated in \nmanage.py\n.\nYou can use it by calling it in your runtime-environment:\n\n\npython manage.py --help\npython manage.py helloworld\n\n\n\n\nCustomisation\n\n\nEdmunds has a mapping which matches the Flask-Script objects:\n\n\nfrom edmunds.console.manager import Manager\n# matches: from flask_script import Manager\n\nfrom edmunds.console.command import Command\n# matches: from flask_script import Command\n\nfrom edmunds.console.command import Option\n# matches: from flask_script import Option\n\n\n\n\nUsage of those classes is described in the Flask-Script documentation:\n* \nFlask-Script\n\n\nRegister custom command\n\n\nmanage.py\n runs by default the Manager located in \napp.console\n.\n\nYou can register your custom commands (located in \napp.console.commands\n)\nin the manager as described by the Flask-Script documentation:\n\n\n# ...\nfrom app.console.commands.helloworldcommand import HelloWorldCommand\n\nclass Manager(EdmundsManager):\n    # ...\n    def add_default_commands(self):\n        # ...\n        self.add_command('helloworld', HelloWorldCommand())",
+            "text": "Console\n\n\nConsole usage is built in in Edmunds and uses default Flask CLI.\nEdmunds has wrappers to make usage easier and more organized.\n\n\nFlask CLI uses click to register and use commands. More on this in the\n\nFlask CLI documentation\n.\n\n\n\n\nThe Manager (base: \nedmunds.console.manager\n) is responsible for\nregistering the commands.\n\n\nThe Command (base: \nedmunds.console.command\n) is a wrapper that uses its\n\nrun\n-function as an entry-point for click. Option-decorators can be\ndefined there.\n\n\n\n\nUsage\n\n\nConstruct command\n\n\nCommands are by default located in the \napp.console.commands\n-module.\nAdd command decorators to the \nrun\n-function like you normally would\nwih click.\n\n\nfrom edmunds.console.command import Command\nimport click\n\nclass HelloWorldCommand(Command):\n    \"\"\"\n    Prints Hello World!\n    \"\"\"\n    @click.option('--what', default='World', help='Hello what?')\n    def run(self, what):\n        \"\"\"\n        Run the command\n        :param what:    Hello what?\n        \"\"\"\n        print('Hello %s!' % what)\n\n\n\n\nRegister commands\n\n\nThe manager is by default located in the \napp.console.manager\n-module. \nYou can register your custom commands (located in \napp.console.commands\n)\nin the manager. This will wrap the \nrun\n-function of the command in a\n\nclick.command\n-decorator so its available for console-usage.\n\n\n# ...\nfrom edmunds.console.manager import Manager as EdmundsManager\nfrom app.console.commands.helloworldcommand import HelloWorldCommand\n\nclass Manager(EdmundsManager):\n    # ...\n    def add_commands(self):\n        # ...\n        self.add_command('helloworld', HelloWorldCommand)\n\n\n\n\nConsole usage\n\n\nConsole-usage of your application has been integrated in \nmanage.py\n.\nIt's a wrapper for the \nflask\n-command which requires extra\nenvironment-variables. By default the manager in \napp.console.manager\n\nwill be loaded. You can use \nmanage.py\n by calling it in your\nruntime-environment:\n\n\npython manage.py --help\npython manage.py helloworld",
             "title": "Console"
         },
         {
             "location": "/gettingstarted/console/#console",
-            "text": "Console usage is built in in Edmunds and uses Flask-Script.",
+            "text": "Console usage is built in in Edmunds and uses default Flask CLI.\nEdmunds has wrappers to make usage easier and more organized.  Flask CLI uses click to register and use commands. More on this in the Flask CLI documentation .   The Manager (base:  edmunds.console.manager ) is responsible for\nregistering the commands.  The Command (base:  edmunds.console.command ) is a wrapper that uses its run -function as an entry-point for click. Option-decorators can be\ndefined there.",
             "title": "Console"
         },
         {
             "location": "/gettingstarted/console/#usage",
-            "text": "Console-usage of your application has been integrated in  manage.py .\nYou can use it by calling it in your runtime-environment:  python manage.py --help\npython manage.py helloworld",
+            "text": "",
             "title": "Usage"
         },
         {
-            "location": "/gettingstarted/console/#customisation",
-            "text": "Edmunds has a mapping which matches the Flask-Script objects:  from edmunds.console.manager import Manager\n# matches: from flask_script import Manager\n\nfrom edmunds.console.command import Command\n# matches: from flask_script import Command\n\nfrom edmunds.console.command import Option\n# matches: from flask_script import Option  Usage of those classes is described in the Flask-Script documentation:\n*  Flask-Script",
-            "title": "Customisation"
+            "location": "/gettingstarted/console/#construct-command",
+            "text": "Commands are by default located in the  app.console.commands -module.\nAdd command decorators to the  run -function like you normally would\nwih click.  from edmunds.console.command import Command\nimport click\n\nclass HelloWorldCommand(Command):\n    \"\"\"\n    Prints Hello World!\n    \"\"\"\n    @click.option('--what', default='World', help='Hello what?')\n    def run(self, what):\n        \"\"\"\n        Run the command\n        :param what:    Hello what?\n        \"\"\"\n        print('Hello %s!' % what)",
+            "title": "Construct command"
         },
         {
-            "location": "/gettingstarted/console/#register-custom-command",
-            "text": "manage.py  runs by default the Manager located in  app.console . \nYou can register your custom commands (located in  app.console.commands )\nin the manager as described by the Flask-Script documentation:  # ...\nfrom app.console.commands.helloworldcommand import HelloWorldCommand\n\nclass Manager(EdmundsManager):\n    # ...\n    def add_default_commands(self):\n        # ...\n        self.add_command('helloworld', HelloWorldCommand())",
-            "title": "Register custom command"
+            "location": "/gettingstarted/console/#register-commands",
+            "text": "The manager is by default located in the  app.console.manager -module. \nYou can register your custom commands (located in  app.console.commands )\nin the manager. This will wrap the  run -function of the command in a click.command -decorator so its available for console-usage.  # ...\nfrom edmunds.console.manager import Manager as EdmundsManager\nfrom app.console.commands.helloworldcommand import HelloWorldCommand\n\nclass Manager(EdmundsManager):\n    # ...\n    def add_commands(self):\n        # ...\n        self.add_command('helloworld', HelloWorldCommand)",
+            "title": "Register commands"
+        },
+        {
+            "location": "/gettingstarted/console/#console-usage",
+            "text": "Console-usage of your application has been integrated in  manage.py .\nIt's a wrapper for the  flask -command which requires extra\nenvironment-variables. By default the manager in  app.console.manager \nwill be loaded. You can use  manage.py  by calling it in your\nruntime-environment:  python manage.py --help\npython manage.py helloworld",
+            "title": "Console usage"
         },
         {
             "location": "/http/requestmiddleware/",
