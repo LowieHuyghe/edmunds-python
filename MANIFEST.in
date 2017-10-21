@@ -1,0 +1,18 @@
+recursive-exclude * __pycache__
+recursive-exclude * *.pyc
+recursive-exclude * *.pyo
+recursive-exclude * *.orig
+
+prune .circleci
+prune .eggs
+prune build
+prune dist
+prune edmunds-instance
+prune site
+prune storage
+prune tests
+exclude .*
+exclude MANIFEST.in
+exclude mkdocs.yml
+exclude setup/.*
+exclude setup/*.example.*
