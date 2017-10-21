@@ -19,7 +19,7 @@ class DatabaseManager(Manager):
         """
         Get sql alchemy instance
         :return:    SQLAlchemy
-        :rtype:     SQLAlchemy
+        :rtype:     flask_sqlalchemy.SQLAlchemy
         """
 
         if DatabaseManager._sql_alchemy_instance is None:
