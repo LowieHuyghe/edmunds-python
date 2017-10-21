@@ -33,7 +33,6 @@ from edmunds.database.table import Table, Column, Integer, String
 UsersTable = Table('users',
                    Column('id', Integer, primary_key=True),
                    Column('name', String(50)),
-                   extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
                    # info={'bind_key': 'users_database'},
                    )
                    
@@ -42,7 +41,6 @@ from edmunds.database.table import Table, Column, Integer, String
 TagsTable = Table('tags',
                   Column('id', Integer, primary_key=True),
                   Column('name', String(50), unique=True),
-                  extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
                   # info={'bind_key': 'users_database'}
                   )
 
@@ -51,7 +49,6 @@ from edmunds.database.table import Table, Column, Integer, ForeignKey
 UserTagsTable = Table('user_tags',
                       Column('user_id', Integer, ForeignKey('tags.id'), primary_key=True),
                       Column('tag_id', Integer, ForeignKey('users.id'), primary_key=True),
-                      extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
                       # info={'bind_key': 'users_database'}
                       )
 ```
