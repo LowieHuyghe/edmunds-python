@@ -15,6 +15,5 @@ UserTable = Table(
     Column('current_login_ip', String(255)),
     Column('login_count', Integer),
 
-    extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
     #  info={'bind_key': 'users_database'},
 )

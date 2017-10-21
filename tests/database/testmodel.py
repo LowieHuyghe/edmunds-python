@@ -174,14 +174,12 @@ class TestModel(TestCase):
 
 MyModelTable = Table('mymodels',
                      Column('id', Integer, primary_key=True),
-                     Column('name', String(50)),
-                     extend_existing=True
+                     Column('name', String(50))
                      )
 
 MySecondModelTable = Table('mysecondmodels',
                            Column('id', Integer, primary_key=True),
                            Column('name', String(50)),
-                           extend_existing=True,
                            info={'bind_key': 'mysql2'}
                            )
 
