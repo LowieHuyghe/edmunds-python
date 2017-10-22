@@ -23,6 +23,10 @@ class Manager(object):
         self._extend = {}
         self._load_lock = Lock()
 
+        @self._app.before_first_request
+        def load_before_first_request():
+            self._load()
+
     def get(self, name=None, no_instance_error=False):
         """
         Get the instance
