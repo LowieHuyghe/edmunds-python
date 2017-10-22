@@ -39,9 +39,9 @@ class TestDatabase(TestCase):
         app = self.create_application()
 
         # Test database
-        self.assert_is_none(app.database())
-        self.assert_is_none(app.database('mysql'))
-        self.assert_is_none(app.database('mysql2'))
+        self.assert_is_none(app.database_engine())
+        self.assert_is_none(app.database_engine('mysql'))
+        self.assert_is_none(app.database_engine('mysql2'))
 
         # Test session
         self.assert_is_none(app.database_session())
@@ -78,16 +78,16 @@ class TestDatabase(TestCase):
         app = self.create_application()
 
         # Test database
-        self.assert_is_not_none(app.database())
-        self.assert_is_instance(app.database(), Engine)
-        self.assert_is_not_none(app.database('mysql'))
-        self.assert_is_instance(app.database('mysql'), Engine)
+        self.assert_is_not_none(app.database_engine())
+        self.assert_is_instance(app.database_engine(), Engine)
+        self.assert_is_not_none(app.database_engine('mysql'))
+        self.assert_is_instance(app.database_engine('mysql'), Engine)
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
-            app.database('mysql2')
-        self.assert_is_none(app.database('mysql2', no_instance_error=True))
+            app.database_engine('mysql2')
+        self.assert_is_none(app.database_engine('mysql2', no_instance_error=True))
 
-        self.assert_equal_deep(app.database(), app.database())
-        self.assert_equal_deep(app.database(), app.database('mysql'))
+        self.assert_equal_deep(app.database_engine(), app.database_engine())
+        self.assert_equal_deep(app.database_engine(), app.database_engine('mysql'))
 
         # Test session
         self.assert_is_not_none(app.database_session())

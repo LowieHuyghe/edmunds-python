@@ -27,8 +27,8 @@ pages:
   - Data:
     - Storage: data/storage.md
     - Database: data/database.md
-    - Migrations: data/migrations.md
     - ORM: data/orm.md
+    - Migrations: data/migrations.md
     - Caching: data/caching.md
 
   - Localization:

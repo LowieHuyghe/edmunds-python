@@ -89,33 +89,33 @@ class TestMigrationServiceProvider(TestCase):
         self.assert_is_not_none(app.extensions['edmunds.database.manager'])
         self.assert_is_instance(app.extensions['edmunds.database.manager'], Migrate)
 
-    def test_override_tables(self):
+    def test_override_models(self):
         """
-        Test override tables
+        Test override models
         :return:    void
         """
 
         module_name = 'zoslkuenddzomycustomtesttable'
         submodule_name = 'lkozkdozdmycustomtestsubtable'
-        subtables_package = 'subtables'
+        submodels_package = 'submodels'
 
-        # Make tables directory structure
-        tables_dir = self.temp_dir(only_path=True)
-        subtables_dir = os.path.join(tables_dir, subtables_package)
-        os.mkdir(tables_dir)
-        os.mkdir(subtables_dir)
+        # Make models directory structure
+        models_dir = self.temp_dir(only_path=True)
+        submodels_dir = os.path.join(models_dir, submodels_package)
+        os.mkdir(models_dir)
+        os.mkdir(submodels_dir)
         # Make __init__.py files
-        with open(os.path.join(tables_dir, '__init__.py'), 'w') as init_file:
+        with open(os.path.join(models_dir, '__init__.py'), 'w') as init_file:
             init_file.write('')
-        with open(os.path.join(subtables_dir, '__init__.py'), 'w') as init_file:
+        with open(os.path.join(submodels_dir, '__init__.py'), 'w') as init_file:
             init_file.write('')
         # Make class-files
-        with open(os.path.join(tables_dir, '%s.py' % module_name), 'w') as table_file:
+        with open(os.path.join(models_dir, '%s.py' % module_name), 'w') as table_file:
             table_file.writelines([
                 "class TestModel(object):\n",
                 "    pass"
             ])
-        with open(os.path.join(subtables_dir, '%s.py' % submodule_name), 'w') as table_file:
+        with open(os.path.join(submodels_dir, '%s.py' % submodule_name), 'w') as table_file:
             table_file.writelines([
                 "class TestSubModel(object):\n",
                 "    pass"
@@ -137,8 +137,8 @@ class TestMigrationServiceProvider(TestCase):
             "               'database': 'edmunds',\n",
             "           }, \n",
             "       ], \n",
-            "       'tables': [ \n",
-            "           '%s',\n" % tables_dir,
+            "       'models': [ \n",
+            "           '%s',\n" % models_dir,
             "       ],\n",
             "   }, \n",
             "} \n",
@@ -149,11 +149,11 @@ class TestMigrationServiceProvider(TestCase):
 
         # Test modules
         self.assert_false(module_name in sys.modules)
-        self.assert_false('%s.%s' % (subtables_package, submodule_name) in sys.modules)
+        self.assert_false('%s.%s' % (submodels_package, submodule_name) in sys.modules)
 
         # Register
         app.register(MigrateServiceProvider)
 
         # Test modules
         self.assert_true(module_name in sys.modules)
-        self.assert_true('%s.%s' % (subtables_package, submodule_name) in sys.modules)
+        self.assert_true('%s.%s' % (submodels_package, submodule_name) in sys.modules)

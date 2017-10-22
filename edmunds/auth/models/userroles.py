@@ -1,5 +1,5 @@
 
-from edmunds.database.table import Table, Column, Integer, ForeignKey
+from edmunds.database.model import Table, Column, Integer, ForeignKey
 
 
 UserRolesTable = Table(
