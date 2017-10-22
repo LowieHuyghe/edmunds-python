@@ -1,50 +1,41 @@
 
-from edmunds.globals import current_app
 import sqlalchemy.orm
+from edmunds.database.databasemanager import DatabaseManager
+from sqlalchemy import UniqueConstraint as SqlAlchemyUniqueConstraint, CheckConstraint as SqlAlchemyCheckConstraint, \
+    ForeignKeyConstraint as SqlAlchemyForeignKeyConstraint, PrimaryKeyConstraint as SqlAlchemyPrimaryKeyConstraint, \
+    Index as SqlAlchemyIndex
 
 
+db = DatabaseManager.get_sql_alchemy_instance()
 mapper = sqlalchemy.orm.mapper
 relationship = sqlalchemy.orm.relationship
 backref = sqlalchemy.orm.backref
 
+Model = db.Model
+Table = db.Table
+Column = db.Column
+ForeignKey = db.ForeignKey
 
-class Model(object):
-    """
-    Model base class
-    """
+BigInteger = db.BigInteger
+Boolean = db.Boolean
+Date = db.Date
+DateTime = db.DateTime
+Enum = db.Enum
+Float = db.Float
+Integer = db.Integer
+Interval = db.Interval
+LargeBinary = db.LargeBinary
+Numeric = db.Numeric
+PickleType = db.PickleType
+SmallInteger = db.SmallInteger
+String = db.String
+Text = db.Text
+Time = db.Time
+Unicode = db.Unicode
+UnicodeText = db.UnicodeText
 
-    __table__ = None
-
-    @classmethod
-    def session(cls, name=None, no_instance_error=False):
-        """
-        Session
-        :param name:                Name of the bind 
-        :param no_instance_error:   No error when name does not exist 
-        :return:                    sqlalchemy.orm.scoping.scoped_session
-        """
-
-        if name is None \
-                and cls.__table__ is not None \
-                and hasattr(cls.__table__, 'info') \
-                and cls.__table__.info \
-                and 'bind_key' in cls.__table__.info \
-                and cls.__table__.info['bind_key']:
-            name = cls.__table__.info['bind_key']
-
-        return current_app.database_session(name=name, no_instance_error=no_instance_error)
-
-    @classmethod
-    def query(cls, name=None, no_instance_error=False):
-        """
-        Query
-        :param name:                Name of the bind 
-        :param no_instance_error:   No error when name does not exist
-        :return:                    sqlalchemy.orm.scoping.query
-        """
-
-        Session = cls.session(name=name, no_instance_error=no_instance_error)
-        if Session is None:
-            return None
-
-        return Session.query(cls)
+UniqueConstraint = SqlAlchemyUniqueConstraint
+CheckConstraint = SqlAlchemyCheckConstraint
+ForeignKeyConstraint = SqlAlchemyForeignKeyConstraint
+PrimaryKeyConstraint = SqlAlchemyPrimaryKeyConstraint
+Index = SqlAlchemyIndex

@@ -27,12 +27,12 @@ class MigrateServiceProvider(ServiceProvider):
         migrate = Migrate(self.app, DatabaseManager.get_sql_alchemy_instance())
         self.app.extensions['edmunds.database.manager'] = migrate
 
-        # Load all tables
-        table_paths = self.app.config('app.database.tables', [
-            os.path.join('app', 'database', 'tables')
+        # Load all models
+        table_paths = self.app.config('app.database.models', [
+            os.path.join('app', 'database', 'models')
         ])
         # Join with root_path
         table_paths = list(map(lambda path: os.path.join(self.app.root_path, path), table_paths))
-        # Load all tables
+        # Load all models
         for loader, name, is_pkg in walk_packages(path=table_paths):
             loader.find_module(name).load_module(name)

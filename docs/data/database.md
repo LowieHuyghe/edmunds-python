@@ -50,6 +50,7 @@ The instances can be used for database, so you can have multiple at once.
 The first one will be used by default.
 
 The available drivers are:
+
 - **MySql**: For MySQL databases.
 - **PostgreSql**: For PostgreSQL databases.
 - **SQLite**: For SQLite databases.
@@ -66,22 +67,25 @@ When fetching an instance, you will receive a database-engine
 You can request one like so:
 ```python
 # Fetch the default driver, or by name
-engine = app.database()
-engine = app.database(name='mysql')
+engine = app.database_engine()
+engine = app.database_engine(name='mysql')
 ```
 
 Fetching a session can be done with `database_session`. You will receive a
-Session-class (sqlalchemy.orm.scoping.scoped_session) for session-usage:
+Session-class (sqlalchemy.orm.scoping.scoped_session) for session-usage.
+Sessions will be teared down when the request ends or when the app shuts
+down (using `app.teardown_appcontext`).
 ```python
-Session = app.database_session()
-Session = app.database_session(name='mysql')
+session = app.database_session()
+session = app.database_session(name='mysql')
 
-Session.add(user)
-Session.commit()
+session.add(user)
+session.commit()
 ```
 
 Further usage of the database-engine and -session are described in the
 SQLAlchemy documentation:
+
 * [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/)
 * [SQLAlchemy - Working with Engines and Connections](http://docs.sqlalchemy.org/en/latest/core/connections.html)
 * [SQLAlchemy - Session Basics](http://docs.sqlalchemy.org/en/latest/orm/session_basics.html)

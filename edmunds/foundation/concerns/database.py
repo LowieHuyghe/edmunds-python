@@ -16,7 +16,7 @@ class Database(object):
 
         self._database_session_lock = Lock()
 
-    def database(self, name=None, no_instance_error=False):
+    def database_engine(self, name=None, no_instance_error=False):
         """
         The database to use
         :param name:                The name of the database instance
@@ -61,7 +61,7 @@ class Database(object):
             with self._database_session_lock:
                 if store_key not in self.extensions['edmunds.database.sessions']:
                     # Fetch engine
-                    engine = self.database(name=name, no_instance_error=no_instance_error)
+                    engine = self.database_engine(name=name, no_instance_error=no_instance_error)
                     if not engine:
                         # No engine
                         Session = None
