@@ -13,7 +13,7 @@ class Handler(object):
         """
         Initiate
         :param app:     The application
-        :type  app:     Edmunds.Application
+        :type  app:     edmunds.application.Application
         """
 
         self.app = app
@@ -29,6 +29,8 @@ class Handler(object):
 
         if exception.__class__ in self.dont_report:
             return False
+
+        self.app.logger.error(exception, exc_info=sys.exc_info())
 
         return True
 
