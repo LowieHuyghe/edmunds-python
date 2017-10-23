@@ -90,13 +90,14 @@ class TestDatabase(TestCase):
         self.assert_equal_deep(app.database_engine(), app.database_engine('mysql'))
 
         # Test session
-        self.assert_is_not_none(app.database_session())
-        self.assert_is_instance(app.database_session(), scoped_session)
-        self.assert_is_not_none(app.database_session('mysql'))
-        self.assert_is_instance(app.database_session('mysql'), scoped_session)
-        with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
-            app.database_session('mysql2')
-        self.assert_is_none(app.database_session('mysql2', no_instance_error=True))
+        with app.app_context():
+            self.assert_is_not_none(app.database_session())
+            self.assert_is_instance(app.database_session(), scoped_session)
+            self.assert_is_not_none(app.database_session('mysql'))
+            self.assert_is_instance(app.database_session('mysql'), scoped_session)
+            with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
+                app.database_session('mysql2')
+            self.assert_is_none(app.database_session('mysql2', no_instance_error=True))
 
-        self.assert_equal_deep(app.database_session(), app.database_session())
-        self.assert_equal_deep(app.database_session(), app.database_session('mysql'))
+            self.assert_equal_deep(app.database_session(), app.database_session())
+            self.assert_equal_deep(app.database_session(), app.database_session('mysql'))
