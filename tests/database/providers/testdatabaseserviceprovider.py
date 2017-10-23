@@ -2,6 +2,7 @@
 from tests.testcase import TestCase
 from edmunds.database.databasemanager import DatabaseManager
 from sqlalchemy.engine.base import Engine
+from edmunds.globals import g
 
 
 class TestDatabaseServiceProvider(TestCase):
@@ -120,43 +121,39 @@ class TestDatabaseServiceProvider(TestCase):
         # Create app
         app = self.create_application()
 
-        # No sessions
-        self.assert_equal(0, len(app.extensions['edmunds.database.sessions']))
-
         with app.test_request_context(rule):
             # Make session
             Session = app.database_session()
 
             # Test
-            self.assert_equal(1, len(app.extensions['edmunds.database.sessions']))
-            self.assert_equal_deep(Session, list(app.extensions['edmunds.database.sessions'].values())[0])
+            self.assert_equal(1, len(getattr(g, 'edmunds_database_sessions', {})))
+            self.assert_equal_deep(Session, list(getattr(g, 'edmunds_database_sessions', {}).values())[0])
             self.assert_false(Session.registry.has())
 
             # Simulate a call to db
             Session.registry.set(RegistryDummy())
             self.assert_true(Session.registry.has())
 
-        # Closing of sessions
+        # Closed session
         self.assert_false(Session.registry.has())
-        self.assert_equal(1, len(app.extensions['edmunds.database.sessions']))
 
         with app.test_request_context(rule):
             # Make session 2
             Session2 = app.database_session()
 
             # Test
-            self.assert_equal(1, len(app.extensions['edmunds.database.sessions']))
-            self.assert_equal_deep(Session2, list(app.extensions['edmunds.database.sessions'].values())[0])
-            self.assert_equal_deep(Session, Session2)
-            self.assert_false(Session.registry.has())
+            self.assert_equal(1, len(getattr(g, 'edmunds_database_sessions', {})))
+            self.assert_equal_deep(Session2, list(getattr(g, 'edmunds_database_sessions', {}).values())[0])
+            self.assert_not_equal(Session, Session2)
+            self.assert_false(Session2.registry.has())
 
             # Simulate a call to db
-            Session.registry.set(RegistryDummy())
-            self.assert_true(Session.registry.has())
+            Session2.registry.set(RegistryDummy())
+            self.assert_true(Session2.registry.has())
 
-        # Closing of sessions
+        # Closed sessions
+        self.assert_false(Session2.registry.has())
         self.assert_false(Session.registry.has())
-        self.assert_equal(1, len(app.extensions['edmunds.database.sessions']))
 
 
 class RegistryDummy(object):

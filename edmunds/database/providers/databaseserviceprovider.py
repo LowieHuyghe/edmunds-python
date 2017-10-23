@@ -1,6 +1,7 @@
 
 from edmunds.support.serviceprovider import ServiceProvider
 from edmunds.database.databasemanager import DatabaseManager
+from edmunds.globals import g
 
 
 class DatabaseServiceProvider(ServiceProvider):
@@ -29,8 +30,9 @@ class DatabaseServiceProvider(ServiceProvider):
         # Tear down db sessions when request ends or app shuts down
         @self.app.teardown_appcontext
         def shutdown_session(exception=None):
-            # Remove all sessions
-            for key in self.app.extensions['edmunds.database.sessions']:
-                session = self.app.extensions['edmunds.database.sessions'][key]
-                if session is not None:
-                    session.remove()
+            # Remove all sessions in app context
+            if getattr(g, 'edmunds_database_sessions', None) is not None:
+                for key in g.edmunds_database_sessions:
+                    session = g.edmunds_database_sessions[key]
+                    if session is not None:
+                        session.remove()
