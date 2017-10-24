@@ -1,0 +1,3 @@
+
+class SqliteMemory(object):
+    pass
