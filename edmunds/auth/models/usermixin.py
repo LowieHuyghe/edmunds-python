@@ -1,15 +1,15 @@
 
-from edmunds.database.model import Model, Column, Integer, String, Boolean, DateTime
-from flask_security import UserMixin
+from edmunds.database.model import Column, Integer, String, Boolean, DateTime
+from flask_security import UserMixin as FlaskSecurityUserMixin
 
 
-class User(Model, UserMixin):
+class UserMixin(FlaskSecurityUserMixin, object):
     """
-    User Model
+    User Mixin
     """
 
-    __tablename__ = 'user'
-    # __bind_key__ = 'users'
+    # __tablename__ = 'user'
+    # __bind_key__ = 'users_database'
 
     id = Column(Integer, primary_key=True)
     email = Column(String(255), unique=True)

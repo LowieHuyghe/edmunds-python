@@ -1,11 +1,10 @@
 
 from tests.testcase import TestCase
-from edmunds.database.model import Model
-from edmunds.auth.models.user import User
-from flask_security import UserMixin
+from edmunds.auth.models.usermixin import UserMixin
+from flask_security import UserMixin as FlaskSecurityUserMixin
 
 
-class TestUser(TestCase):
+class TestUserMixin(TestCase):
     """
     Test user
     """
@@ -27,7 +26,7 @@ class TestUser(TestCase):
         current_login_ip = self.rand_str(20)
         login_count = self.rand_str(20)
 
-        user = User()
+        user = UserMixin()
         user.id = id
         user.email = email
         user.password = password
@@ -39,8 +38,7 @@ class TestUser(TestCase):
         user.current_login_ip = current_login_ip
         user.login_count = login_count
 
-        self.assert_is_instance(user, Model)
-        self.assert_is_instance(user, UserMixin)
+        self.assert_is_instance(user, FlaskSecurityUserMixin)
 
         self.assert_equal_deep(id, user.id)
         self.assert_equal_deep(email, user.email)
@@ -54,21 +52,3 @@ class TestUser(TestCase):
         self.assert_equal_deep(login_count, user.login_count)
 
         self.assert_in(id, '%s' % user)
-
-    def test_user_columns(self):
-        """
-        Test user columns
-        :return:    void
-        """
-
-        self.assert_equal(10, len(User.__table__.columns))
-        self.assert_in('id', User.__table__.columns)
-        self.assert_in('email', User.__table__.columns)
-        self.assert_in('password', User.__table__.columns)
-        self.assert_in('active', User.__table__.columns)
-        self.assert_in('confirmed_at', User.__table__.columns)
-        self.assert_in('last_login_at', User.__table__.columns)
-        self.assert_in('current_login_at', User.__table__.columns)
-        self.assert_in('last_login_ip', User.__table__.columns)
-        self.assert_in('current_login_ip', User.__table__.columns)
-        self.assert_in('login_count', User.__table__.columns)
