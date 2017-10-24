@@ -157,11 +157,11 @@
                 </li>
                 <li class="">
                     
-    <a class="" href="../orm/">ORM</a>
+    <a class="" href="../migrations/">Migrations</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../migrations/">Migrations</a>
+    <a class="" href="../orm/">ORM</a>
                 </li>
                 <li class="">
                     
@@ -286,12 +286,10 @@ APP = {
 
 <p>The instances can be used for database, so you can have multiple at once.
 The first one will be used by default.</p>
-<p>The available drivers are:</p>
-<ul>
-<li><strong>MySql</strong>: For MySQL databases.</li>
-<li><strong>PostgreSql</strong>: For PostgreSQL databases.</li>
-<li><strong>SQLite</strong>: For SQLite databases.</li>
-</ul>
+<p>The available drivers are:
+- <strong>MySql</strong>: For MySQL databases.
+- <strong>PostgreSql</strong>: For PostgreSQL databases.
+- <strong>SQLite</strong>: For SQLite databases.</p>
 <blockquote>
 <p>More in detail: the default instance will be used as <code>SQLALCHEMY_DATABASE_URI</code>
 in SQLAlchemy. Other instances (not including the default instance) will
@@ -302,28 +300,24 @@ be added to <code>SQLALCHEMY_BINDS</code>.</p>
 (sqlalchemy.engine.base.Engine) for the specified database instance.
 You can request one like so:</p>
 <pre><code class="python"># Fetch the default driver, or by name
-engine = app.database_engine()
-engine = app.database_engine(name='mysql')
+engine = app.database()
+engine = app.database(name='mysql')
 </code></pre>
 
 <p>Fetching a session can be done with <code>database_session</code>. You will receive a
-Session-class (sqlalchemy.orm.scoping.scoped_session) for session-usage.
-Sessions will be teared down when the request ends or when the app shuts
-down (using <code>app.teardown_appcontext</code>).</p>
-<pre><code class="python">session = app.database_session()
-session = app.database_session(name='mysql')
+Session-class (sqlalchemy.orm.scoping.scoped_session) for session-usage:</p>
+<pre><code class="python">Session = app.database_session()
+Session = app.database_session(name='mysql')
 
-session.add(user)
-session.commit()
+Session.add(user)
+Session.commit()
 </code></pre>
 
 <p>Further usage of the database-engine and -session are described in the
-SQLAlchemy documentation:</p>
-<ul>
-<li><a href="http://flask-sqlalchemy.pocoo.org/">Flask-SQLAlchemy</a></li>
-<li><a href="http://docs.sqlalchemy.org/en/latest/core/connections.html">SQLAlchemy - Working with Engines and Connections</a></li>
-<li><a href="http://docs.sqlalchemy.org/en/latest/orm/session_basics.html">SQLAlchemy - Session Basics</a></li>
-</ul>
+SQLAlchemy documentation:
+<em> <a href="http://flask-sqlalchemy.pocoo.org/">Flask-SQLAlchemy</a>
+</em> <a href="http://docs.sqlalchemy.org/en/latest/core/connections.html">SQLAlchemy - Working with Engines and Connections</a>
+* <a href="http://docs.sqlalchemy.org/en/latest/orm/session_basics.html">SQLAlchemy - Session Basics</a></p>
               
             </div>
           </div>
@@ -331,7 +325,7 @@ SQLAlchemy documentation:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../orm/" class="btn btn-neutral float-right" title="ORM">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../migrations/" class="btn btn-neutral float-right" title="Migrations">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../storage/" class="btn btn-neutral" title="Storage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -363,7 +357,7 @@ SQLAlchemy documentation:</p>
         <span><a href="../storage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../orm/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../migrations/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
