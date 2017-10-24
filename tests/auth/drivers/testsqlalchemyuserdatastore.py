@@ -1,10 +1,9 @@
 
 from tests.testcase import TestCase
 from flask_security import Security, SQLAlchemyUserDatastore
-from edmunds.database.model import relationship, backref, Column, String
+from edmunds.database.model import relationship, backref, Column, String, Table, Integer, ForeignKey
 from edmunds.auth.models.usermixin import UserMixin
 from edmunds.auth.models.rolemixin import RoleMixin
-from edmunds.auth.models.userroles import UserRolesTable as EdmundsUserRolesTable
 from edmunds.database.model import Model
 
 
@@ -21,8 +20,8 @@ class TestSQLAlchemyUserDatastore(TestCase):
         self.valid_config = [
             "from edmunds.database.drivers.mysql import MySql \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from tests.auth.drivers.testsqlalchemyuserdatastore import User \n",
-            "from tests.auth.drivers.testsqlalchemyuserdatastore import Role \n",
+            "from tests.auth.drivers.testsqlalchemyuserdatastore import TestSQLAlchemyUserDatastoreUser \n",
+            "from tests.auth.drivers.testsqlalchemyuserdatastore import TestSQLAlchemyUserDatastoreRole \n",
             "APP = { \n",
             "   'auth': { \n",
             "       'enabled': True, \n",
@@ -31,8 +30,8 @@ class TestSQLAlchemyUserDatastore(TestCase):
             "               'name': 'authsqlalchemy',\n",
             "               'driver': SQLAlchemyUserDatastore,\n",
             "               'models': {\n",
-            "                   'user': User,\n",
-            "                   'role': Role,\n",
+            "                   'user': TestSQLAlchemyUserDatastoreUser,\n",
+            "                   'role': TestSQLAlchemyUserDatastoreRole,\n",
             "               },\n",
             "           }, \n",
             "       ], \n",
@@ -138,17 +137,21 @@ class TestSQLAlchemyUserDatastore(TestCase):
         self.assert_equal_deep(app.auth_userdatastore(), app.auth_security().datastore)
         self.assert_equal_deep(app, app.auth_security().app)
 
-        self.assert_equal_deep(app.auth_userdatastore().user_model, User)
-        self.assert_equal_deep(app.auth_userdatastore().role_model, Role)
+        self.assert_equal_deep(app.auth_userdatastore().user_model, TestSQLAlchemyUserDatastoreUser)
+        self.assert_equal_deep(app.auth_userdatastore().role_model, TestSQLAlchemyUserDatastoreRole)
 
 
-UserRolesTable = EdmundsUserRolesTable
+UserRolesTable = Table(
+    'test_sql_alchemy_user_datastore_user_roles',
+    Column('test_sql_alchemy_user_datastore_user_id', Integer, ForeignKey('test_sql_alchemy_user_datastore_user.id')),
+    Column('test_sql_alchemy_user_datastore_role_id', Integer, ForeignKey('test_sql_alchemy_user_datastore_role.id')),
+)
 
 
-class Role(RoleMixin, Model):
+class TestSQLAlchemyUserDatastoreRole(Model, RoleMixin):
     extra_prop = Column(String(255))
 
 
-class User(UserMixin, Model):
+class TestSQLAlchemyUserDatastoreUser(Model, UserMixin):
     extra_prop = Column(String(255))
-    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)
+    roles = relationship(TestSQLAlchemyUserDatastoreRole, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)
