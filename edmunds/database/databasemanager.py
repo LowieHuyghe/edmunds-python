@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from edmunds.database.drivers.mysql import MySql
 from edmunds.database.drivers.postgresql import PostgreSql
 from edmunds.database.drivers.sqlite import Sqlite
+from edmunds.database.drivers.sqlitememory import SqliteMemory
 from threading import Lock
 
 
@@ -88,7 +89,7 @@ class DatabaseManager(Manager):
 
                 instance_database_uri = '%s://%s:%s@%s:%s/%s' % (driver, database_user, database_pass, database_host, database_port, database_database)
 
-            if instances_config_item['driver'] == Sqlite:
+            elif instances_config_item['driver'] == Sqlite:
                 if 'file' not in instances_config_item:
                     raise RuntimeError("Database-driver '%s' is missing some configuration ('file' is required)." % instances_config_item['name'])
 
@@ -97,6 +98,11 @@ class DatabaseManager(Manager):
                 sqlite_path = self._app.fs(name=sqlite_storage_name).path(sqlite_file)
 
                 instance_database_uri = 'sqlite://%s' % sqlite_path
+
+            elif instances_config_item['driver'] == SqliteMemory:
+                if not self._app.debug and not self._app.testing:
+                    raise RuntimeError("SqliteMemory should not be used in non-debug and non-testing environment!")
+                instance_database_uri = 'sqlite://'
 
             if database_uri is None:
                 database_uri = instance_database_uri
@@ -146,6 +152,21 @@ class DatabaseManager(Manager):
         return db.get_engine(bind=bind)
 
     def _create_sqlite(self, config):
+        """
+        Create SQLite
+        :param config:  The config
+        :return:        SQLAlchemy Engine
+        :rtype:         sqlalchemy.engine.base.Engine
+        """
+
+        db = DatabaseManager.get_sql_alchemy_instance()
+
+        bind = config['name']
+        if self._instances_config and self._instances_config[0]['name'] == config['name']:
+            bind = None
+        return db.get_engine(bind=bind)
+
+    def _create_sqlite_memory(self, config):
         """
         Create SQLite
         :param config:  The config
