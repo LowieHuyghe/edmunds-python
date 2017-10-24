@@ -1,13 +1,11 @@
 
 from tests.testcase import TestCase
 from edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware
-from edmunds.database.model import db, relationship, backref, Column, String, Table, ForeignKey, Integer
-from edmunds.auth.models.usermixin import UserMixin
-from edmunds.auth.models.rolemixin import RoleMixin
-from edmunds.database.model import Model
+from edmunds.database.model import db
 from werkzeug.exceptions import Unauthorized
 from base64 import b64encode
 from edmunds.encoding.encoding import Encoding
+from edmunds.database.databasemanager import DatabaseManager
 
 
 class TestBasicAuthMiddleware(TestCase):
@@ -19,16 +17,31 @@ class TestBasicAuthMiddleware(TestCase):
 
         super(TestBasicAuthMiddleware, self).set_up()
 
-        self.valid_config_import_offset = 8
+        self.valid_config_import_offset = 23
         self.valid_config = [
             "from edmunds.database.drivers.sqlitememory import SqliteMemory \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from tests.auth.middleware.testbasicauthmiddleware import TestBasicAuthMiddlewareUser \n",
-            "from tests.auth.middleware.testbasicauthmiddleware import TestBasicAuthMiddlewareRole \n",
+            "from edmunds.database.model import db, relationship, backref \n",
+            "from edmunds.auth.models.usermixin import UserMixin \n",
+            "from edmunds.auth.models.rolemixin import RoleMixin \n",
             "from edmunds.storage.drivers.file import File as StorageFile \n",
             "from edmunds.log.drivers.file import File \n",
+            " \n",
+            "UserRolesTable = db.Table( \n",
+            "    'user_roles', \n",
+            "    db.Column('user_id', db.Integer, db.ForeignKey('user.id')), \n",
+            "    db.Column('role_id', db.Integer, db.ForeignKey('role.id')), \n",
+            ") \n",
+            " \n",
+            "class Role(db.Model, RoleMixin): \n",
+            "    pass \n",
+            " \n",
+            "class User(db.Model, UserMixin): \n",
+            "    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable) \n",
+            " \n",
             "SECURITY_PASSWORD_HASH = 'sha512_crypt' \n",
             "SECURITY_PASSWORD_SALT = 'thisisarandomsalt' \n",
+            " \n",
             "APP = { \n",
             "   'auth': { \n",
             "       'enabled': True, \n",
@@ -37,8 +50,8 @@ class TestBasicAuthMiddleware(TestCase):
             "               'name': 'authsqlalchemy',\n",
             "               'driver': SQLAlchemyUserDatastore,\n",
             "               'models': {\n",
-            "                   'user': TestBasicAuthMiddlewareUser,\n",
-            "                   'role': TestBasicAuthMiddlewareRole,\n",
+            "                   'user': User, \n",
+            "                   'role': Role, \n",
             "               },\n",
             "           }, \n",
             "       ], \n",
@@ -83,6 +96,7 @@ class TestBasicAuthMiddleware(TestCase):
         rule = '/' + self.rand_str(20)
 
         self.write_config(self.valid_config)
+        DatabaseManager._sql_alchemy_instance = None
         app = self.create_application()
         self.init_database(app)
 
@@ -105,6 +119,7 @@ class TestBasicAuthMiddleware(TestCase):
         rule = '/' + self.rand_str(20)
 
         self.write_config(self.valid_config)
+        DatabaseManager._sql_alchemy_instance = None
         app = self.create_application()
         self.init_database(app)
 
@@ -140,19 +155,3 @@ class TestBasicAuthMiddleware(TestCase):
         userdatastore = app.auth_userdatastore()
         userdatastore.create_user(email=self.user_email, password=self.user_password)
         db.session.commit()
-
-
-UserRolesTable = Table(
-    'test_basic_auth_middleware_user_roles',
-    Column('test_basic_auth_middleware_user_id', Integer, ForeignKey('test_basic_auth_middleware_user.id')),
-    Column('test_basic_auth_middleware_role_id', Integer, ForeignKey('test_basic_auth_middleware_role.id')),
-)
-
-
-class TestBasicAuthMiddlewareRole(Model, RoleMixin):
-    extra_prop = Column(String(255))
-
-
-class TestBasicAuthMiddlewareUser(Model, UserMixin):
-    extra_prop = Column(String(255))
-    roles = relationship(TestBasicAuthMiddlewareRole, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)
