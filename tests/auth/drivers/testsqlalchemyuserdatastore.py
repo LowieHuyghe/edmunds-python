@@ -1,8 +1,11 @@
 
 from tests.testcase import TestCase
 from flask_security import Security, SQLAlchemyUserDatastore
-from edmunds.auth.models.user import User
-from edmunds.auth.models.role import Role
+from edmunds.database.model import relationship, backref, Column, String
+from edmunds.auth.models.usermixin import UserMixin
+from edmunds.auth.models.rolemixin import RoleMixin
+from edmunds.auth.models.userroles import UserRolesTable as EdmundsUserRolesTable
+from edmunds.database.model import Model
 
 
 class TestSQLAlchemyUserDatastore(TestCase):
@@ -14,11 +17,12 @@ class TestSQLAlchemyUserDatastore(TestCase):
         """
         super(TestSQLAlchemyUserDatastore, self).set_up()
 
+        self.valid_config_import_offset = 4
         self.valid_config = [
             "from edmunds.database.drivers.mysql import MySql \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from edmunds.auth.models.user import User \n",
-            "from edmunds.auth.models.role import Role \n",
+            "from tests.auth.drivers.testsqlalchemyuserdatastore import User \n",
+            "from tests.auth.drivers.testsqlalchemyuserdatastore import Role \n",
             "APP = { \n",
             "   'auth': { \n",
             "       'enabled': True, \n",
@@ -56,7 +60,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         """
 
         config = self.valid_config[:]
-        config[6] = "       'enabled': False, \n"
+        config[self.valid_config_import_offset + 2] = "       'enabled': False, \n"
         self.write_config(config)
 
         app = self.create_application()
@@ -73,7 +77,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         """
 
         config = self.valid_config[:]
-        config[19] = "       'enabled': False, \n"
+        config[self.valid_config_import_offset + 15] = "       'enabled': False, \n"
         self.write_config(config)
 
         app = self.create_application()
@@ -93,7 +97,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         :return:    void
         """
 
-        missing_config_lines = [12, 13]
+        missing_config_lines = [self.valid_config_import_offset + 8, self.valid_config_import_offset + 9]
 
         for missing_config_line in missing_config_lines:
             config = self.valid_config[:]
@@ -134,5 +138,17 @@ class TestSQLAlchemyUserDatastore(TestCase):
         self.assert_equal_deep(app.auth_userdatastore(), app.auth_security().datastore)
         self.assert_equal_deep(app, app.auth_security().app)
 
-        self.assert_equal_deep(User, app.auth_userdatastore().user_model)
-        self.assert_equal_deep(Role, app.auth_userdatastore().role_model)
+        self.assert_equal_deep(app.auth_userdatastore().user_model, User)
+        self.assert_equal_deep(app.auth_userdatastore().role_model, Role)
+
+
+UserRolesTable = EdmundsUserRolesTable
+
+
+class Role(RoleMixin, Model):
+    extra_prop = Column(String(255))
+
+
+class User(UserMixin, Model):
+    extra_prop = Column(String(255))
+    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)

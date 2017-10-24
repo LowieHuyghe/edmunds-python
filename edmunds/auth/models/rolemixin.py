@@ -1,14 +1,14 @@
 
-from edmunds.database.model import Model, Column, Integer, String
-from flask_security import RoleMixin
+from edmunds.database.model import Column, Integer, String
+from flask_security import RoleMixin as FlaskSecurityRoleMixin
 
 
-class Role(Model, RoleMixin):
+class RoleMixin(FlaskSecurityRoleMixin, object):
     """
-    Role Model
+    Role Mixin
     """
 
-    __tablename__ = 'role'
+    # __tablename__ = 'role'
     # __bind_key__ = 'users'
 
     id = Column(Integer, primary_key=True)
