@@ -1,10 +1,9 @@
 
 from tests.testcase import TestCase
 from flask_security import Security, SQLAlchemyUserDatastore
-from edmunds.database.model import relationship, backref, Column, String, Table, Integer, ForeignKey
 from edmunds.auth.models.usermixin import UserMixin
 from edmunds.auth.models.rolemixin import RoleMixin
-from edmunds.database.model import Model
+from edmunds.database.databasemanager import DatabaseManager
 
 
 class TestSQLAlchemyUserDatastore(TestCase):
@@ -16,12 +15,26 @@ class TestSQLAlchemyUserDatastore(TestCase):
         """
         super(TestSQLAlchemyUserDatastore, self).set_up()
 
-        self.valid_config_import_offset = 4
+        self.valid_config_import_offset = 18
         self.valid_config = [
-            "from edmunds.database.drivers.mysql import MySql \n",
+            "from edmunds.database.drivers.sqlitememory import SqliteMemory \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from tests.auth.drivers.testsqlalchemyuserdatastore import TestSQLAlchemyUserDatastoreUser \n",
-            "from tests.auth.drivers.testsqlalchemyuserdatastore import TestSQLAlchemyUserDatastoreRole \n",
+            "from edmunds.database.model import db, relationship, backref \n",
+            "from edmunds.auth.models.usermixin import UserMixin \n",
+            "from edmunds.auth.models.rolemixin import RoleMixin \n",
+            " \n",
+            "UserRolesTable = db.Table( \n",
+            "    'user_roles', \n",
+            "    db.Column('user_id', db.Integer, db.ForeignKey('user.id')), \n",
+            "    db.Column('role_id', db.Integer, db.ForeignKey('role.id')), \n",
+            ") \n",
+            " \n",
+            "class Role(db.Model, RoleMixin): \n",
+            "    pass \n",
+            " \n",
+            "class User(db.Model, UserMixin): \n",
+            "    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable) \n",
+            " \n",
             "APP = { \n",
             "   'auth': { \n",
             "       'enabled': True, \n",
@@ -30,8 +43,8 @@ class TestSQLAlchemyUserDatastore(TestCase):
             "               'name': 'authsqlalchemy',\n",
             "               'driver': SQLAlchemyUserDatastore,\n",
             "               'models': {\n",
-            "                   'user': TestSQLAlchemyUserDatastoreUser,\n",
-            "                   'role': TestSQLAlchemyUserDatastoreRole,\n",
+            "                   'user': User, \n",
+            "                   'role': Role, \n",
             "               },\n",
             "           }, \n",
             "       ], \n",
@@ -40,12 +53,8 @@ class TestSQLAlchemyUserDatastore(TestCase):
             "       'enabled': True, \n",
             "       'instances': [ \n",
             "           { \n",
-            "               'name': 'mysql',\n",
-            "               'driver': MySql,\n",
-            "               'user': 'root',\n",
-            "               'pass': 'root',\n",
-            "               'host': 'localhost',\n",
-            "               'database': 'edmunds',\n",
+            "               'name': 'sqlitememory',\n",
+            "               'driver': SqliteMemory,\n",
             "           }, \n",
             "       ], \n",
             "   }, \n",
@@ -62,6 +71,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         config[self.valid_config_import_offset + 2] = "       'enabled': False, \n"
         self.write_config(config)
 
+        DatabaseManager._sql_alchemy_instance = None
         app = self.create_application()
 
         self.assert_is_none(app.auth_security())
@@ -79,6 +89,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         config[self.valid_config_import_offset + 15] = "       'enabled': False, \n"
         self.write_config(config)
 
+        DatabaseManager._sql_alchemy_instance = None
         app = self.create_application()
 
         with self.assert_raises_regexp(RuntimeError, 'Auth requires database to be enabled'):
@@ -103,6 +114,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
             del config[missing_config_line]
             self.write_config(config)
 
+            DatabaseManager._sql_alchemy_instance = None
             app = self.create_application()
 
             with self.assert_raises_regexp(RuntimeError, '\'authsqlalchemy\' is missing some configuration'):
@@ -122,6 +134,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
 
         self.write_config(self.valid_config)
 
+        DatabaseManager._sql_alchemy_instance = None
         app = self.create_application()
 
         self.assert_is_not_none(app.auth_security())
@@ -137,21 +150,5 @@ class TestSQLAlchemyUserDatastore(TestCase):
         self.assert_equal_deep(app.auth_userdatastore(), app.auth_security().datastore)
         self.assert_equal_deep(app, app.auth_security().app)
 
-        self.assert_equal_deep(app.auth_userdatastore().user_model, TestSQLAlchemyUserDatastoreUser)
-        self.assert_equal_deep(app.auth_userdatastore().role_model, TestSQLAlchemyUserDatastoreRole)
-
-
-UserRolesTable = Table(
-    'test_sql_alchemy_user_datastore_user_roles',
-    Column('test_sql_alchemy_user_datastore_user_id', Integer, ForeignKey('test_sql_alchemy_user_datastore_user.id')),
-    Column('test_sql_alchemy_user_datastore_role_id', Integer, ForeignKey('test_sql_alchemy_user_datastore_role.id')),
-)
-
-
-class TestSQLAlchemyUserDatastoreRole(Model, RoleMixin):
-    extra_prop = Column(String(255))
-
-
-class TestSQLAlchemyUserDatastoreUser(Model, UserMixin):
-    extra_prop = Column(String(255))
-    roles = relationship(TestSQLAlchemyUserDatastoreRole, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)
+        self.assert_is_instance(app.auth_userdatastore().user_model(), UserMixin)
+        self.assert_is_instance(app.auth_userdatastore().role_model(), RoleMixin)
