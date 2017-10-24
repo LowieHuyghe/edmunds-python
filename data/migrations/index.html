@@ -141,6 +141,10 @@
                     
     <a class="" href="../database/">Database</a>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../orm/">ORM</a>
+                </li>
                 <li class=" current">
                     
     <a class="current" href="./">Migrations</a>
@@ -156,10 +160,6 @@
     
 
     </ul>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../orm/">ORM</a>
                 </li>
                 <li class="">
                     
@@ -239,7 +239,7 @@
             <div class="section">
               
                 <h1 id="migrations">Migrations</h1>
-<p>Database migrations are built in in Edmunds using Flask-Migrate.</p>
+<p>Database migrations are built in in Edmunds using <a href="https://flask-migrate.readthedocs.io">Flask-Migrate</a>.</p>
 <h2 id="usage">Usage</h2>
 <p>Edmunds has already integrated the db-command in the application's manager.
 You can use it as described in the Flask-Migrate-documentation:</p>
@@ -253,52 +253,53 @@ python manage.py db migrate -m &quot;Added some tables&quot;
 python manage.py db upgrade
 </code></pre>
 
-<p>Usage of Flask-Migrate documentation:
-* <a href="https://flask-migrate.readthedocs.io">Flask-Migrate</a></p>
-<h3 id="tables">Tables</h3>
-<p>Tables of SQLAlchemy are used by Flask-Migrate to describe your database
-structure. Add your table to <code>app.database.tables</code> so they are picked up
-by the migration-service:</p>
-<pre><code class="python"># app/database/tables/userstable.py
-from edmunds.database.table import Table, Column, Integer, String
-UsersTable = Table('users',
-                   Column('id', Integer, primary_key=True),
-                   Column('name', String(50)),
-                   extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                   # info={'bind_key': 'users_database'},
-                   )
+<p>Usage of Flask-Migrate documentation:</p>
+<ul>
+<li><a href="https://flask-migrate.readthedocs.io">Flask-Migrate</a></li>
+</ul>
+<h3 id="models-tables">Models &amp; Tables</h3>
+<p>Models and tables of SQLAlchemy are used by Flask-Migrate to describe your
+database structure. Add your models and tables to <code>app.database.models</code> so
+they are picked up by the migration-service:</p>
+<pre><code class="python"># app/database/models/users.py
+from edmunds.database.model import Model, Column, Integer, String
+class User(Model):
+    # __bind_key__ = 'users_database'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50))
 
-# app/database/tables/tagstable.py
-from edmunds.database.table import Table, Column, Integer, String
-TagsTable = Table('tags',
-                  Column('id', Integer, primary_key=True),
-                  Column('name', String(50), unique=True),
-                  extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                  # info={'bind_key': 'users_database'}
-                  )
+# app/database/models/tags.py
+from edmunds.database.model import Model, Column, Integer, String
+class Tag(Model):
+    # __bind_key__ = 'users_database'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True)
 
-# app/database/tables/usertagstable.py
-from edmunds.database.table import Table, Column, Integer, ForeignKey
-UserTagsTable = Table('user_tags',
-                      Column('user_id', Integer, ForeignKey('tags.id'), primary_key=True),
-                      Column('tag_id', Integer, ForeignKey('users.id'), primary_key=True),
-                      extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                      # info={'bind_key': 'users_database'}
-                      )
+# app/database/models/usertags.py
+from edmunds.database.model import Table, Column, Integer, ForeignKey
+UserTagsTable = Table(
+    'user_tags',
+    Column('user_id', Integer, ForeignKey('tags.id'), primary_key=True),
+    Column('tag_id', Integer, ForeignKey('users.id'), primary_key=True),
+    # info={'bind_key': 'users_database'}
+)
 </code></pre>
 
-<p>Further documentation on how to declare your tables can be found here:
-<em> <a href="http://docs.sqlalchemy.org/en/latest/core/schema.html">SQLAlchemy Schema Definition Language</a>
-</em> <a href="http://flask-sqlalchemy.pocoo.org/2.2/binds/">Multiple Databases (binds)</a></p>
+<p>Further documentation on how to declare your models and tables can be
+found here:</p>
+<ul>
+<li><a href="http://docs.sqlalchemy.org/en/latest/core/schema.html">SQLAlchemy Schema Definition Language</a></li>
+<li><a href="http://flask-sqlalchemy.pocoo.org/2.2/binds/">Multiple Databases (binds)</a></li>
+</ul>
 <blockquote>
 <p>Note: If you want to customize the package where the migrate-service looks
-for tables, you can override it in your config:
+for models and tables, you can override it in your config:
 <code>python
 APP = {
     'database': {
         # ...
-        'tables': {
-            'my/location/to/the/tables',
+        'models': {
+            'my/location/to/the/models',
             'second/location/to/other/tables',
         },
     },
@@ -312,10 +313,10 @@ The described paths are relative to the root-folder of your application.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../orm/" class="btn btn-neutral float-right" title="ORM">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../caching/" class="btn btn-neutral float-right" title="Caching">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../database/" class="btn btn-neutral" title="Database"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../orm/" class="btn btn-neutral" title="ORM"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -341,10 +342,10 @@ The described paths are relative to the root-folder of your application.</p>
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../database/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../orm/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../orm/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../caching/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
