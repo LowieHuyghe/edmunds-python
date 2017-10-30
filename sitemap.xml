@@ -120,13 +120,13 @@
     </url>
         
     <url>
-     <loc>/data/migrations/</loc>
+     <loc>/data/orm/</loc>
      <lastmod>2017-10-30</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/data/orm/</loc>
+     <loc>/data/migrations/</loc>
      <lastmod>2017-10-30</lastmod>
      <changefreq>daily</changefreq>
     </url>
