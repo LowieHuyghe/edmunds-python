@@ -1,21 +1,19 @@
 
 from tests.testcase import TestCase
-from edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware
+from edmunds.auth.middleware.sessionauthmiddleware import SessionAuthMiddleware
 from edmunds.database.model import db
-from werkzeug.exceptions import Unauthorized
 from edmunds.database.databasemanager import DatabaseManager
-from edmunds.encoding.encoding import Encoding
 import json
 
 
-class TestTokenAuthMiddleware(TestCase):
+class TestSessionAuthMiddleware(TestCase):
 
     def set_up(self):
         """
         Set up the test case
         """
 
-        super(TestTokenAuthMiddleware, self).set_up()
+        super(TestSessionAuthMiddleware, self).set_up()
 
         self.valid_config_import_offset = 25
         self.valid_config = [
@@ -103,38 +101,14 @@ class TestTokenAuthMiddleware(TestCase):
         self.init_database(app)
 
         # Add route
-        @app.route(rule, middleware=[TokenAuthMiddleware])
+        @app.route(rule, middleware=[SessionAuthMiddleware])
         def handle_route():
             return ''
 
         # Call route
         with app.test_client() as c:
             rv = c.get(rule)
-            self.assert_equal(Unauthorized.code, rv.status_code, msg=rv.data)
-
-    def test_invalid_token(self):
-        """
-        Test invalid_token
-        :return:    void
-        """
-
-        rule = '/' + self.rand_str(20)
-
-        self.write_config(self.valid_config)
-        DatabaseManager._sql_alchemy_instance = None
-        app = self.create_application()
-        self.init_database(app)
-
-        # Add route
-        @app.route(rule, middleware=[TokenAuthMiddleware])
-        def handle_route():
-            return ''
-
-        # Call route
-        with app.test_client() as c:
-            headers = {'Authentication-Token': self.rand_str(10)}
-            rv = c.get(rule, headers=headers)
-            self.assert_equal(Unauthorized.code, rv.status_code, msg=rv.data)
+            self.assert_equal(302, rv.status_code, msg=rv.data)
 
     def test_authorized(self):
         """
@@ -150,7 +124,7 @@ class TestTokenAuthMiddleware(TestCase):
         self.init_database(app)
 
         # Add route
-        @app.route(rule, middleware=[TokenAuthMiddleware])
+        @app.route(rule, middleware=[SessionAuthMiddleware])
         def handle_route():
             return ''
 
@@ -158,11 +132,7 @@ class TestTokenAuthMiddleware(TestCase):
         with app.test_client() as c:
             data = json.dumps({'email': self.user_email, 'password': self.user_password})
             headers = {'content-type': 'application/json'}
-            token_response = c.post('/login', data=data, headers=headers)
-            token = json.loads(Encoding.normalize(token_response.data))['response']['user']['authentication_token']
-
-            headers = {'Authentication-Token': token}
-            rv = c.get(rule, headers=headers)
+            rv = c.post('/login', data=data, headers=headers)
             self.assert_equal(200, rv.status_code, msg=rv.data)
 
     def init_database(self, app):
