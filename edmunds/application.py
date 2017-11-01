@@ -19,6 +19,8 @@ from edmunds.localization.providers.localizationserviceprovider import Localizat
 from edmunds.cache.providers.cacheserviceprovider import CacheServiceProvider
 from edmunds.http.providers.httpserviceprovider import HttpServiceProvider
 from edmunds.auth.providers.authserviceprovider import AuthServiceProvider
+from edmunds.foundation.providers.runtimeenvironmentprovider import RuntimeEnvironmentServiceProvider
+from edmunds.profiler.providers.profilerserviceprovider import ProfilerServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
@@ -62,9 +64,10 @@ class Application(Flask,
         self.logger_name = 'edmunds.%s' % import_name
 
         self._init_config(config_dirs)
-        self._init_runtime_environment()
         self._init_database()
 
+        self.register(RuntimeEnvironmentServiceProvider)
+        self.register(ProfilerServiceProvider)
         self.register(HttpServiceProvider)
         self.register(StorageServiceProvider)
         self.register(ExceptionsServiceProvider)
