@@ -27,13 +27,13 @@ class TestMiddleware(TestCase):
         """
 
         # Check empty
-        self.assert_equal(0, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+        self.assert_not_in('edmunds.applicationmiddleware.middleware', self.app.extensions)
 
         # Register the middleware
         self.app.middleware(MyApplicationMiddleware)
 
         # Check if registered
-        self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MyApplicationMiddleware))
         self.assert_is_instance(self.app.wsgi_app, MyApplicationMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
@@ -41,7 +41,7 @@ class TestMiddleware(TestCase):
         self.app.middleware(MyApplicationMiddleware)
 
         # Check if duplicate
-        self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MyApplicationMiddleware))
         self.assert_is_instance(self.app.wsgi_app, MyApplicationMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
 
@@ -49,8 +49,8 @@ class TestMiddleware(TestCase):
         self.app.middleware(MySecondApplicationMiddleware)
 
         # Check if registered
-        self.assert_equal(1, self.app._registered_application_middleware.count(MyApplicationMiddleware))
-        self.assert_equal(1, self.app._registered_application_middleware.count(MySecondApplicationMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MyApplicationMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MySecondApplicationMiddleware))
         self.assert_is_instance(self.app.wsgi_app, MySecondApplicationMiddleware)
         self.assert_is_instance(self.app.wsgi_app.wsgi_app, MyApplicationMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app.wsgi_app, MyApplicationMiddleware)
@@ -111,17 +111,11 @@ class TestMiddleware(TestCase):
 
         rule = '/' + self.rand_str(20)
 
-        # Check empty
-        self.assert_not_in(rule, self.app._request_middleware_by_rule)
-
         # Add route
         @self.app.route(rule)
         def handle_route():
             TestMiddleware.cache['timeline'].append('handle_route')
             return ''
-
-        # Check middleware empty
-        self.assert_not_in(rule, self.app._request_middleware_by_rule)
 
         # Call route
         with self.app.test_client() as c:
@@ -141,21 +135,11 @@ class TestMiddleware(TestCase):
         rule2 = '/' + self.rand_str(20)
         self.assert_not_equal(rule, rule2)
 
-        # Check empty
-        self.assert_not_in(rule, self.app._request_middleware_by_rule)
-        self.assert_not_in(rule2, self.app._request_middleware_by_rule)
-
         # Add route
         @self.app.route(rule, middleware=[MyRequestMiddleware])
         def handle_route():
             TestMiddleware.cache['timeline'].append('handle_route')
             return ''
-
-        # Check middleware
-        self.assert_in(rule, self.app._request_middleware_by_rule)
-        self.assert_not_in(rule2, self.app._request_middleware_by_rule)
-        self.assert_equal(1, len(self.app._request_middleware_by_rule[rule]))
-        self.assert_in(MyRequestMiddleware, self.app._request_middleware_by_rule[rule])
 
         # Call route
         with self.app.test_request_context(rule):
@@ -180,15 +164,6 @@ class TestMiddleware(TestCase):
         def handleecond_route():
             TestMiddleware.cache['timeline'].append('handle_route')
             return ''
-
-        # Check middleware
-        self.assert_in(rule, self.app._request_middleware_by_rule)
-        self.assert_in(rule2, self.app._request_middleware_by_rule)
-        self.assert_equal(1, len(self.app._request_middleware_by_rule[rule]))
-        self.assert_equal(2, len(self.app._request_middleware_by_rule[rule2]))
-        self.assert_in(MyRequestMiddleware, self.app._request_middleware_by_rule[rule])
-        self.assert_in(MyRequestMiddleware, self.app._request_middleware_by_rule[rule2])
-        self.assert_in(MySecondRequestMiddleware, self.app._request_middleware_by_rule[rule2])
 
         # Call route
         TestMiddleware.cache = dict()
@@ -222,27 +197,17 @@ class TestMiddleware(TestCase):
         """
 
         rule = '/' + self.rand_str(20)
-
-        # Check empty
-        self.assert_not_in(rule, self.app._request_middleware_by_rule)
+        rule2 = '/' + self.rand_str(20)
 
         # Add route
         @self.app.route(rule, middleware=[MyRequestMiddleware])
         def handle_route():
             pass
 
-        # Check middleware
-        self.assert_in(rule, self.app._request_middleware_by_rule)
-        self.assert_equal(1, len(self.app._request_middleware_by_rule[rule]))
-
         # Overwrite route
-        @self.app.route(rule, middleware=[MyRequestMiddleware, MySecondRequestMiddleware])
+        @self.app.route(rule2, middleware=[MyRequestMiddleware, MySecondRequestMiddleware])
         def handleOverwrittenRoute():
             pass
-
-        # Check middleware
-        self.assert_in(rule, self.app._request_middleware_by_rule)
-        self.assert_equal(2, len(self.app._request_middleware_by_rule[rule]))
 
     def test_before_returning_none_null_request_middleware(self):
         """
@@ -265,12 +230,9 @@ class TestMiddleware(TestCase):
             response = self.app.make_response(rv)
             self.app.process_response(response)
 
-            self.assert_equal(4, len(TestMiddleware.cache['timeline']))
+            self.assert_equal(1, len(TestMiddleware.cache['timeline']))
 
             self.assert_equal(MyThirdRequestMiddleware.__name__ + '.before', TestMiddleware.cache['timeline'][0])
-            self.assert_equal('handle_route', TestMiddleware.cache['timeline'][1])
-            self.assert_equal(MyRequestMiddleware.__name__ + '.after', TestMiddleware.cache['timeline'][2])
-            self.assert_equal(MyThirdRequestMiddleware.__name__ + '.after', TestMiddleware.cache['timeline'][3])
 
 
 class MyApplicationMiddleware(ApplicationMiddleware):

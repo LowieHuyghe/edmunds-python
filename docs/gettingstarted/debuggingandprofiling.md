@@ -15,7 +15,7 @@ Debugging your application can be done in several ways. Using your IDE, `pdb`, `
 #### Start pdb
 
 ```bash
-python -m pdb main.py
+python -m pdb manage.py run
 ```
 
 #### Debug with pdb
@@ -40,7 +40,7 @@ More debug-options can be found in the [documentation](https://docs.python.org/2
 #### Start pudb
 
 ```bash
-pudb main.py
+pudb manage.py run
 ```
 
 #### Debug with pudb
