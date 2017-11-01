@@ -1,43 +1,12 @@
 
 from tests.testcase import TestCase
 import edmunds.support.helpers as helpers
-import edmunds.application
-import edmunds.support.serviceprovider
 
 
 class TestHelpers(TestCase):
     """
     Test the helpers
     """
-
-    def test_get_full_class_name(self):
-        """
-        Test get_full_class_name
-        """
-
-        data = (
-            ('tests.testcase.TestCase', TestCase),
-            ('edmunds.application.Application', edmunds.application.Application),
-            ('edmunds.support.serviceprovider.ServiceProvider', edmunds.support.serviceprovider.ServiceProvider),
-        )
-
-        for test in data:
-            self.assert_equal(test[0], helpers.get_full_class_name(test[1]))
-
-    def test_get_dir_from_file(self):
-        """
-        Test get_dir_from_file
-        """
-
-        data = (
-            ('/snape/kills', '/snape/kills/dumbledore.mp3'),
-            ('/ygritte/gets', '/ygritte/gets/killed.txt'),
-            ('/john/snow/rises/from/the', '/john/snow/rises/from/the/dead.py'),
-            ('/', '/whut.mov'),
-        )
-
-        for test in data:
-            self.assert_equal(test[0], helpers.get_dir_from_file(test[1]))
 
     def test_random_str(self):
         """
