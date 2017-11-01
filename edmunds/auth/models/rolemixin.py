@@ -1,5 +1,5 @@
 
-from edmunds.database.model import db
+from edmunds.database.db import db
 from flask_security import RoleMixin as FlaskSecurityRoleMixin
 
 
