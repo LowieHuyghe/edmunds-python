@@ -9,6 +9,8 @@ class Handler(object):
     The Exception handler
     """
 
+    dont_report = []
+
     def __init__(self, app):
         """
         Initiate
@@ -17,7 +19,6 @@ class Handler(object):
         """
 
         self.app = app
-        self.dont_report = []
 
     def report(self, exception):
         """
@@ -27,8 +28,9 @@ class Handler(object):
         :return:            Should report
         """
 
-        if exception.__class__ in self.dont_report:
-            return False
+        for exception_class in self.dont_report:
+            if isinstance(exception, exception_class):
+                return False
 
         self.app.logger.error(exception, exc_info=sys.exc_info())
 

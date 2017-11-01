@@ -251,16 +251,9 @@ class MyHandler(EdmundsHandler):
     Exception Handler class
     """
 
-    def __init__(self, app):
-        """
-        Initiate
-        :param app:     The application
-        :type  app:     Edmunds.Application
-        """
-
-        super(MyHandler, self).__init__(app)
-
-        self.dont_report.append(OSError)
+    dont_report = [
+        OSError
+    ]
 
     def report(self, exception):
         """
