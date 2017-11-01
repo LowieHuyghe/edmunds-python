@@ -42,10 +42,23 @@ class MyRequestMiddleware(RequestMiddleware):
 
 Register the Request Middleware in `routes.py` as an option of the routes:
 ```python
-from app.Http.MyRequestMiddleware import MyRequestMiddleware
-from app.Http.MyController import MyController
+from app.http.myrequestmiddleware import MyRequestMiddleware
+from app.http.myotherrequestmiddleware import MyOtherRequestMiddleware
+from app.http.mycontroller import MyController
 
-app.route('/', middleware = [ MyRequestMiddleware ], uses = (MyController, 'get_index'))
+app.route('/', uses=(MyController, 'get_index')) \
+    .middleware(MyRequestMiddleware)
+
+app.route('/route2', uses=(MyController, 'get_route2')) \
+    .middleware(MyOtherRequestMiddleware, 'arg1', 'arg2', kwarg1='value')
+
+@app.route('/route3', middleware=[MyRequestMiddleware])
+def old_skool_route():
+    return "Hello World!"
+
+@app.route('/route4', middleware=[(MyOtherRequestMiddleware, 'arg1', 'arg2')])
+def second_old_skool_route():
+    return "Hello World!"
 ```
 This way the before- and after-function of your Request Middleware is called.
 
