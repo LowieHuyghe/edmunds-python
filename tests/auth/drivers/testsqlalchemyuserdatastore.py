@@ -19,7 +19,7 @@ class TestSQLAlchemyUserDatastore(TestCase):
         self.valid_config = [
             "from edmunds.database.drivers.sqlitememory import SqliteMemory \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from edmunds.database.model import db, relationship, backref \n",
+            "from edmunds.database.db import db, relationship, backref \n",
             "from edmunds.auth.models.usermixin import UserMixin \n",
             "from edmunds.auth.models.rolemixin import RoleMixin \n",
             " \n",
