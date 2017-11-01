@@ -41,12 +41,12 @@ class RuntimeEnvironment(object):
         else:
             return environment == matches
 
-    def is_local(self):
+    def is_development(self):
         """
-        Check if running in local environment
+        Check if running in development environment
         """
 
-        return self.environment('local')
+        return self.environment('development')
 
     def is_testing(self):
         """
