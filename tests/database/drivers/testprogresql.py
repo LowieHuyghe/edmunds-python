@@ -46,7 +46,7 @@ class TestPostgreSql(TestCase):
 
             # Error on loading of config
             with self.assert_raises_regexp(RuntimeError, 'missing some configuration'):
-                app.database()
+                app.database_engine()
 
     def test_postgre_sql(self):
         """
@@ -78,7 +78,7 @@ class TestPostgreSql(TestCase):
         app = self.create_application()
 
         # Test database
-        engine = app.database()
+        engine = app.database_engine()
         self.assert_is_not_none(engine)
         self.assert_is_instance(engine, Engine)
 

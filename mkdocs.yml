@@ -27,8 +27,8 @@ pages:
   - Data:
     - Storage: data/storage.md
     - Database: data/database.md
-    - Migrations: data/migrations.md
     - ORM: data/orm.md
+    - Migrations: data/migrations.md
     - Caching: data/caching.md
 
   - Localization:
@@ -36,6 +36,13 @@ pages:
     - Location: localization/location.md
     - Formatting: localization/formatting.md
     - Translations: localization/translations.md
+
+  - Authentication:
+    - Introduction: auth/introduction.md
+    - Token Authentication: auth/token.md
+    - Session Authentication: auth/session.md
+    - Basic HTTP Authentication: auth/basic.md
+    - Roles: auth/roles.md
 
   - Testing:
     - Getting Started: testing/gettingstarted.md

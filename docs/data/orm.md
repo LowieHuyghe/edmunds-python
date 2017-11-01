@@ -4,46 +4,35 @@
 Object-Relational Mapping is implemented using
 [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/).
 
-Edmunds uses the 'Classical Mappings'-way of SQLAlchemy. Here you define
-your tables and model separately and map them together afterwards. This
-gives you more freedom.
-
 
 ## Defining and mapping models
 
-First off you need to define your models. After defining the model-class
-you can map it to the table using the `mapper`:
+First off you need to define your models as described by the
+[SQL-Alchemy documentation](http://flask-sqlalchemy.pocoo.org/):
 
 ```python
-from app.database.tables.userstable import UsersTable
-from app.database.tables.tagstable import TagsTable
-from app.database.tables.userstagstable import UserTagsTable
-from edmunds.database.model import Model, mapper, relationship
+# app/database/models/users.py
+from edmunds.database.model import db
+class User(db.Model):
+    # __bind_key__ = 'users_database'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+                   
+# app/database/models/tags.py
+from edmunds.database.model import db
+class Tag(db.Model):
+    # __bind_key__ = 'users_database'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
 
-# app/database/models/user.py
-from app.database.models.tag import Tag
-
-class User(Model):
-    __table__ = UsersTable
-
-    def __init__(self, name):
-        self.name = name
-
-    def __repr__(self):
-        return '<User name="%s" id="%s"/>' % (self.name, self.id)
-
-mapper(User, UsersTable, properties={
-    'tags': relationship(Tag, backref='users', secondary=UserTagsTable)
-})
-
-# app/database/models/tag.py
-class Tag(Model):
-    __table__ = TagsTable
-
-    def __init__(self, name):
-        self.name = name
-
-mapper(Tag, TagsTable)
+# app/database/models/usertags.py
+from edmunds.database.model import db
+UserTagsTable = db.Table(
+    'user_tags',
+    db.Column('user_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    # info={'bind_key': 'users_database'}
+)
 ```
 
 
@@ -51,7 +40,7 @@ mapper(Tag, TagsTable)
 
 The actions work the same way as Flask-SQLAlchemy does:
 ```python
-session = User.session()
+session = app.database_session()
 peter = User(name='peter')
 
 # Inserting
@@ -69,6 +58,7 @@ session.commit()
 ```
 
 Further documentation:
+
 * [Flask-SQLAlchemy Select, Insert, Delete](http://flask-sqlalchemy.pocoo.org/2.1/queries)
 * [SQLAlchemy Adding and Updating Objects](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#adding-and-updating-objects)
 
@@ -78,21 +68,14 @@ Further documentation:
 
 ## Querying
 
-Querying works the same way as defined in Flask-SQLAlchemy, with the small
-difference that the `query`-class-property is now a class-method. This is
-so you can query on different database-instance if required. By default
-the database-instance defined in `bind_key` of the `__table__`-table is
-used. The second fallback is the default database-instance.
+Querying works as defined in Flask-SQLAlchemy.
 
 ```python
-users = User.query().all()  # Would default to UsersTable.info['bind_key'] or default instance
-peter = User.query(name='mysql').filter_by(name='peter').first()  # Uses database-instance with name 'mysql'
+users = User.query.all()
+peter = User.query.filter_by(name='peter').first()
 ```
 
 Further documentation on querying:
+
 * [Flask-SQLAlchemy Querying Records](http://flask-sqlalchemy.pocoo.org/2.1/queries/#querying-records)
 * [SQLAlchemy Querying](http://docs.sqlalchemy.org/en/latest/orm/tutorial.html#querying)
-
-> Tip: `ModelClass.session()` works the same way as `ModelClass.query()`
-> does, but returns the result of `app.database_session()` with the given
-> database-instance by name.
