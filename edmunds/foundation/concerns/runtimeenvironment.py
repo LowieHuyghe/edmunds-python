@@ -1,6 +1,4 @@
 
-from edmunds.foundation.debugmiddleware import DebugMiddleware
-from edmunds.profiler.providers.profilerserviceprovider import ProfilerServiceProvider
 from edmunds.gae.runtimeenvironment import RuntimeEnvironment as GaeRuntimeEnvironment
 
 
@@ -8,22 +6,6 @@ class RuntimeEnvironment(object):
     """
     This class concerns runtime-environment code for Application to extend from
     """
-
-    def _init_runtime_environment(self):
-        """
-        Initialise concerning runtime environment
-        """
-
-        # Debug environment
-        if self.config('app.debug'):
-            self.middleware(DebugMiddleware)
-
-            if self.config('app.profiler.enabled', False):
-                self.register(ProfilerServiceProvider)
-
-        # Testing environment
-        if self.is_testing():
-            self.testing = True
 
     def environment(self, matches=None):
         """
