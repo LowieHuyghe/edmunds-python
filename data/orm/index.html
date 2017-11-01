@@ -276,21 +276,21 @@
 <p>First off you need to define your models as described by the
 <a href="http://flask-sqlalchemy.pocoo.org/">SQL-Alchemy documentation</a>:</p>
 <pre><code class="python"># app/database/models/users.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 class User(db.Model):
     # __bind_key__ = 'users_database'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
 
 # app/database/models/tags.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 class Tag(db.Model):
     # __bind_key__ = 'users_database'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
 # app/database/models/usertags.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 UserTagsTable = db.Table(
     'user_tags',
     db.Column('user_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
