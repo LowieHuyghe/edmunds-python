@@ -4,7 +4,6 @@ from edmunds.foundation.concerns.config import Config as ConcernsConfig
 from edmunds.foundation.concerns.runtimeenvironment import RuntimeEnvironment as ConcernsRuntimeEnvironment
 from edmunds.foundation.concerns.serviceproviders import ServiceProviders as ConcernsServiceProviders
 from edmunds.foundation.concerns.middleware import Middleware as ConcernsMiddleware
-from edmunds.foundation.concerns.requestrouting import RequestRouting as ConcernsRequestRouting
 from edmunds.foundation.concerns.storage import Storage as ConcernsStorage
 from edmunds.foundation.concerns.session import Session as ConcernsSession
 from edmunds.foundation.concerns.database import Database as ConcernsDatabase
@@ -23,7 +22,9 @@ from edmunds.auth.providers.authserviceprovider import AuthServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
+from edmunds.http.route import Route
 from threading import Lock
+import edmunds.support.helpers as helpers
 
 
 class Application(Flask,
@@ -31,7 +32,6 @@ class Application(Flask,
                   ConcernsRuntimeEnvironment,
                   ConcernsServiceProviders,
                   ConcernsMiddleware,
-                  ConcernsRequestRouting,
                   ConcernsStorage,
                   ConcernsSession,
                   ConcernsDatabase,
@@ -61,9 +61,6 @@ class Application(Flask,
         self.logger_name = 'edmunds.%s' % import_name
 
         self._init_config(config_dirs)
-        self._init_service_providers()
-        self._init_middleware()
-        self._init_request_routing()
         self._init_runtime_environment()
         self._init_database()
 
@@ -80,24 +77,38 @@ class Application(Flask,
     def route(self, rule, **options):
         """
         Register a route
-        This is merely a step to abstract the middleware from the route
+        This van be done the old skool way, or with the uses
         :param rule:    The rule for routing the request
         :type  rule:    str
         :param options: List of options
         :type  options: list
-        :return:        Decorator function
-        :rtype:         function
+        :return:        Route instance or decorator function
+        :rtype:         edmunds.http.route.Route
         """
 
-        # Pre handline
-        self._pre_handle_route_dispatching(rule, options)
-        self._pre_handle_route_middleware(rule, options)
+        route = Route(self)
 
-        # Fetch the decorator function
-        decorator = super(Application, self).route(rule, **options)
+        # Register middleware that was given with the options
+        if 'middleware' in options:
+            for middleware in options.pop('middleware'):
+                if isinstance(middleware, tuple):
+                    route.middleware(middleware[0], *middleware[1:])
+                else:
+                    route.middleware(middleware)
 
-        # Post handline
-        decorator = self._post_handle_route_middleware(decorator, rule, options)
-        decorator = self._post_handle_route_dispatching(decorator, rule, options)
+        if 'uses' in options:
+            # Add controller and method
+            controller_class, method_name = options.pop('uses')
+            route.uses(controller_class, method_name)
 
-        return decorator
+            return_value = route
+        else:
+            return_value = route.decorate
+
+        # Define endpoint name and register the route
+        if 'endpoint' not in options:
+            options['endpoint'] = 'edmunds.route.%s' % rule
+        route_decorator = super(Application, self).route(rule, **options)
+        route_decorator(route.handle)
+
+        return return_value

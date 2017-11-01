@@ -22,7 +22,7 @@ matter.
 4. Activate your project's virtual environment
 5. Install the required package setuptools_scm: `pip install setuptools_scm`
 5. Install all other dependencies: `pip install -r requirements.txt`
-6. Try starting it up! `python main.py`
+6. Try starting it up! `python manage.py run`
 
 
 ## Further Documentation

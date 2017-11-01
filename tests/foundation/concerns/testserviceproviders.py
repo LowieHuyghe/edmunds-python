@@ -29,7 +29,7 @@ class TestServiceProviders(TestCase):
         # Register
         self.app.register(MyServiceProvider)
 
-        self.assert_in(MyServiceProvider, self.app._registered_service_providers)
+        self.assert_in(MyServiceProvider, self.app.extensions['edmunds.serviceprovider.providers'])
 
         self.assert_equal(1, len(TestServiceProviders.cache['timeline']))
         self.assert_equal(MyServiceProvider.__name__ + '.registered', TestServiceProviders.cache['timeline'][0])
@@ -44,7 +44,7 @@ class TestServiceProviders(TestCase):
         self.app.register(MyServiceProvider)
         self.app.register(MyServiceProvider)
 
-        self.assert_in(MyServiceProvider, self.app._registered_service_providers)
+        self.assert_in(MyServiceProvider, self.app.extensions['edmunds.serviceprovider.providers'])
 
         self.assert_equal(1, len(TestServiceProviders.cache['timeline']))
         self.assert_equal(MyServiceProvider.__name__ + '.registered', TestServiceProviders.cache['timeline'][0])

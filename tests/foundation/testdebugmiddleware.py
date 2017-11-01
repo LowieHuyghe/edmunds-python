@@ -26,13 +26,13 @@ class TestDebugMiddleware(TestCase):
         """
 
         # Check empty
-        self.assert_equal(0, self.app._registered_application_middleware.count(MyDebugMiddleware))
+        self.assert_not_in('edmunds.applicationmiddleware.middleware', self.app.extensions)
 
         # Register the middleware
         self.app.middleware(MyDebugMiddleware)
 
         # Check if registered
-        self.assert_equal(1, self.app._registered_application_middleware.count(MyDebugMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MyDebugMiddleware))
         self.assert_is_instance(self.app.wsgi_app, MyDebugMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyDebugMiddleware)
 
@@ -40,7 +40,7 @@ class TestDebugMiddleware(TestCase):
         self.app.middleware(MyDebugMiddleware)
 
         # Check if duplicate
-        self.assert_equal(1, self.app._registered_application_middleware.count(MyDebugMiddleware))
+        self.assert_equal(1, self.app.extensions['edmunds.applicationmiddleware.middleware'].count(MyDebugMiddleware))
         self.assert_is_instance(self.app.wsgi_app, MyDebugMiddleware)
         self.assert_not_is_instance(self.app.wsgi_app.wsgi_app, MyDebugMiddleware)
 

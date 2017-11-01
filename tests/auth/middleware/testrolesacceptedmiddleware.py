@@ -3,7 +3,7 @@ from tests.testcase import TestCase
 from edmunds.auth.middleware.rolesacceptedmiddleware import RolesAcceptedMiddleware
 from edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware
 from edmunds.database.model import db
-from werkzeug.exceptions import Unauthorized, InternalServerError, Forbidden
+from werkzeug.exceptions import Unauthorized, Forbidden
 from base64 import b64encode
 from edmunds.encoding.encoding import Encoding
 from edmunds.database.databasemanager import DatabaseManager
@@ -115,7 +115,7 @@ class TestRolesAcceptedMiddleware(TestCase):
         # Call route
         with app.test_client() as c:
             rv = c.get(rule)
-            self.assert_equal(InternalServerError.code, rv.status_code, msg=rv.data)
+            self.assert_equal(Forbidden.code, rv.status_code, msg=rv.data)
 
     def test_unauthorized(self):
         """
