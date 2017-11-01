@@ -1,6 +1,7 @@
 
 from sqlalchemy.orm import scoped_session, sessionmaker
 from threading import Lock
+from edmunds.globals import g
 
 
 class Database(object):
@@ -16,7 +17,7 @@ class Database(object):
 
         self._database_session_lock = Lock()
 
-    def database(self, name=None, no_instance_error=False):
+    def database_engine(self, name=None, no_instance_error=False):
         """
         The database to use
         :param name:                The name of the database instance
@@ -56,12 +57,18 @@ class Database(object):
             else:
                 store_key = '__default__'
 
-        # Add key to extensions dictionary
-        if store_key not in self.extensions['edmunds.database.sessions']:
+        # Make dictionary in app context
+        if getattr(g, 'edmunds_database_sessions', None) is None:
             with self._database_session_lock:
-                if store_key not in self.extensions['edmunds.database.sessions']:
+                if getattr(g, 'edmunds_database_sessions', None) is None:
+                    g.edmunds_database_sessions = {}
+
+        # Add key to extensions dictionary
+        if store_key not in g.edmunds_database_sessions:
+            with self._database_session_lock:
+                if store_key not in g.edmunds_database_sessions:
                     # Fetch engine
-                    engine = self.database(name=name, no_instance_error=no_instance_error)
+                    engine = self.database_engine(name=name, no_instance_error=no_instance_error)
                     if not engine:
                         # No engine
                         Session = None
@@ -69,11 +76,11 @@ class Database(object):
                         # Make factory and scoped session
                         Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
-                    self.extensions['edmunds.database.sessions'][store_key] = Session
+                    g.edmunds_database_sessions[store_key] = Session
 
         # Raise error if already requested before with no_instance_error=True
-        if self.extensions['edmunds.database.sessions'][store_key] is None \
+        if g.edmunds_database_sessions[store_key] is None \
                 and not no_instance_error:
             raise RuntimeError('No instance declared named "%s"' % name)
 
-        return self.extensions['edmunds.database.sessions'][store_key]
+        return g.edmunds_database_sessions[store_key]

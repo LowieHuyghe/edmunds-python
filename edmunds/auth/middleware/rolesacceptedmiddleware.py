@@ -1,6 +1,7 @@
 
 from edmunds.http.requestmiddleware import RequestMiddleware
-from flask_security import roles_accepted
+from flask_principal import Permission, RoleNeed
+from flask import abort
 
 
 class RolesAcceptedMiddleware(RequestMiddleware):
@@ -15,8 +16,19 @@ class RolesAcceptedMiddleware(RequestMiddleware):
         :type roles:    list
         """
 
-        wrapper = roles_accepted(*roles)
-        decorator = wrapper(lambda: None)
-        result = decorator()
+        perm = Permission(*[RoleNeed(role) for role in roles])
+        if not perm.can():
+            abort(403)
 
-        return result
+    def after(self, response, *roles):
+        """
+        Handle after the request
+        :param response:    The request response
+        :type  response:    Request
+        :param roles:       Roles accepted
+        :type roles:        list
+        :return:            The request response
+        :rtype:             Request
+        """
+
+        return response
