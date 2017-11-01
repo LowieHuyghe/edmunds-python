@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Application Middleware - Edmunds</title>
+  <title>Introduction - Edmunds</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Application Middleware";
-    var mkdocs_page_input_path = "coreconcepts/applicationmiddleware.md";
-    var mkdocs_page_url = "/coreconcepts/applicationmiddleware/";
+    var mkdocs_page_name = "Introduction";
+    var mkdocs_page_input_path = "auth/introduction.md";
+    var mkdocs_page_url = "/auth/introduction/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -56,25 +56,13 @@
 		
     <span class="caption-text">Core Concepts</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Application Middleware</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#application-middleware">Application Middleware</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#application-middleware_1">Application Middleware</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../coreconcepts/applicationmiddleware/">Application Middleware</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../serviceproviders/">Service Providers</a>
+    <a class="" href="../../coreconcepts/serviceproviders/">Service Providers</a>
                 </li>
     </ul>
 	    </li>
@@ -195,25 +183,41 @@
 		
     <span class="caption-text">Authentication</span>
     <ul class="subnav">
-                <li class="">
+                <li class=" current">
                     
-    <a class="" href="../../auth/introduction/">Introduction</a>
+    <a class="current" href="./">Introduction</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#authentication">Authentication</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#settings">Settings</a></li>
+        
+            <li><a class="toctree-l4" href="#user-and-role-model">User- and Role-Model</a></li>
+        
+            <li><a class="toctree-l4" href="#usage">Usage</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/token/">Token Authentication</a>
+    <a class="" href="../token/">Token Authentication</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/session/">Session Authentication</a>
+    <a class="" href="../session/">Session Authentication</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/basic/">Basic HTTP Authentication</a>
+    <a class="" href="../basic/">Basic HTTP Authentication</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/roles/">Roles</a>
+    <a class="" href="../roles/">Roles</a>
                 </li>
     </ul>
 	    </li>
@@ -251,11 +255,11 @@
     
       
         
-          <li>Core Concepts &raquo;</li>
+          <li>Authentication &raquo;</li>
         
       
     
-    <li>Application Middleware</li>
+    <li>Introduction</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -265,44 +269,82 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="application-middleware">Application Middleware</h1>
-<p>Application Middleware is the proper way of layering your application. Middleware can be used to add functionality to your application when processing calls. The middleware gets called each time your application is called.</p>
-<h2 id="application-middleware_1">Application Middleware</h2>
-<h3 id="define">Define</h3>
-<p>Define your Application Middleware like so:</p>
-<pre><code class="python">from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+                <h1 id="authentication">Authentication</h1>
+<p>Authentication is managed using <a href="https://pythonhosted.org/Flask-Security/index.html">Flask-Security</a>.</p>
+<p>Edmunds already implements some of the features of
+Flask-Security to get you started.</p>
+<h2 id="settings">Settings</h2>
+<p>You can set your authentication preferences in the settings:</p>
+<pre><code class="python">from flask_security import SQLAlchemyUserDatastore
+from app.database.models.user import User
+from app.database.models.role import Role
 
-class MyApplicationMiddleware(ApplicationMiddleware):
-    &quot;&quot;&quot;
-    My Application Middleware
-    &quot;&quot;&quot;
-
-    def handle(self, environment, startResponse):
-        &quot;&quot;&quot;
-        Handle the middleware
-        :param environment:     The environment
-        :type  environment:     Environment
-        :param startResponse:   The response
-        :type  startResponse:   Response
-        &quot;&quot;&quot;
-
-        return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+SECURITY_PASSWORD_HASH = 'sha512_crypt'
+SECURITY_TRACKABLE = True
+APP = {
+    'auth':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'authsqlalchemy',
+                'driver': SQLAlchemyUserDatastore,
+                'models': {
+                    'user': User,
+                    'role': Role,
+                },
+            },
+        ],
+    },
+}
 </code></pre>
 
-<blockquote>
-<p>Note: Application Middleware is th equivalent of the Flask Middleware using wsgi_app-wrappers.</p>
-</blockquote>
-<h3 id="register">Register</h3>
-<p>Register the Application Middleware once it needs to be loaded:</p>
-<pre><code class="python">from app.Foundation.MyApplicationMiddleware import MyApplicationMiddleware
+<p>You can have multiple user datastores by defining them
+as instances. Each instance will have their own models.</p>
+<p>The available drivers are:
+- <strong>SQLAlchemyUserDatastore</strong>: User management using SQLAlchemy</p>
+<h2 id="user-and-role-model">User- and Role-Model</h2>
+<p>Both the user- and role-model can use the predefined
+mixins of Edmunds. The mixins already define the default
+columns for your database-structure.</p>
+<pre><code class="python"># app/database/role.py
 
-app.middleware(MyApplicationMiddleware)
+from edmunds.auth.models.rolemixin import RoleMixin
+from edmunds.database.model import db
+
+class Role(db.Model, RoleMixin):
+    # __tablename__ = 'role'
+    # __bind_key__ = 'users'
+    pass
+
+# app/database/user.py
+
+from edmunds.database.model import relationship, backref
+from edmunds.auth.models.usermixin import UserMixin
+from app.database.models.role import Role
+from app.database.models.userroles import UserRolesTable
+from edmunds.database.model import db
+
+class User(db.Model, UserMixin):
+    # __tablename__ = 'user'
+    # __bind_key__ = 'users_database'
+    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)
 </code></pre>
 
-<p>This way the handle-function of your Application Middleware is called.</p>
-<blockquote>
-<p>Note: Application Middleware can only be registered once.</p>
-</blockquote>
+<h2 id="usage">Usage</h2>
+<p>Fetch the <code>flask_security.Security</code> instance for your config-defined instance: </p>
+<pre><code class="python">security_instance = app.auth_security()
+security_instance = app.auth_security(name='authsqlalchemy')
+</code></pre>
+
+<p>Fetch the <code>flask_security.datastore.UserDatastore</code> instance for your
+config-defined instance: </p>
+<pre><code class="python">userdatastore_instance = app.auth_userdatastore()
+userdatastore_instance = app.auth_userdatastore(name='authsqlalchemy')
+
+userdatastore_instance = app.auth_security(name='authsqlalchemy').datastore
+</code></pre>
               
             </div>
           </div>
@@ -310,10 +352,10 @@ app.middleware(MyApplicationMiddleware)
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../serviceproviders/" class="btn btn-neutral float-right" title="Service Providers">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../token/" class="btn btn-neutral float-right" title="Token Authentication">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../localization/translations/" class="btn btn-neutral" title="Translations"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -339,10 +381,10 @@ app.middleware(MyApplicationMiddleware)
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../localization/translations/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../serviceproviders/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../token/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

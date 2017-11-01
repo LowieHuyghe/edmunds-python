@@ -576,6 +576,81 @@
             "title": "Using translations"
         },
         {
+            "location": "/auth/introduction/",
+            "text": "Authentication\n\n\nAuthentication is managed using \nFlask-Security\n.\n\n\nEdmunds already implements some of the features of\nFlask-Security to get you started.\n\n\nSettings\n\n\nYou can set your authentication preferences in the settings:\n\n\nfrom flask_security import SQLAlchemyUserDatastore\nfrom app.database.models.user import User\nfrom app.database.models.role import Role\n\nSECURITY_PASSWORD_HASH = 'sha512_crypt'\nSECURITY_TRACKABLE = True\nAPP = {\n    'auth':\n    {\n        'enabled': True,\n        'instances':\n        [\n            {\n                'name': 'authsqlalchemy',\n                'driver': SQLAlchemyUserDatastore,\n                'models': {\n                    'user': User,\n                    'role': Role,\n                },\n            },\n        ],\n    },\n}\n\n\n\n\nYou can have multiple user datastores by defining them\nas instances. Each instance will have their own models.\n\n\nThe available drivers are:\n- \nSQLAlchemyUserDatastore\n: User management using SQLAlchemy\n\n\nUser- and Role-Model\n\n\nBoth the user- and role-model can use the predefined\nmixins of Edmunds. The mixins already define the default\ncolumns for your database-structure.\n\n\n# app/database/role.py\n\nfrom edmunds.auth.models.rolemixin import RoleMixin\nfrom edmunds.database.model import db\n\nclass Role(db.Model, RoleMixin):\n    # __tablename__ = 'role'\n    # __bind_key__ = 'users'\n    pass\n\n# app/database/user.py\n\nfrom edmunds.database.model import relationship, backref\nfrom edmunds.auth.models.usermixin import UserMixin\nfrom app.database.models.role import Role\nfrom app.database.models.userroles import UserRolesTable\nfrom edmunds.database.model import db\n\nclass User(db.Model, UserMixin):\n    # __tablename__ = 'user'\n    # __bind_key__ = 'users_database'\n    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)\n\n\n\n\nUsage\n\n\nFetch the \nflask_security.Security\n instance for your config-defined instance: \n\n\nsecurity_instance = app.auth_security()\nsecurity_instance = app.auth_security(name='authsqlalchemy')\n\n\n\n\nFetch the \nflask_security.datastore.UserDatastore\n instance for your\nconfig-defined instance: \n\n\nuserdatastore_instance = app.auth_userdatastore()\nuserdatastore_instance = app.auth_userdatastore(name='authsqlalchemy')\n\nuserdatastore_instance = app.auth_security(name='authsqlalchemy').datastore",
+            "title": "Introduction"
+        },
+        {
+            "location": "/auth/introduction/#authentication",
+            "text": "Authentication is managed using  Flask-Security .  Edmunds already implements some of the features of\nFlask-Security to get you started.",
+            "title": "Authentication"
+        },
+        {
+            "location": "/auth/introduction/#settings",
+            "text": "You can set your authentication preferences in the settings:  from flask_security import SQLAlchemyUserDatastore\nfrom app.database.models.user import User\nfrom app.database.models.role import Role\n\nSECURITY_PASSWORD_HASH = 'sha512_crypt'\nSECURITY_TRACKABLE = True\nAPP = {\n    'auth':\n    {\n        'enabled': True,\n        'instances':\n        [\n            {\n                'name': 'authsqlalchemy',\n                'driver': SQLAlchemyUserDatastore,\n                'models': {\n                    'user': User,\n                    'role': Role,\n                },\n            },\n        ],\n    },\n}  You can have multiple user datastores by defining them\nas instances. Each instance will have their own models.  The available drivers are:\n-  SQLAlchemyUserDatastore : User management using SQLAlchemy",
+            "title": "Settings"
+        },
+        {
+            "location": "/auth/introduction/#user-and-role-model",
+            "text": "Both the user- and role-model can use the predefined\nmixins of Edmunds. The mixins already define the default\ncolumns for your database-structure.  # app/database/role.py\n\nfrom edmunds.auth.models.rolemixin import RoleMixin\nfrom edmunds.database.model import db\n\nclass Role(db.Model, RoleMixin):\n    # __tablename__ = 'role'\n    # __bind_key__ = 'users'\n    pass\n\n# app/database/user.py\n\nfrom edmunds.database.model import relationship, backref\nfrom edmunds.auth.models.usermixin import UserMixin\nfrom app.database.models.role import Role\nfrom app.database.models.userroles import UserRolesTable\nfrom edmunds.database.model import db\n\nclass User(db.Model, UserMixin):\n    # __tablename__ = 'user'\n    # __bind_key__ = 'users_database'\n    roles = relationship(Role, backref=backref('users', lazy='dynamic'), secondary=UserRolesTable)",
+            "title": "User- and Role-Model"
+        },
+        {
+            "location": "/auth/introduction/#usage",
+            "text": "Fetch the  flask_security.Security  instance for your config-defined instance:   security_instance = app.auth_security()\nsecurity_instance = app.auth_security(name='authsqlalchemy')  Fetch the  flask_security.datastore.UserDatastore  instance for your\nconfig-defined instance:   userdatastore_instance = app.auth_userdatastore()\nuserdatastore_instance = app.auth_userdatastore(name='authsqlalchemy')\n\nuserdatastore_instance = app.auth_security(name='authsqlalchemy').datastore",
+            "title": "Usage"
+        },
+        {
+            "location": "/auth/token/",
+            "text": "Token Authentication\n\n\nToken authentication can be set up using the \nintroduction\n and\nsome help from \nthis post\n.\n\n\nAdd the \nTokenAuthMiddleware\n-middleware to your routes to protect them. This middleware\nis a wrapper for the\n\nauth_token_required\n-decorator\n:\n\n\nfrom edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, 'get_logged_in'))\n\n\n\n\nTL;DR\n\n\nThe following request will give you an authentication token:\n* Post-request to \n/login\n\n  - Data:\n    - \nemail\n\n    - \npassword\n\n  - Headers:\n    - \ncontent-type\n: \napplication/json\n\n\nAdd the token to future requests using either:\n- Request-data: \nauth_token\n\n- Header: \nAuthentication-Token",
+            "title": "Token Authentication"
+        },
+        {
+            "location": "/auth/token/#token-authentication",
+            "text": "Token authentication can be set up using the  introduction  and\nsome help from  this post .  Add the  TokenAuthMiddleware -middleware to your routes to protect them. This middleware\nis a wrapper for the auth_token_required -decorator :  from edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, 'get_logged_in'))",
+            "title": "Token Authentication"
+        },
+        {
+            "location": "/auth/token/#tldr",
+            "text": "The following request will give you an authentication token:\n* Post-request to  /login \n  - Data:\n    -  email \n    -  password \n  - Headers:\n    -  content-type :  application/json  Add the token to future requests using either:\n- Request-data:  auth_token \n- Header:  Authentication-Token",
+            "title": "TL;DR"
+        },
+        {
+            "location": "/auth/session/",
+            "text": "Session Authentication\n\n\nSession authentication can be set up using the \nintroduction\n.\n\n\nAdd the \nSessionAuthMiddleware\n-middleware to your routes to protect them. This middleware\nis a wrapper for the\n\nlogin_required\n-decorator\n:\n\n\nfrom edmunds.auth.middleware.sessionauthmiddleware import SessionAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[SessionAuthMiddleware], uses = (MyController, 'get_logged_in'))",
+            "title": "Session Authentication"
+        },
+        {
+            "location": "/auth/session/#session-authentication",
+            "text": "Session authentication can be set up using the  introduction .  Add the  SessionAuthMiddleware -middleware to your routes to protect them. This middleware\nis a wrapper for the login_required -decorator :  from edmunds.auth.middleware.sessionauthmiddleware import SessionAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[SessionAuthMiddleware], uses = (MyController, 'get_logged_in'))",
+            "title": "Session Authentication"
+        },
+        {
+            "location": "/auth/basic/",
+            "text": "Basic HTTP Authentication\n\n\nBasic HTTP authentication can be set up using the \nintroduction\n.\n\n\nAdd the \nBasicAuthMiddleware\n-middleware to your routes to protect them. This middleware\nis a wrapper for the\n\nhttp_auth_required\n-decorator\n:\n\n\nfrom edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[BasicAuthMiddleware], uses = (MyController, 'get_logged_in'))\napp.route('/loggedin', middleware=[(BasicAuthMiddleware, 'myrealm')], uses = (MyController, 'get_logged_in'))",
+            "title": "Basic HTTP Authentication"
+        },
+        {
+            "location": "/auth/basic/#basic-http-authentication",
+            "text": "Basic HTTP authentication can be set up using the  introduction .  Add the  BasicAuthMiddleware -middleware to your routes to protect them. This middleware\nis a wrapper for the http_auth_required -decorator :  from edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/loggedin', middleware=[BasicAuthMiddleware], uses = (MyController, 'get_logged_in'))\napp.route('/loggedin', middleware=[(BasicAuthMiddleware, 'myrealm')], uses = (MyController, 'get_logged_in'))",
+            "title": "Basic HTTP Authentication"
+        },
+        {
+            "location": "/auth/roles/",
+            "text": "Roles\n\n\nThe \nRolesAcceptedMiddleware\n-middleware and the \nRolesRequiredMiddleware\n-middleware\nare two wrapper for respectively the\n\nroles_accepted\n-decorator\n\nand the\n\nroles_required\n-decorator\n.\n\n\nThey are slightly modified so they don't redirect when the requirements are not met.\nThey will just abort with the Forbidden-statuscode (403).\n\n\nAdd them to your routes to protect them:\n\n\nfrom edmunds.auth.middleware.rolesacceptedmiddleware import RolesAcceptedMiddleware\nfrom edmunds.auth.middleware.rolesrequiredmiddleware import RolesRequiredMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/acceptsroles', middleware=[(RolesAcceptedMiddleware, 'role1', 'role2')], uses = (MyController, 'acceptsroles'))\napp.route('/requiresroles', middleware=[(RolesRequiredMiddleware, 'role3', 'role4')], uses = (MyController, 'requiresroles'))\n\n\n\n\nMethods\n\n\nRead the \nUserDataStore\n-documentation\nto see how roles are added and assigned to users.",
+            "title": "Roles"
+        },
+        {
+            "location": "/auth/roles/#roles",
+            "text": "The  RolesAcceptedMiddleware -middleware and the  RolesRequiredMiddleware -middleware\nare two wrapper for respectively the roles_accepted -decorator \nand the roles_required -decorator .  They are slightly modified so they don't redirect when the requirements are not met.\nThey will just abort with the Forbidden-statuscode (403).  Add them to your routes to protect them:  from edmunds.auth.middleware.rolesacceptedmiddleware import RolesAcceptedMiddleware\nfrom edmunds.auth.middleware.rolesrequiredmiddleware import RolesRequiredMiddleware\nfrom app.http.controllers.mycontroller import MyController\n\napp.route('/acceptsroles', middleware=[(RolesAcceptedMiddleware, 'role1', 'role2')], uses = (MyController, 'acceptsroles'))\napp.route('/requiresroles', middleware=[(RolesRequiredMiddleware, 'role3', 'role4')], uses = (MyController, 'requiresroles'))",
+            "title": "Roles"
+        },
+        {
+            "location": "/auth/roles/#methods",
+            "text": "Read the  UserDataStore -documentation\nto see how roles are added and assigned to users.",
+            "title": "Methods"
+        },
+        {
             "location": "/testing/gettingstarted/",
             "text": "Testing\n\n\nUnittesting is one of the basic keys to success when it comes down to application-uptime. Testing makes sure the application just works and keeps working after code-changes.\n\n\nCreating tests\n\n\nEvery edmunds-instance has a \nmain_test.py\n in its root which can be run with python. This file states where the tests will be located.\n\n\nAdd your own tests to the \ntest\n-directory and initiate them like so:\n\n\nfrom edmunds.foundation.testing.testcase import TestCase\n\n\nclass MyTest(TestCase):\n    \"\"\"\n    Test my tests\n    \"\"\"\n\n    def set_up(self):\n        \"\"\"\n        Set up the test case\n        \"\"\"\n        super(MyTest, self).set_up()\n\n    def tear_down(self):\n        \"\"\"\n        Tear down the test case\n        \"\"\"\n        super(MyTest, self).tear_down()\n\n    def test_something(self):\n        \"\"\"\n        Test something\n        \"\"\"\n        pass\n\n\n\n\nRunning tests\n\n\nRun your tests in command line with:\n\n\npython main_test.py\n\n\n\n\nAsserting\n\n\nThe \nTestCase\n-class already implements a lot of assertion functions:\n\n\n# a == b\nself.assert_equal(a, b)\n# a != b\nself.assert_not_equal(a, b)\n# bool(x) is True\nself.assert_true(x)\n# bool(x) is False\nself.assert_false(x)\n# a is b\nself.assert_is(a, b)\n# a is not b\nself.assert_is_not(a, b)\n# x is None\nself.assert_is_none(x)\n# x is not None\nself.assert_is_not_none(x)\n# a in b\nself.assert_in(a, b)\n# a not in b\nself.assert_not_in(a, b)\n# isinstance(a, b)\nself.assert_is_instance(a, b)\n# not isinstance(a, b)\nself.assert_not_is_instance(a, b)\n# fun(*args, **kwds) raises exc\nself.assert_raises(exc, fun, *args, **kwds)\n# fun(*args, **kwds) raises exc and the message matches regex r\nself.assert_raises_regexp(exc, r, fun, *args, **kwds)\n# round(a-b, 7) == 0\nself.assert_almost_equal(a, b)\n# round(a-b, 7) != 0\nself.assert_not_almost_equal(a, b)\n# a > b\nself.assert_greater(a, b)\n# a >= b\nself.assert_greater_equal(a, b)\n# a < b\nself.assert_less(a, b)\n# a <= b\nself.assert_less_equal(a, b)\n# r.search(s)\nself.assert_regexp_matches(s, r)\n# not r.search(s)\nself.assert_not_regexp_matches(s, r)\n# sorted(a) == sorted(b) and works with unhashable objs\nself.assert_items_equal(a, b)\n# all the key/value pairs in a exist in b\nself.assert_dict_contains_subset(a, b)\n# strings\nself.assert_multi_line_equal(a, b)\n# sequences\nself.assert_sequence_equal(a, b)\n# lists\nself.assert_list_equal(a, b)\n# tuples\nself.assert_tuple_equal(a, b)\n# sets or frozensets\nself.assert_set_equal(a, b)\n# dicts\nself.assert_dict_equal(a, b)",
             "title": "Getting Started"

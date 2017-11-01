@@ -37,6 +37,13 @@ pages:
     - Formatting: localization/formatting.md
     - Translations: localization/translations.md
 
+  - Authentication:
+    - Introduction: auth/introduction.md
+    - Token Authentication: auth/token.md
+    - Session Authentication: auth/session.md
+    - Basic HTTP Authentication: auth/basic.md
+    - Roles: auth/roles.md
+
   - Testing:
     - Getting Started: testing/gettingstarted.md
 
