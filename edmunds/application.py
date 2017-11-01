@@ -23,8 +23,6 @@ from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
 from edmunds.http.route import Route
-from threading import Lock
-import edmunds.support.helpers as helpers
 
 
 class Application(Flask,
@@ -45,7 +43,6 @@ class Application(Flask,
     request_class = Request
     response_class = Response
     config_class = Config
-    _logger_lock = Lock()
 
     def __init__(self, import_name, config_dirs=None):
         """
