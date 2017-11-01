@@ -33,9 +33,9 @@ from edmunds.http.controller import Controller
 
 class MyController(Controller):
     def login(self):
-        username = self._input['username']
-        password = self._input['password']
-        city = self._input.get('city', 'unknown')
+        username = self.input['username']
+        password = self.input['password']
+        city = self.input.get('city', 'unknown')
 ```
 
 
