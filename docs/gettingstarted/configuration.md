@@ -77,15 +77,15 @@ SESSION = {
 
 ### Environment configuration
 
-Some configuration is specific to the runtime environment. It depends on the machine it is running on, or on the current environment (local, production or testing). This configuration is not included in the git-repository, which makes it ideal for security sensitive configuration (like the app-secret).
+Some configuration is specific to the runtime environment. It depends on the machine it is running on, or on the current environment (development, production or testing). This configuration is not included in the git-repository, which makes it ideal for security sensitive configuration (like the app-secret).
 
 The environment configuration is specified in the `.env.py`-files in the root of the project. An example of an `.env.py`-file:
 ```python
-APP_ENV = 'local'
+APP_ENV = 'development'
 SECRET_KEY = 'aFBHjD8SHhqj71LEEmoxc8bLH4lzUTr'
 ```
 
-The current environment given in the above example (`APP_ENV`) will try to load more specific configuration in `.env.local.py`. This allows you to use separate databases or caching (for example) depending on the current environment. Example of an `.env.local.py`-file:
+The current environment given in the above example (`APP_ENV`) will try to load more specific configuration in `.env.development.py`. This allows you to use separate databases or caching (for example) depending on the current environment. Example of an `.env.development.py`-file:
 ```python
 DATABASE = {
     'mysql': {
