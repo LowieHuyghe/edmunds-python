@@ -301,10 +301,23 @@ class MyRequestMiddleware(RequestMiddleware):
 </blockquote>
 <h3 id="register">Register</h3>
 <p>Register the Request Middleware in <code>routes.py</code> as an option of the routes:</p>
-<pre><code class="python">from app.Http.MyRequestMiddleware import MyRequestMiddleware
-from app.Http.MyController import MyController
+<pre><code class="python">from app.http.myrequestmiddleware import MyRequestMiddleware
+from app.http.myotherrequestmiddleware import MyOtherRequestMiddleware
+from app.http.mycontroller import MyController
 
-app.route('/', middleware = [ MyRequestMiddleware ], uses = (MyController, 'get_index'))
+app.route('/', uses=(MyController, 'get_index')) \
+    .middleware(MyRequestMiddleware)
+
+app.route('/route2', uses=(MyController, 'get_route2')) \
+    .middleware(MyOtherRequestMiddleware, 'arg1', 'arg2', kwarg1='value')
+
+@app.route('/route3', middleware=[MyRequestMiddleware])
+def old_skool_route():
+    return &quot;Hello World!&quot;
+
+@app.route('/route4', middleware=[(MyOtherRequestMiddleware, 'arg1', 'arg2')])
+def second_old_skool_route():
+    return &quot;Hello World!&quot;
 </code></pre>
 
 <p>This way the before- and after-function of your Request Middleware is called.</p>
