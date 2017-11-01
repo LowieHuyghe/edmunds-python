@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Application Middleware - Edmunds</title>
+  <title>Token Authentication - Edmunds</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Application Middleware";
-    var mkdocs_page_input_path = "coreconcepts/applicationmiddleware.md";
-    var mkdocs_page_url = "/coreconcepts/applicationmiddleware/";
+    var mkdocs_page_name = "Token Authentication";
+    var mkdocs_page_input_path = "auth/token.md";
+    var mkdocs_page_url = "/auth/token/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -56,25 +56,13 @@
 		
     <span class="caption-text">Core Concepts</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
-    <a class="current" href="./">Application Middleware</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l3"><a href="#application-middleware">Application Middleware</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l4" href="#application-middleware_1">Application Middleware</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../../coreconcepts/applicationmiddleware/">Application Middleware</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../serviceproviders/">Service Providers</a>
+    <a class="" href="../../coreconcepts/serviceproviders/">Service Providers</a>
                 </li>
     </ul>
 	    </li>
@@ -197,23 +185,35 @@
     <ul class="subnav">
                 <li class="">
                     
-    <a class="" href="../../auth/introduction/">Introduction</a>
+    <a class="" href="../introduction/">Introduction</a>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Token Authentication</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#token-authentication">Token Authentication</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l4" href="#tldr">TL;DR</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/token/">Token Authentication</a>
+    <a class="" href="../session/">Session Authentication</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/session/">Session Authentication</a>
+    <a class="" href="../basic/">Basic HTTP Authentication</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="../../auth/basic/">Basic HTTP Authentication</a>
-                </li>
-                <li class="">
-                    
-    <a class="" href="../../auth/roles/">Roles</a>
+    <a class="" href="../roles/">Roles</a>
                 </li>
     </ul>
 	    </li>
@@ -251,11 +251,11 @@
     
       
         
-          <li>Core Concepts &raquo;</li>
+          <li>Authentication &raquo;</li>
         
       
     
-    <li>Application Middleware</li>
+    <li>Token Authentication</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -265,44 +265,29 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="application-middleware">Application Middleware</h1>
-<p>Application Middleware is the proper way of layering your application. Middleware can be used to add functionality to your application when processing calls. The middleware gets called each time your application is called.</p>
-<h2 id="application-middleware_1">Application Middleware</h2>
-<h3 id="define">Define</h3>
-<p>Define your Application Middleware like so:</p>
-<pre><code class="python">from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+                <h1 id="token-authentication">Token Authentication</h1>
+<p>Token authentication can be set up using the <a href="../introduction/">introduction</a> and
+some help from <a href="http://mandarvaze.github.io/2015/01/token-auth-with-flask-security.html">this post</a>.</p>
+<p>Add the <code>TokenAuthMiddleware</code>-middleware to your routes to protect them. This middleware
+is a wrapper for the
+<a href="https://pythonhosted.org/Flask-Security/api.html#flask_security.decorators.auth_token_required"><code>auth_token_required</code>-decorator</a>:</p>
+<pre><code class="python">from edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware
+from app.http.controllers.mycontroller import MyController
 
-class MyApplicationMiddleware(ApplicationMiddleware):
-    &quot;&quot;&quot;
-    My Application Middleware
-    &quot;&quot;&quot;
-
-    def handle(self, environment, startResponse):
-        &quot;&quot;&quot;
-        Handle the middleware
-        :param environment:     The environment
-        :type  environment:     Environment
-        :param startResponse:   The response
-        :type  startResponse:   Response
-        &quot;&quot;&quot;
-
-        return super(MyApplicationMiddleware, self).handle(environment, startResponse)
+app.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, 'get_logged_in'))
 </code></pre>
 
-<blockquote>
-<p>Note: Application Middleware is th equivalent of the Flask Middleware using wsgi_app-wrappers.</p>
-</blockquote>
-<h3 id="register">Register</h3>
-<p>Register the Application Middleware once it needs to be loaded:</p>
-<pre><code class="python">from app.Foundation.MyApplicationMiddleware import MyApplicationMiddleware
-
-app.middleware(MyApplicationMiddleware)
-</code></pre>
-
-<p>This way the handle-function of your Application Middleware is called.</p>
-<blockquote>
-<p>Note: Application Middleware can only be registered once.</p>
-</blockquote>
+<h2 id="tldr">TL;DR</h2>
+<p>The following request will give you an authentication token:
+* Post-request to <code>/login</code>
+  - Data:
+    - <code>email</code>
+    - <code>password</code>
+  - Headers:
+    - <code>content-type</code>: <code>application/json</code></p>
+<p>Add the token to future requests using either:
+- Request-data: <code>auth_token</code>
+- Header: <code>Authentication-Token</code></p>
               
             </div>
           </div>
@@ -310,10 +295,10 @@ app.middleware(MyApplicationMiddleware)
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../serviceproviders/" class="btn btn-neutral float-right" title="Service Providers">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../session/" class="btn btn-neutral float-right" title="Session Authentication">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../.." class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../introduction/" class="btn btn-neutral" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -339,10 +324,10 @@ app.middleware(MyApplicationMiddleware)
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../.." style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../introduction/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../serviceproviders/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../session/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
