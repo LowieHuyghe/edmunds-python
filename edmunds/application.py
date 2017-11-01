@@ -44,16 +44,26 @@ class Application(Flask,
     response_class = Response
     config_class = Config
 
-    def __init__(self, import_name, config_dirs=None):
+    def __init__(self, import_name, config_dirs=None, static_folder='resources/static',
+                 template_folder='resources/templates', *args, **kwargs):
         """
         Initialize the application
         :param import_name:     Import name
         :type  import_name:     str
         :param config_dirs:     Configuration directories
         :type  config_dirs:     list
+        :param static_folder:   Static folder
+        :type  static_folder:   str
+        :param template_folder: Template folder
+        :type  template_folder: str
+        :param args:            Additional args
+        :type  args:            list
+        :param kwargs:          Additional kwargs
+        :type  kwargs:          dict
         """
 
-        super(Application, self).__init__(import_name)
+        super(Application, self).__init__(import_name, static_folder=static_folder, template_folder=template_folder,
+                                          *args, **kwargs)
 
         self.logger_name = 'edmunds.%s' % import_name
 

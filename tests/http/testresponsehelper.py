@@ -9,6 +9,7 @@ from edmunds.encoding.encoding import Encoding
 from werkzeug.wsgi import FileWrapper
 import sys
 import io
+import os.path
 
 
 class TestResponseHelper(TestCase):
@@ -48,7 +49,7 @@ class TestResponseHelper(TestCase):
             self.assert_equal(default, helper.render(self.template).status_code)
             self.assert_equal(default, helper.json().status_code)
             self.assert_equal(default_redirect, helper.redirect('/').status_code)
-            file_response = helper.file(self.template_file)
+            file_response = helper.file(os.path.dirname(self.template_file), os.path.basename(self.template_file))
             self.assert_equal(default, file_response.status_code)
             file_response.close()
 
@@ -61,7 +62,7 @@ class TestResponseHelper(TestCase):
             self.assert_equal(status, helper.render(self.template).status_code)
             self.assert_equal(status, helper.json().status_code)
             self.assert_equal(status, helper.redirect('/').status_code)
-            file_response = helper.file(self.template_file)
+            file_response = helper.file(os.path.dirname(self.template_file), os.path.basename(self.template_file))
             self.assert_equal(status, file_response.status_code)
             file_response.close()
 
@@ -141,7 +142,7 @@ class TestResponseHelper(TestCase):
                 helper.render(self.template),
                 helper.json(),
                 helper.redirect('/'),
-                helper.file(self.template_file)
+                helper.file(os.path.dirname(self.template_file), os.path.basename(self.template_file))
             ]
             for response in responses:
                 self.assert_in(key1, response.headers)
@@ -198,7 +199,7 @@ class TestResponseHelper(TestCase):
                 helper.render(self.template),
                 helper.json(),
                 helper.redirect('/'),
-                helper.file(self.template_file)
+                helper.file(os.path.dirname(self.template_file), os.path.basename(self.template_file))
             ]
             for response in responses:
                 cookie_headers = list(filter(lambda header: isinstance(header, tuple) and header[0] == 'Set-Cookie', response.headers))
@@ -353,7 +354,7 @@ class TestResponseHelper(TestCase):
 
         with self.app.test_request_context(rule):
             # Redirect response
-            response = helper.file(self.template_file)
+            response = helper.file(os.path.dirname(self.template_file), os.path.basename(self.template_file))
             # Check
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)

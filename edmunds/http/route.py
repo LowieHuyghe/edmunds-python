@@ -78,7 +78,7 @@ class Route(object):
 
         if self.controller_class is not None:
             # Make instance of controller
-            controller = self.controller_class(self)
+            controller = self.controller_class(self.app)
 
             # Initialize the controller
             controller.initialize(*args, **kwargs)
