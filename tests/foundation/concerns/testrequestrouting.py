@@ -27,19 +27,11 @@ class TestRequestRouting(TestCase):
 
         rule = '/' + self.rand_str(20)
 
-        # Check empty
-        self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule, self.app._request_uses_by_rule)
-
         # Add route
         @self.app.route(rule)
         def handle_route():
             TestRequestRouting.cache['timeline'].append('handle_route')
             return ''
-
-        # Check uses empty
-        self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule, self.app._request_uses_by_rule)
 
         # Call route
         with self.app.test_client() as c:
@@ -59,20 +51,12 @@ class TestRequestRouting(TestCase):
         rule_with_param = rule + '/<param>'
         param = 'myparam'
 
-        # Check empty
-        self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule_with_param, self.app._request_uses_by_rule)
-
         # Add route
         @self.app.route(rule_with_param)
         def handle_route(param=None):
             TestRequestRouting.cache['timeline'].append('handle_route')
             TestRequestRouting.cache['param'] = param
             return ''
-
-        # Check uses empty
-        self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule_with_param, self.app._request_uses_by_rule)
 
         # Call route
         with self.app.test_client() as c:
@@ -93,16 +77,8 @@ class TestRequestRouting(TestCase):
 
         rule = '/' + self.rand_str(20)
 
-        # Check empty
-        self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule, self.app._request_uses_by_rule)
-
         # Add route
         self.app.route(rule, uses=(MyController, 'get'))
-
-        # Check uses empty
-        self.assert_not_in(rule, self.app._pre_request_uses_by_rule)
-        self.assert_in(rule, self.app._request_uses_by_rule)
 
         # Call route
         with self.app.test_client() as c:
@@ -122,16 +98,8 @@ class TestRequestRouting(TestCase):
         rule_with_param = rule + '/<param>'
         param = 'myparam'
 
-        # Check empty
-        self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
-        self.assert_not_in(rule_with_param, self.app._request_uses_by_rule)
-
         # Add route
         self.app.route(rule_with_param, uses = (MyController, 'get_with_param'))
-
-        # Check uses empty
-        self.assert_not_in(rule_with_param, self.app._pre_request_uses_by_rule)
-        self.assert_in(rule_with_param, self.app._request_uses_by_rule)
 
         # Call route
         with self.app.test_client() as c:
@@ -191,7 +159,7 @@ class TestRequestRouting(TestCase):
         rule = '/' + self.rand_str(20)
 
         # Add route with both uses and handler
-        with self.assert_raises_regexp(TypeError, "'NoneType' object is not callable"):
+        with self.assert_raises_regexp(TypeError, "'Route' object is not callable"):
 
             @self.app.route(rule, uses=(MyController, 'get'))
             def handle_route():
