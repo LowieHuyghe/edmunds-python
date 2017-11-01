@@ -34,9 +34,9 @@ class TestController(TestCase):
             controller = MyController(self.app)
 
             self.assert_is_instance(controller, MyController)
-            self.assert_equal(controller._app, self.app)
-            self.assert_equal(controller._request, request)
-            self.assert_equal(controller._visitor, visitor)
+            self.assert_equal(controller.app, self.app)
+            self.assert_equal(controller.request, request)
+            self.assert_equal(controller.visitor, visitor)
 
     def test_input(self):
         """
@@ -50,9 +50,9 @@ class TestController(TestCase):
         with self.app.test_request_context(rule):
             controller = MyController(self.app)
 
-            self.assert_is_instance(controller._input, Input)
-            controller._input = rule
-            self.assert_equal_deep(rule, controller._input)
+            self.assert_is_instance(controller.input, Input)
+            controller.input = rule
+            self.assert_equal_deep(rule, controller.input)
 
     def test_response(self):
         """
@@ -66,9 +66,9 @@ class TestController(TestCase):
         with self.app.test_request_context(rule):
             controller = MyController(self.app)
 
-            self.assert_is_instance(controller._response, ResponseHelper)
-            controller._response = rule
-            self.assert_equal_deep(rule, controller._response)
+            self.assert_is_instance(controller.response, ResponseHelper)
+            controller.response = rule
+            self.assert_equal_deep(rule, controller.response)
 
     def test_session(self):
         """
@@ -104,9 +104,9 @@ class TestController(TestCase):
         with app.test_request_context(rule):
             controller = MyController(app)
 
-            self.assert_equal_deep(session, controller._session)
-            controller._session = rule
-            self.assert_equal_deep(rule, controller._session)
+            self.assert_equal_deep(session, controller.session)
+            controller.session = rule
+            self.assert_equal_deep(rule, controller.session)
 
 
 class MyController(Controller):
