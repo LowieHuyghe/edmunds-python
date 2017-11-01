@@ -273,7 +273,7 @@
 <p>Even the best programming logic and tests can't always foresee every possible scenario where errors can occure. You can report and render these exceptions by registering your own exception-handler.</p>
 <h3 id="define">Define</h3>
 <p>Define your Handler like so:</p>
-<pre><code class="python">from Edmunds.Exceptions.Handler import Handler as EdmundsHandler
+<pre><code class="python">from edmunds.exceptions.handler import Handler as EdmundsHandler
 
 class Handler(EdmundsHandler):
     &quot;&quot;&quot;
@@ -287,7 +287,8 @@ class Handler(EdmundsHandler):
         :type  exception:   Exception
         &quot;&quot;&quot;
         if super(Handler, self).report(exception):
-            pass  # Report
+            # Additional reporting
+            pass
 
     def render(self, exception):
         &quot;&quot;&quot;
@@ -299,22 +300,29 @@ class Handler(EdmundsHandler):
         return super(Handler, self).render(exception)
 </code></pre>
 
+<p><strong>Important!</strong>: The <code>report</code>-function of the edmunds-super-class will log
+the error to <code>self.app.logger</code>. You defined loggers will by default pick up
+caught exceptions.</p>
 <h3 id="register">Register</h3>
 <p>Register the Handler for usage in <code>config/app.py</code>:</p>
-<pre><code class="python">'exceptions':
-{
-    'handler': Handler,
-},
+<pre><code class="python">from app.exceptions.handler import Handler
+
+APP = {
+    'exceptions':
+    {
+        'handler': Handler,
+    },
+}
 </code></pre>
 
 <p>This way the application knows to use your handler in case of an exception.</p>
 <h2 id="logging">Logging</h2>
 <p>Edmunds comes with logging built in. You can activate it in your settings:</p>
-<pre><code class="python">from Edmunds.Log.Drivers.File import File
-from Edmunds.Log.Drivers.Stream import Stream
-from Edmunds.Log.Drivers.SysLog import SysLog
-from Edmunds.Log.Drivers.TimedFile import TimedFile
-from Edmunds.Log.Drivers.GoogleAppEngine import GoogleAppEngine
+<pre><code class="python">from edmunds.log.drivers.file import File
+from edmunds.log.drivers.stream import Stream
+from edmunds.log.drivers.syslog import SysLog
+from edmunds.log.drivers.timedfile import TimedFile
+from edmunds.log.drivers.googleappengine import GoogleAppEngine
 from logging.handlers import SysLogHandler, SYSLOG_UDP_PORT
 from logging import WARNING
 from socket import SOCK_DGRAM
