@@ -72,9 +72,10 @@ class Route(object):
             middleware_instance = middleware_class(self.app)
             middleware_instances.append((middleware_instance, middleware_args, middleware_kwargs))
 
-            before_result = middleware_instance.before(*middleware_args, **middleware_kwargs)
-            if before_result is not None:
-                return before_result
+            before_rv = middleware_instance.before(*middleware_args, **middleware_kwargs)
+            if before_rv is not None:
+                response = self.app.make_response(before_rv)
+                return response
 
         if self.controller_class is not None:
             # Make instance of controller
@@ -85,10 +86,13 @@ class Route(object):
 
             # Call method of controller
             method_func = getattr(controller, self.method_name)
-            response = method_func(*args, **kwargs)
+            rv = method_func(*args, **kwargs)
         else:
             # Call the decorate function
-            response = self.decorate_function(*args, **kwargs)
+            rv = self.decorate_function(*args, **kwargs)
+
+        # Make it a response
+        response = self.app.make_response(rv)
 
         # Handle after middleware
         for (middleware_instance, middleware_args, middleware_kwargs) in list(reversed(middleware_instances)):

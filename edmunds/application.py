@@ -112,10 +112,13 @@ class Application(Flask,
         else:
             return_value = route.decorate
 
-        # Define endpoint name and register the route
-        if 'endpoint' not in options:
-            options['endpoint'] = 'edmunds.route.%s' % rule
-        route_decorator = super(Application, self).route(rule, **options)
-        route_decorator(route.handle)
+        # Define endpoint
+        if 'endpoint' in options:
+            endpoint = options.pop('endpoint')
+        else:
+            endpoint = 'edmunds.route.%s' % rule
+
+        # Add route
+        self.add_url_rule(rule, endpoint=endpoint, view_func=route.handle)
 
         return return_value

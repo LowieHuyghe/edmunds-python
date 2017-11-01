@@ -2,6 +2,7 @@
 from tests.testcase import TestCase
 from edmunds.http.controller import Controller
 from edmunds.http.requestmiddleware import RequestMiddleware
+from flask import Response
 
 
 class TestRoute(TestCase):
@@ -379,6 +380,7 @@ class MyRequestMiddleware(RequestMiddleware):
         return super(MyRequestMiddleware, self).before()
 
     def after(self, response):
+        assert isinstance(response, Response)
 
         TestRoute.cache['timeline'].append(self.__class__.__name__ + '.after')
 
@@ -397,6 +399,7 @@ class MySecondRequestMiddleware(RequestMiddleware):
         return super(MySecondRequestMiddleware, self).before()
 
     def after(self, response, arg1, kwarg1=None):
+        assert isinstance(response, Response)
 
         TestRoute.cache['timeline'].append(self.__class__.__name__ + '.after')
 
@@ -415,6 +418,7 @@ class MyThirdRequestMiddleware(RequestMiddleware):
         return 'Not none'
 
     def after(self, response, arg1, kwarg1=None):
+        assert isinstance(response, Response)
 
         TestRoute.cache['timeline'].append(self.__class__.__name__ + '.after')
 
