@@ -311,7 +311,7 @@ columns for your database-structure.</p>
 <pre><code class="python"># app/database/role.py
 
 from edmunds.auth.models.rolemixin import RoleMixin
-from edmunds.database.model import db
+from edmunds.database.db import db
 
 class Role(db.Model, RoleMixin):
     # __tablename__ = 'role'
@@ -320,11 +320,11 @@ class Role(db.Model, RoleMixin):
 
 # app/database/user.py
 
-from edmunds.database.model import relationship, backref
+from edmunds.database.db import relationship, backref
 from edmunds.auth.models.usermixin import UserMixin
 from app.database.models.role import Role
 from app.database.models.userroles import UserRolesTable
-from edmunds.database.model import db
+from edmunds.database.db import db
 
 class User(db.Model, UserMixin):
     # __tablename__ = 'user'
