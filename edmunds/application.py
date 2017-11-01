@@ -10,6 +10,7 @@ from edmunds.foundation.concerns.session import Session as ConcernsSession
 from edmunds.foundation.concerns.database import Database as ConcernsDatabase
 from edmunds.foundation.concerns.localization import Localization as ConcernsLocalization
 from edmunds.foundation.concerns.cache import Cache as ConcernsCache
+from edmunds.foundation.concerns.auth import Auth as ConcernsAuth
 from edmunds.exceptions.exceptionsserviceprovider import ExceptionsServiceProvider
 from edmunds.log.providers.logserviceprovider import LogServiceProvider
 from edmunds.session.providers.sessionserviceprovider import SessionServiceProvider
@@ -18,6 +19,7 @@ from edmunds.database.providers.databaseserviceprovider import DatabaseServicePr
 from edmunds.localization.providers.localizationserviceprovider import LocalizationServiceProvider
 from edmunds.cache.providers.cacheserviceprovider import CacheServiceProvider
 from edmunds.http.providers.httpserviceprovider import HttpServiceProvider
+from edmunds.auth.providers.authserviceprovider import AuthServiceProvider
 from edmunds.config.config import Config
 from edmunds.http.request import Request
 from edmunds.http.response import Response
@@ -34,7 +36,8 @@ class Application(Flask,
                   ConcernsSession,
                   ConcernsDatabase,
                   ConcernsLocalization,
-                  ConcernsCache):
+                  ConcernsCache,
+                  ConcernsAuth):
     """
     The Edmunds Application
     """
@@ -72,6 +75,7 @@ class Application(Flask,
         self.register(DatabaseServiceProvider)
         self.register(CacheServiceProvider)
         self.register(LocalizationServiceProvider)
+        self.register(AuthServiceProvider)
 
     def route(self, rule, **options):
         """

@@ -1,7 +1,7 @@
 
 # Migrations
 
-Database migrations are built in in Edmunds using Flask-Migrate.
+Database migrations are built in in Edmunds using [Flask-Migrate](https://flask-migrate.readthedocs.io).
 
 
 ## Usage
@@ -20,54 +20,53 @@ python manage.py db upgrade
 ```
 
 Usage of Flask-Migrate documentation:
+
 * [Flask-Migrate](https://flask-migrate.readthedocs.io)
 
-### Tables
+### Models & Tables
 
-Tables of SQLAlchemy are used by Flask-Migrate to describe your database
-structure. Add your table to `app.database.tables` so they are picked up
-by the migration-service:
+Models and tables of SQLAlchemy are used by Flask-Migrate to describe your
+database structure. Add your models and tables to `app.database.models` so
+they are picked up by the migration-service:
 ```python
-# app/database/tables/userstable.py
-from edmunds.database.table import Table, Column, Integer, String
-UsersTable = Table('users',
-                   Column('id', Integer, primary_key=True),
-                   Column('name', String(50)),
-                   extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                   # info={'bind_key': 'users_database'},
-                   )
+# app/database/models/users.py
+from edmunds.database.model import db
+class User(db.Model):
+    # __bind_key__ = 'users_database'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
                    
-# app/database/tables/tagstable.py
-from edmunds.database.table import Table, Column, Integer, String
-TagsTable = Table('tags',
-                  Column('id', Integer, primary_key=True),
-                  Column('name', String(50), unique=True),
-                  extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                  # info={'bind_key': 'users_database'}
-                  )
+# app/database/models/tags.py
+from edmunds.database.model import db
+class Tag(db.Model):
+    # __bind_key__ = 'users_database'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
 
-# app/database/tables/usertagstable.py
-from edmunds.database.table import Table, Column, Integer, ForeignKey
-UserTagsTable = Table('user_tags',
-                      Column('user_id', Integer, ForeignKey('tags.id'), primary_key=True),
-                      Column('tag_id', Integer, ForeignKey('users.id'), primary_key=True),
-                      extend_existing=True,  # To dodge: https://github.com/mitsuhiko/flask-sqlalchemy/issues/478
-                      # info={'bind_key': 'users_database'}
-                      )
+# app/database/models/usertags.py
+from edmunds.database.model import db
+UserTagsTable = db.Table(
+    'user_tags',
+    db.Column('user_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    # info={'bind_key': 'users_database'}
+)
 ```
 
-Further documentation on how to declare your tables can be found here:
+Further documentation on how to declare your models and tables can be
+found here:
+
 * [SQLAlchemy Schema Definition Language](http://docs.sqlalchemy.org/en/latest/core/schema.html)
 * [Multiple Databases (binds)](http://flask-sqlalchemy.pocoo.org/2.2/binds/)
 
 > Note: If you want to customize the package where the migrate-service looks
-> for tables, you can override it in your config:
+> for models and tables, you can override it in your config:
 > ```python
 > APP = {
 >     'database': {
 >         # ...
->         'tables': {
->             'my/location/to/the/tables',
+>         'models': {
+>             'my/location/to/the/models',
 >             'second/location/to/other/tables',
 >         },
 >     },

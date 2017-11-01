@@ -62,10 +62,10 @@ class TestTable(TestCase):
         app = self.create_application()
 
         # Test database
-        self.assert_is_instance(app.database(), Engine)
-        self.assert_is_instance(app.database('mysql'), Engine)
-        self.assert_is_instance(app.database('postgresql'), Engine)
-        self.assert_is_instance(app.database('sqlite'), Engine)
+        self.assert_is_instance(app.database_engine(), Engine)
+        self.assert_is_instance(app.database_engine('mysql'), Engine)
+        self.assert_is_instance(app.database_engine('postgresql'), Engine)
+        self.assert_is_instance(app.database_engine('sqlite'), Engine)
 
         # Test SQLAlchemy config
         self.assert_equal('mysql://root:root@localhost:3306/edmunds', app.config('SQLALCHEMY_DATABASE_URI'))
