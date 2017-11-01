@@ -23,30 +23,30 @@ class MyController(Controller):
     def login(self):
         
         # Fix status for constructed responses
-        self._response.status(404)
+        self.response.status(404)
         
         # Assigns a value to a key
         # Will be used when constructing json-, or render-responses
-        self._response.assign('name', 'Jon Snow')
+        self.response.assign('name', 'Jon Snow')
         
         # Assigns headers to constructed responses
-        self._response.header('XToken', 'mytoken')
+        self.response.header('XToken', 'mytoken')
         
         # Assigns cookie to constructed responses
-        self._response.cookie('XToken', 'mytoken')
+        self.response.cookie('XToken', 'mytoken')
         
         # Returns a rendered template (using assigned values)
-        result = self._response.render_template('mytemplate.html')
+        result = self.response.render_template('mytemplate.html')
         
         # Returns raw response with given content
-        return self._response.raw('My content')
+        return self.response.raw('My content')
         # Returns json response with assigned values
-        return self._response.json()
+        return self.response.json()
         # Returns response with rendered template (using assigned values)
-        return self._response.render('mytemplate.html')
+        return self.response.render('mytemplate.html')
         # Returns response to redirect browser
-        return self._response.redirect('/newlocation')
+        return self.response.redirect('/newlocation')
         # Returns file response
-        return self._response.file('filetodownload.txt')
+        return self.response.file('filetodownload.txt')
         
 ```
