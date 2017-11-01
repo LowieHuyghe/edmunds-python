@@ -1,6 +1,6 @@
 
 from tests.testcase import TestCase
-from edmunds.database.model import db, mapper, relationship, backref
+from edmunds.database.db import db, mapper, relationship, backref
 from sqlalchemy.orm import mapper as sqlalchemy_mapper, relationship as sqlalchemy_relationship, backref as sqlalchemy_backref
 from edmunds.database.databasemanager import DatabaseManager
 from werkzeug.local import LocalProxy

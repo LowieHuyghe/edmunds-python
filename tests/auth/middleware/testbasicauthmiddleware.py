@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware
-from edmunds.database.model import db
+from edmunds.database.db import db
 from werkzeug.exceptions import Unauthorized
 from base64 import b64encode
 from edmunds.encoding.encoding import Encoding
@@ -21,7 +21,7 @@ class TestBasicAuthMiddleware(TestCase):
         self.valid_config = [
             "from edmunds.database.drivers.sqlitememory import SqliteMemory \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from edmunds.database.model import db, relationship, backref \n",
+            "from edmunds.database.db import db, relationship, backref \n",
             "from edmunds.auth.models.usermixin import UserMixin \n",
             "from edmunds.auth.models.rolemixin import RoleMixin \n",
             "from edmunds.storage.drivers.file import File as StorageFile \n",

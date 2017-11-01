@@ -1,7 +1,7 @@
 
 from tests.testcase import TestCase
 from edmunds.auth.middleware.sessionauthmiddleware import SessionAuthMiddleware
-from edmunds.database.model import db
+from edmunds.database.db import db
 from edmunds.database.databasemanager import DatabaseManager
 import json
 
@@ -19,7 +19,7 @@ class TestSessionAuthMiddleware(TestCase):
         self.valid_config = [
             "from edmunds.database.drivers.sqlitememory import SqliteMemory \n",
             "from flask_security import SQLAlchemyUserDatastore \n",
-            "from edmunds.database.model import db, relationship, backref \n",
+            "from edmunds.database.db import db, relationship, backref \n",
             "from edmunds.auth.models.usermixin import UserMixin \n",
             "from edmunds.auth.models.rolemixin import RoleMixin \n",
             "from edmunds.storage.drivers.file import File as StorageFile \n",
