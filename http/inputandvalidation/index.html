@@ -293,9 +293,9 @@ You can use it to access the submitted data.</p>
 
 class MyController(Controller):
     def login(self):
-        username = self._input['username']
-        password = self._input['password']
-        city = self._input.get('city', 'unknown')
+        username = self.input['username']
+        password = self.input['password']
+        city = self.input.get('city', 'unknown')
 </code></pre>
 
 <h2 id="validation">Validation</h2>
