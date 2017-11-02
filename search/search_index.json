@@ -17,7 +17,7 @@
         },
         {
             "location": "/gettingstarted/afreshstart/",
-            "text": "A Fresh Start\n\n\n1. Create a new project\n\n\nLet's first get an Edmunds Instance to kick-start your\nproject. Download it from:\n\n\n\n\nhttps://github.com/LowieHuyghe/edmunds-instance/archive/master.zip\n\n\n\n\nUnzip it, move it and rename it after your project.\n\n\n2. Setup a virtual environment\n\n\nNow setup a virtual environment for your project. If you\nneed some help with that, you can take a look at\n\nThe Hitchhiker's guide to Python\n.\n\n\nNow activate your project's virtual environment.\n\n\n3. Install the dependencies\n\n\nFirst install some required setup packages:\n\n\npip install setuptools_scm\n\n\n\n\nNow install all other dependencies:\n\n\npip install -r requirements.txt\n\n\n\n\n4. Take it for a spin!\n\n\nLet's take it for a spin and run the application:\n\n\npython manage.py run\n\n\n\n\n5. Google App Engine (optional)\n\n\nIf you want to develop for and run in Google App Engine\nyou'll first need to install the \nApp Engine SDK\n.\n\n\nThen install the dependencies in the lib-directory:\n\n\npip install -r requirements.txt -t lib\n\n\n\n\nNow start the development server and you are good to go:\n\n\ndev_appserver.py app.yaml",
+            "text": "A Fresh Start\n\n\n1. Create a new project\n\n\nLet's first get an Edmunds Instance to kick-start your\nproject. Download it from:\n\n\n\n\nhttps://github.com/LowieHuyghe/edmunds-instance/archive/master.zip\n\n\n\n\nUnzip it, move it and rename it after your project.\n\n\n2. Setup a virtual environment\n\n\nNow setup a virtual environment for your project. If you\nneed some help with that, you can take a look at\n\nThe Hitchhiker's guide to Python\n.\n\n\nNow activate your project's virtual environment.\n\n\n3. Install the dependencies\n\n\nFirst install some required setup packages:\n\n\npip install setuptools_scm\n\n\n\n\nNow install all other dependencies:\n\n\npip install -r requirements.txt\n\n\n\n\n4. Some configuration\n\n\nNext we make a copy of the \n.env.example.py\n-file and rename it to \n.env.py\n.\nChange the configuration in the file where needed.\n\n\n\n\nImportant!\n: Don't forget to personalise \nSECRET_KEY\n and \nSECURITY_PASSWORD_SALT\n\nfor production!\n\n\n\n\n5. Take it for a spin!\n\n\nLet's take it for a spin and run the application:\n\n\npython manage.py run\n\n\n\n\n6. Google App Engine (optional)\n\n\nIf you want to develop for and run in Google App Engine\nyou'll first need to install the \nApp Engine SDK\n.\n\n\nThen install the dependencies in the lib-directory:\n\n\npip install -r requirements.txt -t lib\n\n\n\n\nNow start the development server and you are good to go:\n\n\ndev_appserver.py app.yaml",
             "title": "A Fresh Start"
         },
         {
@@ -41,14 +41,19 @@
             "title": "3. Install the dependencies"
         },
         {
-            "location": "/gettingstarted/afreshstart/#4-take-it-for-a-spin",
-            "text": "Let's take it for a spin and run the application:  python manage.py run",
-            "title": "4. Take it for a spin!"
+            "location": "/gettingstarted/afreshstart/#4-some-configuration",
+            "text": "Next we make a copy of the  .env.example.py -file and rename it to  .env.py .\nChange the configuration in the file where needed.   Important! : Don't forget to personalise  SECRET_KEY  and  SECURITY_PASSWORD_SALT \nfor production!",
+            "title": "4. Some configuration"
         },
         {
-            "location": "/gettingstarted/afreshstart/#5-google-app-engine-optional",
+            "location": "/gettingstarted/afreshstart/#5-take-it-for-a-spin",
+            "text": "Let's take it for a spin and run the application:  python manage.py run",
+            "title": "5. Take it for a spin!"
+        },
+        {
+            "location": "/gettingstarted/afreshstart/#6-google-app-engine-optional",
             "text": "If you want to develop for and run in Google App Engine\nyou'll first need to install the  App Engine SDK .  Then install the dependencies in the lib-directory:  pip install -r requirements.txt -t lib  Now start the development server and you are good to go:  dev_appserver.py app.yaml",
-            "title": "5. Google App Engine (optional)"
+            "title": "6. Google App Engine (optional)"
         },
         {
             "location": "/gettingstarted/configuration/",
