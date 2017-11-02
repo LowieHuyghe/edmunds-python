@@ -233,15 +233,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-take-it-for-a-spin" title="4. Take it for a spin!" class="md-nav__link">
-    4. Take it for a spin!
+  <a href="#4-some-configuration" title="4. Some configuration" class="md-nav__link">
+    4. Some configuration
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-google-app-engine-optional" title="5. Google App Engine (optional)" class="md-nav__link">
-    5. Google App Engine (optional)
+  <a href="#5-take-it-for-a-spin" title="5. Take it for a spin!" class="md-nav__link">
+    5. Take it for a spin!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-google-app-engine-optional" title="6. Google App Engine (optional)" class="md-nav__link">
+    6. Google App Engine (optional)
   </a>
   
 </li>
@@ -758,15 +765,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-take-it-for-a-spin" title="4. Take it for a spin!" class="md-nav__link">
-    4. Take it for a spin!
+  <a href="#4-some-configuration" title="4. Some configuration" class="md-nav__link">
+    4. Some configuration
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-google-app-engine-optional" title="5. Google App Engine (optional)" class="md-nav__link">
-    5. Google App Engine (optional)
+  <a href="#5-take-it-for-a-spin" title="5. Take it for a spin!" class="md-nav__link">
+    5. Take it for a spin!
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-google-app-engine-optional" title="6. Google App Engine (optional)" class="md-nav__link">
+    6. Google App Engine (optional)
   </a>
   
 </li>
@@ -808,12 +822,19 @@ need some help with that, you can take a look at
 <pre><code class="bash">pip install -r requirements.txt
 </code></pre>
 
-<h3 id="4-take-it-for-a-spin">4. Take it for a spin!</h3>
+<h3 id="4-some-configuration">4. Some configuration</h3>
+<p>Next we make a copy of the <code>.env.example.py</code>-file and rename it to <code>.env.py</code>.
+Change the configuration in the file where needed.</p>
+<blockquote>
+<p><strong>Important!</strong>: Don't forget to personalise <code>SECRET_KEY</code> and <code>SECURITY_PASSWORD_SALT</code>
+for production!</p>
+</blockquote>
+<h3 id="5-take-it-for-a-spin">5. Take it for a spin!</h3>
 <p>Let's take it for a spin and run the application:</p>
 <pre><code class="bash">python manage.py run
 </code></pre>
 
-<h3 id="5-google-app-engine-optional">5. Google App Engine (optional)</h3>
+<h3 id="6-google-app-engine-optional">6. Google App Engine (optional)</h3>
 <p>If you want to develop for and run in Google App Engine
 you'll first need to install the <a href="https://cloud.google.com/appengine/docs/standard/python/download">App Engine SDK</a>.</p>
 <p>Then install the dependencies in the lib-directory:</p>
