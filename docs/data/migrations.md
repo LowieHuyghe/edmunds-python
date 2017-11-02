@@ -30,21 +30,21 @@ database structure. Add your models and tables to `app.database.models` so
 they are picked up by the migration-service:
 ```python
 # app/database/models/users.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 class User(db.Model):
     # __bind_key__ = 'users_database'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
                    
 # app/database/models/tags.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 class Tag(db.Model):
     # __bind_key__ = 'users_database'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
 # app/database/models/usertags.py
-from edmunds.database.model import db
+from edmunds.database.db import db
 UserTagsTable = db.Table(
     'user_tags',
     db.Column('user_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),

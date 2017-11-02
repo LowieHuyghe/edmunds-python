@@ -1,32 +1,9 @@
 
-import os
 import random
 import string
 import re
 from edmunds.encoding.encoding import Encoding
 
-
-def get_full_class_name(class_):
-    """
-    Get full class name of class
-    :param class_:  The class
-    :type  class_:  class
-    :return:        The full class name
-    :rtype:         string
-    """
-
-    return class_.__module__ + '.' + class_.__name__
-
-def get_dir_from_file(file):
-    """
-    Get the directory of the given file
-    :param file:    The FIle
-    :type  file:    str
-    :return:        The directory
-    :rtype:         str
-    """
-
-    return os.path.dirname(os.path.realpath(file))
 
 def random_str(length):
     """
@@ -39,6 +16,7 @@ def random_str(length):
 
     return Encoding.normalize(''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(length)))
 
+
 def random_int(min, max):
     """
     Get random integer
@@ -48,6 +26,7 @@ def random_int(min, max):
     """
 
     return random.randint(min, max)
+
 
 def snake_case(camel_case):
     """

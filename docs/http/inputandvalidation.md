@@ -33,9 +33,9 @@ from edmunds.http.controller import Controller
 
 class MyController(Controller):
     def login(self):
-        username = self._input['username']
-        password = self._input['password']
-        city = self._input.get('city', 'unknown')
+        username = self.input['username']
+        password = self.input['password']
+        city = self.input.get('city', 'unknown')
 ```
 
 
@@ -63,7 +63,7 @@ class LoginValidator(Validator):
 
 class MyController(Controller):
     def login(self):
-        validator = self._input.validate(LoginValidator)
+        validator = self.input.validate(LoginValidator)
         if validator.validates:
             pass
 ```

@@ -13,4 +13,7 @@ class ProfilerServiceProvider(ServiceProvider):
         Register the service provider
         """
 
+        if not self.app.debug or not self.app.config('app.profiler.enabled', False):
+            return
+
         self.app.middleware(ProfilerMiddleware)

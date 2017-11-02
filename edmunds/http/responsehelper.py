@@ -1,6 +1,6 @@
 
 from werkzeug.datastructures import Headers
-from edmunds.globals import render_template, redirect, send_file, jsonify, make_response
+from edmunds.globals import render_template, redirect, send_from_directory, jsonify, make_response
 from threading import Lock
 from edmunds.application import Application
 
@@ -9,7 +9,7 @@ class ResponseHelper(object):
 
     def __init__(self):
         """
-        Constructor 
+        Constructor
         """
         self._status = None
         self.assigns = dict()
@@ -167,88 +167,34 @@ class ResponseHelper(object):
         """
         return self._apply_data(redirect(location, Response=Application.response_class))
 
-    def file(self, filename_or_fp, mimetype=None, as_attachment=False,
-             attachment_filename=None, add_etags=True,
-             cache_timeout=None, conditional=False, last_modified=None):
-        """
-        Sends the contents of a file to the client.  This will use the
-        most efficient method available and configured.  By default it will
-        try to use the WSGI server's file_wrapper support.  Alternatively
-        you can set the application's :attr:`~Flask.use_x_sendfile` attribute
-        to ``True`` to directly emit an ``X-Sendfile`` header.  This however
-        requires support of the underlying webserver for ``X-Sendfile``.
-    
-        By default it will try to guess the mimetype for you, but you can
-        also explicitly provide one.  For extra security you probably want
-        to send certain files as attachment (HTML for instance).  The mimetype
-        guessing requires a `filename` or an `attachment_filename` to be
-        provided.
-    
-        ETags will also be attached automatically if a `filename` is provided. You
-        can turn this off by setting `add_etags=False`.
-    
-        If `conditional=True` and `filename` is provided, this method will try to
-        upgrade the response stream to support range requests.  This will allow
-        the request to be answered with partial content response.
-    
-        Please never pass filenames to this function from user sources;
-        you should use :func:`send_from_directory` instead.
-    
-        .. versionadded:: 0.2
-    
+    def file(self, directory, filename, **options):
+        """Send a file from a given directory with :func:`send_file`.  This
+        is a secure way to quickly expose static files from an upload folder
+        or something similar.
+
+        Example usage::
+
+            @app.route('/uploads/<path:filename>')
+            def download_file(filename):
+                return send_from_directory(app.config['UPLOAD_FOLDER'],
+                                           filename, as_attachment=True)
+
+        .. admonition:: Sending files and Performance
+
+           It is strongly recommended to activate either ``X-Sendfile`` support in
+           your webserver or (if no authentication happens) to tell the webserver
+           to serve files for the given path on its own without calling into the
+           web application for improved performance.
+
         .. versionadded:: 0.5
-           The `add_etags`, `cache_timeout` and `conditional` parameters were
-           added.  The default behavior is now to attach etags.
-    
-        .. versionchanged:: 0.7
-           mimetype guessing and etag support for file objects was
-           deprecated because it was unreliable.  Pass a filename if you are
-           able to, otherwise attach an etag yourself.  This functionality
-           will be removed in Flask 1.0
-    
-        .. versionchanged:: 0.9
-           cache_timeout pulls its default from application config, when None.
-    
-        .. versionchanged:: 0.12
-           The filename is no longer automatically inferred from file objects. If
-           you want to use automatic mimetype and etag support, pass a filepath via
-           `filename_or_fp` or `attachment_filename`.
-    
-        .. versionchanged:: 0.12
-           The `attachment_filename` is preferred over `filename` for MIME-type
-           detection.
-    
-        :param filename_or_fp: the filename of the file to send in `latin-1`.
-                               This is relative to the :attr:`~Flask.root_path`
-                               if a relative path is specified.
-                               Alternatively a file object might be provided in
-                               which case ``X-Sendfile`` might not work and fall
-                               back to the traditional method.  Make sure that the
-                               file pointer is positioned at the start of data to
-                               send before calling :func:`send_file`.
-        :param mimetype: the mimetype of the file if provided. If a file path is
-                         given, auto detection happens as fallback, otherwise an
-                         error will be raised.
-        :param as_attachment: set to ``True`` if you want to send this file with
-                              a ``Content-Disposition: attachment`` header.
-        :param attachment_filename: the filename for the attachment if it
-                                    differs from the file's filename.
-        :param add_etags: set to ``False`` to disable attaching of etags.
-        :param conditional: set to ``True`` to enable conditional responses.
-    
-        :param cache_timeout: the timeout in seconds for the headers. When ``None``
-                              (default), this value is set by
-                              :meth:`~Flask.get_send_file_max_age` of
-                              :data:`~flask.current_app`.
-        :param last_modified: set the ``Last-Modified`` header to this value,
-            a :class:`~datetime.datetime` or timestamp.
-            If a file was passed, this overrides its mtime.
-        :return:        Response
-        :rtype:         edmunds.http.response.Response
+
+        :param directory: the directory where all the files are stored.
+        :param filename: the filename relative to that directory to
+                         download.
+        :param options: optional keyword arguments that are directly
+                        forwarded to :func:`send_file`.
         """
-        return self._apply_data(send_file(filename_or_fp, mimetype, as_attachment,
-                                          attachment_filename, add_etags,
-                                          cache_timeout, conditional, last_modified))
+        return self._apply_data(send_from_directory(directory, filename, **options))
 
     def _apply_data(self, response_obj):
         """

@@ -9,7 +9,7 @@ from flask import current_app as flask_current_app, \
     g as flask_g, \
     render_template as flask_render_template, \
     redirect as flask_redirect, \
-    send_file as flask_send_file, \
+    send_from_directory as flask_send_from_directory, \
     jsonify as flask_jsonify, \
     _request_ctx_stack as flask__request_ctx_stack
 from functools import partial
@@ -29,7 +29,7 @@ g = flask_g
 _request_ctx_stack = flask__request_ctx_stack
 render_template = flask_render_template
 redirect = flask_redirect
-send_file = flask_send_file
+send_from_directory = flask_send_from_directory
 jsonify = flask_jsonify
 
 

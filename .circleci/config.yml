@@ -161,7 +161,7 @@ jobs:
       - image: python:3.6
     steps:
       - checkout
-      - run: pip install mkdocs
+      - run: pip install mkdocs mkdocs-material
       - run:
           command: |
             rm -rf site
@@ -217,6 +217,8 @@ workflows:
           filters:
             tags:
               only: /v[0-9]+(\.[0-9]+)*/
+            branches:
+              only: master
           requires:
             - test-2.7
             - test-3.4

@@ -51,6 +51,7 @@ The instances can be used for database, so you can have multiple at once.
 The first one will be used by default.
 
 The available drivers are:
+
 - **File**: For caching using files.
 - **Memcached**: For Memcached caching.
 - **Redis**: For Redis caching.
@@ -58,13 +59,14 @@ The available drivers are:
 This configuration is based off the original arguments of the Werkzeug cache
 drivers. So more information regarding configuration can be found in the
 Werkzeug documentation:
+
 * [Werkzeug Cache](http://werkzeug.pocoo.org/docs/0.12/contrib/cache/)
 
 
 ## Usage
 
 When fetching an instance, you will receive a cache-driver
-(werkzeug.contrib.cache.BaseCache) for the specified cache instance.
+(`werkzeug.contrib.cache.BaseCache`) for the specified cache instance.
 You can request one like so:
 ```python
 # Fetch the default driver, or by name
@@ -73,4 +75,5 @@ driver = app.cache(name='memcached')
 ```
 
 Further usage of the cache-driver is described in the Werkzeug documentation:
+
 * [Werkzeug Cache](http://werkzeug.pocoo.org/docs/0.12/contrib/cache/)
