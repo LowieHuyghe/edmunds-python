@@ -50,6 +50,7 @@ app.route('/user/<username>', uses = (MyController, 'get_user'))
 app.route('/post/<int:post_id>', uses = (MyController, 'get_post')) # Using converters
 ```
 Other possible converters:
+
 - **string**: accepts any text without a slash (the default)
 - **int**: accepts integers
 - **float**: like int but for floating point values
@@ -77,6 +78,7 @@ app.route('/login', uses = (LoginController, 'get_login'), methods = ['GET'])
 app.route('/login', uses = (LoginController, 'post_login'), methods = ['POST'])
 ```
 All supported methods:
+
 - `GET`
 - `HEAD`
 - `POST`

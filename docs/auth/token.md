@@ -18,6 +18,7 @@ app.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, '
 ## TL;DR
 
 The following request will give you an authentication token:
+
 * Post-request to `/login`
   - Data:
     - `email`
@@ -26,5 +27,6 @@ The following request will give you an authentication token:
     - `content-type`: `application/json`
 
 Add the token to future requests using either:
+
 - Request-data: `auth_token`
 - Header: `Authentication-Token`

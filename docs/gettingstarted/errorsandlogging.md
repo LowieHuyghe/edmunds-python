@@ -130,6 +130,7 @@ APP = {
 The instances will all be used for logging, so you can have multiple at once.
 
 The available drivers are:
+
 - **File**: Print logs to file which can be separated by size.
 - **TimedFile**: Print logs to file which can be separated by time-interval.
 - **SysLog**: Print logs to syslog.

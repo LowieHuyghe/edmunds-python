@@ -6,6 +6,7 @@ That's why Edmunds helps you out when it comes down to translating.
 
 Sentences used in translations are dynamically constructed using parameters,
 the plural-function and the gender-function.
+
 * Parameters will be filled in as given and formatted when in the correct format (integer and float as number,
 time and date and datetime as time. string will remain untouched.).
 * The plural-function lets you print plurals which is different depending on
@@ -62,6 +63,7 @@ APP = {
 ```
 
 The available drivers are:
+
 - **ConfigTranslator**: Fetches translations from config
 
 
@@ -73,9 +75,11 @@ The available drivers are:
 * Functions are defined as follows: `--functionname:{argname1},{argname2}__option 1__option 2--`
   - Plural-function: `--plural:{count}__{count} apple__{count} apples--`
   - Gender-function: `--gender:{user}__his apple__her apple--`
+
 > Note: Parameters used as arguments of a function will not be formatted.
 
 Examples:
+
 * `This is a beautiful translation in en. Is it not, {name}?`
 * `A smashing sentence in en!`
 * `I'm taking a liking to --gender:{user}__him__her--...`
