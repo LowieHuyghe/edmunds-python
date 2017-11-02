@@ -11,13 +11,15 @@ is a wrapper for the
 from edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware
 from app.http.controllers.mycontroller import MyController
 
-app.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, 'get_logged_in'))
+app.route('/loggedin', uses=(MyController, 'get_logged_in')) \
+    .middleware(TokenAuthMiddleware)
 ```
 
 
 ## TL;DR
 
 The following request will give you an authentication token:
+
 * Post-request to `/login`
   - Data:
     - `email`
@@ -26,5 +28,6 @@ The following request will give you an authentication token:
     - `content-type`: `application/json`
 
 Add the token to future requests using either:
+
 - Request-data: `auth_token`
 - Header: `Authentication-Token`

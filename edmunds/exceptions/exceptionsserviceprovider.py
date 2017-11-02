@@ -14,13 +14,17 @@ class ExceptionsServiceProvider(ServiceProvider):
         Register the service provider
         """
 
+        # Construct and define handler
+        handler_class = self.app.config('app.exceptions.handler', Handler)
+        handler = handler_class(self.app)
+        self.app.extensions['edmunds.exceptions.handler'] = handler
+
         # Add all the exception to handle
         exceptions = list(default_exceptions.values())
         exceptions.append(Exception)
 
         # Register each exception
         for exception_class in exceptions:
-
             @self.app.errorhandler(exception_class)
             def handle_exception(exception):
                 """
@@ -29,9 +33,5 @@ class ExceptionsServiceProvider(ServiceProvider):
                 :type  exception:   Exception
                 :return:            The response
                 """
-
-                handler_class = self.app.config('app.exceptions.handler', Handler)
-                handler = handler_class(self.app)
-
-                handler.report(exception)
-                return handler.render(exception)
+                self.app.extensions['edmunds.exceptions.handler'].report(exception)
+                return self.app.extensions['edmunds.exceptions.handler'].render(exception)

@@ -1,21 +1,26 @@
 
 # Debugging and Profiling
 
-When all hell breaks loose or your application is underperforming, debugging and profiling is the answer.
+When all hell breaks loose or your application is underperforming,
+debugging and profiling is the answer.
 
 
 ## Debugging
 
-Debugging your application can be done in several ways. Using your IDE, `pdb`, `pudb`,... There are many options, but here `pdb` and `pudb` will be explained.
+Debugging your application can be done in several ways. Using your
+IDE, `pdb`, `pudb`,... There are many options, but here `pdb` and
+`pudb` will be explained.
 
 ### Pdb
 
-[Pdb, the python debugger](https://docs.python.org/2/library/pdb.html), is a minimal debugger that comes straight out of the box in python. It runs in the terminal and has a minimal interface.
+[Pdb, the python debugger](https://docs.python.org/2/library/pdb.html),
+is a minimal debugger that comes straight out of the box in python.
+It runs in the terminal and has a minimal interface.
 
 #### Start pdb
 
 ```bash
-python -m pdb main.py
+python -m pdb manage.py run
 ```
 
 #### Debug with pdb
@@ -30,7 +35,9 @@ More debug-options can be found in the [documentation](https://docs.python.org/2
 
 ### Pudb
 
-[Pudb](https://pypi.python.org/pypi/pudb) is a more interactive debugger. It runs in the terminal and has a nice interface which displays the code, stack, variables,...
+[Pudb](https://pypi.python.org/pypi/pudb) is a more interactive debugger.
+It runs in the terminal and has a nice interface which displays the code,
+stack, variables,...
 
 #### Install pudb
 
@@ -40,7 +47,7 @@ More debug-options can be found in the [documentation](https://docs.python.org/2
 #### Start pudb
 
 ```bash
-pudb main.py
+pudb manage.py run
 ```
 
 #### Debug with pudb
@@ -57,9 +64,9 @@ More debug-options can be found in the [documentation](https://pypi.python.org/p
 
 Edmunds comes with profiling built in. You can activate it in your settings:
 ```python
-from Edmunds.Profiler.Drivers.CallGraph import CallGraph
-from Edmunds.Profiler.Drivers.Stream import Stream
-from Edmunds.Profiler.Drivers.BlackfireIo import BlackfireIo
+from edmunds.profiler.drivers.callgraph import CallGraph
+from edmunds.profiler.drivers.stream import Stream
+from edmunds.profiler.drivers.blackfireio import BlackfireIo
 import sys
 
 APP = {
@@ -95,6 +102,7 @@ APP = {
 The instances will all be used for profiling, so you can have multiple at once.
 
 The available drivers are:
+
 - **Stream**: Print output in the given stream.
 - **CallGraph**: Outputs in CallGraph-format to open in a viewer.
 - **BlackfireIo**: Output in BlackfireIo-format to upload to [Blackfire.io](https://blackfire.io/).

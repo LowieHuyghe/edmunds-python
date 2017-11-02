@@ -30,23 +30,29 @@ class TestHandler(TestCase):
         rule = '/' + self.rand_str(20)
         abort_exception = None
 
+        self.write_config([
+            "from tests.exceptions.testhandler import MyHandler \n",
+            "APP = { \n",
+            "    'debug': False, \n",
+            "    'exceptions': { \n",
+            "        'handler': MyHandler \n",
+            "    } \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
         # Add route
-        @self.app.route(rule)
+        @app.route(rule)
         def handle_route():
             TestHandler.cache['timeline'].append('handle_route')
             abort(abort_exception)
             return ''
 
-        # Check current handler and add new
-        self.app.debug = False
-        self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
-        self.app.config({
-            'app.exceptions.handler': MyHandler
-        })
-        self.assert_equal(MyHandler, self.app.config('app.exceptions.handler', None))
+        # Check current handler
+        self.assert_equal(MyHandler, app.config('app.exceptions.handler', None))
 
         # Call route
-        with self.app.test_client() as c:
+        with app.test_client() as c:
 
             # Loop http exceptions
             for http_exception in default_exceptions.values():
@@ -80,16 +86,22 @@ class TestHandler(TestCase):
 
         rule = '/' + self.rand_str(20)
 
-        # Check current handler and add new
-        self.app.debug = False
-        self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
-        self.app.config({
-            'app.exceptions.handler': MyHandler
-        })
-        self.assert_equal(MyHandler, self.app.config('app.exceptions.handler', None))
+        self.write_config([
+            "from tests.exceptions.testhandler import MyHandler \n",
+            "APP = { \n",
+            "    'debug': False, \n",
+            "    'exceptions': { \n",
+            "        'handler': MyHandler \n",
+            "    } \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
+        # Check current handler
+        self.assert_equal(MyHandler, app.config('app.exceptions.handler', None))
 
         # Call route
-        with self.app.test_client() as c:
+        with app.test_client() as c:
             rv = c.get(rule)
 
             self.assert_equal('rendered', rv.get_data(True))
@@ -113,22 +125,28 @@ class TestHandler(TestCase):
 
         rule = '/' + self.rand_str(20)
 
+        self.write_config([
+            "from tests.exceptions.testhandler import MyHandler \n",
+            "APP = { \n",
+            "    'debug': False, \n",
+            "    'exceptions': { \n",
+            "        'handler': MyHandler \n",
+            "    } \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
         # Add route
-        @self.app.route(rule)
+        @app.route(rule)
         def handle_route():
             TestHandler.cache['timeline'].append('handle_route')
             raise RuntimeError('MyRuntimeError')
 
-        # Check current handler and add new
-        self.app.debug = False
-        self.assert_not_equal(MyHandler, self.app.config('app.exceptions.handler', None))
-        self.app.config({
-            'app.exceptions.handler': MyHandler
-        })
-        self.assert_equal(MyHandler, self.app.config('app.exceptions.handler', None))
+        # Check current handler
+        self.assert_equal(MyHandler, app.config('app.exceptions.handler', None))
 
         # Call route
-        with self.app.test_client() as c:
+        with app.test_client() as c:
             rv = c.get(rule)
 
             self.assert_equal('rendered', rv.get_data(True))
@@ -157,26 +175,32 @@ class TestHandler(TestCase):
         rule1 = '/' + self.rand_str(20)
         rule2 = '/' + self.rand_str(20)
 
+        self.write_config([
+            "from tests.exceptions.testhandler import MyHandler \n",
+            "APP = { \n",
+            "    'debug': False, \n",
+            "    'exceptions': { \n",
+            "        'handler': MyHandler \n",
+            "    } \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
         # Add route
-        @self.app.route(rule1)
+        @app.route(rule1)
         def handle_route1():
             TestHandler.cache['timeline'].append('handle_route1')
             raise SystemError()
 
-        @self.app.route(rule2)
+        @app.route(rule2)
         def handle_route2():
             TestHandler.cache['timeline'].append('handle_route2')
             raise OSError()
 
-        self.app.debug = False
-        self.app.config({
-            'app.exceptions.handler': MyHandler
-        })
-
         # Call route
-        with self.app.test_client() as c:
+        with app.test_client() as c:
             c.get(rule1)
-        with self.app.test_client() as c:
+        with app.test_client() as c:
             c.get(rule2)
 
             self.assert_equal(7, len(TestHandler.cache['timeline']))
@@ -198,19 +222,25 @@ class TestHandler(TestCase):
 
         rule = '/' + self.rand_str(20)
 
+        self.write_config([
+            "from tests.exceptions.testhandler import MyHandler \n",
+            "APP = { \n",
+            "    'debug': True, \n",
+            "    'exceptions': { \n",
+            "        'handler': MyHandler \n",
+            "    } \n",
+            "} \n",
+        ])
+        app = self.create_application()
+
         # Add route
-        @self.app.route(rule)
+        @app.route(rule)
         def handle_route():
             raise RuntimeError(rule)
 
-        self.app.debug = True
-        self.app.config({
-            'app.exceptions.handler': MyHandler
-        })
-
         # Call route
         with self.assert_raises_regexp(RuntimeError, rule):
-            with self.app.test_client() as c:
+            with app.test_client() as c:
                 c.get(rule)
 
 
@@ -219,16 +249,9 @@ class MyHandler(EdmundsHandler):
     Exception Handler class
     """
 
-    def __init__(self, app):
-        """
-        Initiate
-        :param app:     The application
-        :type  app:     Edmunds.Application
-        """
-
-        super(MyHandler, self).__init__(app)
-
-        self.dont_report.append(OSError)
+    dont_report = [
+        OSError
+    ]
 
     def report(self, exception):
         """

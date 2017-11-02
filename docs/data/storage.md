@@ -9,8 +9,8 @@ And in Edmunds it's highly customizable!
 
 You can set your storage preferences in the settings:
 ```python
-from Edmunds.Storage.Drivers.File import File
-from Edmunds.Storage.Drivers.GoogleCloudStorage import GoogleCloudStorage
+from edmunds.storage.drivers.file import File
+from edmunds.storage.drivers.googlecloudstorage import GoogleCloudStorage
 
 APP = {
     'storage':
@@ -40,6 +40,7 @@ The instances can be used for storage, so you can have multiple at once.
 The first one will be used by default.
 
 The available drivers are:
+
 - **File**: Store files using the default file-system.
 - **GoogleCloudStorage**: Store files using Google Cloud Storage.
 

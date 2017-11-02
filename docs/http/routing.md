@@ -1,17 +1,19 @@
 
 # Routing
 
-Routing the request has slightly been modified with some inspiration from Laravel. The routing of Flask applies, but a minor change has been made so controllers can be used.
+Routing the request has slightly been modified with some inspiration from
+Laravel. The routing of Flask applies, but a minor change has been made
+so controllers can be used.
 
 
 ## Basic routing
 
 ```python
-app.route('/', uses = (MyController, 'get_index'))
+app.route('/', uses=(MyController, 'get_index'))
 ```
 This will route the request to `get_index` in `MyController`:
 ```python
-from Edmunds.Http.Controller import Controller
+from edmunds.http.controller import Controller
 
 class MyController(Controller):
     """
@@ -33,7 +35,8 @@ class MyController(Controller):
         return 'Hello World!'
 
 ```
-As you can see there is a method called `initialize`. This method is responsible for initializing the controller.
+As you can see there is a method called `initialize`. This method is
+responsible for initializing the controller.
 
 Constructing and initializing the controller is done in this order:
 
@@ -46,10 +49,11 @@ Constructing and initializing the controller is done in this order:
 
 Adding variable parts to a url is done by marking them with special sections:
 ```python
-app.route('/user/<username>', uses = (MyController, 'get_user'))
-app.route('/post/<int:post_id>', uses = (MyController, 'get_post')) # Using converters
+app.route('/user/<username>', uses=(MyController, 'get_user'))
+app.route('/post/<int:post_id>', uses=(MyController, 'get_post')) # Using converters
 ```
 Other possible converters:
+
 - **string**: accepts any text without a slash (the default)
 - **int**: accepts integers
 - **float**: like int but for floating point values
@@ -73,10 +77,11 @@ As seen previously, the parameters are also passed to the `initialize`-method.
 
 HTTP knows different methods which can be defined in the routes. By default the route will listen to `GET`-requests.
 ```python
-app.route('/login', uses = (LoginController, 'get_login'), methods = ['GET'])
-app.route('/login', uses = (LoginController, 'post_login'), methods = ['POST'])
+app.route('/login', uses=(LoginController, 'get_login'), methods = ['GET'])
+app.route('/login', uses=(LoginController, 'post_login'), methods = ['POST'])
 ```
 All supported methods:
+
 - `GET`
 - `HEAD`
 - `POST`

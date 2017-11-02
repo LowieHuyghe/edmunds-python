@@ -10,6 +10,8 @@ is a wrapper for the
 from edmunds.auth.middleware.basicauthmiddleware import BasicAuthMiddleware
 from app.http.controllers.mycontroller import MyController
 
-app.route('/loggedin', middleware=[BasicAuthMiddleware], uses = (MyController, 'get_logged_in'))
-app.route('/loggedin', middleware=[(BasicAuthMiddleware, 'myrealm')], uses = (MyController, 'get_logged_in'))
+app.route('/loggedin', uses=(MyController, 'get_logged_in')) \
+    .middleware(BasicAuthMiddleware)
+app.route('/loggedin', uses=(MyController, 'get_logged_in')) \
+    .middleware(BasicAuthMiddleware, 'myrealm')
 ```

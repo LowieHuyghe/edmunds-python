@@ -15,18 +15,18 @@ class TestRuntimeEnvironment(TestCase):
 
         # Testing
         self.assert_equal('testing', self.app.environment())
-        self.assert_false(self.app.environment('local'))
-        self.assert_false(self.app.is_local())
+        self.assert_false(self.app.environment('development'))
+        self.assert_false(self.app.is_development())
         self.assert_true(self.app.environment('testing'))
         self.assert_true(self.app.is_testing())
         self.assert_false(self.app.environment('production'))
         self.assert_false(self.app.is_production())
 
         # Local
-        self.app = self.create_application('local')
-        self.assert_equal('local', self.app.environment())
-        self.assert_true(self.app.environment('local'))
-        self.assert_true(self.app.is_local())
+        self.app = self.create_application('development')
+        self.assert_equal('development', self.app.environment())
+        self.assert_true(self.app.environment('development'))
+        self.assert_true(self.app.is_development())
         self.assert_false(self.app.environment('testing'))
         self.assert_false(self.app.is_testing())
         self.assert_false(self.app.environment('production'))
@@ -35,8 +35,8 @@ class TestRuntimeEnvironment(TestCase):
         # Production
         self.app = self.create_application('production')
         self.assert_equal('production', self.app.environment())
-        self.assert_false(self.app.environment('local'))
-        self.assert_false(self.app.is_local())
+        self.assert_false(self.app.environment('development'))
+        self.assert_false(self.app.is_development())
         self.assert_false(self.app.environment('testing'))
         self.assert_false(self.app.is_testing())
         self.assert_true(self.app.environment('production'))

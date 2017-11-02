@@ -23,6 +23,7 @@ APP = {
 The instances will all be used for session, so you can have multiple at once.
 
 The available drivers are:
+
 - **SessionCookie**: Sessions using cookies (see [docs](http://flask.pocoo.org/docs/0.11/quickstart/#sessions))
 
 
@@ -35,10 +36,10 @@ from edmunds.http.controller import Controller
 
 class MyController(Controller):
     def login(self):
-        prev_username = self._session['username']
-        prev_username = self._session.pop('username', None)
-        del self._session['username']
-        self._session['username'] = self._input['username']
+        prev_username = self.session['username']
+        prev_username = self.session.pop('username', None)
+        del self.session['username']
+        self.session['username'] = self._input['username']
 ```
 
 

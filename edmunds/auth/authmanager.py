@@ -1,7 +1,7 @@
 
 from edmunds.foundation.patterns.manager import Manager
 from flask_security import Security, SQLAlchemyUserDatastore
-from edmunds.database.model import db
+from edmunds.database.db import db
 
 
 class AuthManager(Manager):

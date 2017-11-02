@@ -10,7 +10,7 @@ from flask import current_app as flask_current_app, \
     g as flask_g, \
     render_template as flask_render_template, \
     redirect as flask_redirect, \
-    send_file as flask_send_file, \
+    send_from_directory as flask_send_from_directory, \
     jsonify as flask_jsonify, \
     _request_ctx_stack as flask__request_ctx_stack
 from werkzeug.local import LocalProxy
@@ -26,7 +26,7 @@ from edmunds.globals import abc, \
     _request_ctx_stack, \
     render_template, \
     redirect, \
-    send_file, \
+    send_from_directory, \
     jsonify, \
     visitor
 from edmunds.http.visitor import Visitor
@@ -60,7 +60,7 @@ class TestGlobals(TestCase):
         self.assert_equal_deep(flask__request_ctx_stack, _request_ctx_stack)
         self.assert_equal_deep(flask_render_template, render_template)
         self.assert_equal_deep(flask_redirect, redirect)
-        self.assert_equal_deep(flask_send_file, send_file)
+        self.assert_equal_deep(flask_send_from_directory, send_from_directory)
         self.assert_equal_deep(flask_jsonify, jsonify)
 
         self.assert_is_instance(visitor, LocalProxy)
