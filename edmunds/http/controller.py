@@ -17,15 +17,15 @@ class Controller(object):
         :type  app: edmunds.application.Application
         """
 
-        self._app = app
-        self._request = request
-        self._visitor = visitor
-        self.__input = None
-        self.__input_lock = Lock()
-        self.__session = None
-        self.__session_lock = Lock()
-        self.__response = None
-        self.__response_lock = Lock()
+        self.app = app
+        self.request = request
+        self.visitor = visitor
+        self._input = None
+        self._input_lock = Lock()
+        self._session = None
+        self._session_lock = Lock()
+        self._response = None
+        self._response_lock = Lock()
 
     def initialize(self, **params):
         """
@@ -36,77 +36,77 @@ class Controller(object):
         pass
 
     @property
-    def _input(self):
+    def input(self):
         """
         Get input
         :return:    Input
         :type:      edmunds.http.input.Input
         """
 
-        if self.__input is None:
-            with self.__input_lock:
-                if self.__input is None:
-                    self.__input = Input(self._request)
-        return self.__input
+        if self._input is None:
+            with self._input_lock:
+                if self._input is None:
+                    self._input = Input(self.request)
+        return self._input
 
-    @_input.setter
-    def _input(self, input):
+    @input.setter
+    def input(self, input):
         """
         Set input
         :param input:   Input 
         :return:        void
         """
 
-        with self.__input_lock:
-            self.__input = input
+        with self._input_lock:
+            self._input = input
 
     @property
-    def _session(self):
+    def session(self):
         """
         Get session
         :return:    Session
         """
 
-        if self.__session is None:
-            with self.__session_lock:
-                if self.__session is None:
-                    self.__session = self._app.session(no_instance_error=True)
+        if self._session is None:
+            with self._session_lock:
+                if self._session is None:
+                    self._session = self.app.session(no_instance_error=True)
 
-        return self.__session
+        return self._session
 
-    @_session.setter
-    def _session(self, session):
+    @session.setter
+    def session(self, session):
         """
         Set session
         :param session:     Session 
         :return:            void
         """
 
-        with self.__session_lock:
-            self.__session = session
+        with self._session_lock:
+            self._session = session
 
     @property
-    def _response(self):
+    def response(self):
         """
         Get response
         :return:    Response Helper
         :rtype:     edmunds.http.responsehelper.ResponseHelper
         """
 
-        if self.__response is None:
-            with self.__response_lock:
-                if self.__response is None:
-                    self.__response = ResponseHelper()
+        if self._response is None:
+            with self._response_lock:
+                if self._response is None:
+                    self._response = ResponseHelper()
 
-        return self.__response
+        return self._response
 
-    @_response.setter
-    def _response(self, response):
+    @response.setter
+    def response(self, response):
         """
         Set response
         :param response:    Response Helper
         :return:            void
         """
 
-        with self.__response_lock:
-            self.__response = response
+        with self._response_lock:
+            self._response = response

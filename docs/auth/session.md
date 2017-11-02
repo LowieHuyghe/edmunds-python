@@ -10,5 +10,6 @@ is a wrapper for the
 from edmunds.auth.middleware.sessionauthmiddleware import SessionAuthMiddleware
 from app.http.controllers.mycontroller import MyController
 
-app.route('/loggedin', middleware=[SessionAuthMiddleware], uses = (MyController, 'get_logged_in'))
+app.route('/loggedin', uses=(MyController, 'get_logged_in')) \
+    .middleware(SessionAuthMiddleware)
 ```

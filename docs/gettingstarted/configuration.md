@@ -1,91 +1,115 @@
 
 # Configuration
 
-Configuration is key to setting up an application.
+The configuration of the application is managed with
+configuration-files and environment-files.
+
+Configuration-files are usually found in the
+`config`-directory and handle all non-secret config.
+Environment-files will be in the root-directory and are
+used for environment-specific and secret config.
 
 
-## Handling configuration
+## Processing
 
-Handling configuration is based upon the config-handling of Laravel. Original Flask-configuration-handling also still works.  
-The keys used to fetch the values are mapped to the original keys specified in the files like so:
-```
-APP_ENV > app.env
-SECRET_KEY > secret.key
-DATABASE = {
-    'mysql': {
-        'user' > database.mysql.user
+The processing of configuration in Edmunds is slightly
+upgraded from Flask's to make it easier to use. The
+original way still works as is. Edmunds merely added
+a layer for the developer's comfort.
+
+An example config:
+```python
+APP_NAME = 'My App'
+APP = {
+    'database': {
+        'mysql': {
+            'ip': '127.0.0.1',
+            'user': 'mydbuser',
+        }
     }
 }
 ```
-
-Fetching a value:
+This will be processed to:
 ```python
-value = app.config('database.mysql.ip')
+APP_NAME = 'My App'
+APP_DATABASE_MYSQL_IP = '127.0.0.1'
+APP_DATABASE_MYSQL_USER = 'mydbuser'
 ```
 
-Updating values at runtime:
+### What will be loaded?
+
+All configuration files in the `config`-directory will
+be loaded in an arbitrary order.
+
+Secondly environment-configuration will be loaded in
+the root of the project. More on this below.
+
+Configuration can this way be overwritten. Environment-config
+will overwrite config of the configuration-files if both
+define a value for the same key.
+
+
+## Fetching
+
+Fetching configuration can be like accessing the config
+as a dictionary. Or by using the added helper-methods.
+Using the above defined configuration, we can access the
+config like so:
+```python
+app_name = app.config('app.name')
+# or
+app_name = app.config['APP_NAME']
+
+db_ip = app.config('app.database.mysql.ip')
+# or
+db_ip = app.config['APP_DATABASE_MYSQL_IP']
+
+db_user = app.config('app.database.mysql.user')
+# or
+db_user = app.config['APP_DATABASE_MYSQL_USER']
+
+has_db_pass = app.config.has('app.database.mysql.pass')
+# or
+has_db_pass = 'APP_DATABASE_MYSQL_PASS' in app.config
+```
+
+
+## Updating
+
+Updating values at runtime can be done like this:
 ```python
 app.config({
-    'database.mysql.ip': 'localhost',
+    'app.database.mysql.ip': 'localhost',
 })
+# or
+app.config['APP_DATABASE_MYSQL_IP'] = 'localhost'
 ```
 
 
-## Configuration-files
+## Environment configuration
 
-Configuring the application can be done in several places. There is the main configuration for the generic configuration of the application. And there is the environment specific configuration.
+Some configuration is specific to the runtime environment.
+It depends on the machine it is running on, or on the
+current environment (development, production or testing).
+This configuration is not included in the git-repository,
+which makes it ideal for security sensitive configuration
+(like the app-secret-key).
 
-### Syntax
-
-The default syntax in Flask configuration-files states that only key-value pares can be assigned and fetched:
+The environment configuration is specified in the
+`.env.py`-files in the root of the project. An example
+of an `.env.py`-file:
 ```python
-APP_AUTHOR_NAME = 'Edmunds'
-APP_AUTHOR_AGE = 'Unknown'
-```
-With Edmunds it is possible to use the following syntax with the same result:
-```python
-APP = {
-    'author': {
-        'name': 'Edmunds',
-        'age': 'Unknown',
-    },
-}
-```
-This allows for cleaner configuration-files. The Edmunds-syntax will be processed and converted to the Flask-syntax, which results in the same input as the Flask-example.
-
-
-### Main configuration
-
-The main configuration is located in the `config`-directory. There it is separated by namespace. Example structure:
-```
-config
-  > app.py
-  > database.py
-  > session.py
-```
-The configuration-key starts with an ALL-CAPS key that defines the namespace. Further division is done with dictionaries. Example of a possible `session.py`:
-```python
-SESSION = {
-    'ttl': 3600,
-    'driver': 'memcache',
-    'memcache': {
-        'ip': '178.234.87.34'
-    },
-}
-```
-
-
-### Environment configuration
-
-Some configuration is specific to the runtime environment. It depends on the machine it is running on, or on the current environment (local, production or testing). This configuration is not included in the git-repository, which makes it ideal for security sensitive configuration (like the app-secret).
-
-The environment configuration is specified in the `.env.py`-files in the root of the project. An example of an `.env.py`-file:
-```python
-APP_ENV = 'local'
 SECRET_KEY = 'aFBHjD8SHhqj71LEEmoxc8bLH4lzUTr'
+APP = {
+    'env': 'development'
+}
 ```
 
-The current environment given in the above example (`APP_ENV`) will try to load more specific configuration in `.env.local.py`. This allows you to use separate databases or caching (for example) depending on the current environment. Example of an `.env.local.py`-file:
+The current environment given in the above example
+(`APP_ENV`) will try to load more specific configuration
+in `.env.development.py`. This allows you to use separate
+databases or caching (for example) depending on the current
+environment. Example of an `.env.development.py`-file:
 ```python
 DATABASE = {
     'mysql': {
@@ -96,12 +120,15 @@ DATABASE = {
 }
 ```
 
-#### Specifying the current environment
+### Specifying the current environment
 
-The current environment is set with the `APP_ENV`-key. The first way to do this is in the `.env.py`-file as explained before. The second way is by settings an environment-variable `APP_ENV` before creating the application. For example:
+The current environment is set with the `APP_ENV`-key.
+The first way to do this is in the `.env.py`-file as
+explained before. The second way is by settings an
+environment-variable `APP_ENV` before running the
+application. For example:
 ```bash
 export APP_ENV=production
 ```
-This will load `.env.production.py` when loading up the application.
-
-
+This will load `.env.production.py` when running the
+application.

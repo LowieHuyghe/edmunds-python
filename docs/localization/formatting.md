@@ -36,22 +36,22 @@ class MyController(Controller):
         
         # Usage through the visitor object
         
-        formatted_integer = self._visitor.localizator.number.number(1345)
-        formatted_decimal = self._visitor.localizator.number.number(1345.22)
-        formatted_currency = self._visitor.localizator.number.currency(1345.22, 'EUR')
-        formatted_percentage = self._visitor.localizator.number.percent(0.35)
-        formatted_scientific = self._visitor.localizator.number.scientific(232339)
-        formatted_rtl = self._visitor.localizator.rtl
+        formatted_integer = self.visitor.localizator.number.number(1345)
+        formatted_decimal = self.visitor.localizator.number.number(1345.22)
+        formatted_currency = self.visitor.localizator.number.currency(1345.22, 'EUR')
+        formatted_percentage = self.visitor.localizator.number.percent(0.35)
+        formatted_scientific = self.visitor.localizator.number.scientific(232339)
+        formatted_rtl = self.visitor.localizator.rtl
         # ...
         
         
         # Usage through the app/manager
         
         # Localization manager
-        localization_manager = self._app.localization()
+        localization_manager = self.app.localization()
         # Location
         location_driver = localization_manager.location()
-        location = location_driver.insights(self._request.remote_addr)
+        location = location_driver.insights(self.request.remote_addr)
         # Translator
         translator = localization_manager.translator()
         # Localizator

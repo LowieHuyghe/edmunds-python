@@ -1,66 +1,18 @@
 
-# Errors and Logging
+# Logging and Errors
 
-Error-handling and logging are built in and ready when you are.
-
-
-## Errors
-
-Even the best programming logic and tests can't always foresee every possible scenario where errors can occure. You can report and render these exceptions by registering your own exception-handler.
-
-
-### Define
-
-Define your Handler like so:
-```python
-from Edmunds.Exceptions.Handler import Handler as EdmundsHandler
-
-class Handler(EdmundsHandler):
-    """
-    Exception handler
-    """
-
-    def report(self, exception):
-        """
-        Report the exception
-        :param exception:   The exception
-        :type  exception:   Exception
-        """
-        if super(Handler, self).report(exception):
-            pass  # Report
-
-    def render(self, exception):
-        """
-        Render the exception
-        :param exception:   The exception
-        :type  exception:   Exception
-        :return:            The response
-        """
-        return super(Handler, self).render(exception)
-```
-
-
-### Register
-
-Register the Handler for usage in `config/app.py`:
-```python
-'exceptions':
-{
-    'handler': Handler,
-},
-```
-This way the application knows to use your handler in case of an exception.
+Logging and error-handling are built in and ready when you are.
 
 
 ## Logging
 
 Edmunds comes with logging built in. You can activate it in your settings:
 ```python
-from Edmunds.Log.Drivers.File import File
-from Edmunds.Log.Drivers.Stream import Stream
-from Edmunds.Log.Drivers.SysLog import SysLog
-from Edmunds.Log.Drivers.TimedFile import TimedFile
-from Edmunds.Log.Drivers.GoogleAppEngine import GoogleAppEngine
+from edmunds.log.drivers.file import File
+from edmunds.log.drivers.stream import Stream
+from edmunds.log.drivers.syslog import SysLog
+from edmunds.log.drivers.timedfile import TimedFile
+from edmunds.log.drivers.googleappengine import GoogleAppEngine
 from logging.handlers import SysLogHandler, SYSLOG_UDP_PORT
 from logging import WARNING
 from socket import SOCK_DGRAM
@@ -122,8 +74,70 @@ APP = {
 The instances will all be used for logging, so you can have multiple at once.
 
 The available drivers are:
+
 - **File**: Print logs to file which can be separated by size.
 - **TimedFile**: Print logs to file which can be separated by time-interval.
 - **SysLog**: Print logs to syslog.
 - **Stream**: Pring logs to given stream.
 - **GoogleAppEngine**: Pring logs to the Google App Engine stream when running in Google App Engine runtime.
+
+
+## Errors
+
+Even the best programming logic and tests can't always foresee every
+possible scenario where errors can occure. You can report and render
+these exceptions by registering your own exception-handler.
+
+If logging is enabled, errors that pass through the handler will
+automatically be logged to your provider logging-services.
+
+
+### Define
+
+Define your Handler like so:
+```python
+from edmunds.exceptions.handler import Handler as EdmundsHandler
+
+class Handler(EdmundsHandler):
+    """
+    Exception handler
+    """
+
+    def report(self, exception):
+        """
+        Report the exception
+        :param exception:   The exception
+        :type  exception:   Exception
+        """
+        if super(Handler, self).report(exception):
+            # Additional reporting
+            pass
+
+    def render(self, exception):
+        """
+        Render the exception
+        :param exception:   The exception
+        :type  exception:   Exception
+        :return:            The response
+        """
+        return super(Handler, self).render(exception)
+```
+
+**Important!**: The `report`-function of the edmunds-super-class will log
+the error to `self.app.logger`. You defined loggers will by default pick up
+caught exceptions as described above.
+
+### Register
+
+Register the Handler for usage in `config/app.py`:
+```python
+from app.exceptions.handler import Handler
+
+APP = {
+    'exceptions':
+    {
+        'handler': Handler,
+    },
+}
+```
+This way the application knows to use your handler in case of an exception.
