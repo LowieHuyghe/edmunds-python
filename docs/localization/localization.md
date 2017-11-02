@@ -85,22 +85,22 @@ class MyController(Controller):
         
         # Usage through the visitor object
         
-        time_str = self._visitor.localizator.time.time(time(14, 3, 2))
-        date_str = self._visitor.localizator.time.date(date(1992, 6, 7))
+        time_str = self.visitor.localizator.time.time(time(14, 3, 2))
+        date_str = self.visitor.localizator.time.date(date(1992, 6, 7))
         # ...
-        cost = self._visitor.localizator.number.currency(4.56, 'EUR')
-        number = self._visitor.localizator.number.number(3456.64)
+        cost = self.visitor.localizator.number.currency(4.56, 'EUR')
+        number = self.visitor.localizator.number.number(3456.64)
         # ...
-        is_rtl = self._visitor.localizator.rtl
-        locale = self._visitor.localizator.locale
+        is_rtl = self.visitor.localizator.rtl
+        locale = self.visitor.localizator.locale
         # ...
         
         
         # Usage through the app/manager
         
-        localization_manager = self._app.localization()
+        localization_manager = self.app.localization()
         location_driver = localization_manager.location()
-        location = location_driver.insights(self._request.remote_addr)
+        location = location_driver.insights(self.request.remote_addr)
         localizator_model = localization_manager.localizator(location)
         
         time_str = localizator_model.time.time(time(14, 3, 2))

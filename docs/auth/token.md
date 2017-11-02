@@ -11,7 +11,8 @@ is a wrapper for the
 from edmunds.auth.middleware.tokenauthmiddleware import TokenAuthMiddleware
 from app.http.controllers.mycontroller import MyController
 
-app.route('/loggedin', middleware=[TokenAuthMiddleware], uses = (MyController, 'get_logged_in'))
+app.route('/loggedin', uses=(MyController, 'get_logged_in')) \
+    .middleware(TokenAuthMiddleware)
 ```
 
 

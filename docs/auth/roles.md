@@ -16,8 +16,10 @@ from edmunds.auth.middleware.rolesacceptedmiddleware import RolesAcceptedMiddlew
 from edmunds.auth.middleware.rolesrequiredmiddleware import RolesRequiredMiddleware
 from app.http.controllers.mycontroller import MyController
 
-app.route('/acceptsroles', middleware=[(RolesAcceptedMiddleware, 'role1', 'role2')], uses = (MyController, 'acceptsroles'))
-app.route('/requiresroles', middleware=[(RolesRequiredMiddleware, 'role3', 'role4')], uses = (MyController, 'requiresroles'))
+app.route('/acceptsroles', uses=(MyController, 'acceptsroles')) \
+    .middleware(RolesAcceptedMiddleware, 'role1', 'role2')
+app.route('/requiresroles', uses=(MyController, 'requiresroles')) \
+    .middleware(RolesRequiredMiddleware, 'role2', 'role3')
 ```
 
 
