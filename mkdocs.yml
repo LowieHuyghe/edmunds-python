@@ -4,16 +4,17 @@ pages:
 
   - Introduction: index.md
 
-  - Core Concepts:
-    - Application Middleware: coreconcepts/applicationmiddleware.md
-    - Service Providers: coreconcepts/serviceproviders.md
-
   - Getting Started:
     - A Fresh Start: gettingstarted/afreshstart.md
     - Configuration: gettingstarted/configuration.md
     - Debugging and Profiling: gettingstarted/debuggingandprofiling.md
-    - Errors and Logging: gettingstarted/errorsandlogging.md
+    - Logging and Errors: gettingstarted/logginganderrors.md
     - Console: gettingstarted/console.md
+    - Testing: gettingstarted/testing.md
+
+  - Core Concepts:
+    - Application Middleware: coreconcepts/applicationmiddleware.md
+    - Service Providers: coreconcepts/serviceproviders.md
 
   - Http:
     - Request Middleware: http/requestmiddleware.md
@@ -43,9 +44,6 @@ pages:
     - Session Authentication: auth/session.md
     - Basic HTTP Authentication: auth/basic.md
     - Roles: auth/roles.md
-
-  - Testing:
-    - Getting Started: testing/gettingstarted.md
 
 theme:
   name: 'material'
