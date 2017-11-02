@@ -96,12 +96,12 @@ class MyController(Controller):
         # Usage through the visitor object
         # Note: Visitor will use the first location and translation driver!
         
-        sentence = self._visitor.localizator.translate('beautiful', {'name': 'Steve'})
+        sentence = self.visitor.localizator.translate('beautiful', {'name': 'Steve'})
         # locale 'en':      This is a beautiful translation in en. Is it not, Steve?
         # locale 'en_US':   This is a beautiful translation in en_US. Is it not, Steve?
         # locale 'nl':      Dit is een prachtige vertaling in nl. Nietwaar, Steve?
         
-        sentence = self._visitor.localizator.translate('smashing')
+        sentence = self.visitor.localizator.translate('smashing')
         # locale 'en':      A smashing sentence in en!
         # locale 'en_US':   A smashing sentence in en_US!
         # locale 'nl':      A smashing sentence in en!      (using fallback en)
@@ -110,10 +110,10 @@ class MyController(Controller):
         # Usage through the app/manager
         
         # Localization manager
-        localization_manager = self._app.localization()
+        localization_manager = self.app.localization()
         # Location
         location_driver = localization_manager.location()
-        location = location_driver.insights(self._request.remote_addr)
+        location = location_driver.insights(self.request.remote_addr)
         # Translator
         translator = localization_manager.translator()
         # Localizator

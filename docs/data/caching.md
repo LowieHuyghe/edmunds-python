@@ -66,7 +66,7 @@ Werkzeug documentation:
 ## Usage
 
 When fetching an instance, you will receive a cache-driver
-(werkzeug.contrib.cache.BaseCache) for the specified cache instance.
+(`werkzeug.contrib.cache.BaseCache`) for the specified cache instance.
 You can request one like so:
 ```python
 # Fetch the default driver, or by name

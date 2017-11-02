@@ -69,16 +69,16 @@ class MyController(Controller):
         # Usage through the visitor object
         # Note: Visitor will use the first location driver!
         
-        country_iso = self._visitor.location.country.iso_code
-        city_name = self._visitor.location.city.name
+        country_iso = self.visitor.location.country.iso_code
+        city_name = self.visitor.location.city.name
         # ...
         
         
         # Usage through the app/manager
         
-        localization_manager = self._app.localization()
+        localization_manager = self.app.localization()
         location_driver = localization_manager.location()
-        location = location_driver.insights(self._request.remote_addr)
+        location = location_driver.insights(self.request.remote_addr)
         
         country_iso = location.country.iso_code
         city_name = location.city.name
