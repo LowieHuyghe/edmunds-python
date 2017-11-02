@@ -239,11 +239,9 @@ class TestHandler(TestCase):
             raise RuntimeError(rule)
 
         # Call route
-        with app.test_client() as c:
-            rv = c.get(rule)
-            self.assert_not_equal('rendered', rv.get_data(True))
-            self.assert_in('Werkzeug Debugger', rv.get_data(True))
-            self.assert_equal(500, rv.status_code)
+        with self.assert_raises_regexp(RuntimeError, rule):
+            with app.test_client() as c:
+                c.get(rule)
 
 
 class MyHandler(EdmundsHandler):

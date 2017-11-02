@@ -14,11 +14,13 @@ class RuntimeEnvironmentServiceProvider(ServiceProvider):
         """
 
         config_debug = self.app.config('app.debug', None)
-        env_debug = 'FLASK_DEBUG' in os.environ
 
         # Correct the debug mode
-        if config_debug is None and not env_debug and self.app.is_development():
-            self.app.debug = True
+        if 'FLASK_DEBUG' not in os.environ:
+            if config_debug is not None:
+                self.app.debug = config_debug
+            elif self.app.is_development():
+                self.app.debug = True
 
         # Testing environment
         if self.app.is_testing():
