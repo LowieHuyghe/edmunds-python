@@ -40,6 +40,7 @@ The instances can be used for storage, so you can have multiple at once.
 The first one will be used by default.
 
 The available drivers are:
+
 - **File**: Store files using the default file-system.
 - **GoogleCloudStorage**: Store files using Google Cloud Storage.
 
