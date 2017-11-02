@@ -47,4 +47,5 @@ pages:
   - Testing:
     - Getting Started: testing/gettingstarted.md
 
-theme: readthedocs
+theme:
+  name: 'material'
