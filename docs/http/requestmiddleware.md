@@ -10,7 +10,7 @@ Request Middleware is the proper way of layering your request-handling. It lets 
 
 Define your Request Middleware like so:
 ```python
-from Edmunds.Http.RequestMiddleware import RequestMiddleware
+from edmunds.http.requestmiddleware import RequestMiddleware
 
 class MyRequestMiddleware(RequestMiddleware):
     """

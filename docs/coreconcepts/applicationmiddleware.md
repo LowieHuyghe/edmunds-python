@@ -10,7 +10,7 @@ Application Middleware is the proper way of layering your application. Middlewar
 
 Define your Application Middleware like so:
 ```python
-from Edmunds.Foundation.ApplicationMiddleware import ApplicationMiddleware
+from edmunds.foundation.applicationmiddleware import ApplicationMiddleware
 
 class MyApplicationMiddleware(ApplicationMiddleware):
     """
