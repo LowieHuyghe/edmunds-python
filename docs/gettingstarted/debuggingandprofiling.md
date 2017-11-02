@@ -1,16 +1,21 @@
 
 # Debugging and Profiling
 
-When all hell breaks loose or your application is underperforming, debugging and profiling is the answer.
+When all hell breaks loose or your application is underperforming,
+debugging and profiling is the answer.
 
 
 ## Debugging
 
-Debugging your application can be done in several ways. Using your IDE, `pdb`, `pudb`,... There are many options, but here `pdb` and `pudb` will be explained.
+Debugging your application can be done in several ways. Using your
+IDE, `pdb`, `pudb`,... There are many options, but here `pdb` and
+`pudb` will be explained.
 
 ### Pdb
 
-[Pdb, the python debugger](https://docs.python.org/2/library/pdb.html), is a minimal debugger that comes straight out of the box in python. It runs in the terminal and has a minimal interface.
+[Pdb, the python debugger](https://docs.python.org/2/library/pdb.html),
+is a minimal debugger that comes straight out of the box in python.
+It runs in the terminal and has a minimal interface.
 
 #### Start pdb
 
@@ -30,7 +35,9 @@ More debug-options can be found in the [documentation](https://docs.python.org/2
 
 ### Pudb
 
-[Pudb](https://pypi.python.org/pypi/pudb) is a more interactive debugger. It runs in the terminal and has a nice interface which displays the code, stack, variables,...
+[Pudb](https://pypi.python.org/pypi/pudb) is a more interactive debugger.
+It runs in the terminal and has a nice interface which displays the code,
+stack, variables,...
 
 #### Install pudb
 

@@ -1,63 +1,7 @@
 
-# Errors and Logging
+# Logging and Errors
 
-Error-handling and logging are built in and ready when you are.
-
-
-## Errors
-
-Even the best programming logic and tests can't always foresee every possible scenario where errors can occure. You can report and render these exceptions by registering your own exception-handler.
-
-
-### Define
-
-Define your Handler like so:
-```python
-from edmunds.exceptions.handler import Handler as EdmundsHandler
-
-class Handler(EdmundsHandler):
-    """
-    Exception handler
-    """
-
-    def report(self, exception):
-        """
-        Report the exception
-        :param exception:   The exception
-        :type  exception:   Exception
-        """
-        if super(Handler, self).report(exception):
-            # Additional reporting
-            pass
-
-    def render(self, exception):
-        """
-        Render the exception
-        :param exception:   The exception
-        :type  exception:   Exception
-        :return:            The response
-        """
-        return super(Handler, self).render(exception)
-```
-
-**Important!**: The `report`-function of the edmunds-super-class will log
-the error to `self.app.logger`. You defined loggers will by default pick up
-caught exceptions.
-
-### Register
-
-Register the Handler for usage in `config/app.py`:
-```python
-from app.exceptions.handler import Handler
-
-APP = {
-    'exceptions':
-    {
-        'handler': Handler,
-    },
-}
-```
-This way the application knows to use your handler in case of an exception.
+Logging and error-handling are built in and ready when you are.
 
 
 ## Logging
@@ -136,3 +80,64 @@ The available drivers are:
 - **SysLog**: Print logs to syslog.
 - **Stream**: Pring logs to given stream.
 - **GoogleAppEngine**: Pring logs to the Google App Engine stream when running in Google App Engine runtime.
+
+
+## Errors
+
+Even the best programming logic and tests can't always foresee every
+possible scenario where errors can occure. You can report and render
+these exceptions by registering your own exception-handler.
+
+If logging is enabled, errors that pass through the handler will
+automatically be logged to your provider logging-services.
+
+
+### Define
+
+Define your Handler like so:
+```python
+from edmunds.exceptions.handler import Handler as EdmundsHandler
+
+class Handler(EdmundsHandler):
+    """
+    Exception handler
+    """
+
+    def report(self, exception):
+        """
+        Report the exception
+        :param exception:   The exception
+        :type  exception:   Exception
+        """
+        if super(Handler, self).report(exception):
+            # Additional reporting
+            pass
+
+    def render(self, exception):
+        """
+        Render the exception
+        :param exception:   The exception
+        :type  exception:   Exception
+        :return:            The response
+        """
+        return super(Handler, self).render(exception)
+```
+
+**Important!**: The `report`-function of the edmunds-super-class will log
+the error to `self.app.logger`. You defined loggers will by default pick up
+caught exceptions as described above.
+
+### Register
+
+Register the Handler for usage in `config/app.py`:
+```python
+from app.exceptions.handler import Handler
+
+APP = {
+    'exceptions':
+    {
+        'handler': Handler,
+    },
+}
+```
+This way the application knows to use your handler in case of an exception.
