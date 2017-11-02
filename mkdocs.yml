@@ -33,7 +33,7 @@ pages:
     - Caching: data/caching.md
 
   - Localization:
-    - Localization: localization/localization.md
+    - Introduction: localization/introduction.md
     - Location: localization/location.md
     - Formatting: localization/formatting.md
     - Translations: localization/translations.md

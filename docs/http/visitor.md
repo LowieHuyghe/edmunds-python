@@ -5,7 +5,7 @@ The visitor class is used to get information regarding the client.
 Browser-related-info, ip-based-location, localization,...
 
 To make location and localization work, you will need to setup some
-configuration. See [localization](../localization/localization.md).
+configuration. See [localization](../localization/introduction.md).
 
 
 ## Usage
