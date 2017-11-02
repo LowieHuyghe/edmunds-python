@@ -39,6 +39,7 @@ You can have multiple user datastores by defining them
 as instances. Each instance will have their own models.
 
 The available drivers are:
+
 - **SQLAlchemyUserDatastore**: User management using SQLAlchemy
 
 

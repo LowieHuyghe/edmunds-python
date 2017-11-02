@@ -52,6 +52,7 @@ APP = {
 ```
 
 The available drivers are:
+
 - **MaxMindCityDatabase**: Using MaxMind City Database
 - **MaxMindEnterpriseDatabase**: Using MaxMind Enterprise Database
 - **MaxMindWebService**: Using MaxMind Web Service

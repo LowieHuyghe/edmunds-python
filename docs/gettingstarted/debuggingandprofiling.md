@@ -95,6 +95,7 @@ APP = {
 The instances will all be used for profiling, so you can have multiple at once.
 
 The available drivers are:
+
 - **Stream**: Print output in the given stream.
 - **CallGraph**: Outputs in CallGraph-format to open in a viewer.
 - **BlackfireIo**: Output in BlackfireIo-format to upload to [Blackfire.io](https://blackfire.io/).

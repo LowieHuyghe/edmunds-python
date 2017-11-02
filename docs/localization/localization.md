@@ -5,6 +5,7 @@ Localization is used to tailor an experience for the user that is totally
 customized to his/her language, unit-system, currency,...
 
 Accuracy in localization is achieved using different sources and factors:
+
 * Locale is determined based on (first = highest priority):
   - Given locale (fixed locale set on client side. given as argument.)
   - Browser accept languages
@@ -18,6 +19,7 @@ Accuracy in localization is achieved using different sources and factors:
 The locale will determine how values are formatted and which translations
 are shown to the user. The locales are processed for usage and will comply
 to the following rules:
+
 * Locales specifying a region will also be processed without region
 (nl_NL => nl_NL, nl)
 * Only supported locales will be used.
