@@ -23,6 +23,7 @@ APP = {
 The instances will all be used for session, so you can have multiple at once.
 
 The available drivers are:
+
 - **SessionCookie**: Sessions using cookies (see [docs](http://flask.pocoo.org/docs/0.11/quickstart/#sessions))
 
 
