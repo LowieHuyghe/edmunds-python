@@ -57,9 +57,9 @@ More debug-options can be found in the [documentation](https://pypi.python.org/p
 
 Edmunds comes with profiling built in. You can activate it in your settings:
 ```python
-from Edmunds.Profiler.Drivers.CallGraph import CallGraph
-from Edmunds.Profiler.Drivers.Stream import Stream
-from Edmunds.Profiler.Drivers.BlackfireIo import BlackfireIo
+from edmunds.profiler.drivers.callgraph import CallGraph
+from edmunds.profiler.drivers.stream import Stream
+from edmunds.profiler.drivers.blackfireio import BlackfireIo
 import sys
 
 APP = {

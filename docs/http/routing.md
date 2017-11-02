@@ -11,7 +11,7 @@ app.route('/', uses = (MyController, 'get_index'))
 ```
 This will route the request to `get_index` in `MyController`:
 ```python
-from Edmunds.Http.Controller import Controller
+from edmunds.http.controller import Controller
 
 class MyController(Controller):
     """
