@@ -161,7 +161,7 @@ jobs:
       - image: python:3.6
     steps:
       - checkout
-      - run: pip install mkdocs
+      - run: pip install mkdocs mkdocs-material
       - run:
           command: |
             rm -rf site
