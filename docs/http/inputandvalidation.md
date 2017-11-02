@@ -63,7 +63,7 @@ class LoginValidator(Validator):
 
 class MyController(Controller):
     def login(self):
-        validator = self._input.validate(LoginValidator)
+        validator = self.input.validate(LoginValidator)
         if validator.validates:
             pass
 ```

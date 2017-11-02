@@ -1,12 +1,11 @@
 
 # Request Middleware
 
-Request Middleware is the proper way of layering your request-handling. It lets you add functionality before and after processing the request.
+Request Middleware is the proper way of layering your request-handling.
+It lets you add functionality before and after processing the request.
 
 
-## Request Middleware
-
-### Define
+## Define
 
 Define your Request Middleware like so:
 ```python
@@ -38,7 +37,8 @@ class MyRequestMiddleware(RequestMiddleware):
 
 > Note: The before- and after-function work respectively like the @app.before_request and @app.after_request of Flask.
 
-### Register
+
+## Register
 
 Register the Request Middleware in `routes.py` as an option of the routes:
 ```python
