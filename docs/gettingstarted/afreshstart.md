@@ -29,14 +29,22 @@ Now install all other dependencies:
 pip install -r requirements.txt
 ```
 
-### 4. Take it for a spin!
+### 4. Some configuration
+
+Next we make a copy of the `.env.example.py`-file and rename it to `.env.py`.
+Change the configuration in the file where needed.
+
+> **Important!**: Don't forget to personalise `SECRET_KEY` and `SECURITY_PASSWORD_SALT`
+for production!
+
+### 5. Take it for a spin!
 
 Let's take it for a spin and run the application:
 ```bash
 python manage.py run
 ```
 
-### 5. Google App Engine (optional)
+### 6. Google App Engine (optional)
 
 If you want to develop for and run in Google App Engine
 you'll first need to install the [App Engine SDK](https://cloud.google.com/appengine/docs/standard/python/download).
