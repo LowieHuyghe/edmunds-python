@@ -9,7 +9,7 @@ pages:
     - Service Providers: coreconcepts/serviceproviders.md
 
   - Getting Started:
-    - Installation: gettingstarted/installation.md
+    - A Fresh Start: gettingstarted/afreshstart.md
     - Configuration: gettingstarted/configuration.md
     - Debugging and Profiling: gettingstarted/debuggingandprofiling.md
     - Errors and Logging: gettingstarted/errorsandlogging.md
