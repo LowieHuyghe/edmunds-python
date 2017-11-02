@@ -9,7 +9,7 @@ This is done by separating your application in modules and only loading the modu
 
 Define your Service Provider like so:
 ```python
-from Edmunds.Support.ServiceProvider import ServiceProvider
+from edmunds.support.serviceprovider import ServiceProvider
 
 class MyServiceProvider(ServiceProvider):
     """
