@@ -5,9 +5,10 @@
 
 Let's first get an Edmunds Instance to kick-start your
 project. Download it from:
-> [https://github.com/LowieHuyghe/edmunds-instance/archive/master.zip](https://github.com/LowieHuyghe/edmunds-instance/archive/master.zip)
+> [https://github.com/LowieHuyghe/edmunds-instance/tarball/master](https://github.com/LowieHuyghe/edmunds-instance/tarball/master)  
+> (Tar-file because zip does not preserve file-permissions on Unix-filesystem.)
 
-Unzip it, move it and rename it after your project.
+Un-tar it, move it and rename it after your project.
 
 ### 2. Setup a virtual environment
 
