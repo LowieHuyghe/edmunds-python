@@ -97,7 +97,7 @@ class DatabaseManager(Manager):
                 sqlite_storage_name = instances_config_item['storage'] if 'storage' in instances_config_item else None
                 sqlite_path = self._app.fs(name=sqlite_storage_name).path(sqlite_file)
 
-                instance_database_uri = 'sqlite://%s' % sqlite_path
+                instance_database_uri = 'sqlite:///%s' % sqlite_path
 
             elif instances_config_item['driver'] == SqliteMemory:
                 if not self._app.debug and not self._app.testing:
