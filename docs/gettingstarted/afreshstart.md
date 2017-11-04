@@ -50,9 +50,18 @@ python manage.py run
 If you want to develop for and run in Google App Engine
 you'll first need to install the [App Engine SDK](https://cloud.google.com/appengine/docs/standard/python/download).
 
-Then install the dependencies in the lib-directory:
+Google App Engine requires you to install dependencies into a directory. More
+specifically the lib-directory. Unfortunately pip does not work very
+well when using a target directory to install dependencies. To fix this
+Edmunds is equipped with a command that combines all dependencies and eggs
+of the given environment into one directory!
+
+First make sure your project's virtual environment is activated.
+
+Secondly run the following command to install all dependencies into the
+lib-directory:
 ```bash
-pip install -r requirements.txt -t lib
+python manage.py dir-install -t lib -p pip
 ```
 
 Now start the development server and you are good to go:
