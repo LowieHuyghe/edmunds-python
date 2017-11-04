@@ -15,8 +15,8 @@ class PipInstallIntoCommand(Command):
     This fixes the eggs and other issues pip has in combination with a target directory.
     """
 
-    @click.option('--target', '-t', required=True, desc='Target directory')
-    @click.option('--pip', '-p', required=True, desc='Pip executable to use')
+    @click.option('--target', '-t', required=True, help='Target directory')
+    @click.option('--pip', '-p', required=True, help='Pip executable to use')
     def run(self, target, pip):
         """
         Run the command
