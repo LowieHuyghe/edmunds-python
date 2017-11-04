@@ -61,7 +61,7 @@ First make sure your project's virtual environment is activated.
 Secondly run the following command to install all dependencies into the
 lib-directory:
 ```bash
-python manage.py dir-install -t lib -p pip
+python manage.py pip-install-into -t lib -p pip
 ```
 
 Now start the development server and you are good to go:
