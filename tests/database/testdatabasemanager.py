@@ -76,4 +76,4 @@ class TestTable(TestCase):
         self.assert_in('sqlite', app.config('SQLALCHEMY_BINDS'))
 
         self.assert_equal('postgresql://root:root@localhost:5432/edmunds', app.config('SQLALCHEMY_BINDS')['postgresql'])
-        self.assert_equal('sqlite://%s' % app.fs().path('sqlite.db'), app.config('SQLALCHEMY_BINDS')['sqlite'])
+        self.assert_equal('sqlite:///%s' % app.fs().path('sqlite.db'), app.config('SQLALCHEMY_BINDS')['sqlite'])

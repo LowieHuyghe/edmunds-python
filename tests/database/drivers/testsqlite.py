@@ -86,4 +86,4 @@ class TestSqlite(TestCase):
         self.assert_is_instance(engine, Engine)
 
         # Test SQLAlchemy config
-        self.assert_equal('sqlite://%s' % app.fs().path('sqlite.db'), app.config('SQLALCHEMY_DATABASE_URI'))
+        self.assert_equal('sqlite:///%s' % app.fs().path('sqlite.db'), app.config('SQLALCHEMY_DATABASE_URI'))
