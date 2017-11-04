@@ -838,8 +838,15 @@ for production!</p>
 <h3 id="6-google-app-engine-optional">6. Google App Engine (optional)</h3>
 <p>If you want to develop for and run in Google App Engine
 you'll first need to install the <a href="https://cloud.google.com/appengine/docs/standard/python/download">App Engine SDK</a>.</p>
-<p>Then install the dependencies in the lib-directory:</p>
-<pre><code class="bash">pip install -r requirements.txt -t lib
+<p>Google App Engine requires you to install dependencies into a directory. More
+specifically the lib-directory. Unfortunately pip does not work very
+well when using a target directory to install dependencies. To fix this
+Edmunds is equipped with a command that combines all dependencies and eggs
+of the given environment into one directory!</p>
+<p>First make sure your project's virtual environment is activated.</p>
+<p>Secondly run the following command to install all dependencies into the
+lib-directory:</p>
+<pre><code class="bash">python manage.py dir-install -t lib -p pip
 </code></pre>
 
 <p>Now start the development server and you are good to go:</p>
