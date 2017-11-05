@@ -171,29 +171,33 @@ class Config(FlaskConfig):
 
         return success
 
-    def _flatten_dict(self, new, processed_new=None, prefix_key=''):
+    def _flatten_dict(self, new, prefix_key=None):
         """
         Flatten the dictionary to dictionary with only one level
         :param new:             The given dictionary
         :type  new:             dict
-        :param processed_new:   The processed dictionary
-        :type  processed_new:   dict
         :param prefix_key:      The prefix key
         :type  prefix_key:      str
         :return:                The processed dictionary
         :rtype:                 dict
         """
 
-        if processed_new is None:
-            processed_new = {}
+        return_dict = {}
 
-        for key in new:
-            value = new[key]
-            key_str = '%s' % key
-
-            if isinstance(value, dict):
-                self._flatten_dict(value, processed_new, prefix_key + key_str.upper() + '_')
+        if isinstance(new, dict) or isinstance(new, list):
+            if isinstance(new, list):
+                keys_to_loop = range(0, len(new))
             else:
-                processed_new[prefix_key + key_str.upper()] = value
+                keys_to_loop = new
 
-        return processed_new
+            for key in keys_to_loop:
+                value = new[key]
+                key_str = ('%s' % key).upper()
+                if prefix_key:
+                    key_str = prefix_key + '_' + key_str
+
+                return_dict.update(self._flatten_dict(value, key_str))
+        else:
+            return_dict[prefix_key] = new
+
+        return return_dict
