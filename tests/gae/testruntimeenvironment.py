@@ -1,10 +1,8 @@
 
-from tests.gae.gaetestcase import GaeTestCase
-from edmunds.application import Application
 import os
-if GaeTestCase.can_run():
-    from edmunds.gae.runtimeenvironment import RuntimeEnvironment
-    from edmunds.gae.application import Application as GaeApplication
+
+from edmunds.gae.runtimeenvironment import RuntimeEnvironment
+from tests.gaetestcase import GaeTestCase
 
 
 class TestRuntimeEnvironment(GaeTestCase):
@@ -32,19 +30,17 @@ class TestRuntimeEnvironment(GaeTestCase):
         :return:    void
         """
 
-        env = RuntimeEnvironment()
-
-        self.assert_true(env.is_gae())
+        self.assert_true(RuntimeEnvironment.is_gae())
         self.assert_true(self.create_application().is_gae())
 
         self.testbed.deactivate()
 
-        self.assert_false(env.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae())
         self.assert_false(self.create_application().is_gae())
 
         self.testbed.activate()
 
-        self.assert_true(env.is_gae())
+        self.assert_true(RuntimeEnvironment.is_gae())
         self.assert_true(self.create_application().is_gae())
 
     def test_is_gae_env(self):
@@ -54,36 +50,19 @@ class TestRuntimeEnvironment(GaeTestCase):
         """
 
         self.testbed.deactivate()
-        env = RuntimeEnvironment()
-        self.assert_false(env.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae())
 
         os.environ['CURRENT_VERSION_ID'] = self.rand_str()
-        self.assert_false(env.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae())
 
         os.environ['AUTH_DOMAIN'] = self.rand_str()
-        self.assert_false(env.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae())
 
         os.environ['SERVER_SOFTWARE'] = self.rand_str()
-        self.assert_false(env.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae())
 
         os.environ['SERVER_SOFTWARE'] = 'Development/%s' % self.rand_str()
-        self.assert_true(env.is_gae())
+        self.assert_true(RuntimeEnvironment.is_gae())
 
         os.environ['SERVER_SOFTWARE'] = 'Google App Engine/%s' % self.rand_str()
-        self.assert_true(env.is_gae())
-
-    def test_testcase_app(self):
-        """
-        Test the testcase application
-        :return:    void
-        """
-
-        self.assert_is_instance(self.create_application(), GaeApplication)
-
-        self.testbed.deactivate()
-
-        self.assert_is_instance(self.create_application(), Application)
-
-        self.testbed.activate()
-
-        self.assert_is_instance(self.create_application(), GaeApplication)
+        self.assert_true(RuntimeEnvironment.is_gae())
