@@ -1,25 +1,13 @@
 
 from flask.config import Config as FlaskConfig
+import os
+import re
 
 
 class Config(FlaskConfig):
     """
     Config module
     """
-
-    def __call__(self, mixed, default=None):
-        """
-        Get the value
-        :param mixed:   Key of update-dict
-        :type mixed:    str|dict
-        :param default: The default value if it does not exist
-        :type default:  mixed
-        :return:        Value
-        """
-        if isinstance(mixed, dict):
-            self._update(mixed)
-        else:
-            return self._get(mixed, default=default)
 
     def has(self, key):
         """
@@ -42,6 +30,20 @@ class Config(FlaskConfig):
                 return True
 
         return False
+
+    def __call__(self, mixed, default=None):
+        """
+        Get the value
+        :param mixed:   Key of update-dict
+        :type mixed:    str|dict
+        :param default: The default value if it does not exist
+        :type default:  mixed
+        :return:        Value
+        """
+        if isinstance(mixed, dict):
+            return self.update(mixed)
+        else:
+            return self._get(mixed, default=default)
 
     def _get(self, key, default=None):
         """
@@ -66,21 +68,21 @@ class Config(FlaskConfig):
         # Default
         return default
 
-    def _update(self, update):
+    def __setitem__(self, key, value):
         """
-        Update values
-        :param update:  The update
-        :type update:   dict
+        Set item
+        :param key:     Key
+        :param value:   Value
         :return:        void
         """
-        for key in update:
-            flat_key = self._get_flat_key(key)
+        flat_key = self._get_flat_key(key)
+        result = self._flatten(value, initial_key=flat_key)
 
-            for i in list(self.keys()):
-                if i.startswith(flat_key):
-                    del self[i]
+        for i in list(self.keys()):
+            if i.startswith(flat_key):
+                del self[i]
 
-            self[flat_key] = update[key]
+        self.update(result)
 
     def _get_flat_key(self, key):
         """
@@ -160,7 +162,6 @@ class Config(FlaskConfig):
         :return:            Flat dictionary
         :rtype:             dict
         """
-
         if flat is None:
             flat = {}
 
@@ -182,3 +183,61 @@ class Config(FlaskConfig):
             flat[initial_key.upper()] = expanded
 
         return flat
+
+    def load_all(self, config_dirs):
+        """
+        Load all config files
+        :param config_dirs:     Configuration directories
+        :type  config_dirs:     list
+        """
+        # Load configuration in order
+        # Newly loaded overwrites current values
+        self._load_config(config_dirs)
+        self._load_env()
+
+    def _load_config(self, config_dirs):
+        """
+        Load the configuration
+        :param config_dirs:     Configuration directories
+        :type  config_dirs:     list
+        """
+        for config_dir in config_dirs:
+            for root, subdirs, files in os.walk(config_dir):
+                for file in files:
+                    if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
+                        continue
+
+                    file_name = os.path.join(self.root_path, config_dir, file)
+
+                    self.from_pyfile(file_name)
+
+    def _load_env(self):
+        """
+        Load environment config
+        """
+        # Load .env file
+        env_file_path = os.path.join(self.root_path, '.env.py')
+        if os.path.isfile(env_file_path):
+            self.from_pyfile(env_file_path)
+
+        # Overwrite with APP_ENV value set in environment
+        if 'APP_ENV' in os.environ:
+            self['APP_ENV'] = os.environ.get('APP_ENV')
+
+        # Check if environment set
+        if 'APP_ENV' not in self or not self['APP_ENV']:
+            raise RuntimeError('App environment is not set.')
+
+        # Lower the environment value
+        self['APP_ENV'] = self['APP_ENV'].lower()
+
+        # Load environment specific .env
+        env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self['APP_ENV'])
+        if os.path.isfile(env_environment_file_path):
+            self.from_pyfile(env_environment_file_path)
+
+        # If testing, load specific test .env specifically meant for testing purposes
+        if self['APP_ENV'] == 'testing':
+            env_environment_test_file_path = os.path.join(self.root_path, '.env.%s.test.py' % self['APP_ENV'])
+            if os.path.isfile(env_environment_test_file_path):
+                self.from_pyfile(env_environment_test_file_path)
