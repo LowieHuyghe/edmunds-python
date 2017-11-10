@@ -18,6 +18,28 @@ class Config(FlaskConfig):
         """
         return self._get(key, default=default)
 
+    def has(self, key):
+        """
+        Check if has
+        :param key: The key
+        :type key:  str
+        :return:    Has
+        :rtype:     bool
+        """
+        flat_key = self._get_flat_key(key)
+
+        # Value exists
+        if flat_key in self:
+            return True
+
+        # Namespace maybe?
+        namespace = '%s_' % flat_key
+        for i in self:
+            if i.startswith(namespace):
+                return True
+
+        return False
+
     def _get(self, key, default=None):
         """
         Get the value for this key
