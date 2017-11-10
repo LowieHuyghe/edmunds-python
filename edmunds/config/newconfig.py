@@ -7,16 +7,19 @@ class Config(FlaskConfig):
     Config module
     """
 
-    def __call__(self, key, default=None):
+    def __call__(self, mixed, default=None):
         """
         Get the value
-        :param key:     The key
-        :type key:      str
+        :param mixed:   Key of update-dict
+        :type mixed:    str|dict
         :param default: The default value if it does not exist
         :type default:  mixed
         :return:        Value
         """
-        return self._get(key, default=default)
+        if isinstance(mixed, dict):
+            self._update(mixed)
+        else:
+            return self._get(mixed, default=default)
 
     def has(self, key):
         """
@@ -62,6 +65,22 @@ class Config(FlaskConfig):
 
         # Default
         return default
+
+    def _update(self, update):
+        """
+        Update values
+        :param update:  The update
+        :type update:   dict
+        :return:        void
+        """
+        for key in update:
+            flat_key = self._get_flat_key(key)
+
+            for i in list(self.keys()):
+                if i.startswith(flat_key):
+                    del self[i]
+
+            self[flat_key] = update[key]
 
     def _get_flat_key(self, key):
         """
