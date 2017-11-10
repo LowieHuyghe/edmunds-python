@@ -36,7 +36,7 @@ class Config(FlaskConfig):
         # Check namespace
         namespace = self.get_namespace('%s_' % flat_key, trim_namespace=True)
         if namespace:
-            return self._get_expanded_namespace(namespace)
+            return self._expand(namespace)
 
         # Default
         return default
@@ -51,30 +51,30 @@ class Config(FlaskConfig):
         """
         return key.replace('.', '_').upper()
 
-    def _get_expanded_namespace(self, namespace):
+    def _expand(self, flattie):
         """
-        Process namespace
-        :param namespace:   The namespace
-        :type namespace:    dict
-        :return:            The expanded namespace
-        :rtype:             dict
+        Expand flat dictionary
+        :param flattie: The flattie
+        :type flattie:  dict
+        :return:        The expanded flattie
+        :rtype:         dict
         """
 
-        keys = list(namespace.keys())
+        keys = list(flattie.keys())
         keys.sort()
 
         expanded = None
 
         for key in keys:
-            value = namespace[key]
+            value = flattie[key]
             flat_key = self._get_flat_key(key).lower()
             key_parts = flat_key.split('_')
 
-            expanded = self._get_expanded_namespace_loop(key_parts, value, expanded)
+            expanded = self._expand_loop(key_parts, value, expanded)
 
         return expanded
 
-    def _get_expanded_namespace_loop(self, keys, value, expanded=None):
+    def _expand_loop(self, keys, value, expanded=None):
         """
         Get expanded namespace loop
         :param keys:        The keys
@@ -99,9 +99,9 @@ class Config(FlaskConfig):
         if not next_keys:
             set_value = value
         elif key in expanded:
-            set_value = self._get_expanded_namespace_loop(next_keys, value, expanded[key])
+            set_value = self._expand_loop(next_keys, value, expanded[key])
         else:
-            set_value = self._get_expanded_namespace_loop(next_keys, value)
+            set_value = self._expand_loop(next_keys, value)
 
         if isinstance(expanded, list):
             expanded.append(set_value)
@@ -109,3 +109,35 @@ class Config(FlaskConfig):
             expanded[key] = set_value
 
         return expanded
+
+    def _flatten(self, expanded, flat=None, initial_key=None):
+        """
+        Flatten an expanded dict or list
+        :param expanded:    Expanded dict or list
+        :param flat:        Flat dictionary result
+        :param initial_key: Initial key
+        :return:            Flat dictionary
+        :rtype:             dict
+        """
+
+        if flat is None:
+            flat = {}
+
+        if isinstance(expanded, list) or isinstance(expanded, dict):
+            if isinstance(expanded, list):
+                loopediloop = range(0, len(expanded))
+            else:
+                loopediloop = expanded
+
+            for i in loopediloop:
+                key = '%s' % i
+                if initial_key:
+                    key = '%s_%s' % (initial_key, key)
+
+                self._flatten(expanded[i], flat, initial_key=key)
+        elif initial_key is None and not flat:
+            return expanded
+        else:
+            flat[initial_key.upper()] = expanded
+
+        return flat
