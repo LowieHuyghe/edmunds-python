@@ -63,22 +63,49 @@ class Config(FlaskConfig):
         keys = list(namespace.keys())
         keys.sort()
 
-        expanded = {}
+        expanded = None
 
         for key in keys:
             value = namespace[key]
             flat_key = self._get_flat_key(key).lower()
             key_parts = flat_key.split('_')
 
-            expanded_sub = expanded
-            for i in range(0, len(key_parts)):
-                key_part = key_parts[i]
+            expanded = self._get_expanded_namespace_loop(key_parts, value, expanded)
 
-                if i == len(key_parts) - 1:
-                    expanded_sub[key_part] = value
-                else:
-                    if key_part not in expanded_sub:
-                        expanded_sub[key_part] = {}
-                    expanded_sub = expanded_sub[key_part]
+        return expanded
+
+    def _get_expanded_namespace_loop(self, keys, value, expanded=None):
+        """
+        Get expanded namespace loop
+        :param keys:        The keys
+        :param value:       The value
+        :param expanded:    The expanded dict/list
+        :return:            The expanded dict/list
+        """
+        key = keys[0]
+        if key.isdigit():
+            key = int(key)
+        next_keys = keys[1:]
+
+        if expanded is None:
+            if isinstance(key, int) and key == 0:
+                expanded = []
+            else:
+                expanded = {}
+        elif isinstance(expanded, list):
+            if not isinstance(key, int) or key != len(expanded):
+                expanded = dict(enumerate(expanded))
+
+        if not next_keys:
+            set_value = value
+        elif key in expanded:
+            set_value = self._get_expanded_namespace_loop(next_keys, value, expanded[key])
+        else:
+            set_value = self._get_expanded_namespace_loop(next_keys, value)
+
+        if isinstance(expanded, list):
+            expanded.append(set_value)
+        else:
+            expanded[key] = set_value
 
         return expanded
