@@ -8,7 +8,8 @@ class RuntimeEnvironment(object):
     The Google App Engine runtime environment
     """
 
-    def is_gae(self):
+    @staticmethod
+    def is_gae():
         """
         Check if is Google App Engine
         """

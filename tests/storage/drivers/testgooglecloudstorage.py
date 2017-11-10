@@ -1,6 +1,8 @@
 
-from tests.gae.gaetestcase import GaeTestCase
 import os
+
+from tests.gaetestcase import GaeTestCase
+
 if GaeTestCase.can_run():
     import cloudstorage as gcs
 

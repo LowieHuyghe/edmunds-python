@@ -56,6 +56,8 @@ class TestCase(unittest.TestCase, ABC):
     def create_application(self):
         """
         Create the application for testing
+        :return:    Application
+        :rtype:     edmunds.application.Application
         """
         pass
 
