@@ -218,7 +218,7 @@ workflows:
             tags:
               only: /^v[0-9]+(\.[0-9]+)*$/
             branches:
-              only: master
+              ignore: /.*/
           requires:
             - test-2.7
             - test-3.4
