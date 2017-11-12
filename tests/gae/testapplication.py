@@ -1,5 +1,5 @@
 
-from tests.gae.gaetestcase import GaeTestCase
+from tests.gaetestcase import GaeTestCase
 
 
 class TestApplication(GaeTestCase):
@@ -22,7 +22,17 @@ class TestApplication(GaeTestCase):
         :return:    void
         """
 
-        app_id = self.app.app_id()
+        app_id = self.create_application().app_id()
+        self.assert_is_not_none(app_id)
+        self.assert_in('testbed', app_id)
 
+        self.testbed.deactivate()
+
+        with self.assert_raises_regexp(RuntimeError, 'Not running in Google App Engine environment while fetching app_id.'):
+            self.create_application().app_id()
+
+        self.testbed.activate()
+
+        app_id = self.create_application().app_id()
         self.assert_is_not_none(app_id)
         self.assert_in('testbed', app_id)

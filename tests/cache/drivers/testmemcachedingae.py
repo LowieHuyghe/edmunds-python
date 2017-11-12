@@ -1,7 +1,9 @@
 
-from tests.gae.gaetestcase import GaeTestCase
 from werkzeug.contrib.cache import MemcachedCache
+
 from edmunds.cache.drivers.memcached import Memcached
+from tests.gaetestcase import GaeTestCase
+
 if GaeTestCase.can_run():
     from google.appengine.api import memcache
 
