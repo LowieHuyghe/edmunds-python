@@ -1,5 +1,5 @@
 
-from tests.gae.gaetestcase import GaeTestCase
+from tests.gaetestcase import GaeTestCase
 
 
 class TestGoogleAppEngine(GaeTestCase):

@@ -50,6 +50,22 @@ class RuntimeEnvironment(object):
         """
 
         if not hasattr(self, '_is_gae'):
-            self._is_gae = GaeRuntimeEnvironment().is_gae()
+            self._is_gae = GaeRuntimeEnvironment.is_gae()
 
         return self._is_gae
+
+    def app_id(self):
+        """
+        Get the Google App Engine app id
+        :return:    The app id
+        :rtype:     str
+        """
+
+        if not self.is_gae():
+            raise RuntimeError('Not running in Google App Engine environment while fetching app_id.')
+
+        if not hasattr(self, '_app_id'):
+            from google.appengine.api import app_identity
+            self._app_id = app_identity.get_application_id()
+
+        return self._app_id
