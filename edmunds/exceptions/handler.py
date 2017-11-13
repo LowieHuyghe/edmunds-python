@@ -32,7 +32,7 @@ class Handler(object):
             if isinstance(exception, exception_class):
                 return False
 
-        self.app.logger.error(exception, exc_info=sys.exc_info())
+        self.app.logger.critical(exception, exc_info=sys.exc_info())
 
         return True
 
