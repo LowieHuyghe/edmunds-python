@@ -150,12 +150,8 @@ class LogManager(Manager):
 
         options = {}
 
-        if 'stream' in config:
-            options['stream'] = config['stream']
         if 'level' in config:
             options['level'] = config['level']
-        if 'format' in config:
-            options['format'] = config['format']
 
         from edmunds.log.drivers.googleappengine import GoogleAppEngine
         return GoogleAppEngine(self._app, **options)
