@@ -54,6 +54,16 @@ class RuntimeEnvironment(object):
 
         return self._is_gae
 
+    def is_gae_development(self):
+        """
+        Check if running in Google App Engine SDK
+        """
+
+        if not hasattr(self, '_is_gae_development'):
+            self._is_gae_development = GaeRuntimeEnvironment.is_gae_development()
+
+        return self._is_gae_development
+
     def app_id(self):
         """
         Get the Google App Engine app id

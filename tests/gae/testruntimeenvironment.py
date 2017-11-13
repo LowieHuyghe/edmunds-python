@@ -51,18 +51,24 @@ class TestRuntimeEnvironment(GaeTestCase):
 
         self.testbed.deactivate()
         self.assert_false(RuntimeEnvironment.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae_development())
 
         os.environ['CURRENT_VERSION_ID'] = self.rand_str()
         self.assert_false(RuntimeEnvironment.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae_development())
 
         os.environ['AUTH_DOMAIN'] = self.rand_str()
         self.assert_false(RuntimeEnvironment.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae_development())
 
         os.environ['SERVER_SOFTWARE'] = self.rand_str()
         self.assert_false(RuntimeEnvironment.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae_development())
 
         os.environ['SERVER_SOFTWARE'] = 'Development/%s' % self.rand_str()
         self.assert_true(RuntimeEnvironment.is_gae())
+        self.assert_true(RuntimeEnvironment.is_gae_development())
 
         os.environ['SERVER_SOFTWARE'] = 'Google App Engine/%s' % self.rand_str()
         self.assert_true(RuntimeEnvironment.is_gae())
+        self.assert_false(RuntimeEnvironment.is_gae_development())
