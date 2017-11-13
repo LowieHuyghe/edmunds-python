@@ -84,16 +84,68 @@ class Config(FlaskConfig):
                 result = new_result
             elif isinstance(new_result, list):
                 if isinstance(result, list):
-                    result.extend(new_result)
+                    result = result + new_result
                 else:
+                    result = result.copy()
                     result.update(dict(enumerate(new_result)))
             else:
                 if isinstance(result, list):
                     result = dict(enumerate(result))
+                else:
+                    result = result.copy()
                 result.update(new_result)
 
         # Return result
         return result
+
+    def has(self, key):
+        """
+        Check if has value for this key
+        :param key:     The key
+        :type key:      str
+        :return:        Value
+        """
+        flat_key = key.replace('.', '_').upper()
+        key_parts = flat_key.split('_')
+
+        return self._has_recursive(self, key_parts)
+
+    def _has_recursive(self, remaining, key_parts):
+        """
+        Check has value in a recursive manner
+        :param remaining:   The remaining value
+        :param key_parts:   The key parts
+        :return:            The value
+        """
+
+        # There are no key-parts to look for anymore
+        if not key_parts:
+            return remaining is not None
+
+        # There are still key-parts but no value to dig deeper into
+        if not isinstance(remaining, list) and not isinstance(remaining, dict):
+            return False
+
+        # Define stuff
+        key_part = key_parts[0]
+        key_parts = key_parts[1:]
+
+        # Make sure we are looping over keys
+        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
+            key = '%s' % i
+
+            # Check has recursive
+            if key.upper() == key_part:
+                if self._has_recursive(remaining[key], key_parts):
+                    return True
+            elif key.upper().startswith(key_part):
+                new_key = key[len(key_part):].lstrip('_')
+                new_remaining = {new_key: remaining[key]}
+                if self._has_recursive(new_remaining, key_parts):
+                    return True
+
+        # Found nothing
+        return False
 
     def load_all(self, config_dirs):
         """
