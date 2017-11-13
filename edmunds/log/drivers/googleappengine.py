@@ -1,31 +1,38 @@
 
-from logging import StreamHandler, WARNING, Formatter
+from google.appengine.api.app_logging import AppLogsHandler
+from logging import StreamHandler, Formatter, WARNING
 
 
-class GoogleAppEngine(StreamHandler):
+class GoogleAppEngine(AppLogsHandler):
     """
     Google App Engine Driver
-    There is nothing special about this driver, but the StreamHandler-class
-    is special in the Google App Engine runtime.
     """
 
-    def __init__(self, app, level=WARNING, format=None, stream=None):
+    def __init__(self, app, level=WARNING):
         """
-        Initiate the instance
-        :param app:             The application
-        :type  app:             Edmunds.Application
-        :param level:           The minimum level to log
-        :type  level:           int
-        :param format:          The format for the formatter
-        :type  format:          str
-        :param stream:          The stream. This is only meant for testing.
-        :type  stream:          stream
+        Init google app engine logging handler
+        :param app:     The application
+        :type app:      edmunds.application.Application
+        :param level:   Level of reporting
+        :type level:    int
         """
+        super(GoogleAppEngine, self).__init__(level=level)
 
-        super(GoogleAppEngine, self).__init__(stream)
+        self.development_handler = None
+        if app.is_gae_development():
+            handler = StreamHandler()
+            handler.setLevel(self.level)
+            handler.setFormatter(Formatter('%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'))
+            self.development_handler = handler
 
-        self.setLevel(level)
+    def emit(self, *args, **kwargs):
+        """
+        Emit event
+        :param args:    Arguments
+        :param kwargs:  Kwarguments
+        :return:        void
+        """
+        super(GoogleAppEngine, self).emit(*args, **kwargs)
 
-        if format is None:
-            format = '%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'
-        self.setFormatter(Formatter(format))
+        if self.development_handler is not None:
+            self.development_handler.emit(*args, **kwargs)
