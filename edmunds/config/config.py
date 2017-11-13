@@ -9,195 +9,163 @@ class Config(FlaskConfig):
     Config module
     """
 
-    def __init__(self, root_path, defaults=None):
+    def __call__(self, key, default=None):
         """
-        Initiate the dictionary
-        :param root_path:   The root path
-        :type  root_path:   str
-        :param defaults:    The default
-        :type  defaults:    mixed
+        Get the value
+        :param key:     The key
+        :type key:      str
+        :param default: The default value if it does not exist
+        :type default:  mixed
+        :return:        Value
+        """
+        return self._get(key, default=default)
+
+    def _get(self, key, default=None):
+        """
+        Get the value for this key
+        :param key:     The key
+        :type key:      str
+        :param default: The default value if it does not exist
+        :type default:  mixed
+        :return:        Value
+        """
+        key_parts = self._get_key_parts(key)
+        result = self._get_recursive(self, key_parts)
+
+        if result is not None:
+            return result
+
+        return default
+
+    def _get_recursive(self, remaining, key_parts):
+        """
+        Get value in a recursive manner
+        :param remaining:   The remaining value
+        :param key_parts:   The key parts
+        :return:            The value
         """
 
-        super(Config, self).__init__(root_path, defaults)
+        # There are no key-parts to look for anymore
+        if not key_parts:
+            return remaining
 
-        self.loaded_config = []
+        # There are still key-parts but no value to dig deeper into
+        if not isinstance(remaining, list) and not isinstance(remaining, dict):
+            return None
 
-    def __call__(self, mixed, default=None):
-        """
-        Get a value or update some values
-        :param mixed:       Key of dictionary
-        :type mixed:        dict|key
-        :param default:     The default value when fetching a value
-        :type  default:     mixed
-        :return:            Respectively the value and None
-        :rtype:             mixed|None
-        """
+        # Define stuff
+        key_part = key_parts[0]
+        key_parts = key_parts[1:]
+        result = None
 
-        # Update dictionary
-        if isinstance(mixed, dict):
-            processed_dict = {}
+        # Make sure we are looping over keys
+        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
+            key = '%s' % i
 
-            for key in mixed:
-                processed_key = self._getProcessKey(key)
-                processed_dict[processed_key] = mixed[key]
+            # Get recursive result
+            if key.upper() == key_part:
+                new_result = self._get_recursive(remaining[key], key_parts)
+            elif key.upper().startswith(key_part):
+                new_key = key[len(key_part):].lstrip('_')
+                new_remaining = {new_key: remaining[key]}
+                new_result = self._get_recursive(new_remaining, key_parts)
+            else:
+                continue
+            if new_result is None:
+                continue
 
-            return self.update(processed_dict)
+            # If result is solid, and not diggable: return it
+            if not isinstance(new_result, list) and not isinstance(new_result, dict):
+                return new_result
 
-        # Get value
-        else:
-            if not self.has(mixed):
-                return default
+            # Merge new_result in the result
+            if result is None:
+                result = new_result
+            elif isinstance(new_result, list):
+                if isinstance(result, list):
+                    result = result + new_result
+                else:
+                    result = result.copy()
+                    result.update(dict(enumerate(new_result)))
+            else:
+                if isinstance(result, list):
+                    result = dict(enumerate(result))
+                else:
+                    result = result.copy()
+                result.update(new_result)
 
-            processed_key = self._getProcessKey(mixed)
-            return self[processed_key]
+        # Return result
+        return result
 
     def has(self, key):
         """
-        Check if has key
+        Check if has value for this key
         :param key:     The key
-        :type  key:     str
-        :return:        Has key?
-        :rtype:         boolean
+        :type key:      str
+        :return:        Value
+        """
+        key_parts = self._get_key_parts(key)
+        return self._has_recursive(self, key_parts)
+
+    def _has_recursive(self, remaining, key_parts):
+        """
+        Check has value in a recursive manner
+        :param remaining:   The remaining value
+        :param key_parts:   The key parts
+        :return:            The value
         """
 
-        processed_key = self._getProcessKey(key)
-        return processed_key in self
+        # There are no key-parts to look for anymore
+        if not key_parts:
+            return remaining is not None
 
-    def _getProcessKey(self, key):
+        # There are still key-parts but no value to dig deeper into
+        if not isinstance(remaining, list) and not isinstance(remaining, dict):
+            return False
+
+        # Define stuff
+        key_part = key_parts[0]
+        key_parts = key_parts[1:]
+
+        # Make sure we are looping over keys
+        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
+            key = '%s' % i
+
+            # Check has recursive
+            if key.upper() == key_part:
+                if self._has_recursive(remaining[key], key_parts):
+                    return True
+            elif key.upper().startswith(key_part):
+                new_key = key[len(key_part):].lstrip('_')
+                new_remaining = {new_key: remaining[key]}
+                if self._has_recursive(new_remaining, key_parts):
+                    return True
+
+        # Found nothing
+        return False
+
+    def _get_key_parts(self, key):
         """
-        Process the given key
-        :param key:     The key to process
-        :type  key:     str
-        :return:        The processed key
-        :rtype:         str
+        Get key parts
+        :param key:     The key
+        :type key:      str
+        :return:        Key parts
+        :rtype:         list(str)
         """
+        flat_key = key.replace('.', '_').upper()
+        return flat_key.split('_')
 
-        return '_'.join(key.split('.')).upper()
-
-    def load_all(self, config_dirs):
+    def from_pydir(self, config_dir):
         """
-        Load all config files
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
+        Load the configuration in directory
+        :param config_dir:  Configuration directory
+        :type  config_dir:  str
         """
+        for root, subdirs, files in os.walk(config_dir):
+            for file in files:
+                if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
+                    continue
 
-        # Load configuration in order
-        # Newly loaded overwrites current values
-        self._load_config(config_dirs)
-        self._load_env()
+                file_name = os.path.join(self.root_path, config_dir, file)
 
-    def _load_config(self, config_dirs):
-        """
-        Load the configuration
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
-        """
-
-        for config_dir in config_dirs:
-            for root, subdirs, files in os.walk(config_dir):
-                for file in files:
-                    if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
-                        continue
-
-                    file_name = os.path.join(self.root_path, config_dir, file)
-
-                    self.from_pyfile(file_name)
-
-    def _load_env(self):
-        """
-        Load environment config
-        """
-
-        # Load .env file
-        env_file_path = os.path.join(self.root_path, '.env.py')
-        if os.path.isfile(env_file_path):
-            self.from_pyfile(env_file_path)
-
-        # Overwrite with APP_ENV value set in environment
-        if 'APP_ENV' in os.environ:
-            self({
-                'app.env': os.environ.get('APP_ENV')
-            })
-
-        # Check if environment set
-        if not self.has('app.env') or not self('app.env'):
-            raise RuntimeError('App environment is not set.')
-
-        # Load environment specific .env
-        env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self('app.env').lower())
-        if os.path.isfile(env_environment_file_path):
-            self.from_pyfile(env_environment_file_path)
-
-        # If testing, load specific test .env specifically meant for testing purposes
-        if self('app.env').lower() == 'testing':
-            env_environment_test_file_path = os.path.join(self.root_path, '.env.%s.test.py' % self('app.env').lower())
-            if os.path.isfile(env_environment_test_file_path):
-                self.from_pyfile(env_environment_test_file_path)
-
-        # Lower the environment value
-        self({
-            'app.env': self('app.env').lower()
-        })
-
-    def from_pyfile(self, filename, silent=False):
-        """
-        Load from py-file
-        :param filename:    File to load
-        :type  filename:    str
-        :param silent:      Die silently when config-file does not exist
-        :type  silent:      bool
-        :return:            Success
-        :rtype:             bool
-        """
-
-        # Backup of original
-        processed_original = self._flatten_dict(self)
-        self.clear()
-
-        # Load new
-        success = super(Config, self).from_pyfile(filename, silent)
-        if success:
-            # Flatten new list
-            processed_new = self._flatten_dict(self)
-            self.clear()
-
-            # Set back original and overwrite with new
-            self.update(processed_original)
-            self.update(processed_new)
-
-        else:
-            # Set back original
-            self.update(processed_original)
-
-        return success
-
-    def _flatten_dict(self, new, prefix_key=None):
-        """
-        Flatten the dictionary to dictionary with only one level
-        :param new:             The given dictionary
-        :type  new:             dict
-        :param prefix_key:      The prefix key
-        :type  prefix_key:      str
-        :return:                The processed dictionary
-        :rtype:                 dict
-        """
-
-        return_dict = {}
-
-        if isinstance(new, dict) or isinstance(new, list):
-            if isinstance(new, list):
-                keys_to_loop = range(0, len(new))
-            else:
-                keys_to_loop = new
-
-            for key in keys_to_loop:
-                value = new[key]
-                key_str = ('%s' % key).upper()
-                if prefix_key:
-                    key_str = prefix_key + '_' + key_str
-
-                return_dict.update(self._flatten_dict(value, key_str))
-        else:
-            return_dict[prefix_key] = new
-
-        return return_dict
+                self.from_pyfile(file_name)
