@@ -29,3 +29,16 @@ class RuntimeEnvironment(object):
             return False
 
         return True
+
+    @staticmethod
+    def is_gae_development():
+        """
+        Check if Google App Engine SDK
+        :return:    Gae Development
+        :rtype:     bool
+        """
+        if not RuntimeEnvironment.is_gae():
+            return False
+
+        return 'SERVER_SOFTWARE' in os.environ \
+               and os.environ['SERVER_SOFTWARE'].startswith('Development')
