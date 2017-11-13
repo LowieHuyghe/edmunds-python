@@ -9,41 +9,16 @@ class Config(FlaskConfig):
     Config module
     """
 
-    def has(self, key):
-        """
-        Check if has
-        :param key: The key
-        :type key:  str
-        :return:    Has
-        :rtype:     bool
-        """
-        flat_key = self._get_flat_key(key)
-
-        # Value exists
-        if flat_key in self:
-            return True
-
-        # Namespace maybe?
-        namespace = '%s_' % flat_key
-        for i in self:
-            if i.startswith(namespace):
-                return True
-
-        return False
-
-    def __call__(self, mixed, default=None):
+    def __call__(self, key, default=None):
         """
         Get the value
-        :param mixed:   Key of update-dict
-        :type mixed:    str|dict
+        :param key:     The key
+        :type key:      str
         :param default: The default value if it does not exist
         :type default:  mixed
         :return:        Value
         """
-        if isinstance(mixed, dict):
-            return self.update(mixed)
-        else:
-            return self._get(mixed, default=default)
+        return self._get(key, default=default)
 
     def _get(self, key, default=None):
         """
@@ -54,135 +29,71 @@ class Config(FlaskConfig):
         :type default:  mixed
         :return:        Value
         """
-        flat_key = self._get_flat_key(key)
+        flat_key = key.replace('.', '_').upper()
+        key_parts = flat_key.split('_')
 
-        # Value exists
-        if flat_key in self:
-            return self[flat_key]
+        result = self._get_recursive(self, key_parts)
+        if result is not None:
+            return result
 
-        # Check namespace
-        namespace = self.get_namespace('%s_' % flat_key, trim_namespace=True)
-        if namespace:
-            return self._expand(namespace)
-
-        # Default
         return default
 
-    def __setitem__(self, key, value):
+    def _get_recursive(self, remaining, key_parts):
         """
-        Set item
-        :param key:     Key
-        :param value:   Value
-        :return:        void
-        """
-        flat_key = self._get_flat_key(key)
-        result = self._flatten(value, initial_key=flat_key)
-
-        for i in list(self.keys()):
-            if i.startswith(flat_key):
-                del self[i]
-
-        self.update(result)
-
-    def _get_flat_key(self, key):
-        """
-        Get flat key
-        :param key:     The key
-        :type key:      str
-        :return:        Processed key
-        :rtype:         str
-        """
-        return key.replace('.', '_').upper()
-
-    def _expand(self, flattie):
-        """
-        Expand flat dictionary
-        :param flattie: The flattie
-        :type flattie:  dict
-        :return:        The expanded flattie
-        :rtype:         dict
+        Get value in a recursive manner
+        :param remaining:   The remaining value
+        :param key_parts:   The key parts
+        :return:            The value
         """
 
-        keys = list(flattie.keys())
-        keys.sort()
+        # There are no key-parts to look for anymore
+        if not key_parts:
+            return remaining
 
-        expanded = None
+        # There are still key-parts but no value to dig deeper into
+        if not isinstance(remaining, list) and not isinstance(remaining, dict):
+            return None
 
-        for key in keys:
-            value = flattie[key]
-            flat_key = self._get_flat_key(key).lower()
-            key_parts = flat_key.split('_')
+        # Define stuff
+        key_part = key_parts[0]
+        key_parts = key_parts[1:]
+        result = None
 
-            expanded = self._expand_loop(key_parts, value, expanded)
+        # Make sure we are looping over keys
+        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
+            key = '%s' % i
 
-        return expanded
-
-    def _expand_loop(self, keys, value, expanded=None):
-        """
-        Get expanded namespace loop
-        :param keys:        The keys
-        :param value:       The value
-        :param expanded:    The expanded dict/list
-        :return:            The expanded dict/list
-        """
-        key = keys[0]
-        if key.isdigit():
-            key = int(key)
-        next_keys = keys[1:]
-
-        if expanded is None:
-            if isinstance(key, int) and key == 0:
-                expanded = []
+            # Get recursive result
+            if key.upper() == key_part:
+                new_result = self._get_recursive(remaining[key], key_parts)
+            elif key.upper().startswith(key_part):
+                new_key = key[len(key_part):].lstrip('_')
+                new_remaining = {new_key: remaining[key]}
+                new_result = self._get_recursive(new_remaining, key_parts)
             else:
-                expanded = {}
-        elif isinstance(expanded, list):
-            if not isinstance(key, int) or key != len(expanded):
-                expanded = dict(enumerate(expanded))
+                continue
+            if new_result is None:
+                continue
 
-        if not next_keys:
-            set_value = value
-        elif key in expanded:
-            set_value = self._expand_loop(next_keys, value, expanded[key])
-        else:
-            set_value = self._expand_loop(next_keys, value)
+            # If result is solid, and not diggable: return it
+            if not isinstance(new_result, list) and not isinstance(new_result, dict):
+                return new_result
 
-        if isinstance(expanded, list):
-            expanded.append(set_value)
-        else:
-            expanded[key] = set_value
-
-        return expanded
-
-    def _flatten(self, expanded, flat=None, initial_key=None):
-        """
-        Flatten an expanded dict or list
-        :param expanded:    Expanded dict or list
-        :param flat:        Flat dictionary result
-        :param initial_key: Initial key
-        :return:            Flat dictionary
-        :rtype:             dict
-        """
-        if flat is None:
-            flat = {}
-
-        if isinstance(expanded, list) or isinstance(expanded, dict):
-            if isinstance(expanded, list):
-                loopediloop = range(0, len(expanded))
+            # Merge new_result in the result
+            if result is None:
+                result = new_result
+            elif isinstance(new_result, list):
+                if isinstance(result, list):
+                    result.extend(new_result)
+                else:
+                    result.update(dict(enumerate(new_result)))
             else:
-                loopediloop = expanded
+                if isinstance(result, list):
+                    result = dict(enumerate(result))
+                result.update(new_result)
 
-            for i in loopediloop:
-                key = '%s' % i
-                if initial_key:
-                    key = '%s_%s' % (initial_key, key)
-
-                self._flatten(expanded[i], flat, initial_key=key)
-        elif initial_key is None and not flat:
-            return expanded
-        else:
-            flat[initial_key.upper()] = expanded
-
-        return flat
+        # Return result
+        return result
 
     def load_all(self, config_dirs):
         """
