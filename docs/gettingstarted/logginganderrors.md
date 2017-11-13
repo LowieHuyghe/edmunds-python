@@ -65,7 +65,6 @@ APP = {
                 'name': 'googleappengine',
                 'driver': GoogleAppEngine,
                 # 'level': WARNING, 					# Optional, default: WARNING
-                # 'format': '%(message)s', 				# Optional, default: '%(levelname)-8s %(asctime)s %(filename)s:%(lineno)s] %(message)s'
             },
         ],
     },
