@@ -1,5 +1,6 @@
 
 from edmunds.support.serviceprovider import ServiceProvider
+from werkzeug.debug import DebuggedApplication
 import os
 
 
@@ -21,6 +22,10 @@ class RuntimeEnvironmentServiceProvider(ServiceProvider):
                 self.app.debug = config_debug
             elif self.app.is_development():
                 self.app.debug = True
+
+        # Debug Application for Google App Engine as this is not loaded by default
+        if self.app.debug and self.app.is_gae():
+            self.app.wsgi_app = DebuggedApplication(self.app.wsgi_app)
 
         # Testing environment
         if self.app.is_testing():
