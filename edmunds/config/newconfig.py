@@ -147,60 +147,17 @@ class Config(FlaskConfig):
         # Found nothing
         return False
 
-    def load_all(self, config_dirs):
+    def from_pydir(self, config_dir):
         """
-        Load all config files
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
+        Load the configuration in directory
+        :param config_dir:  Configuration directory
+        :type  config_dir:  str
         """
-        # Load configuration in order
-        # Newly loaded overwrites current values
-        self._load_config(config_dirs)
-        self._load_env()
+        for root, subdirs, files in os.walk(config_dir):
+            for file in files:
+                if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
+                    continue
 
-    def _load_config(self, config_dirs):
-        """
-        Load the configuration
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
-        """
-        for config_dir in config_dirs:
-            for root, subdirs, files in os.walk(config_dir):
-                for file in files:
-                    if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
-                        continue
+                file_name = os.path.join(self.root_path, config_dir, file)
 
-                    file_name = os.path.join(self.root_path, config_dir, file)
-
-                    self.from_pyfile(file_name)
-
-    def _load_env(self):
-        """
-        Load environment config
-        """
-        # Load .env file
-        env_file_path = os.path.join(self.root_path, '.env.py')
-        if os.path.isfile(env_file_path):
-            self.from_pyfile(env_file_path)
-
-        # Overwrite with APP_ENV value set in environment
-        if 'APP_ENV' in os.environ:
-            self['APP_ENV'] = os.environ.get('APP_ENV')
-
-        # Check if environment set
-        if 'APP_ENV' not in self or not self['APP_ENV']:
-            raise RuntimeError('App environment is not set.')
-
-        # Lower the environment value
-        self['APP_ENV'] = self['APP_ENV'].lower()
-
-        # Load environment specific .env
-        env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self['APP_ENV'])
-        if os.path.isfile(env_environment_file_path):
-            self.from_pyfile(env_environment_file_path)
-
-        # If testing, load specific test .env specifically meant for testing purposes
-        if self['APP_ENV'] == 'testing':
-            env_environment_test_file_path = os.path.join(self.root_path, '.env.%s.test.py' % self['APP_ENV'])
-            if os.path.isfile(env_environment_test_file_path):
-                self.from_pyfile(env_environment_test_file_path)
+                self.from_pyfile(file_name)
