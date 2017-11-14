@@ -179,8 +179,10 @@ class Config(FlaskConfig):
         self.clear()
 
         super(Config, self).from_object(obj)
+        new = self.copy()
+        self.clear()
 
-        self._deep_merge_underdog(self, backup)
+        self.update(self._deep_merge(backup, new))
 
     def from_mapping(self, *mapping, **kwargs):
         """
@@ -190,30 +192,28 @@ class Config(FlaskConfig):
         self.clear()
 
         result = super(Config, self).from_mapping(*mapping, **kwargs)
+        new = self.copy()
+        self.clear()
 
-        self._deep_merge_underdog(self, backup)
+        self.update(self._deep_merge(backup, new))
 
         return result
 
-    def _deep_merge_underdog(self, original, underdog):
+    def _deep_merge(self, original, new):
         """
         Deep merge item as if it would have been overriden
         :param original:  First entry
-        :param underdog:  Second entry
+        :param new:  Second entry
         :return:        Merged value
         """
 
-        if isinstance(original, dict) and isinstance(underdog, dict):
-            for underdog_key in underdog:
-                underdog_value = underdog[underdog_key]
-                original_value = original[underdog_key] if underdog_key in original else None
+        if isinstance(original, dict) and isinstance(new, dict):
+            original = original.copy()
+            for new_key in new:
+                new_value = new[new_key]
+                original_value = original[new_key] if new_key in original else None
 
-                result = self._deep_merge_underdog(original_value, underdog_value)
-                if result is not None:
-                    original[underdog_key] = result
+                original[new_key] = self._deep_merge(original_value, new_value)
             return original
 
-        if original is None:
-            return underdog
-
-        return None
+        return new
