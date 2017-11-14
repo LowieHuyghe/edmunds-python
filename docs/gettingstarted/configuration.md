@@ -104,6 +104,11 @@ has_db_pass = app.config.has('app.database.mysql.pass')
 has_db_pass = 'pass' in app.config['APP']['database']['mysql']
 ```
 
+> Note: Using underscores (`_`) or dots (`.`) in the key of a
+> dict in your configuration will not work with `app.config()`
+> and `app.config.has()`.  
+> Ex: `APP = {'info_name': 'Edmunds'}` will not work.
+
 
 ## Environment configuration
 
