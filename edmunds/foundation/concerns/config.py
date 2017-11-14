@@ -48,19 +48,21 @@ class Config(object):
             self.config['APP_ENV'] = os.environ.get('APP_ENV')
 
         # Check if environment set
-        if 'APP_ENV' not in self.config or not self.config['APP_ENV']:
+        environment = self.config('app.env')
+        if not environment:
             raise RuntimeError('App environment is not set.')
 
         # Lower the environment value
-        self.config['APP_ENV'] = self.config['APP_ENV'].lower()
+        self.config['APP_ENV'] = environment.lower()
+        environment = self.config('app.env')
 
         # Load environment specific .env
-        env_environment_file_path = '.env.%s.py' % self.config['APP_ENV']
+        env_environment_file_path = '.env.%s.py' % environment
         if os.path.isfile(os.path.join(self.config.root_path, env_environment_file_path)):
             self.config.from_pyfile(env_environment_file_path)
 
         # If testing, load specific test .env specifically meant for testing purposes
-        if self.config['APP_ENV'] == 'testing':
-            env_environment_test_file_path = '.env.%s.test.py' % self.config['APP_ENV']
+        if environment == 'testing':
+            env_environment_test_file_path = '.env.%s.test.py' % environment
             if os.path.isfile(os.path.join(self.config.root_path, env_environment_test_file_path)):
                 self.config.from_pyfile(env_environment_test_file_path)
