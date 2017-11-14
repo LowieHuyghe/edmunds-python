@@ -60,14 +60,14 @@ class Config(FlaskConfig):
 
         # Make sure we are looping over keys
         for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
-            key = '%s' % i
+            key_str = '%s' % i
 
             # Get recursive result
-            if key.upper() == key_part:
-                new_result = self._get_recursive(remaining[key], key_parts)
-            elif key.upper().startswith(key_part):
-                new_key = key[len(key_part):].lstrip('_')
-                new_remaining = {new_key: remaining[key]}
+            if key_str.upper() == key_part:
+                new_result = self._get_recursive(remaining[i], key_parts)
+            elif key_str.upper().startswith(key_part):
+                new_key = key_str[len(key_part):].lstrip('_')
+                new_remaining = {new_key: remaining[i]}
                 new_result = self._get_recursive(new_remaining, key_parts)
             else:
                 continue
