@@ -4,39 +4,8 @@
 The configuration of the application is managed with
 configuration-files and environment-files.
 
-Configuration-files are usually found in the
-`config`-directory and handle all non-secret config.
-Environment-files will be in the root-directory and are
-used for environment-specific and secret config.
 
-
-## Processing
-
-The processing of configuration in Edmunds is slightly
-upgraded from Flask's to make it easier to use. The
-original way still works as is. Edmunds merely added
-a layer for the developer's comfort.
-
-An example config:
-```python
-APP_NAME = 'My App'
-APP = {
-    'database': {
-        'mysql': {
-            'ip': '127.0.0.1',
-            'user': 'mydbuser',
-        }
-    }
-}
-```
-This will be processed to:
-```python
-APP_NAME = 'My App'
-APP_DATABASE_MYSQL_IP = '127.0.0.1'
-APP_DATABASE_MYSQL_USER = 'mydbuser'
-```
-
-### What will be loaded?
+## What will be loaded?
 
 All configuration files in the `config`-directory will
 be loaded in an arbitrary order.
@@ -46,43 +15,93 @@ the root of the project. More on this below.
 
 Configuration can this way be overwritten. Environment-config
 will overwrite config of the configuration-files if both
-define a value for the same key.
+define a value for the same key. More on this in Processing.
 
+
+## Processing
+
+The processing of configuration in Edmunds is slightly
+upgraded from Flask's to make it easier to use. The reason
+is that Edmunds encourages to use dictionary-structures in
+your configuration for readability purposes.
+
+But as mentioned before, files can overwrite values
+depending on priority. So how does Edmunds handle this?
+Let's take the following example:
+```python
+# config/generalconfig.py
+APP_NAME = 'My App'
+APP_AUTHOR = 'Edmunds'
+APP = {
+    'database': {
+        'mysql': {
+            'ip': '93.35.46.344',
+            'user': 'mydbuser',
+            'roles': ['admin', 'user']
+        }
+    }
+}
+
+# .env.py
+APP_ENV = 'development'
+APP_NAME = 'My App locally'
+APP = {
+    'database': {
+        'mysql': {
+            'ip': 'localhost',
+            'roles': ['tester'],
+            'pass': 'verysecure'
+        }
+    }
+}
+```
+Using the default behaviour of Flask, `.env.py` would completely
+overwrite `APP` defined in `config/generalconfig.py`. Edmunds on
+the other hand will merge dictionaries (only dictionaries!) and
+overwrite where needed. Giving the example above this would be
+the loaded result:
+```python
+APP_ENV = 'development'
+APP_NAME = 'My App locally'
+APP_AUTHOR = 'Edmunds'
+APP = {
+    'database': {
+        'mysql': {
+            'ip': 'localhost',
+            'user': 'mydbuser',
+            'roles': ['tester'],
+            'pass': 'verysecure'
+        }
+    }
+}
+```
 
 ## Fetching
 
-Fetching configuration can be like accessing the config
+Fetching configuration can be done by accessing the config
 as a dictionary. Or by using the added helper-methods.
 Using the above defined configuration, we can access the
 config like so:
 ```python
-app_name = app.config('app.name')
+has_app_name = app.config.has('app.name')
+app_name = app.config('app.name', default=None)
 # or
+app_name = app.config('APP_NAME')
 app_name = app.config['APP_NAME']
 
 db_ip = app.config('app.database.mysql.ip')
 # or
-db_ip = app.config['APP_DATABASE_MYSQL_IP']
+db_ip = app.config('APP_DATABASE_MYSQL_IP')
+db_ip = app.config['APP']['database']['mysql']['ip']
 
 db_user = app.config('app.database.mysql.user')
 # or
-db_user = app.config['APP_DATABASE_MYSQL_USER']
+db_user = app.config('APP_DATABASE_MYSQL_USER')
+db_user = app.config['APP']['database']['mysql']['user']
 
 has_db_pass = app.config.has('app.database.mysql.pass')
 # or
-has_db_pass = 'APP_DATABASE_MYSQL_PASS' in app.config
-```
-
-
-## Updating
-
-Updating values at runtime can be done like this:
-```python
-app.config({
-    'app.database.mysql.ip': 'localhost',
-})
-# or
-app.config['APP_DATABASE_MYSQL_IP'] = 'localhost'
+has_db_pass = 'pass' in app.config['APP']['database']['mysql']
 ```
 
 
@@ -97,19 +116,22 @@ which makes it ideal for security sensitive configuration
 
 The environment configuration is specified in the
 `.env.py`-files in the root of the project. An example
-of an `.env.py`-file:
+of a `.env.py`-file:
 ```python
 SECRET_KEY = 'aFBHjD8SHhqj71LEEmoxc8bLH4lzUTr'
 APP = {
     'env': 'development'
 }
+# or
+# APP_ENV = 'development'
 ```
 
 The current environment given in the above example
-(`APP_ENV`) will try to load more specific configuration
-in `.env.development.py`. This allows you to use separate
-databases or caching (for example) depending on the current
-environment. Example of an `.env.development.py`-file:
+(`app.env` being `development`) will try to load more specific
+configuration in `.env.development.py`. This allows you to
+use separate databases or caching (for example) depending on
+the current environment. Example of a
+`.env.development.py`-file:
 ```python
 DATABASE = {
     'mysql': {
@@ -122,11 +144,10 @@ DATABASE = {
 
 ### Specifying the current environment
 
-The current environment is set with the `APP_ENV`-key.
-The first way to do this is in the `.env.py`-file as
-explained before. The second way is by settings an
-environment-variable `APP_ENV` before running the
-application. For example:
+The current environment is by default set in the `.env.py`-file
+as described above. The second way, which has priority over the
+first method, is by settings an environment-variable `APP_ENV`.
+For example:
 ```bash
 export APP_ENV=production
 ```
