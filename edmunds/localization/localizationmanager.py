@@ -91,14 +91,14 @@ class LocalizationManager(object):
             except LookupError:
                 pass
 
-        time_zone_string = self._app.config('app.localization.time_zone_fallback', None)
+        time_zone_string = self._app.config('app.localization.timezonefallback', None)
         if time_zone_string:
             try:
                 return get_timezone(time_zone_string)
             except LookupError:
                 pass
 
-        raise RuntimeError("No valid fallback time zone defined! ('app.localization.time_zone_fallback')")
+        raise RuntimeError("No valid fallback time zone defined! ('app.localization.timezonefallback')")
 
     def _get_locale(self, from_supported_locales, given_locale_strings=None, only_fallback_locales=False):
         """
