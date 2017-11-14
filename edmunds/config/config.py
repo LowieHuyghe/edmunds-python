@@ -29,73 +29,44 @@ class Config(FlaskConfig):
         :type default:  mixed
         :return:        Value
         """
-        key_parts = self._get_key_parts(key)
-        result = self._get_recursive(self, key_parts)
+        flat_key = self._get_flat_key(key)
 
-        if result is not None:
-            return result
+        keys = list(self.keys())
+        keys.sort()
+        keys = reversed(keys)
+
+        for key in keys:
+            current_flat_key = self._get_flat_key(key)
+            if current_flat_key == flat_key:
+                return self[key]
+
+            flat_key_prefix = '%s_' % current_flat_key
+            if flat_key != flat_key_prefix and flat_key.startswith(flat_key_prefix):
+                key_parts = self._get_key_parts(flat_key[len(flat_key_prefix):])
+
+                found_value = True
+                value = self[key]
+
+                for key_part in key_parts:
+                    if isinstance(value, dict):
+                        found_dict_value = False
+                        for dict_key in value:
+                            if key_part == self._get_flat_key(dict_key):
+                                value = value[dict_key]
+                                found_dict_value = True
+                                break
+                        if found_dict_value:
+                            continue
+                    elif isinstance(value, list):
+                        if key_part.isdigit() and int(key_part) < len(value):
+                            value = value[int(key_part)]
+                            continue
+                    found_value = False
+                    break
+                if found_value:
+                    return value
 
         return default
-
-    def _get_recursive(self, remaining, key_parts):
-        """
-        Get value in a recursive manner
-        :param remaining:   The remaining value
-        :param key_parts:   The key parts
-        :return:            The value
-        """
-
-        # There are no key-parts to look for anymore
-        if not key_parts:
-            return remaining
-
-        # There are still key-parts but no value to dig deeper into
-        if not isinstance(remaining, list) and not isinstance(remaining, dict):
-            return None
-
-        # Define stuff
-        key_part = key_parts[0]
-        key_parts = key_parts[1:]
-        result = None
-
-        # Make sure we are looping over keys
-        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
-            key_str = '%s' % i
-
-            # Get recursive result
-            if key_str.upper() == key_part:
-                new_result = self._get_recursive(remaining[i], key_parts)
-            elif key_str.upper().startswith(key_part):
-                new_key = key_str[len(key_part):].lstrip('_')
-                new_remaining = {new_key: remaining[i]}
-                new_result = self._get_recursive(new_remaining, key_parts)
-            else:
-                continue
-            if new_result is None:
-                continue
-
-            # If result is solid, and not diggable: return it
-            if not isinstance(new_result, list) and not isinstance(new_result, dict):
-                return new_result
-
-            # Merge new_result in the result
-            if result is None:
-                result = new_result
-            elif isinstance(new_result, list):
-                if isinstance(result, list):
-                    result = result + new_result
-                else:
-                    result = result.copy()
-                    result.update(dict(enumerate(new_result)))
-            else:
-                if isinstance(result, list):
-                    result = dict(enumerate(result))
-                else:
-                    result = result.copy()
-                result.update(new_result)
-
-        # Return result
-        return result
 
     def has(self, key):
         """
@@ -104,45 +75,18 @@ class Config(FlaskConfig):
         :type key:      str
         :return:        Value
         """
-        key_parts = self._get_key_parts(key)
-        return self._has_recursive(self, key_parts)
+        check = {}
+        return self._get(key, default=check) is not check
 
-    def _has_recursive(self, remaining, key_parts):
+    def _get_flat_key(self, key):
         """
-        Check has value in a recursive manner
-        :param remaining:   The remaining value
-        :param key_parts:   The key parts
-        :return:            The value
+        Get key parts
+        :param key:     The key
+        :type key:      str
+        :return:        Flat key
+        :rtype:         str
         """
-
-        # There are no key-parts to look for anymore
-        if not key_parts:
-            return remaining is not None
-
-        # There are still key-parts but no value to dig deeper into
-        if not isinstance(remaining, list) and not isinstance(remaining, dict):
-            return False
-
-        # Define stuff
-        key_part = key_parts[0]
-        key_parts = key_parts[1:]
-
-        # Make sure we are looping over keys
-        for i in remaining if not isinstance(remaining, list) else range(0, len(remaining)):
-            key = '%s' % i
-
-            # Check has recursive
-            if key.upper() == key_part:
-                if self._has_recursive(remaining[key], key_parts):
-                    return True
-            elif key.upper().startswith(key_part):
-                new_key = key[len(key_part):].lstrip('_')
-                new_remaining = {new_key: remaining[key]}
-                if self._has_recursive(new_remaining, key_parts):
-                    return True
-
-        # Found nothing
-        return False
+        return key.replace('.', '_').upper()
 
     def _get_key_parts(self, key):
         """
@@ -152,7 +96,7 @@ class Config(FlaskConfig):
         :return:        Key parts
         :rtype:         list(str)
         """
-        flat_key = key.replace('.', '_').upper()
+        flat_key = self._get_flat_key(key)
         return flat_key.split('_')
 
     def from_pydir(self, config_dir):
