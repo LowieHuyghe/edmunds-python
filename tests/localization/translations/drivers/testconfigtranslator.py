@@ -31,7 +31,7 @@ class TestConfigTranslator(TestCase):
             "           'fallback': 'en', \n",
             "           'supported': ['en', 'nl'], \n",
             "       }, \n",
-            "       'time_zone_fallback': 'Europe/Brussels', \n",
+            "       'timezonefallback': 'Europe/Brussels', \n",
             "       'translations': { \n",
             "           'enabled': True, \n",
             "           'instances': [ \n",
