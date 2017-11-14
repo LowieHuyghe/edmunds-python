@@ -54,10 +54,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 1',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 1',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 1),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 1'                            ),
+            ('got.son',                     'Jon Snow 1',                       ),
+            ('got.girl',                    'Igritte 1',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 1),     ),
+            ('got.winter.is.coming.to',     'Town 1'                            ),
         ]
 
         # Make config file
@@ -69,11 +69,10 @@ class TestConfig(TestCase):
 
         # Check config
         for row in data:
-            key, old_key, value = row
+            key, value = row
 
             self.assert_true(app.config.has(key))
             self.assert_equal(value, app.config(key))
-            self.assert_equal(value, app.config[old_key])
 
     def test_extra_config_dir(self):
         """
@@ -112,10 +111,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 2',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 2',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 2),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 2'                            ),
+            ('got.son',                     'Jon Snow 2',                       ),
+            ('got.girl',                    'Igritte 2',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 2),     ),
+            ('got.winter.is.coming.to',     'Town 2'                            ),
         ]
 
         # Make config file
@@ -127,8 +126,7 @@ class TestConfig(TestCase):
 
         # Check config
         for row in data:
-            key, old_key, value = row
+            key, value = row
 
             self.assert_true(app.config.has(key))
             self.assert_equal(value, app.config(key))
-            self.assert_equal(value, app.config[old_key])
