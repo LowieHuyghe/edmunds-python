@@ -507,10 +507,78 @@ class TestConfig(TestCase):
         with self.assert_raises_regexp(RuntimeError, 'environment'):
             self.create_application('')
 
-    def test_non_python_config_file(self):
+    def test_functionality(self):
         """
-        Test a non-python config file
+        Test functionality
         :return:    void
         """
 
+        # Write config
+        self.write_config([
+            "APP_INFO_NAME = 'name' \n",
+            "APP = { \n",
+            "   'info': { \n",
+            "       'artist': 'artist', \n",
+            "       'list': [ \n",
+            "           'value1', \n",
+            "           'value2', \n",
+            "       ], \n",
+            "       'none': None, \n",
+            "       'name': 'othername', \n",
+            "   }, \n",
+            "   'INFO_ADDRESS': 'address' \n",
+            "} \n",
+            "SQLALCHEMY_DATABASE_URI = 'uri'"
+        ])
 
+        # Create app
+        app = self.create_application()
+
+        # Check
+        default_value = self.rand_str(20)
+        get_data = [
+            ('app.info', {'artist': 'artist', 'list': ['value1', 'value2'], 'none': None, 'name': 'othername'}),
+            ('app.info.name', 'name'),
+            ('app.info.artist', 'artist'),
+            ('app.info.list.0', 'value1'),
+            ('app.info.list.1', 'value2'),
+            ('app.info.list', ['value1', 'value2']),
+            ('app.info.none', None),
+            ('sqlalchemy.database.uri', 'uri'),
+
+            ('APP_INFO', {'artist': 'artist', 'list': ['value1', 'value2'], 'none': None, 'name': 'othername'}),
+            ('APP_INFO_NAME', 'name'),
+            ('APP_INFO_ARTIST', 'artist'),
+            ('APP_INFO_LIST_0', 'value1'),
+            ('APP_INFO_LIST_1', 'value2'),
+            ('APP_INFO_LIST', ['value1', 'value2']),
+            ('APP_INFO_NONE', None),
+            ('SQLALCHEMY_DATABASE_URI', 'uri'),
+        ]
+        for key, expected in get_data:
+            self.assert_equal(expected != default_value, app.config.has(key))
+            self.assert_equal_deep(expected, app.config(key, default_value))
+
+        self.assert_in('INFO_ADDRESS', app.config('app'))
+        self.assert_equal_deep('address', app.config('app')['INFO_ADDRESS'])
+
+        # Update
+        app.config['APP_INFO_ANOTHER'] = 'value'
+        self.assert_true(app.config.has('app.info.another'))
+        self.assert_equal_deep('value', app.config('app.info.another'))
+
+        # Delete
+        del app.config['APP_INFO_ANOTHER']
+        self.assert_false(app.config.has('app.info.another'))
+        self.assert_equal_deep(None, app.config('app.info.another'))
+
+        # Curious exception
+        self.assert_true(app.config.has('app.info.name'))
+        self.assert_equal_deep('name', app.config('app.info.name'))
+        # Delete priority which then returns other value
+        del app.config['APP_INFO_NAME']
+        self.assert_true(app.config.has('app.info.name'))
+        self.assert_equal_deep('othername', app.config('app.info.name'))
+        # Delete other value
+        del app.config['APP']['info']['name']
+        self.assert_false(app.config.has('app.info.name'))
