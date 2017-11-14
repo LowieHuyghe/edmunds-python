@@ -31,40 +31,42 @@ class Config(FlaskConfig):
         """
         flat_key = self._get_flat_key(key)
 
-        keys = list(self.keys())
-        keys.sort()
-        keys = reversed(keys)
-
-        for key in keys:
+        # Always loop sorted and then reversed over keys
+        # self['APP_INFO'] has priority over self['APP']['info']
+        for key in reversed(sorted(self.keys())):
             current_flat_key = self._get_flat_key(key)
             if current_flat_key == flat_key:
                 return self[key]
 
             flat_key_prefix = '%s_' % current_flat_key
-            if flat_key != flat_key_prefix and flat_key.startswith(flat_key_prefix):
-                key_parts = self._get_key_parts(flat_key[len(flat_key_prefix):])
+            if flat_key == flat_key_prefix or not flat_key.startswith(flat_key_prefix):
+                continue
+            key_parts = self._get_key_parts(flat_key[len(flat_key_prefix):])
 
-                found_value = True
-                value = self[key]
+            found_value = True
+            value = self[key]
+            for key_part in key_parts:
+                # Process dict as value
+                if isinstance(value, dict):
+                    found_dict_value = False
+                    for dict_key in reversed(sorted(value)):
+                        if key_part == self._get_flat_key(dict_key):
+                            value = value[dict_key]
+                            found_dict_value = True
+                            break
+                    if found_dict_value:
+                        continue
+                # Process list as value
+                elif isinstance(value, list):
+                    if key_part.isdigit() and int(key_part) < len(value):
+                        value = value[int(key_part)]
+                        continue
+                # Did not found
+                found_value = False
+                break
 
-                for key_part in key_parts:
-                    if isinstance(value, dict):
-                        found_dict_value = False
-                        for dict_key in value:
-                            if key_part == self._get_flat_key(dict_key):
-                                value = value[dict_key]
-                                found_dict_value = True
-                                break
-                        if found_dict_value:
-                            continue
-                    elif isinstance(value, list):
-                        if key_part.isdigit() and int(key_part) < len(value):
-                            value = value[int(key_part)]
-                            continue
-                    found_value = False
-                    break
-                if found_value:
-                    return value
+            if found_value:
+                return value
 
         return default
 
