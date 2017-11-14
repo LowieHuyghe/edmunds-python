@@ -169,3 +169,51 @@ class Config(FlaskConfig):
                 file_name = os.path.join(self.root_path, config_dir, file)
 
                 self.from_pyfile(file_name)
+
+    def from_object(self, obj):
+        """
+        Updates the values from the given object.
+        :param obj: an import name or object
+        """
+        backup = self.copy()
+        self.clear()
+
+        super(Config, self).from_object(obj)
+
+        self._deep_merge_underdog(self, backup)
+
+    def from_mapping(self, *mapping, **kwargs):
+        """
+        Updates the config like :meth:`update` ignoring items with non-upper keys.
+        """
+        backup = self.copy()
+        self.clear()
+
+        result = super(Config, self).from_mapping(*mapping, **kwargs)
+
+        self._deep_merge_underdog(self, backup)
+
+        return result
+
+    def _deep_merge_underdog(self, original, underdog):
+        """
+        Deep merge item as if it would have been overriden
+        :param original:  First entry
+        :param underdog:  Second entry
+        :return:        Merged value
+        """
+
+        if isinstance(original, dict) and isinstance(underdog, dict):
+            for underdog_key in underdog:
+                underdog_value = underdog[underdog_key]
+                original_value = original[underdog_key] if underdog_key in original else None
+
+                result = self._deep_merge_underdog(original_value, underdog_value)
+                if result is not None:
+                    original[underdog_key] = result
+            return original
+
+        if original is None:
+            return underdog
+
+        return None
