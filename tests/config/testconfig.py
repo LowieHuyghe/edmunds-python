@@ -72,66 +72,6 @@ class TestConfig(TestCase):
         if os.path.exists(self.env_production_bak_file):
             os.rename(self.env_production_bak_file, self.env_production_file)
 
-    def test_consistency(self):
-        """
-        Test the consistency of the config
-        """
-
-        data = [
-            ('got.son',     'GOT_SON',      'Jon Snow 1'                    ),
-            ('got.girl',    'GOT_GIRL',     'Igritte 1'                     ),
-            ('got.enemy',   'GOT_ENEMY',    ('The', 'White', 'Walkers', 1)  ),
-        ]
-
-        # Test data
-        for row in data:
-            key, old_key, value = row
-
-            self.assert_false(self.app.config.has(key))
-            self.assert_is_none(self.app.config(key))
-            self.assert_not_in(old_key, self.app.config)
-
-            self.app.config({
-                key: value
-            })
-
-            self.assert_true(self.app.config.has(key))
-            self.assert_equal(value, self.app.config(key))
-            self.assert_equal(value, self.app.config[old_key])
-
-    def test_multiple(self):
-        """
-        Test multiple assigns at once
-        """
-
-        data = [
-            ('got.son',     'GOT_SON',      'Jon Snow 2'                    ),
-            ('got.girl',    'GOT_GIRL',     'Igritte 2'                     ),
-            ('got.enemy',   'GOT_ENEMY',    ('The', 'White', 'Walkers', 2)  ),
-        ]
-
-        # Make update dictionary
-        update = {}
-        for row in data:
-            key, old_key, value = row
-
-            update[old_key] = value
-
-            self.assert_false(self.app.config.has(key))
-            self.assert_is_none(self.app.config(key))
-            self.assert_not_in(old_key, self.app.config)
-
-        # Update
-        self.app.config(update)
-
-        # Test data
-        for row in data:
-            key, old_key, value = row
-
-            self.assert_true(self.app.config.has(key))
-            self.assert_equal(value, self.app.config(key))
-            self.assert_equal(value, self.app.config[old_key])
-
     def test_config_file(self):
         """
         Test config file
@@ -160,10 +100,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 3',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 3',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 3),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 3'                            ),
+            ('got.son',                     'Jon Snow 3',                       ),
+            ('got.girl',                    'Igritte 3',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 3),     ),
+            ('got.winter.is.coming.to',     'Town 3'                            ),
         ]
 
         # Check each format
@@ -180,11 +120,10 @@ class TestConfig(TestCase):
 
             # Check config
             for row in data:
-                key, old_key, value = row
+                key, value = row
 
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
-                self.assert_equal(value, app.config[old_key])
 
     def test_env_file(self):
         """
@@ -214,10 +153,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 4',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 4',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 4),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 4'                            ),
+            ('got.son',                     'Jon Snow 4',                       ),
+            ('got.girl',                    'Igritte 4',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 4),     ),
+            ('got.winter.is.coming.to',     'Town 4'                            ),
         ]
 
         # Check each format
@@ -234,11 +173,10 @@ class TestConfig(TestCase):
 
             # Check config
             for row in data:
-                key, old_key, value = row
+                key, value = row
 
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
-                self.assert_equal(value, app.config[old_key])
 
     def test_env_testing_file(self):
         """
@@ -268,10 +206,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 5',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 5',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 5),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 5'                            ),
+            ('got.son',                     'Jon Snow 5',                       ),
+            ('got.girl',                    'Igritte 5',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 5),     ),
+            ('got.winter.is.coming.to',     'Town 5'                            ),
         ]
 
         # Check each format
@@ -288,11 +226,10 @@ class TestConfig(TestCase):
 
             # Check config
             for row in data:
-                key, old_key, value = row
+                key, value = row
 
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
-                self.assert_equal(value, app.config[old_key])
 
     def test_env_testing_test_file(self):
         """
@@ -322,10 +259,10 @@ class TestConfig(TestCase):
         ]
 
         data = [
-            ('got.son',                     'GOT_SON',                  'Jon Snow 6',                       ),
-            ('got.girl',                    'GOT_GIRL',                 'Igritte 6',                        ),
-            ('got.enemy',                   'GOT_ENEMY',                ('The', 'White', 'Walkers', 6),     ),
-            ('got.winter.is.coming.to',     'GOT_WINTER_IS_COMING_TO',  'Town 6'                            ),
+            ('got.son',                     'Jon Snow 6',                       ),
+            ('got.girl',                    'Igritte 6',                        ),
+            ('got.enemy',                   ('The', 'White', 'Walkers', 6),     ),
+            ('got.winter.is.coming.to',     'Town 6'                            ),
         ]
 
         # Check each format
@@ -339,11 +276,10 @@ class TestConfig(TestCase):
 
             # Check config
             for row in data:
-                key, old_key, value = row
+                key, value = row
 
                 self.assert_true(app.config.has(key))
                 self.assert_equal(value, app.config(key))
-                self.assert_equal(value, app.config[old_key])
 
     def test_merging_and_priority(self):
         """
@@ -358,7 +294,7 @@ class TestConfig(TestCase):
             "       'first': 1, \n",
             "   } \n",
             "} \n",
-        ]);
+        ])
 
         # Make env testing file
         with open(self.env_testing_file, 'w+') as f:
@@ -400,14 +336,14 @@ class TestConfig(TestCase):
             ])
 
         data = [
-            ('got.son',                 'GOT_SON',              'Jon Snow 7',                   ),
-            ('got.girl',                'GOT_GIRL',             'Igritte 7',                    ),
-            ('got.enemy',               'GOT_ENEMY',            ('The', 'White', 'Walkers', 7), ),
-            ('got.weapon',              'GOT_WEAPON',           'Dragon Glass 7',               ),
-            ('got.priority.first',      'GOT_PRIORITY_FIRST',   1,                              ),
-            ('got.priority.second',     'GOT_PRIORITY_SECOND',  2,                              ),
-            ('got.priority.third',      'GOT_PRIORITY_THIRD',   3,                              ),
-            ('got.priority.fourth',     'GOT_PRIORITY_FOURTH',  4,                              ),
+            ('got.son',                 'Jon Snow 7',                   ),
+            ('got.girl',                'Igritte 7',                    ),
+            ('got.enemy',               ('The', 'White', 'Walkers', 7), ),
+            ('got.weapon',              'Dragon Glass 7',               ),
+            ('got.priority.first',      1,                              ),
+            ('got.priority.second',     2,                              ),
+            ('got.priority.third',      3,                              ),
+            ('got.priority.fourth',     4,                              ),
         ]
 
         # Make app
@@ -415,11 +351,10 @@ class TestConfig(TestCase):
 
         # Check config
         for row in data:
-            key, old_key, value = row
+            key, value = row
 
-            self.assert_true(app.config.has(key))
-            self.assert_equal(value, app.config(key))
-            self.assert_equal(value, app.config[old_key])
+            self.assert_true(app.config.has(key), msg=key)
+            self.assert_equal(value, app.config(key), msg=key)
 
     def test_file_priority(self):
         """
