@@ -9,191 +9,157 @@ class Config(FlaskConfig):
     Config module
     """
 
-    def __init__(self, root_path, defaults=None):
+    def __call__(self, key, default=None):
         """
-        Initiate the dictionary
-        :param root_path:   The root path
-        :type  root_path:   str
-        :param defaults:    The default
-        :type  defaults:    mixed
+        Get the value
+        :param key:     The key
+        :type key:      str
+        :param default: The default value if it does not exist
+        :type default:  mixed
+        :return:        Value
         """
+        return self._get(key, default=default)
 
-        super(Config, self).__init__(root_path, defaults)
-
-        self.loaded_config = []
-
-    def __call__(self, mixed, default=None):
+    def _get(self, key, default=None):
         """
-        Get a value or update some values
-        :param mixed:       Key of dictionary
-        :type mixed:        dict|key
-        :param default:     The default value when fetching a value
-        :type  default:     mixed
-        :return:            Respectively the value and None
-        :rtype:             mixed|None
+        Get the value for this key
+        :param key:     The key
+        :type key:      str
+        :param default: The default value if it does not exist
+        :type default:  mixed
+        :return:        Value
         """
+        flat_key = self._get_flat_key(key)
 
-        # Update dictionary
-        if isinstance(mixed, dict):
-            processed_dict = {}
+        # Always loop sorted and then reversed over keys
+        # self['APP_INFO'] has priority over self['APP']['info']
+        for key in reversed(sorted(self.keys())):
+            current_flat_key = self._get_flat_key(key)
+            if current_flat_key == flat_key:
+                return self[key]
 
-            for key in mixed:
-                processed_key = self._getProcessKey(key)
-                processed_dict[processed_key] = mixed[key]
+            flat_key_prefix = '%s_' % current_flat_key
+            if flat_key == flat_key_prefix or not flat_key.startswith(flat_key_prefix):
+                continue
+            key_parts = self._get_key_parts(flat_key[len(flat_key_prefix):])
 
-            return self.update(processed_dict)
+            found_value = True
+            value = self[key]
+            for key_part in key_parts:
+                # Process dict as value
+                if isinstance(value, dict):
+                    found_dict_value = False
+                    for dict_key in reversed(sorted(value)):
+                        if key_part == self._get_flat_key(dict_key):
+                            value = value[dict_key]
+                            found_dict_value = True
+                            break
+                    if found_dict_value:
+                        continue
+                # Process list as value
+                elif isinstance(value, list):
+                    if key_part.isdigit() and int(key_part) < len(value):
+                        value = value[int(key_part)]
+                        continue
+                # Did not found
+                found_value = False
+                break
 
-        # Get value
-        else:
-            if not self.has(mixed):
-                return default
+            if found_value:
+                return value
 
-            processed_key = self._getProcessKey(mixed)
-            return self[processed_key]
+        return default
 
     def has(self, key):
         """
-        Check if has key
+        Check if has value for this key
         :param key:     The key
-        :type  key:     str
-        :return:        Has key?
-        :rtype:         boolean
+        :type key:      str
+        :return:        Value
         """
+        check = {}
+        return self._get(key, default=check) is not check
 
-        processed_key = self._getProcessKey(key)
-        return processed_key in self
-
-    def _getProcessKey(self, key):
+    def _get_flat_key(self, key):
         """
-        Process the given key
-        :param key:     The key to process
-        :type  key:     str
-        :return:        The processed key
+        Get key parts
+        :param key:     The key
+        :type key:      str
+        :return:        Flat key
         :rtype:         str
         """
+        return key.replace('.', '_').upper()
 
-        return '_'.join(key.split('.')).upper()
-
-    def load_all(self, config_dirs):
+    def _get_key_parts(self, key):
         """
-        Load all config files
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
+        Get key parts
+        :param key:     The key
+        :type key:      str
+        :return:        Key parts
+        :rtype:         list(str)
         """
+        flat_key = self._get_flat_key(key)
+        return flat_key.split('_')
 
-        # Load configuration in order
-        # Newly loaded overwrites current values
-        self._load_config(config_dirs)
-        self._load_env()
-
-    def _load_config(self, config_dirs):
+    def from_pydir(self, config_dir):
         """
-        Load the configuration
-        :param config_dirs:     Configuration directories
-        :type  config_dirs:     list
+        Load the configuration in directory
+        :param config_dir:  Configuration directory
+        :type  config_dir:  str
         """
+        for root, subdirs, files in os.walk(config_dir):
+            for file in files:
+                if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
+                    continue
 
-        for config_dir in config_dirs:
-            for root, subdirs, files in os.walk(config_dir):
-                for file in files:
-                    if not re.match(r'^[a-zA-Z0-9]+\.py$', file):
-                        continue
+                file_name = os.path.join(self.root_path, config_dir, file)
 
-                    file_name = os.path.join(self.root_path, config_dir, file)
+                self.from_pyfile(file_name)
 
-                    self.from_pyfile(file_name)
-
-    def _load_env(self):
+    def from_object(self, obj):
         """
-        Load environment config
+        Updates the values from the given object.
+        :param obj: an import name or object
         """
-
-        # Load .env file
-        env_file_path = os.path.join(self.root_path, '.env.py')
-        if os.path.isfile(env_file_path):
-            self.from_pyfile(env_file_path)
-
-        # Overwrite with APP_ENV value set in environment
-        if 'APP_ENV' in os.environ:
-            self({
-                'app.env': os.environ.get('APP_ENV')
-            })
-
-        # Check if environment set
-        if not self.has('app.env') or not self('app.env'):
-            raise RuntimeError('App environment is not set.')
-
-        # Load environment specific .env
-        env_environment_file_path = os.path.join(self.root_path, '.env.%s.py' % self('app.env').lower())
-        if os.path.isfile(env_environment_file_path):
-            self.from_pyfile(env_environment_file_path)
-
-        # If testing, load specific test .env specifically meant for testing purposes
-        if self('app.env').lower() == 'testing':
-            env_environment_test_file_path = os.path.join(self.root_path, '.env.%s.test.py' % self('app.env').lower())
-            if os.path.isfile(env_environment_test_file_path):
-                self.from_pyfile(env_environment_test_file_path)
-
-        # Lower the environment value
-        self({
-            'app.env': self('app.env').lower()
-        })
-
-    def from_pyfile(self, filename, silent=False):
-        """
-        Load from py-file
-        :param filename:    File to load
-        :type  filename:    str
-        :param silent:      Die silently when config-file does not exist
-        :type  silent:      bool
-        :return:            Success
-        :rtype:             bool
-        """
-
-        # Backup of original
-        processed_original = self._flatten_dict(self)
+        backup = self.copy()
         self.clear()
 
-        # Load new
-        success = super(Config, self).from_pyfile(filename, silent)
-        if success:
-            # Flatten new list
-            processed_new = self._flatten_dict(self)
-            self.clear()
+        super(Config, self).from_object(obj)
+        new = self.copy()
+        self.clear()
 
-            # Set back original and overwrite with new
-            self.update(processed_original)
-            self.update(processed_new)
+        self.update(self._deep_merge(backup, new))
 
-        else:
-            # Set back original
-            self.update(processed_original)
-
-        return success
-
-    def _flatten_dict(self, new, processed_new=None, prefix_key=''):
+    def from_mapping(self, *mapping, **kwargs):
         """
-        Flatten the dictionary to dictionary with only one level
-        :param new:             The given dictionary
-        :type  new:             dict
-        :param processed_new:   The processed dictionary
-        :type  processed_new:   dict
-        :param prefix_key:      The prefix key
-        :type  prefix_key:      str
-        :return:                The processed dictionary
-        :rtype:                 dict
+        Updates the config like :meth:`update` ignoring items with non-upper keys.
+        """
+        backup = self.copy()
+        self.clear()
+
+        result = super(Config, self).from_mapping(*mapping, **kwargs)
+        new = self.copy()
+        self.clear()
+
+        self.update(self._deep_merge(backup, new))
+
+        return result
+
+    def _deep_merge(self, original, new):
+        """
+        Deep merge item as if it would have been overriden
+        :param original:  First entry
+        :param new:  Second entry
+        :return:        Merged value
         """
 
-        if processed_new is None:
-            processed_new = {}
+        if isinstance(original, dict) and isinstance(new, dict):
+            original = original.copy()
+            for new_key in new:
+                new_value = new[new_key]
+                original_value = original[new_key] if new_key in original else None
 
-        for key in new:
-            value = new[key]
-            key_str = '%s' % key
+                original[new_key] = self._deep_merge(original_value, new_value)
+            return original
 
-            if isinstance(value, dict):
-                self._flatten_dict(value, processed_new, prefix_key + key_str.upper() + '_')
-            else:
-                processed_new[prefix_key + key_str.upper()] = value
-
-        return processed_new
+        return new
