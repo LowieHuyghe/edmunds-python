@@ -18,7 +18,7 @@ APP = {
             'fallback': 'en',
             'supported': ['en', 'en_US', 'nl'],
         },
-        'time_zone_fallback': 'Europe/Brussels',
+        'timezonefallback': 'Europe/Brussels',
     },
 }
 ```
