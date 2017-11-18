@@ -94,6 +94,8 @@ ENV/
 # IDEs
 *.sublime-*
 .idea/
+*.code-workspace
+.vscode/
 
 # MkDocs
 site
