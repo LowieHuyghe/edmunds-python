@@ -4,6 +4,55 @@
 Database migrations are built in in Edmunds using [Flask-Migrate](https://flask-migrate.readthedocs.io).
 
 
+## Setup
+
+In order to work with migrations, a database will have to be configured.
+Migrations use models and tables to track the changes in your database.
+These models and tables are mostly not imported by default when they are
+defined separately. So that is why it is advised to keep a
+list of models and tables in your configuration. This way all models and
+tables are loaded when doing migrations.
+
+```python
+from edmunds.database.drivers.sqlite import Sqlite
+from app.database.models.user import User
+from app.database.models.tag import Tag
+from app.database.models.usertags import UserTags
+
+APP = {
+    'database':
+    {
+        'enabled': True,
+        'instances':
+        [
+            {
+                'name': 'sqlite',
+                'driver': Sqlite,
+                'file': '/database/sqlite.db'
+            },
+        ],
+        'modelsandtables':
+        [
+            User,
+            Tag,
+            UserTags,
+        ],
+    },
+}
+```
+
+By default the migrations service provider is not loaded as it requires
+the database-instances to be loaded. You will have to register the
+service provider during bootstrap. This gives you more freedom in case
+you want to extend the databasemanager.
+
+```python
+from edmunds.database.providers.migrateserviceprovider import MigrateServiceProvider
+
+app.register(MigrateServiceProvider)
+```
+
+
 ## Usage
 
 Edmunds has already integrated the db-command in the application's manager.
@@ -26,16 +75,15 @@ Usage of Flask-Migrate documentation:
 ### Models & Tables
 
 Models and tables of SQLAlchemy are used by Flask-Migrate to describe your
-database structure. Add your models and tables to `app.database.models` so
-they are picked up by the migration-service:
+database structure:
 ```python
-# app/database/models/users.py
+# app/database/models/user.py
 from edmunds.database.db import db
 class User(db.Model):
     # __bind_key__ = 'users_database'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-                   
+
 # app/database/models/tags.py
 from edmunds.database.db import db
 class Tag(db.Model):
@@ -58,18 +106,3 @@ found here:
 
 * [SQLAlchemy Schema Definition Language](http://docs.sqlalchemy.org/en/latest/core/schema.html)
 * [Multiple Databases (binds)](http://flask-sqlalchemy.pocoo.org/2.2/binds/)
-
-> Note: If you want to customize the package where the migrate-service looks
-> for models and tables, you can override it in your config:
-> ```python
-> APP = {
->     'database': {
->         # ...
->         'models': {
->             'my/location/to/the/models',
->             'second/location/to/other/tables',
->         },
->     },
-> }
-> ```
-> The described paths are relative to the root-folder of your application.
