@@ -41,7 +41,6 @@ class TestDatabaseServiceProvider(TestCase):
 
         # Test extension
         self.assert_not_in('edmunds.database', app.extensions)
-        self.assert_not_in('edmunds.database.sessions', app.extensions)
 
     def test_register(self):
         """
@@ -84,11 +83,6 @@ class TestDatabaseServiceProvider(TestCase):
         self.assert_is_instance(app.extensions['edmunds.database'].get('mysql'), Engine)
         with self.assert_raises_regexp(RuntimeError, '[Nn]o instance'):
             app.extensions['edmunds.database'].get('mysql2')
-
-        # Test sessions
-        self.assert_in('edmunds.database.sessions', app.extensions)
-        self.assert_is_not_none(app.extensions['edmunds.database.sessions'])
-        self.assert_is_instance(app.extensions['edmunds.database.sessions'], dict)
 
     def test_removal_of_sessions(self):
         """
