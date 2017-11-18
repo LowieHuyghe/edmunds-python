@@ -39,7 +39,7 @@ APP = {
             {
                 'name': 'sqlite',
                 'driver': Sqlite,
-                'file': 'sqlite.db',
+                'file': '/database/sqlite.db',
                 # 'storage': 'storage_name', 	# Optional, default storage used as default
             },
         ],

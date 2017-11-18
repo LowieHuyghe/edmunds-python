@@ -11,7 +11,7 @@ class ServiceProvider(ABC):
         """
         Initialize the application
         :param app:     The application
-        :type  app:     Edmunds.Application
+        :type  app:     edmunds.application.Application
         """
 
         self.app = app

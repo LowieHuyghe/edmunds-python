@@ -31,7 +31,7 @@ class DatabaseManager(Manager):
         """
         Initiate the manager
         :param app:             The application
-        :type  app:             Application
+        :type  app:             edmunds.application.Application
         """
 
         super(DatabaseManager, self).__init__(app, app.config('app.database.instances', []))
