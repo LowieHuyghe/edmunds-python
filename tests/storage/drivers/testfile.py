@@ -40,6 +40,7 @@ class TestFile(TestCase):
         """
 
         string = self.rand_str(20)
+        string2 = self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -78,10 +79,19 @@ class TestFile(TestCase):
         finally:
             stream.close()
 
+        # Append
+        stream = app.fs().write_stream('nice.txt', append=True)
+        try:
+            stream.write(string2)
+        finally:
+            stream.close()
+
         # Read
         stream = app.fs().read_stream('nice.txt')
         try:
-            self.assert_in(string, stream.read())
+            content = stream.read()
+            self.assert_in(string, content)
+            self.assert_in(string2, content)
         finally:
             stream.close()
 

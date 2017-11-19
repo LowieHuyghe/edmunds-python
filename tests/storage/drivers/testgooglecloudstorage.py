@@ -36,6 +36,7 @@ class TestGoogleCloudStorage(GaeTestCase):
         """
 
         string = self.rand_str(20)
+        string2 = self.rand_str(20)
 
         # Write config
         self.write_config([
@@ -75,10 +76,16 @@ class TestGoogleCloudStorage(GaeTestCase):
         finally:
             stream.close()
 
+        # Append
+        with self.assert_raises_regexp(RuntimeError, 'Google Cloud Storage does not support modifying a file.'):
+            app.fs().write_stream('nice.txt', append=True)
+
         # Read
         stream = app.fs().read_stream('nice.txt')
         try:
-            self.assert_in(string, stream.read())
+            content = stream.read()
+            self.assert_in(string, content)
+            self.assert_not_in(string2, content)
         finally:
             stream.close()
 
