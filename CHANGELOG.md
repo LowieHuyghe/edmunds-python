@@ -27,7 +27,7 @@
 - Added command to get valid Google App Engine version
 
 
-## Release v0.4.0  (2017-11-10)
+## Release 0.4.0  (2017-11-10)
 
 - Merged GaeApplication and Application
 
