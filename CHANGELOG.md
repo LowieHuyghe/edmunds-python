@@ -1,5 +1,10 @@
 # Edmunds Change Log
 
+## Next Release
+
+-
+
+
 ## Release 0.5.1  (2017-11-19)
 
 - Fixed changelog documentation
