@@ -19,6 +19,7 @@ class TestFile(TestCase):
 
         self.prefix = self.rand_str(20) + '.'
         self.storage_directory = os.sep + 'storage' + os.sep
+        self.cache_directory ='cache'
         self.clear_paths = []
 
     def tear_down(self):
@@ -61,6 +62,15 @@ class TestFile(TestCase):
             "           { \n",
             "               'name': 'file',\n",
             "               'driver': File,\n",
+            "               'directory': '%s',\n" % self.cache_directory,
+            "               'threshold': 500,\n",
+            "               'default_timeout': 300,\n",
+            "               'mode': 0o600,\n",
+            "           }, \n",
+            "           { \n",
+            "               'name': 'file2',\n",
+            "               'driver': File,\n",
+            "               'directory': '/%s',\n" % self.cache_directory,
             "           }, \n",
             "       ], \n",
             "   }, \n",
