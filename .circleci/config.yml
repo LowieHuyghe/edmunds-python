@@ -186,6 +186,8 @@ jobs:
       - run:
           command: |
             rm -rf dist
+            pandoc --from=markdown --to=rst --output=README.rst README.md
+            pandoc --from=markdown --to=rst --output=HISTORY.rst CHANGELOG.md
             python setup.py sdist
       - deploy:
           command: |

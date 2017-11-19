@@ -99,3 +99,7 @@ ENV/
 
 # MkDocs
 site
+
+# PyPi
+HISTORY.rst
+README.rst

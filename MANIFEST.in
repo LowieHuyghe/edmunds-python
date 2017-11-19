@@ -13,6 +13,14 @@ prune storage
 prune tests
 exclude .*
 exclude MANIFEST.in
+exclude CHANGELOG.md
+exclude README.md
 exclude mkdocs.yml
 exclude setup/.*
 exclude setup/*.example.*
+
+include AUTHORS.rst
+include CONTRIBUTING.rst
+include HISTORY.rst
+include LICENSE
+include README.rst
