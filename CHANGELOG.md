@@ -1,8 +1,8 @@
-# Edmunds Change Log
+# Edmunds Changelog
 
-## Next Release
+## Release 0.5.2  (2017-11-19)
 
--
+- Fixed changelog on PyPi
 
 
 ## Release 0.5.1  (2017-11-19)
