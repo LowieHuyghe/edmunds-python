@@ -45,5 +45,7 @@ pages:
     - Basic HTTP Authentication: auth/basic.md
     - Roles: auth/roles.md
 
+  - Changelog: changes.md
+
 theme:
   name: 'material'
