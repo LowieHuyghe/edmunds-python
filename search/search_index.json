@@ -687,7 +687,7 @@
         },
         {
             "location": "/changes/",
-            "text": "Edmunds Change Log\n\n\nNext Release\n\n\n-\n\n\nRelease 0.5.0  (2017-11-19)\n\n\n\n\n\n\n76: Improve configuration processing\n\n\n\n\n\n\n79: Fix Migrations\n\n\n\n\n\n\nRelease 0.4.2  (2017-11-13)\n\n\n\n\n\n\n83 Fixed error-reporting issue on Google App Engine\n\n\n\n\nAdded DebuggerApplication when debugging in Google App Engine SDK.\n\n\n\n\nRelease 0.4.1  (2017-11-12)\n\n\n\n\nAdded command to get valid Google App Engine version\n\n\n\n\nRelease v0.4.0  (2017-11-10)\n\n\n\n\nMerged GaeApplication and Application\n\n\n\n\nRelease 0.3.4  (2017-11-04)\n\n\n\n\n\n\n78: Fixed the tests after fixing the sqlite urls\n\n\n\n\n\n\nRelease 0.3.3  (2017-11-04)\n\n\n\n\n\n\n78: Fixed missing / in sqlite database urls\n\n\n\n\n\n\n77: Fixed wrong command in docs\n\n\n\n\n\n\nRelease 0.3.2  (2017-11-03)\n\n\n\n\n\n\n77: Fixed issue with click option descriptions\n\n\n\n\n\n\nRelease 0.3.1  (2017-11-03)\n\n\n\n\n\n\n77: Fixed App Engine dependency issue\n\n\n\n\n\n\n73: Add GitLab CI config to the Edmunds Instance next to Circle CI\n\n\n\n\nUse tar instead of zip for edmunds-instance to keep file permissions\n\n\n\n\nRelease 0.3.0  (2017-11-02)\n\n\n\n\n\n\n16: Added Security and Authentication\n\n\n\n\n\n\n68: Implemented Flask CLI instead of Flask Script\n\n\n\n\n\n\n61: Reviewed code for Alpha release\n\n\n\n\n\n\nRelease 0.2.24  (2017-10-15)\n\n\n\n\nAdded Edmunds to PyPi\n\n\nUpdated CircleCI to 2.0\n\n\nImproved docs on how to get started\n\n\nBugFixes",
+            "text": "Edmunds Change Log\n\n\nRelease 0.5.1  (2017-11-19)\n\n\n\n\nFixed changelog documentation\n\n\n\n\nRelease 0.5.0  (2017-11-19)\n\n\n\n\n#76: Improve configuration processing\n\n\n#79: Fix Migrations\n\n\n\n\nRelease 0.4.2  (2017-11-13)\n\n\n\n\n#83 Fixed error-reporting issue on Google App Engine\n\n\nAdded DebuggerApplication when debugging in Google App Engine SDK.\n\n\n\n\nRelease 0.4.1  (2017-11-12)\n\n\n\n\nAdded command to get valid Google App Engine version\n\n\n\n\nRelease v0.4.0  (2017-11-10)\n\n\n\n\nMerged GaeApplication and Application\n\n\n\n\nRelease 0.3.4  (2017-11-04)\n\n\n\n\n#78: Fixed the tests after fixing the sqlite urls\n\n\n\n\nRelease 0.3.3  (2017-11-04)\n\n\n\n\n#78: Fixed missing / in sqlite database urls\n\n\n#77: Fixed wrong command in docs\n\n\n\n\nRelease 0.3.2  (2017-11-03)\n\n\n\n\n#77: Fixed issue with click option descriptions\n\n\n\n\nRelease 0.3.1  (2017-11-03)\n\n\n\n\n#77: Fixed App Engine dependency issue\n\n\n#73: Add GitLab CI config to the Edmunds Instance next to Circle CI\n\n\nUse tar instead of zip for edmunds-instance to keep file permissions\n\n\n\n\nRelease 0.3.0  (2017-11-02)\n\n\n\n\n#16: Added Security and Authentication\n\n\n#68: Implemented Flask CLI instead of Flask Script\n\n\n#61: Reviewed code for Alpha release\n\n\n\n\nRelease 0.2.24  (2017-10-15)\n\n\n\n\nAdded Edmunds to PyPi\n\n\nUpdated CircleCI to 2.0\n\n\nImproved docs on how to get started\n\n\nBugFixes",
             "title": "Changelog"
         },
         {
@@ -696,34 +696,19 @@
             "title": "Edmunds Change Log"
         },
         {
-            "location": "/changes/#next-release",
-            "text": "-",
-            "title": "Next Release"
+            "location": "/changes/#release-051-2017-11-19",
+            "text": "Fixed changelog documentation",
+            "title": "Release 0.5.1  (2017-11-19)"
         },
         {
             "location": "/changes/#release-050-2017-11-19",
-            "text": "",
+            "text": "#76: Improve configuration processing  #79: Fix Migrations",
             "title": "Release 0.5.0  (2017-11-19)"
         },
         {
-            "location": "/changes/#76-improve-configuration-processing",
-            "text": "",
-            "title": "76: Improve configuration processing"
-        },
-        {
-            "location": "/changes/#79-fix-migrations",
-            "text": "",
-            "title": "79: Fix Migrations"
-        },
-        {
             "location": "/changes/#release-042-2017-11-13",
-            "text": "",
+            "text": "#83 Fixed error-reporting issue on Google App Engine  Added DebuggerApplication when debugging in Google App Engine SDK.",
             "title": "Release 0.4.2  (2017-11-13)"
-        },
-        {
-            "location": "/changes/#83-fixed-error-reporting-issue-on-google-app-engine",
-            "text": "Added DebuggerApplication when debugging in Google App Engine SDK.",
-            "title": "83 Fixed error-reporting issue on Google App Engine"
         },
         {
             "location": "/changes/#release-041-2017-11-12",
@@ -737,73 +722,28 @@
         },
         {
             "location": "/changes/#release-034-2017-11-04",
-            "text": "",
+            "text": "#78: Fixed the tests after fixing the sqlite urls",
             "title": "Release 0.3.4  (2017-11-04)"
         },
         {
-            "location": "/changes/#78-fixed-the-tests-after-fixing-the-sqlite-urls",
-            "text": "",
-            "title": "78: Fixed the tests after fixing the sqlite urls"
-        },
-        {
             "location": "/changes/#release-033-2017-11-04",
-            "text": "",
+            "text": "#78: Fixed missing / in sqlite database urls  #77: Fixed wrong command in docs",
             "title": "Release 0.3.3  (2017-11-04)"
         },
         {
-            "location": "/changes/#78-fixed-missing-in-sqlite-database-urls",
-            "text": "",
-            "title": "78: Fixed missing / in sqlite database urls"
-        },
-        {
-            "location": "/changes/#77-fixed-wrong-command-in-docs",
-            "text": "",
-            "title": "77: Fixed wrong command in docs"
-        },
-        {
             "location": "/changes/#release-032-2017-11-03",
-            "text": "",
+            "text": "#77: Fixed issue with click option descriptions",
             "title": "Release 0.3.2  (2017-11-03)"
         },
         {
-            "location": "/changes/#77-fixed-issue-with-click-option-descriptions",
-            "text": "",
-            "title": "77: Fixed issue with click option descriptions"
-        },
-        {
             "location": "/changes/#release-031-2017-11-03",
-            "text": "",
+            "text": "#77: Fixed App Engine dependency issue  #73: Add GitLab CI config to the Edmunds Instance next to Circle CI  Use tar instead of zip for edmunds-instance to keep file permissions",
             "title": "Release 0.3.1  (2017-11-03)"
         },
         {
-            "location": "/changes/#77-fixed-app-engine-dependency-issue",
-            "text": "",
-            "title": "77: Fixed App Engine dependency issue"
-        },
-        {
-            "location": "/changes/#73-add-gitlab-ci-config-to-the-edmunds-instance-next-to-circle-ci",
-            "text": "Use tar instead of zip for edmunds-instance to keep file permissions",
-            "title": "73: Add GitLab CI config to the Edmunds Instance next to Circle CI"
-        },
-        {
             "location": "/changes/#release-030-2017-11-02",
-            "text": "",
+            "text": "#16: Added Security and Authentication  #68: Implemented Flask CLI instead of Flask Script  #61: Reviewed code for Alpha release",
             "title": "Release 0.3.0  (2017-11-02)"
-        },
-        {
-            "location": "/changes/#16-added-security-and-authentication",
-            "text": "",
-            "title": "16: Added Security and Authentication"
-        },
-        {
-            "location": "/changes/#68-implemented-flask-cli-instead-of-flask-script",
-            "text": "",
-            "title": "68: Implemented Flask CLI instead of Flask Script"
-        },
-        {
-            "location": "/changes/#61-reviewed-code-for-alpha-release",
-            "text": "",
-            "title": "61: Reviewed code for Alpha release"
         },
         {
             "location": "/changes/#release-0224-2017-10-15",
