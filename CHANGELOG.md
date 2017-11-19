@@ -1,5 +1,10 @@
 # Edmunds Change Log
 
+## Release 0.5.1  (2017-11-19)
+
+- Fixed changelog documentation
+
+
 ## Release 0.5.0  (2017-11-19)
 
 - \#76: Improve configuration processing
