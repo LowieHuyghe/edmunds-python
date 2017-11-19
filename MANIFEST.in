@@ -13,8 +13,6 @@ prune storage
 prune tests
 exclude .*
 exclude MANIFEST.in
-exclude CHANGELOG.md
-exclude README.md
 exclude mkdocs.yml
 exclude setup/.*
 exclude setup/*.example.*
