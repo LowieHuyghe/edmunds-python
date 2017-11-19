@@ -2,6 +2,11 @@
 
 ## Next Release
 
+-
+
+
+## Release 0.5.0  (2017-11-19)
+
 - #76: Improve configuration processing
 - #79: Fix Migrations
 
