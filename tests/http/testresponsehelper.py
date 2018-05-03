@@ -309,7 +309,7 @@ class TestResponseHelper(TestCase):
             # Check
             self.assert_is_instance(response, Response)
             self.assert_is_instance(response, FlaskResponse)
-            self.assert_equal('{}', Encoding.normalize(response.response[0]))
+            self.assert_equal('{}\n', Encoding.normalize(response.response[0]))
 
             # Assign
             helper.assign(key1, value1)
