@@ -1,4 +1,4 @@
-# Edmunds
+# [DEPRECATED] Edmunds
 
 [![PyPI](https://img.shields.io/pypi/v/edmunds-framework.svg)](https://pypi.python.org/pypi/edmunds-framework)
 [![CircleCI](https://img.shields.io/circleci/project/github/LowieHuyghe/edmunds/master.svg)](https://circleci.com/gh/LowieHuyghe/edmunds)
